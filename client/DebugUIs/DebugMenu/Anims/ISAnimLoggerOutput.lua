@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ISAnimLoggerOutput = ISDebugSubPanelBase:derive("ISAnimLoggerOutput");

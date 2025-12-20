@@ -1,7 +1,3 @@
---[[-
-    debugging tool for hot-swapping survivor details and inventory based on predefined tables.
-]]
-
 if isClient() then return end
 
 SurvivorSwap = {
@@ -13,36 +9,13 @@ SurvivorSwap = {
     Vehicles = {},
 }
 
---[[- Modifies a survivor.
-
-    Modifies a survivors visual appearance, name, profession, gender, perks and traits based on data defined in an lua table.
-
-    @tparam IsoPlayer playerObj the survivor to modify
-    @tparam table data a table containing the character details.
-
-    Valid key/value pairs for the `data` table are:
-    * forename = string forename. If nil, existing forename is kept.
-    * surname = string surname. If nil, existing forename is kept.
-    * profession = string profession. If nil, existing profession is kept.
-    * traits = a list style table of traits to apply. Existing traits will be cleared regardless of this keys existence.
-    * perks = a table of perks (keys) and levels (values). If this key is nil, then existing perks are kept.
-    * weight = int character weight. (default: 80)
-    * hairColor = a table of 4 float 0-1 values {r, g, b, a} (default: {0.2, 0.2, 0.2, 1})
-    * female = boolean true/false. (default: false)
-    * voiceType = int value (default: 0)
-    * voicePitch = int value (default: 0)
-    * skinTexture = int value (default: 1)
-    * beardModel = string (default: "")
-    * hairModel = string (default: "")
-
-]]
 SurvivorSwap.applyCharacter = function(playerObj, data)
     local desc = playerObj:getDescriptor()
     local visual = playerObj:getHumanVisual()
-    local traits = playerObj:getTraits()
+    local traits = playerObj:getCharacterTraits():getKnownTraits()
     desc:setForename(data.forename or desc:getForename())
     desc:setSurname(data.surname or desc:getSurname())
-    desc:setProfession(data.profession or desc:getProfession())
+    desc:setCharacterProfession(data.profession or desc:getCharacterProfession())
     traits:clear()
     for _, trait in ipairs(data.traits or {}) do
         traits:add(trait)
@@ -78,20 +51,6 @@ SurvivorSwap.applyCharacter = function(playerObj, data)
     end
 end
 
---[[- Clears and modifies a survivors inventory.
-
-    Modifies a survivor's inventory based on data defined in an lua table.
-
-    @tparam IsoPlayer playerObj the survivor to modify
-    @tparam table data a table containing the inventory details.
-
-    Valid key/value pairs for the `data` table are:
-    * worn = a list-style table of items to wear. These should include full name such as "Base.Glasses_Aviators"
-    * inventory = a list-style table of additional items to place in the inventory. As above, use full names.
-    * setup = an optional function to be called to perform additional setup such as weapon attachments,
-        hotbar setup, etc. This function will be passed 2 args: the survivor and the survivor's inventory
-
-]]
 SurvivorSwap.applyLoadout = function(playerObj, data)
     playerObj:clearWornItems()
     playerObj:setPrimaryHandItem(nil)
@@ -118,21 +77,6 @@ SurvivorSwap.applyLoadout = function(playerObj, data)
     end
 end
 
---[[- Completely modifies a vehicle and its inventory.
-
-    Modifies a vehicle's script, color, and inventory based on data defined in an lua table.
-
-    @tparam BaseVehicle vehicle the vehicle to modify
-    @tparam table data a table containing the vehicle details.
-
-    Valid key/value pairs for the `data` table are:
-    * script = string script name such as "Base.SUV"
-    * color = table of 3 float values {h, s, v}
-    * containers = a table of string container names (keys) and function (values)
-    * parts = a table of string locations (keys) and parts to use (values). The parts should use full names such as
-         "Base.BigGasTank2"
-
-]]
 SurvivorSwap.applyVehicle = function(vehicle, data)
     vehicle:setScriptName(data.script)
     vehicle:setScript()

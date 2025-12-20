@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPickupDung = ISBaseTimedAction:derive("ISPickupDung");
@@ -88,5 +84,3 @@ function ISPickupDung:new (character, item, sq, radius)
     o.sq = sq or character:getCurrentSquare();
     return o
 end
-
-

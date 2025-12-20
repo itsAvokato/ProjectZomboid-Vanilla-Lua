@@ -77,23 +77,25 @@ function ObjectViewer.onDataRead(data)
     toggleBreakOnRead(data.obj, data.item.key);
 end
 
+function ObjectViewer:onMouseDoubleClickListItem(item)
+    self:onMouseDoubleClickOpenObject(item.val)
+end
+
 function ObjectViewer:onMouseDoubleClickOpenObject(item)
 
     local bReuse = true;
     -- hold lshift to not reuse.
-    if isKeyDown(42) then
+    if isKeyDown(Keyboard.KEY_LSHIFT) then
         bReuse = false;
-     end
-    if instanceof (item, "KahluaTableImpl") then
-        item = item.val;
+    end
 
+    if instanceof(item, "KahluaTableImpl") then
         if not bReuse then
             local src = ObjectViewer:new(getCore():getScreenWidth() / 2, 0, 600, 300, item);
-
             src:initialise();
             src:addToUIManager();
-
         else
+            self:historyPush()
             self.obj = item;
             self.title =  KahluaUtil.rawTostring2(self.obj);
             self:fill();
@@ -139,17 +141,14 @@ function ObjectViewer:onMouseDoubleClickOpenObject(item)
 
         if not bReuse then
             local src = ObjectViewer:new(getCore():getScreenWidth() / 2, 0, 600, 300, item);
-
             src:initialise();
             src:addToUIManager();
         else
+            self:historyPush();
             self.obj = item;
             self.title =  KahluaUtil.rawTostring2(self.obj);
             self:fill();
         end
-
-
-
 
     end
 end
@@ -176,34 +175,65 @@ function ObjectViewer:onSourceMouseWheel(del)
     return true;
 end
 
+function ObjectViewer:fillJavaList(list)
+    if not list then return end
+    for i=1,list:size() do
+        local k = tostring(i-1)
+        local elem = list:get(i-1)
+        local s = k
+        local s2 = KahluaUtil.rawTostring2(elem)
+        local hashCode = KahluaUtil.identityHashCode(elem)
+        if s2 ~= nil and not string.contains(s2, hashCode) then
+            s2 = s2..' '..hashCode
+        end
+        if s2 ~= nil then
+            s = tabToX(s, 10);
+            self.objectView:addItem(s..s2, {key=k, val=elem})
+        end
+    end
+end
+
 function ObjectViewer:fill()
     self.objectView:clear();
     self.objectView:setYScroll(0);
     local bSort = true;
 
     if instanceof(self.obj, "KahluaTableImpl") then
-         for k, v in pairs(self.obj) do
-             local s = KahluaUtil.rawTostring2(k);
-             local s2 = KahluaUtil.rawTostring2(v);
-             if s ~= nil and s2 ~= nil then
-                 s = tabToX(s, 40);
-                 self.objectView:addItem(s..s2, {key=k, val=v});
-             end
-
+        for k, v in pairs(self.obj) do
+            local s = KahluaUtil.rawTostring2(k);
+            local s2 = KahluaUtil.rawTostring2(v);
+            if s ~= nil and s2 ~= nil then
+                s = tabToX(s, 40);
+                self.objectView:addItem(s..s2, {key=k, val=v});
+            end
+        end
+        self.objectView:sort()
+        bSort = false
+        local metaTbl = getmetatable(self.obj)
+        if metaTbl ~= nil and metaTbl ~= self.obj then
+            local k = "<metatable>"
+            local v = metaTbl
+            local s = tabToX(k, 40)
+            local s2 = KahluaUtil.rawTostring2(metaTbl);
+            self.objectView:insertItem(1, s..s2, {key=k, val=v});
          end
+    elseif instanceof(self.obj, "List") then
+         self:fillJavaList(self.obj)
+         bSort = false
     elseif self.obj then
         bSort = false;
 
         local c = getNumClassFields(self.obj);
         for i=0, c-1 do
-            local meth = getClassField(self.obj, i);
-            if meth.getType then -- is it exposed?
-                local val = KahluaUtil.rawTostring2(getClassFieldVal(self.obj, meth));
+            local field = getClassField(self.obj, i);
+            if field.getType then -- is it exposed?
+                local val = KahluaUtil.rawTostring2(getClassFieldVal(self.obj, field));
                 if(val == nil) then val = "nil" end
-                local s = tabToX(meth:getType():getSimpleName(), 18) .. " " .. tabToX(meth:getName(), 24) .. " " .. tabToX(val, 24);
-                self.objectView:addItem(s, meth);
+                local k = field:getType():getSimpleName()
+                local s = tabToX(k, 18) .. " " .. tabToX(field:getName(), 24) .. " " .. tabToX(val, 24);
+                self.objectView:addItem(s, {key=k, val=field});
             else
-                --local s = type(meth)..' = '..tostring(meth)
+                --local s = type(field)..' = '..tostring(field)
             end
         end
 
@@ -219,9 +249,10 @@ function ObjectViewer:fill()
                         params = params .. ", ";
                     end
                 end
-                local s = tabToX(meth:getReturnType():getSimpleName(), 18) .. " " .. tabToX(meth:getName(), 24) .. "( " .. params .. " )";
+                local k = meth:getReturnType():getSimpleName()
+                local s = tabToX(k, 18) .. " " .. tabToX(meth:getName(), 24) .. "( " .. params .. " )";
                 s = tabToX(s, 40);
-                self.objectView:addItem(s, meth);
+                self.objectView:addItem(s, {key=k, val=meth});
             else
                 --local s = type(meth)..' = '..tostring(meth)
             end
@@ -229,7 +260,7 @@ function ObjectViewer:fill()
     end
     if bSort then
         self.objectView:sort();
-     end
+    end
 end
 
 function ObjectViewer:createChildren()
@@ -239,7 +270,21 @@ function ObjectViewer:createChildren()
     local th = self:titleBarHeight()
     local rh = self:resizeWidgetHeight()
 
-    self.objectView = ISScrollingListBox:new(0, th, self.width, self.height-th-rh);
+    self.historyPrev = ISButton:new(1, th, 20, FONT_HGT_CODE + 2 * 2, "PREV", self, self.historyPop)
+    self:addChild(self.historyPrev)
+
+    local filterX = self.historyPrev:getRight() + 4
+    self.filter = ISTextEntryBox:new("", filterX, th, self.width - 1 - filterX, FONT_HGT_CODE + 2 * 2);
+    self.filter:setAnchorRight(true)
+    self.filter:initialise()
+    self.filter:instantiate()
+    self.filter:setFont(getTextManager():getCurrentCodeFont())
+    self.filter.onTextChange = function() self:onFilterTextChange() end
+    self.filter:setClearButton(true)
+    self.filter:setPlaceholderText("filter")
+    self:addChild(self.filter)
+
+    self.objectView = ISScrollingListBox:new(0, self.filter:getBottom(), self.width, self.height-th-rh-self.filter.height);
     self.objectView:setFont(getTextManager():getCurrentCodeFont(), 0)
     self.objectView:initialise();
     self.objectView.doDrawItem = ObjectViewer.doDrawItem;
@@ -247,45 +292,45 @@ function ObjectViewer:createChildren()
     self.objectView.anchorRight = true;
     self.objectView.onRightMouseDown = ObjectViewer.onRightMouseDownObject;
     self.objectView.anchorBottom = true;
-    self.objectView:setOnMouseDoubleClick(self, ObjectViewer.onMouseDoubleClickOpenObject);
+    self.objectView:setOnMouseDoubleClick(self, ObjectViewer.onMouseDoubleClickListItem);
     self:addChild(self.objectView);
 
     self:fill();
-
---[[
-    -- Do corner x + y widget
-    local resizeWidget = ISResizeWidget:new(self.width-10, self.height-10, 10, 10, self);
-    resizeWidget:initialise();
-    self:addChild(resizeWidget);
-
-    self.resizeWidget = resizeWidget;
-
-    -- Do bottom y widget
-    resizeWidget = ISResizeWidget:new(0, self.height-10, self.width-10, 10, self, true);
-    resizeWidget.anchorRight = true;
-    resizeWidget:initialise();
-    self:addChild(resizeWidget);
-
-    self.resizeWidget2 = resizeWidget;
---]]
 end
 
 function ObjectViewer:prerender()
     ISCollapsableWindow.prerender(self)
     self:checkFontSize()
+    self.historyPrev:setEnable(#self.history > 0)
+end
+
+function ObjectViewer:onFilterTextChange()
+    local filterText = string.lower(self.filter:getInternalText())
+    for i=1,self.objectView:size() do
+        local item = self.objectView:getItem(i)
+        if filterText == "" or string.contains(string.lower(item.text), filterText) then
+            item.height = self.objectView.itemheight
+        else
+            item.height = 0
+        end
+    end
 end
 
 function ObjectViewer:doDrawItem(y, item, alt)
+    if item.height <= 0 then
+        return y
+    end
     if self.selected == item.index then
         self:drawRect(0, y, self:getWidth(), self.itemheight, 0.2, 0.6, 0.7, 0.8);
-
     end
 
-    if item.item.key ~= nil and hasDataBreakpoint(self.parent.obj, item.item.key) then
-        self:drawRect(0, y, self:getWidth(), self.itemheight, 0.3, 0.8, 0.6, 0.4);
-    end
-    if item.item.key ~= nil and hasDataReadBreakpoint(self.parent.obj, item.item.key) then
-        self:drawRect(0, y, self:getWidth(), self.itemheight, 0.3, 0.6, 0.8, 0.4);
+    if instanceof(item.item.val, "KahluaTableImpl") then
+        if item.item.key ~= nil and hasDataBreakpoint(self.parent.obj, item.item.key) then
+            self:drawRect(0, y, self:getWidth(), self.itemheight, 0.3, 0.8, 0.6, 0.4);
+        end
+        if item.item.key ~= nil and hasDataReadBreakpoint(self.parent.obj, item.item.key) then
+            self:drawRect(0, y, self:getWidth(), self.itemheight, 0.3, 0.6, 0.8, 0.4);
+        end
     end
 
     --  self:drawRectBorder(0, (y), self:getWidth(), self.itemheight, 0.5, self.borderColor.r, self.borderColor.g, self.borderColor.b);
@@ -300,24 +345,39 @@ function ObjectViewer:checkFontSize()
     local fontHeight = getTextManager():getFontHeight(font)
     if font == self.objectView.font then return end
     FONT_HGT_CODE = fontHeight
+    self.historyPrev:setFont(font)
+    self.historyPrev:setHeight(FONT_HGT_CODE + 2 * 2)
+    self.filter:setX(self.historyPrev:getRight() + 4)
+    self.filter:setWidth(self.width - 1 - self.filter.x)
+    self.filter:setFont(font)
+    self.filter:setHeight(FONT_HGT_CODE + 2 * 2)
     self.objectView:setFont(font, 0)
     self.objectView.itemheight = FONT_HGT_CODE
+    self.objectView:setHeight(self.height-self:resizeWidgetHeight()-self.filter:getBottom())
+    self.objectView:setY(self.filter:getBottom())
 end
 
-function ObjectViewer:new (x, y, width, height, obj)
+function ObjectViewer:historyPush()
+    table.insert(self.history, { obj=self.obj, title=self.title })
+end
 
-    local o = {}
+function ObjectViewer:historyPop()
+    local hist = table.remove(self.history, #self.history)
+    if not hist then return end
+    self.obj = hist.obj
+    self.title = hist.title
+    self:fill()
+end
 
-    --o.data = {}
-    o = ISCollapsableWindow:new(x, y, width, height);
-    setmetatable(o, self)
-    self.__index = self
+function ObjectViewer:new(x, y, width, height, obj)
+    local o = ISCollapsableWindow.new(self, x, y, width, height);
     o.backgroundColor = {r=0, g=0, b=0, a=1.0};
     o.height = getCore():getScreenHeight()/3;
     o.width = (getCore():getScreenWidth()-700)/2;
     o.x = o.width;
     o.y = getCore():getScreenHeight() - (getCore():getScreenHeight()/3);
     o.obj = obj;
+    o.history = {}
     ObjectViewer.map[obj] = o;
     return o
 end

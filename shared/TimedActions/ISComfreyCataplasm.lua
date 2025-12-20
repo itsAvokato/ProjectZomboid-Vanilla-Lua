@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISComfreyCataplasm = ISBaseTimedAction:derive("ISComfreyCataplasm");
@@ -67,8 +63,8 @@ function ISComfreyCataplasm:perform()
 end
 
 function ISComfreyCataplasm:complete()
-    if self.character:HasTrait("Hemophobic") and self.bodyPart:getBleedingTime() > 0 then
-        self.character:getStats():setPanic(self.character:getStats():getPanic() + 50);
+    if self.character:hasTrait(CharacterTrait.HEMOPHOBIC) and self.bodyPart:getBleedingTime() > 0 then
+        self.character:getStats():add(CharacterStat.PANIC, 50);
         --Stat_Panic
         syncPlayerStats(self.character, 0x00000100);
     end

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 -- This is a table of functions to make PZAPI widgets work with a controller.
 -- Possibly this would be better implemented in AtomExtensions.lua.
 

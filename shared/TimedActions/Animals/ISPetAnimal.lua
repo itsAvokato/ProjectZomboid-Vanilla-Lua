@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPetAnimal = ISBaseTimedAction:derive("ISPetAnimal");
@@ -22,7 +18,10 @@ function ISPetAnimal:update()
 end
 
 function ISPetAnimal:start()
-	forceDropHeavyItems(self.character)
+    if not isClient() then
+	    forceDropHeavyItems(self.character)
+	end
+
 	self:setOverrideHandModels(nil, nil)
 	self.character:setVariable("AnimalSizeX", 0.01);
 	local range = self.animal:getData():getMaxSize() - self.animal:getData():getMinSize()
@@ -80,6 +79,7 @@ function ISPetAnimal:getDuration()
 end
 
 function ISPetAnimal:serverStart()
+    forceDropHeavyItems(self.character)
 	emulateAnimEventOnce(self.netAction, 3000, "pettingFinished", nil)
 end
 

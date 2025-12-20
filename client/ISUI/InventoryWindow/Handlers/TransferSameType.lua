@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/InventoryWindow/ISInventoryWindowControlHandler"
 
 ISInventoryWindowControlHandler_TransferSameType = ISInventoryWindowControlHandler:derive("ISInventoryWindowControlHandler_TransferSameType")
@@ -16,7 +12,8 @@ function Handler:shouldBeVisible()
 end
 
 function Handler:getControl()
-    self.control = self:getButtonControl(getText("IGUI_invpage_Transfer_SameType"))
+    self.control = self:getImageButtonControl("media/ui/inventoryPanes/TransferSameTypeOneContainer.png")
+    self.control:setTooltip(getText("IGUI_invpage_TransferSameTypeOneContainer_tt"))
     self.control:setOnMouseOverFunction(self.onMouseOverButton)
     self.control:setOnMouseOutFunction(self.onMouseOutButton)
     return self.control
@@ -39,6 +36,14 @@ function Handler:getItemsTable(container)
         local type = item:getFullType()
         result[type] = result[type] or {}
         table.insert(result[type], item)
+        if item:getClothingItemExtra() ~= nil then
+            local typeList = item:getClothingItemExtra()
+            for j=1,typeList:size() do
+                type = moduleDotType(item:getModule(), item:getClothingItemExtra():get(j-1))
+                result[type] = result[type] or {}
+                table.insert(result[type], item)
+            end
+        end
     end
     return result
 end

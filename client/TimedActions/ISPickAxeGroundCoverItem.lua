@@ -1,7 +1,3 @@
--- --***********************************************************
--- --**                    ROBERT JOHNSON                     **
--- --***********************************************************
---
 -- require "TimedActions/ISBaseTimedAction"
 --
 -- ISPickAxeGroundCoverItem = ISBaseTimedAction:derive("ISPickAxeGroundCoverItem");
@@ -9,7 +5,7 @@
 -- local function predicatePickAxe(item)
 -- 	if item:isBroken() then return false end
 -- 	local type = item:getType()
--- 	return item:hasTag("Hammer") or item:hasTag("Sledgehammer") or item:hasTag("ClubHammer") or item:hasTag("PickAxe") or type == "PickAxe" or item:hasTag("StoneMaul")
+-- 	return item:hasTag(ItemTag.HAMMER) or item:hasTag(ItemTag.SLEDGEHAMMER) or item:hasTag(ItemTag.CLUB_HAMMER) or item:hasTag(ItemTag.PICK_AXE) or type == "PickAxe" or item:hasTag(ItemTag.STONE_MAUL)
 -- end
 --
 -- function ISPickAxeGroundCoverItem:isValid()
@@ -174,7 +170,7 @@
 -- 	local o = ISBaseTimedAction.new(self, character)
 -- 	o.item = item;
 --     local props = item:getSprite():getProperties()
---     local objectType = props:Is("CustomName") and props:Val("CustomName") or nil
+--     local objectType = props:has("CustomName") and props:get("CustomName") or nil
 -- 	o.objectType = objectType;
 -- 	o.cornerCounter = -1;
 -- 	if cornerCounter ~= nil then
@@ -190,3 +186,4 @@
 -- 	o.pickAxe = character:getPrimaryHandItem();
 -- 	return o;
 -- end
+

@@ -1,23 +1,8 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**            Author: turbotutone / spurcival            **
---***********************************************************
-
---[[
-    Default panel for CraftRecipe HandCraft mode recipes.
-
-    This panel is used in Entity UI but is also intended to function without entity/component data.
---]]
 require "ISUI/ISPanel"
 
 local UI_BORDER_SPACING = 10
 
 ISBuildPanel = ISPanel:derive("ISBuildPanel");
-
---************************************************************************--
---** ISBuildPanel:initialise
---**
---************************************************************************--
 
 function ISBuildPanel:initialise()
 	ISPanel.initialise(self);
@@ -25,7 +10,6 @@ end
 
 function ISBuildPanel:createChildren()
     ISPanel.createChildren(self);
-    print("=== CREATING BUILD PANEL ===")
 
     local styleCell = "S_TableLayoutCell_Pad5";
     self.rootTable = ISXuiSkin.build(self.xuiSkin, "S_TableLayout_Main", ISTableLayout, 0, 0, 10, 10, nil, nil, styleCell);
@@ -135,6 +119,7 @@ function ISBuildPanel:createRecipePanel()
     self.craftRecipePanel = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISBuildRecipePanel, 0, 0, 10, 10, self.player, self.logic); --, self.logic:getRecipeData(), self.craftBench, self.isoObject);
     self.craftRecipePanel:initialise();
     self.craftRecipePanel:instantiate();
+    self.craftRecipePanel.isBuildMenu = true;
 
     local column = self.rootTable:addColumn(nil);
     self.rootTable:setElement(column:index(), 0, self.craftRecipePanel);
@@ -169,7 +154,7 @@ function ISBuildPanel:createRecipesColumn()
     self.recipesPanel.showFilterByOutputItem = false;
     --self.recipesPanel.expandToFitTooltip = true;
     self.recipesPanel.wrapTooltipText = true;
-    self.recipesPanel.showAllVersionTickbox = true;
+    self.recipesPanel.isBuildMenu = true;
     self.recipesPanel.ignoreSurface = true;
     self.recipesPanel:initialise();
     self.recipesPanel:instantiate();
@@ -389,6 +374,7 @@ function ISBuildPanel:createBuildIsoEntity(dontSetDrag)
     local _player = self.player;
     local _info = self.logic:getSelectedBuildObject();
     local _recipe = self.logic:getRecipe();
+    local _wallCoveringParams = self.logic:getWallCoveringParams();
     
     if _info ~= nil and _recipe ~= nil then
         if self.buildEntity == nil or self.buildEntity.objectInfo ~= _info then
@@ -415,14 +401,25 @@ function ISBuildPanel:createBuildIsoEntity(dontSetDrag)
         if not dontSetDrag then
             getCell():setDrag(self.buildEntity, _player:getPlayerNum());
         end
+    elseif _wallCoveringParams ~= nil and _recipe ~= nil then
+        if _wallCoveringParams.actionType == WallCoveringType.WALLPAPER then
+            -- is wallpaper, create ISPaperCursor
+            self.buildEntity = ISPaperCursor:new(_player, _wallCoveringParams.wallpaperType, WallPaper["wall"][_wallCoveringParams.wallpaperType]);
+            getCell():setDrag(self.buildEntity, _player:getPlayerNum());
+        else
+            -- is paint/plaster recipe, create ISPaintCursor
+            self.buildEntity = ISPaintCursor:new(_player, _wallCoveringParams.actionType:toString(), _wallCoveringParams);
+            getCell():setDrag(self.buildEntity, _player:getPlayerNum());
+        end
     else
+        -- clear cursor
         self.buildEntity = nil;
         getCell():setDrag(nil, _player:getPlayerNum());
     end
 end
 
 function ISBuildPanel:updateManualInputs()
-    if self.buildEntity then
+    if self.buildEntity and self.buildEntity.updateManualInputs then
         self.buildEntity:updateManualInputs(self.logic);
     end
 end
@@ -523,11 +520,6 @@ function ISBuildPanel.SetDragItem(item, playerNum)
     end
 end
 
---************************************************************************--
---** ISBuildPanel:new
---** _craftBench (component) param is optional,
---** when handcrafting from workstation having a craftbench, its input resources may be used
---************************************************************************--
 function ISBuildPanel:new(x, y, width, height, player, craftBench, isoObject, recipeQuery)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

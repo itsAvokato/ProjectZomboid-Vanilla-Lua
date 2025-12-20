@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_LightFireOption = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_LightFireOption")

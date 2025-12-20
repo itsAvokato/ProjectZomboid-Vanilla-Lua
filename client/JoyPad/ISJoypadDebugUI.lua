@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISJoypadDebugUI = ISUIElement:derive("ISJoypadDebugUI");
 
 local FONT_HGT_DEBUG = getTextManager():getFontHeight(UIFont.Debug)

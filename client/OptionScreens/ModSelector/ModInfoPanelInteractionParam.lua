@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "OptionScreens/ModSelector/ModInfoPanel"
 

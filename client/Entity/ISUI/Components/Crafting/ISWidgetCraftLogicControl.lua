@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISWidgetCraftLogicControl = ISPanelJoypad:derive("ISWidgetCraftLogicControl");
@@ -13,11 +8,6 @@ local FONT_SCALE = getTextManager():getFontHeight(UIFont.Small) / 19; -- normali
 local BUTTON_SIZE = getTextManager():getFontHeight(UIFont.Small);-- * 1.5
 local ICON_SCALE = math.max(1, (FONT_SCALE - math.floor(FONT_SCALE)) < 0.5 and math.floor(FONT_SCALE) or math.ceil(FONT_SCALE));
 local BUTTON_ICON_SIZE = 16 * ICON_SCALE;
-
---************************************************************************--
---** ISWidgetCraftLogicControl:initialise
---**
---************************************************************************--
 
 function ISWidgetCraftLogicControl:initialise()
     ISPanelJoypad.initialise(self);
@@ -369,10 +359,6 @@ function ISWidgetCraftLogicControl:onLoseJoypadFocus(joypadData)
     self:clearJoypadFocus()
 end
 
---************************************************************************--
---** ISWidgetCraftLogicControl:new
---**
---************************************************************************--
 function ISWidgetCraftLogicControl:new(x, y, width, height, player, logic)
     local o = ISPanelJoypad.new(self, x, y, width, height);
 

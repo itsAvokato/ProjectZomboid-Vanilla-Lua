@@ -1,11 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: spurcival 				   **
---***********************************************************
-
---[[
-    Input and Control widget for CraftLogic based entities
---]]
 require "ISUI/ISPanel"
 
 local FONT_SCALE = getTextManager():getFontHeight(UIFont.Small) / 19; -- normalize to 1080p
@@ -66,6 +58,7 @@ function ISWidgetCraftLogicOutputProgress:createDynamicChildren()
         self.outputItems.allowDrop = false;
         self.outputItems.functionTarget = self;
         self.outputItems.onItemSlotContentsChanged = ISWidgetCraftLogicOutputProgress.onItemSlotContentsChanged;
+        self.outputItems.actionAnim = self.craftLogicComponent:getActionAnimOverride();
         self.outputItems:initialise();
         self.outputItems:instantiate()
 
@@ -235,11 +228,7 @@ end
 function ISWidgetCraftLogicOutputProgress:onResourceSlotContentsChanged()
     self:calculateLayout(self.width, self.height);
 end
-    
---************************************************************************--
---** ISWidgetCraftLogicOutputProgress:new
---**
---************************************************************************--
+
 function ISWidgetCraftLogicOutputProgress:new(x, y, width, height, player, logic)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

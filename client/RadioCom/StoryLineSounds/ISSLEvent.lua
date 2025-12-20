@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISSLEvent = ISPanel:derive("ISSLEvent");

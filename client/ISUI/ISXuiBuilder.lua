@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISXuiBuilder = {};
 ISXuiBuilder.constructors = {};
 
@@ -163,14 +158,8 @@ local function applySizing(_o, _parent)
     end
 end
 
---[[
-    These functions get set on tables created by Xui
---]]
 ISXuiFunctions = {};
 
---***************
--- XuiKey
---***************
 -- tries to get a child with xuiKey in children only, returns first found
 function ISXuiFunctions.xuiGet(_self, _xuiKey)
     if _self and _self.__xui and _self.__xui.children and _xuiKey then
@@ -241,9 +230,6 @@ function ISXuiFunctions.xuiFindAll(_self, _xuiKey, _list)
     return list;
 end
 
---***************
--- LuaClass
---***************
 -- tries to get a child with luaClass in children only, returns first found
 function ISXuiFunctions.xuiGetClass(_self, _luaClass)
     if _self and _self.__xui and _self.__xui.children and _luaClass then
@@ -317,10 +303,6 @@ function ISXuiFunctions.xuiFindClassAll(_self, _luaClass, _list)
     end
     return list;
 end
-
---***************
--- UUID
---***************
 
 -- gets the uuid of xui script
 function ISXuiFunctions.xuiGetUUID(_self)
@@ -692,17 +674,6 @@ function ISXuiBuilder.constructors.ISXuiTableLayout(_xuiScript, _parent, _buildI
     return o, true;
 end
 
---[[
-function ISXuiBuilder.ISButton(_xuiScript, _parent, x, y, width, height, title, clicktarget, onclick, onmousedown, allowMouseUpProcessing)
-    local vector = _xuiScript:getVector();
-    local o = ISButton:new(vector:getX(), vector:getY(), vector:getW(), vector:getH(), _xuiScript:getTitle(), clicktarget, onclick, onmousedown, allowMouseUpProcessing);
-    return o, false;
-end
---]]
-
---[[
-    ISColorPicker
---]]
 function ISXuiBuilder.constructors.ISColorPicker(_xuiScript, _parent, _buildInfo, _x, _y, _HSBFactor)
     local vector = _xuiScript:getVector();
     local hsb = nil;

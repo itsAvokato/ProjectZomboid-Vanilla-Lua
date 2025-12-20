@@ -1,17 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**              Panel wich display all our skills        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISChallenge2PlayerUpWindow = ISPanelJoypad:derive("ISChallenge2PlayerUpWindow");
-
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISChallenge2PlayerUpWindow:initialise()
 	ISPanelJoypad.initialise(self);

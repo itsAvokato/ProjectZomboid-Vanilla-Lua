@@ -1,7 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
+
 require "Entity/ISUI/Controls/ISGroupBox"
 
 ISFluidSlotPanel = ISGroupBox:derive("ISFluidSlotPanel");
@@ -78,10 +75,6 @@ function ISFluidSlotPanel:update()
     ISGroupBox.update(self);
 end
 
---************************************************************************--
---** ISFluidSlotPanel:new
---**
---************************************************************************--
 function ISFluidSlotPanel:new (x, y, width, height, player, entity, _styleLabel)
 	local o = ISGroupBox:new(x, y, width, height, _styleLabel);
     setmetatable(o, self)

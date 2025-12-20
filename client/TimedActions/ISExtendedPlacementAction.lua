@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 require "ISUI/ISLayoutManager"
 
@@ -17,12 +13,14 @@ function ISExtendedPlacementAction:waitToStart()
 end
 
 function ISExtendedPlacementAction:perform()
+    local oldX,oldY = nil,nil
     local old = ISExtendedPlacementUI.GetWindowForPlayer(self.playerNum)
     if old then
+        oldX,oldY = old:getX(),old:getY()
         old:close()
     end
 
-	local ui = ISExtendedPlacementUI:new(nil, nil, self.playerNum, self.item)
+	local ui = ISExtendedPlacementUI:new(oldX, oldY, self.playerNum, self.item)
 	ui:initialise()
 	ui:addToUIManager()
 

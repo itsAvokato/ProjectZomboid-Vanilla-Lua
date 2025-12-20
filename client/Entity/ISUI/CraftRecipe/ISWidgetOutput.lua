@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**            Author: turbotutone / spurcival            **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -253,6 +249,7 @@ function ISWidgetOutput:updateScriptValues(_table)
         _table.iconColor.g = item:getG();
         _table.iconColor.b = item:getB();
         _table.iconText = item:getDisplayName();
+        _table.inputFullName = item:getFullName();
     elseif _table.script:getResourceType()==ResourceType.Fluid then
         if _table.cycleIcons then
             local playerIndex = self.player:getPlayerNum();
@@ -264,6 +261,7 @@ function ISWidgetOutput:updateScriptValues(_table)
         _table.iconColor.g = c:getGreenFloat();
         _table.iconColor.b = c:getBlueFloat();
         _table.iconText = fluid:getDisplayName();
+        _table.inputFullName = fluid:getFullName();
     elseif _table.script:getResourceType()==ResourceType.Energy then
         if _table.cycleIcons then
             local playerIndex = self.player:getPlayerNum();
@@ -276,6 +274,7 @@ function ISWidgetOutput:updateScriptValues(_table)
         _table.iconColor.g = c:getGreenFloat();
         _table.iconColor.b = c:getBlueFloat();
         _table.iconText = energy:getDisplayName();
+        _table.inputFullName = energy:getFullName();
     end
 
     local variableInputRatio = _table.script:isVariableAmount() and self.logic:getVariableInputRatio() or 1;
@@ -336,10 +335,26 @@ function ISWidgetOutput:updateValues()
     end
 end
 
---************************************************************************--
---** ISWidgetOutput:new
---**
---************************************************************************--
+function ISWidgetOutput:onMouseDown(x, y)
+    if self.isBuildMenu then
+        return;
+    end
+    if self.primary then
+        getSoundManager():playUISound("UIActivateButton")
+        if isShiftKeyDown() then
+            local filterPanel = self.parent.parent.parent.parent.parent.recipesPanel.recipeFilterPanel;
+            local inputFullName = self.secondary and self.secondary.inputFullName or self.primary.inputFullName or "";
+            filterPanel:filter("!" .. inputFullName, getText("IGUI_FilterType_InputName"))
+        end
+    end
+end
+
+function ISWidgetOutput:onMouseDownOutside(x, y)
+    if self:isMouseOver() then -- clicked in a child
+        self:onMouseDown(x, y)
+    end
+end
+
 function ISWidgetOutput:new (x, y, width, height, player, logic, outputScript) --recipeData, outputScript)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

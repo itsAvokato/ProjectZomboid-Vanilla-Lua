@@ -7,7 +7,7 @@ local SandboxOptionsScreenPresetPanel = ISPanelJoypad:derive("SandboxOptionsScre
 local SandboxAdvancedControl = ISPanel:derive("SandboxAdvancedControl")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-local FONT_HGT_TITLE = getTextManager():getFontFromEnum(UIFont.Title):getLineHeight()
+local FONT_HGT_LARGE = getTextManager():getFontFromEnum(UIFont.Large):getLineHeight()
 local FONT_HGT_MEDIUM = getTextManager():getFontFromEnum(UIFont.Medium):getLineHeight()
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
@@ -50,8 +50,6 @@ function SandboxOptionsScreenListBox:onJoypadDown(button, joypadData)
         updateJoypadFocus(joypadData)
     end
 end
-
--- -- -- -- --
 
 local _multiplers = {"Aiming", "Axe", "Blacksmith", "Blunt", "Butchering", "Carving", "Cooking", "Doctor", "Electricity", "Farming", "Fishing", "Fitness", "FlintKnapping", "Glassmaking", "Husbandry", "Lightfoot", "LongBlade", "Maintenance", "Masonry", "Mechanics", "MetalWelding", "Nimble", "PlantScavenging", "Pottery", "Reloading", "SmallBlade", "SmallBlunt", "Sneak", "Spear", "Sprinting", "Strength", "Tailoring", "Tracking", "Trapping", "Woodwork"}
 local multiplers = {}
@@ -253,8 +251,6 @@ function SandboxOptionsScreenPanel:onJoypadDown(button, joypadData)
     end
 end
 
--- -- -- -- --
-
 function SandboxAdvancedControl:createChildren()
     self.entry = ISTextEntryBox:new(self.setting.text, 0, 0, CONTROL_WIDTH, ENTRY_HGT)
     self.entry.font = UIFont.Medium
@@ -367,8 +363,6 @@ function SandboxAdvancedControl:new(x, y, width, height, setting, tooltip)
     return o
 end
 
--- -- -- -- --
-
 function SandboxOptionsScreenPresetPanel:render()
     ISPanelJoypad.render(self)
     self:renderJoypadFocus(-2, -2, self.width + 4, self.height + 4)
@@ -394,8 +388,6 @@ function SandboxOptionsScreenPresetPanel:onJoypadDown(button, joypadData)
     end
     ISPanelJoypad.onJoypadDown(self, button, joypadData)
 end
-
--- -- -- -- --
 
 function SandboxOptionsScreen:syncStartDay()
     local year = getSandboxOptions():getFirstYear()
@@ -496,7 +488,7 @@ function SandboxOptionsScreen:create()
     self.presetPanel.joypadIndex = 1
     self.presetPanel.joypadIndexY = 1
 
-    self.searchEntry = ISTextEntryBox:new("", UI_BORDER_SPACING+1, UI_BORDER_SPACING*2 + FONT_HGT_TITLE + 1, self.width - (UI_BORDER_SPACING+1)*2, ENTRY_HGT)
+    self.searchEntry = ISTextEntryBox:new("", UI_BORDER_SPACING+1, UI_BORDER_SPACING*2 + FONT_HGT_LARGE + 1, self.width - (UI_BORDER_SPACING+1)*2, ENTRY_HGT)
     self.searchEntry.font = UIFont.Medium
     self.searchEntry.onTextChange = function() self:doSearch() end
     self.searchEntry.setText = function(_self, str)
@@ -510,7 +502,7 @@ function SandboxOptionsScreen:create()
             _self:onTextChange()
         end
     end
-    self.searchEntry.prerender = self.searchPrerender
+    self.searchEntry:setPlaceholderText(getText("UI_sandbox_searchEntryBoxWord"))
     self.searchEntry.onJoypadDown = function(_self, button, joypadData)
         if button == Joypad.BButton then
             joypadData.focus = _self.parent
@@ -521,6 +513,7 @@ function SandboxOptionsScreen:create()
     end
     self.searchEntry:initialise()
     self.searchEntry:instantiate()
+    self.searchEntry:setClearButton(true)
     self:addChild(self.searchEntry)
 
     self.listbox = SandboxOptionsScreenListBox:new(UI_BORDER_SPACING+1, self.searchEntry:getBottom()+UI_BORDER_SPACING, 300, self.height - self.searchEntry:getBottom() - UI_BORDER_SPACING*3-1 - BUTTON_HGT)
@@ -562,13 +555,6 @@ function SandboxOptionsScreen:create()
     self:onPresetChange()
 
     self:onMouseDownListbox(self.listbox.items[1].item)
-end
-
-function SandboxOptionsScreen.searchPrerender(self)
-    ISTextEntryBox.prerender(self)
-    if not self.javaObject:isFocused() and self:getInternalText() == "" then
-        self:drawText(getText("UI_sandbox_searchEntryBoxWord"), 2, 2, 0.9, 0.9, 0.9, 0.5, UIFont.Medium)
-    end
 end
 
 function SandboxOptionsScreen:changeAdvancedMode(_, bool)
@@ -979,7 +965,7 @@ function SandboxOptionsScreen:prerender()
     self:syncStartDay()
 
     ISPanelJoypad.prerender(self);
-    self:drawTextCentre(getText("UI_optionscreen_SandboxOptions"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+    self:drawTextCentre(getText("UI_optionscreen_SandboxOptions"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
 
     local deleteOK = false
     if self.presets[self.presetList.selected] then
@@ -1195,6 +1181,17 @@ function SandboxOptionsScreen:onJoypadNavigateStart_Descendant(descendant, joypa
     self.listbox.joypadNavigate = { right = self.currentPanel, up = self.searchEntry, down = self.presetPanel, parent = self }
     self.currentPanel.joypadNavigate = { left = self.listbox, up = self.searchEntry, down = self.presetPanel, parent = self }
     self.presetPanel.joypadNavigate = { left = self.listbox, up = self.currentPanel, parent = self }
+end
+
+function SandboxOptionsScreen:onKeyRelease(key)
+    if key == Keyboard.KEY_ESCAPE then
+        self.backButton:forceClick()
+        return
+    end
+    if key == Keyboard.KEY_RETURN then
+        self.playButton:forceClick()
+        return
+    end
 end
 
 function SandboxOptionsScreen:new(x, y, width, height)

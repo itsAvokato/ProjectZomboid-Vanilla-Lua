@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 require "RainBarrel/BuildingObjects/RainCollectorBarrel"
@@ -105,8 +101,6 @@ MapObjects.OnNewWithSprite("carpentry_02_52", NewLargeEmpty, PRIORITY)
 MapObjects.OnNewWithSprite("carpentry_02_53", NewLargeFull, PRIORITY)
 MapObjects.OnNewWithSprite("carpentry_02_54", NewSmallEmpty, PRIORITY)
 MapObjects.OnNewWithSprite("carpentry_02_55", NewSmallFull, PRIORITY)
-
--- -- -- -- --
 
 local function LoadObject(isoObject, health, waterAmount, waterMax)
 	local sq = isoObject:getSquare()

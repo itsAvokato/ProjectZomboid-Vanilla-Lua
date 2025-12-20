@@ -291,7 +291,7 @@ debugScenarios.FenrisScenario = {
             local desc = player:getDescriptor();
             local visual = player:getHumanVisual();
             local inv = player:getInventory();
-            player:getTraits():add("Organized")
+            player:getCharacterTraits():add(CharacterTrait.ORGANIZED)
             desc:setVoicePrefix("VoiceMale");
             desc:setVoiceType(0);
             desc:setVoicePitch(0);

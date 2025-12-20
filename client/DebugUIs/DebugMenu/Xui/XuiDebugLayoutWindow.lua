@@ -1,13 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Used by XuiDebugWindow to display a layout.
-    This window allows to have selected elements in the XuiDebugWindow to be highlighted.
---]]
-
 require "ISUI/ISCollapsableWindow"
 
 XuiDebugLayoutWindow = ISCollapsableWindow:derive("XuiDebugLayoutWindow");

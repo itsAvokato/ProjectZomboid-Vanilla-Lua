@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISServerDisconnectUI = ISPanelJoypad:derive("ISServerDisconnectUI")
 
 function ISServerDisconnectUI:createChildren()

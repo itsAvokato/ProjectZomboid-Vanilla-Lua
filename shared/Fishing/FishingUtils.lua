@@ -3,7 +3,7 @@ Fishing.Utils = {}
 
 function Fishing.Utils.isWaterCoords(x, y)
     local sq = getCell():getGridSquare(x, y, 0)
-    if sq and sq:getProperties() and sq:getProperties():Is(IsoFlagType.water) then
+    if sq and sq:getProperties() and sq:getProperties():has(IsoFlagType.water) then
         return true
     end
     return false
@@ -75,7 +75,7 @@ function Fishing.Utils.isPlayerAimOnWater(player, autoAim)
     end
 
     local sq = getSquare(x, y, 0)
-    if sq and sq:getProperties() and sq:getProperties():Is(IsoFlagType.water) then
+    if sq and sq:getProperties() and sq:getProperties():has(IsoFlagType.water) then
         return true
     end
     return false

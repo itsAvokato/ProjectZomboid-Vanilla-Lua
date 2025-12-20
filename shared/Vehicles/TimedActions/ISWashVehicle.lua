@@ -1,12 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWashVehicle = ISBaseTimedAction:derive("ISWashVehicle")
-
------
 
 local function predicateHasWater(item)
     return item:getFluidContainer() and (item:getFluidContainer():contains(Fluid.Water) or item:getFluidContainer():contains(Fluid.TaintedWater)) and item:getFluidContainer():getAmount() >= 0.1
@@ -70,8 +64,6 @@ function ISWashVehicle.hasBlood(vehicle)
 	end
 	return false
 end
-
------
 
 function ISWashVehicle:isValid()
 	return self.vehicle:isInArea(self.area, self.character)

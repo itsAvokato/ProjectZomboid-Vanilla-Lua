@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPlowAction = ISBaseTimedAction:derive("ISPlowAction");
@@ -126,7 +122,7 @@ function ISPlowAction:complete()
     -- we remove grass and vegetation from the square
 	SFarmingSystem:removeTallGrass(sq)
     local floor = sq:getFloor();
-    if (floor and floor:getSprite():getProperties():Val("grassFloor")) and sq:checkHaveGrass() == true then
+    if (floor and floor:getSprite():getProperties():get("grassFloor")) and sq:checkHaveGrass() == true then
 	    sq:removeGrass()
 	end
 
@@ -189,7 +185,7 @@ function wormCheck(character, item, square)
     end
     if RainManager.isRaining() then wormChance = wormChance/2 end
     -- if you use your hands and not a tool, you have a better chance of finding a worm
-    local hand = (not item) or (item and instanceof(item, "InventoryItem") and (item:hasTag("DigWorms") or item:getType() == "HandShovel" or item:getType() == "HandFork"))
+    local hand = (not item) or (item and instanceof(item, "InventoryItem") and (item:hasTag(ItemTag.DIG_WORMS) or item:getType() == "HandShovel" or item:getType() == "HandFork"))
     if hand then wormChance = wormChance/2 end
     if ZombRand(wormChance) == 0 then
 --         local worm = InventoryItemFactory.CreateItem("Base.Worm")
@@ -200,10 +196,12 @@ function wormCheck(character, item, square)
         else
             square:AddWorldInventoryItem(worm, ZombRand(10)/10, ZombRand(10)/10, 0);
         end
-        local pdata = getPlayerData(character:getPlayerNum());
-        if pdata ~= nil then
-            pdata.playerInventory:refreshBackpacks();
-            pdata.lootInventory:refreshBackpacks();
+        if not isServer() and not isClient() then
+            local pdata = getPlayerData(character:getPlayerNum());
+            if pdata ~= nil then
+                pdata.playerInventory:refreshBackpacks();
+                pdata.lootInventory:refreshBackpacks();
+            end
         end
     end
 end

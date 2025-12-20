@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISBombTimerDialog = ISPanelJoypad:derive("ISBombTimerDialog")

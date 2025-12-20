@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "RadioCom/RadioWindowModules/RWMPanel"
 
 RWMChannelTV = RWMPanel:derive("RWMChannelTV");
@@ -122,8 +118,6 @@ function RWMChannelTV:update()
         --print("height: ",( a > b and a or b) );
         if self.parent then
             self.parent:calculateHeights();
-        else
-            print("no parent")
         end
         self.lastModeExpanded = true;
     elseif self.comboBox and self.comboBox.expanded == false and self.lastModeExpanded == true then

@@ -1,8 +1,3 @@
---***********************************************************
---**                      ROBERT JOHNSON                         **
---** Panel with all the character information (skills, health..) **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 require "ISUI/ISLayoutManager"
 
@@ -355,4 +350,3 @@ function ISCharacterInfoWindow.OnClothingUpdated(chr)
 end
 
 Events.OnClothingUpdated.Add(ISCharacterInfoWindow.OnClothingUpdated)
-

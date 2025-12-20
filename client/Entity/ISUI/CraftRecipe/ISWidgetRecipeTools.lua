@@ -1,16 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISWidgetRecipeTools = ISPanel:derive("ISWidgetRecipeTools");
-
---************************************************************************--
---** ISWidgetRecipeTools:initialise
---**
---************************************************************************--
 
 function ISWidgetRecipeTools:initialise()
 	ISPanel.initialise(self);
@@ -214,11 +204,6 @@ function ISWidgetRecipeTools:update()
     ISPanel.update(self);
 end
 
-
---************************************************************************--
---** ISWidgetRecipeTools:new
---**
---************************************************************************--
 function ISWidgetRecipeTools:new(x, y, width, height, player, logic) -- recipeData, craftBench)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

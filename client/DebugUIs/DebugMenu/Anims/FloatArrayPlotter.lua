@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 FloatArrayPlotter = ISPanel:derive("FloatArrayPlotter");

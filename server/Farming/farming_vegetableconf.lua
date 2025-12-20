@@ -1,13 +1,3 @@
------------------------------------------------------------------------
---                          FARMING MOD                              --
---                      CODE BY ROBERT JOHNSON                       --
---                       TEXTURES BY THUZTOR                         --
------------------------------------------------------------------------
---                          OFFICIAL TOPIC                           --
---  http://www.theindiestone.com/community/viewtopic.php?f=33&t=8675 --
---                                                                   --
------------------------------------------------------------------------
-
 farming_vegetableconf = {};
 
 -- fetch our item in the container, if it's the vegetable we want, we add seeds to it

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISScything = ISBaseTimedAction:derive("ISScything");
@@ -92,7 +88,7 @@ function ISScything:new (character, item, sq, radius)
     o.item = item;
     if item and not radius then
         radius = 3
-        if item:getType() == "HandScythe" or item:hasTag("HandScythe") then
+        if item:getType() == "HandScythe" or item:hasTag(ItemTag.HAND_SCYTHE) then
            radius = 1
         end
     end
@@ -100,5 +96,3 @@ function ISScything:new (character, item, sq, radius)
     o.sq = sq or character:getCurrentSquare();
     return o
 end
-
-

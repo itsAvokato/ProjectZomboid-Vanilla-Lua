@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISVehicleGauge = ISUIElement:derive("ISVehicleGauge")

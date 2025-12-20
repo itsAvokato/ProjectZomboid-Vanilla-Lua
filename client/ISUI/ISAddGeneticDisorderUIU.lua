@@ -1,26 +1,9 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 05/04/2022
--- Time: 11:33
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISAddGeneticDisorderUI = ISPanel:derive("ISAddGeneticDisorderUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISAddGeneticDisorderUI:initialise()
     ISPanel.initialise(self);
@@ -109,5 +92,3 @@ function ISAddGeneticDisorderUI:new(x, y, width, height, target, onclick, allele
     o.moveWithMouse = true;
     return o;
 end
-
-

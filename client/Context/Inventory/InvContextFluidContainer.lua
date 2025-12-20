@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISInventoryMenuElements = ISInventoryMenuElements or {};
 
 function ISInventoryMenuElements.ContextFluidContainer()
@@ -15,21 +10,20 @@ function ISInventoryMenuElements.ContextFluidContainer()
     function self.createMenu( _item )
         local cont = _item:getFluidContainer() or (_item:getWorldItem() ~= nil and _item:getWorldItem():getFluidContainer());
 
-        if cont then
-            local parent = self.invMenu.context:addOption(getText("Fluid_Options"), self.invMenu, nil );
+        if cont and cont:canPlayerEmpty() then
+            local parent = self.invMenu.context:addOption(_item:getDisplayName(), self.invMenu, nil );
+            parent.itemForTexture = _item;
             local subMenu = ISContextMenu:getNew(self.invMenu.context);
             self.invMenu.context:addSubMenu(parent, subMenu);
 
-            local option = subMenu:addOption(getText("Fluid_Show_Info"), self.invMenu, self.showInfo, cont );
-            if cont:canPlayerEmpty() then
-                local option = subMenu:addOption(getText("Fluid_Transfer_Fluids"), self.invMenu, self.transferFluids, cont );
-                if not cont:isEmpty() then
-                    local option = subMenu:addOption(getText("Fluid_Empty"), self.invMenu, self.emptyFluidContainer, cont );
-                end
+            subMenu:addOption(getText("Fluid_Show_Info"), self.invMenu, self.showInfo, cont );
+            subMenu:addOption(getText("Fluid_Transfer_Fluids"), self.invMenu, self.transferFluids, cont );
+            if not cont:isEmpty() then
+                subMenu:addOption(getText("Fluid_Empty"), self.invMenu, self.emptyFluidContainer, cont );
             end
 
             if getDebug() then
-                local addFluidOption = subMenu:addDebugOption("Add Fluid", nil, nil);
+                local addFluidOption = subMenu:addDebugOption(getText("ContextMenu_AddFluid"), nil, nil);
                 local addFluidSubMenu = ISContextMenu:getNew(subMenu);
                 subMenu:addSubMenu(addFluidOption, addFluidSubMenu);
 

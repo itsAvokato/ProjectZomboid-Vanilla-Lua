@@ -1,16 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISButcherHookProcessorPanel = ISPanel:derive("ISButcherHookProcessorPanel");
-
---************************************************************************--
---** ISButcherHookProcessorPanel:initialise
---**
---************************************************************************--
 
 function ISButcherHookProcessorPanel:initialise()
     ISPanel.initialise(self);
@@ -233,11 +223,6 @@ function ISButcherHookProcessorPanel:update()
     ISPanel.update(self);
 end
 
-
---************************************************************************--
---** ISButcherHookProcessorPanel:new
---**
---************************************************************************--
 function ISButcherHookProcessorPanel:new(x, y, width, height, player, entity, component, craftProcessor)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self);

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRepairClothing = ISBaseTimedAction:derive("ISRepairClothing");
@@ -80,7 +76,9 @@ function ISRepairClothing:complete()
 	addXp(self.character, Perks.Tailoring, 2);
 -- 	addXp(self.character, Perks.Tailoring, ZombRand(1, 7));
 
-	syncVisuals(self.character);
+    if not self.character:isEquippedClothing(self.clothing) then
+        syncItemFields(self.character, self.clothing);
+    end
 
 	return true;
 end

@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 26/05/2021
--- Time: 11:59
--- To change this template use File | Settings | File Templates.
---
-
 SmashedCarDefinitions = SmashedCarDefinitions or {};
 
 -- define all variant of a base car with his smashed version, if we don't find a value when we try to make a car smashed, we'll just use the base version of the car

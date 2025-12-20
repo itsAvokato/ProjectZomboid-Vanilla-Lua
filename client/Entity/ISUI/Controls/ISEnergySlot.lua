@@ -1,7 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
+
 require "ISUI/ISPanel"
 
 ISEnergySlot = ISPanel:derive("ISEnergySlot");

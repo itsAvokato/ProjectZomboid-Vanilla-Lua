@@ -233,6 +233,11 @@ function OnBreak.HandAxe(item, player)
     OnBreak.HandleHandler(item, player, "Base.Handle", true)
 end
 
+function OnBreak.HandAxe_Old(item, player)
+    OnBreak.HeadHandler(item, player, "Base.OldAxeHead")
+    OnBreak.HandleHandler(item, player, "Base.Handle", true)
+end
+
 function OnBreak.HandScythe(item, player)
     OnBreak.HeadHandler(item, player, "Base.HandScytheBlade", true)
     OnBreak.HandleHandler(item, player, "Base.SmallHandle", true)
@@ -805,4 +810,16 @@ function OnBreak.LongMaceStone(item, player)
     OnBreak.GroundHandler(item, player, "Base.Splinters")
     OnBreak.HeadHandler(item, player, "Base.StoneMaceHead")
     OnBreak.HandleHandler(item, player, "Base.LongHandle_Broken", false)
+end
+
+function OnBreak.SpearBone(item, player)
+    OnBreak.GroundHandler(item, player, "Base.Splinters")
+    OnBreak.HeadHandler(item, player, "Base.SharpBoneFragment", true)
+    OnBreak.HandleHandler(item, player, "Base.LongStick_Broken", false)
+end
+
+function OnBreak.SpearBoneLong(item, player)
+    OnBreak.GroundHandler(item, player, "Base.Splinters")
+    OnBreak.HeadHandler(item, player, "Base.SharpBone_Long", true)
+    OnBreak.HandleHandler(item, player, "Base.LongStick_Broken", false)
 end

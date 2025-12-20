@@ -1,18 +1,9 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISPvpZonePanel = ISPanel:derive("ISPvpZonePanel");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPvpZonePanel:initialise
---**
---************************************************************************--
 
 function ISPvpZonePanel:initialise()
     ISPanel.initialise(self);
@@ -172,10 +163,6 @@ function ISPvpZonePanel:onRemoveZone(button)
     end
 end
 
---************************************************************************--
---** ISPvpZonePanel:new
---**
---************************************************************************--
 function ISPvpZonePanel:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

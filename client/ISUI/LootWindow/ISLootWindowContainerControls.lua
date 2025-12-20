@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 require "ISUI/LootWindow/Handlers/AddCorpseToCampfire"
@@ -77,8 +73,6 @@ ISLootWindowContainerControls.AddHandler(ISLootWindowObjectControlHandler_PutOut
 ISLootWindowContainerControls.AddHandler(ISLootWindowObjectControlHandler_RemoveCampfire)
 ISLootWindowContainerControls.AddHandler(ISLootWindowObjectControlHandler_AddCorpseToCampfire)
 
------
-
 -- Use separate handlers for the floor container, because there is no IsoObject parent.
 ISLootWindowContainerControls_FloorHandlerList = ISLootWindowContainerControls_FloorHandlerList or {}
 ISLootWindowContainerControls_FloorHandlerSet = ISLootWindowContainerControls_FloorHandlerSet or {}
@@ -102,8 +96,6 @@ end
 
 ISLootWindowContainerControls.AddFloorHandler(ISLootWindowFloorControlHandler_TakeAll)
 ISLootWindowContainerControls.AddFloorHandler(ISLootWindowFloorControlHandler_TakeSameType)
-
------
 
 function ISLootWindowContainerControls:createChildren()
 end

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISKillAnimal = ISBaseTimedAction:derive("ISKillAnimal");
@@ -55,11 +51,6 @@ end
 function ISKillAnimal:perform()
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
-	local isSinglePlayerMode = (not isClient() and not isServer());
-
-	if isSinglePlayerMode then
-		self:kill();
-	end
 end
 
 function ISKillAnimal:complete()
@@ -67,7 +58,7 @@ function ISKillAnimal:complete()
 		return false;
 	end
 
-	sendServerCommand('animal', 'kill', { id = self.animal:getOnlineID() });
+	self:kill();
 
 	return true
 end

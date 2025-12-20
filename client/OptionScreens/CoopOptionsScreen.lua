@@ -12,7 +12,6 @@ CoopOptionsScreenPanel = ISPanelJoypad:derive("CoopOptionsScreenPanel")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
@@ -23,12 +22,9 @@ local PROGRESS_BAR_SPEED = 0.0003;
 CoopConnection = {
     username = "admin",
     servername = "servertest",
-    memory = is64bit() and 4096 or 1024,
+    memory = 4096
 };
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function CoopOptionsScreenPanel:onGainJoypadFocus(joypadData)
 	ISPanelJoypad.onGainJoypadFocus(self, joypadData)
@@ -67,9 +63,6 @@ function CoopOptionsScreenPanel:onJoypadDown(button, joypadData)
     end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function CoopOptionsScreen:initialise()
     ISPanel.initialise(self);
@@ -103,7 +96,7 @@ function CoopOptionsScreen:new(x, y, width, height)
     o.anchorRight = false;
     o.anchorTop = true;
     o.anchorBottom = false;
-    o.startY = UI_BORDER_SPACING + 1 + FONT_HGT_TITLE + 30 + FONT_HGT_LARGE + 10;
+    o.startY = UI_BORDER_SPACING + 1 + FONT_HGT_LARGE + 30 + FONT_HGT_LARGE + 10;
     o.itemheightoverride = {}
     o.selected = 1;
     CoopOptionsScreen.instance = o;
@@ -180,7 +173,7 @@ function CoopOptionsScreen:create()
     local spinBox = ISComboBox:new(labelRight + UI_BORDER_SPACING, label:getY(), btnWidth, BUTTON_HGT, self, self.onMemorySelected)
     self.panel:addChild(spinBox)
     self.memoryToIndex = {}
-    local max = is64bit() and 62 or 3
+    local max = 62
     for i=1,max do
         local MB = 512 + i * 256
         spinBox:addOptionWithData(tostring(MB / 1024) .. " GB", MB)
@@ -228,7 +221,7 @@ function CoopOptionsScreen:create()
 
     self:setVisible(false);
 
-    self.statusTextY = UI_BORDER_SPACING + 1 + FONT_HGT_TITLE + 30
+    self.statusTextY = UI_BORDER_SPACING + 1 + FONT_HGT_LARGE + 30
 
     self.serverProgressBar = ISProgressBar:new (20, self.statusTextY+FONT_HGT_LARGE+10, self.width-40, 25, "", UIFont.Small);
     self.serverProgressBar.progressColor = namedColorToTable("ProgressYellow"); --{r=1.0, g=0.95, b=0.4, a=1};
@@ -273,7 +266,7 @@ function CoopOptionsScreen:prerender()
         self.progress = self.progress + PROGRESS_BAR_SPEED
         self.serverProgressBar:setProgress(CoopOptionsScreen.instance.progress)
     end
-    self:drawTextCentre(getText("UI_coopscreen_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+    self:drawTextCentre(getText("UI_coopscreen_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
     self:drawTextCentre(self.serverStatus, self.width / 2, self.statusTextY, 1, 1, 1, 1, UIFont.Large);
 
     if self.softresetProgress then

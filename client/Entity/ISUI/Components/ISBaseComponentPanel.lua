@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISBaseComponentPanel = ISPanel:derive("ISBaseComponentPanel");
@@ -11,11 +7,6 @@ function ISBaseComponentPanel.CanCreatePanelFor(_player, _entity, _component, _c
         return true;
     end
 end
-
---************************************************************************--
---** ISBaseComponentPanel:initialise
---**
---************************************************************************--
 
 function ISBaseComponentPanel:initialise()
 	ISPanel.initialise(self);
@@ -85,11 +76,6 @@ function ISBaseComponentPanel:getUiIcon()
     return nil;
 end
 
-
---************************************************************************--
---** ISBaseComponentPanel:new
---**
---************************************************************************--
 --[[
 function ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISPanel:new(x, y, width, height);

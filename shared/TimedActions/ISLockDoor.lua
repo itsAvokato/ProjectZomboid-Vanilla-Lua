@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLockDoor = ISBaseTimedAction:derive("ISLockDoor");
@@ -9,9 +5,9 @@ ISLockDoor = ISBaseTimedAction:derive("ISLockDoor");
 function ISLockDoor:isValid()
 	local keyId = instanceof(self.door, "IsoDoor") and self.door:checkKeyId() or self.door:getKeyId()
 	if self.character:getInventory():haveThisKeyId(keyId) then return true end
-	if self.door:getProperties():Is("forceLocked") then return false end
+	if self.door:getProperties():has("forceLocked") then return false end
 	if self.door:getModData().CustomLock then return false end
-	return not self.character:getCurrentSquare():Is(IsoFlagType.exterior)
+	return not self.character:getCurrentSquare():has(IsoFlagType.exterior)
 end
 
 function ISLockDoor:update()
@@ -32,8 +28,8 @@ end
 function ISLockDoor:getSoundPrefix()
 	local sprite = self.door:getSprite()
 	if not sprite then return end
-	if sprite:getProperties():Is("DoorSound") then
-		return sprite:getProperties():Val("DoorSound")
+	if sprite:getProperties():has("DoorSound") then
+		return sprite:getProperties():get("DoorSound")
 	end
 	return "WoodDoor"
 end

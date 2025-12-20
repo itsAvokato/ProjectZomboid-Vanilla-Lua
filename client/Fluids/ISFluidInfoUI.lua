@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    UI that can handle transferring fluids between items/objects that have FluidContainers.
---]]
-
 require "ISUI/ISPanelJoypad"
 
 ISFluidInfoUI = ISPanelJoypad:derive("ISFluidInfoUI");

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISUninstallVehiclePart = ISBaseTimedAction:derive("ISUninstallVehiclePart")
@@ -57,6 +53,9 @@ function ISUninstallVehiclePart:complete()
     		return false
     	end
     	if instanceof(item, "Radio") and item:getDeviceData() ~= nil then
+            if self.part:getDeviceData() == nil then
+                self.part:createSignalDevice()
+            end
     		local presets = self.part:getDeviceData():getDevicePresets()
     		item:getDeviceData():cloneDevicePresets(presets)
     	end

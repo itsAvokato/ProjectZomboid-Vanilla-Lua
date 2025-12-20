@@ -1,18 +1,8 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- forageSkills
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
-
 require "Foraging/forageDefinitions";
 
 forageSystem.forageSkillDefinitions = {
 	parkranger = {
-		name                    = "parkranger",
+        name                    = CharacterProfession.PARK_RANGER:getName(),
 		type                    = "occupation",
 		visionBonus             = 2,
 		weatherEffect           = 33,
@@ -30,7 +20,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	veteran = {
-		name                    = "veteran",
+        name                    = CharacterProfession.VETERAN:getName(),
 		type                    = "occupation",
 		visionBonus             = 1.75,
 		weatherEffect           = 33,
@@ -45,7 +35,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	farmer = {
-		name                    = "farmer",
+        name                    = CharacterProfession.FARMER:getName(),
 		type                    = "occupation",
 		visionBonus             = 1.5,
 		weatherEffect           = 33,
@@ -62,7 +52,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	lumberjack = {
-		name                    = "lumberjack",
+        name                    = CharacterProfession.LUMBERJACK:getName(),
 		type                    = "occupation",
 		visionBonus             = 1.25,
 		weatherEffect           = 33,
@@ -75,7 +65,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	chef = {
-		name                    = "chef",
+        name                    = CharacterProfession.CHEF:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -91,7 +81,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	fisherman = {
-		name                    = "fisherman",
+        name                    = CharacterProfession.FISHERMAN:getName(),
 		type                    = "occupation",
 		visionBonus             = 1.00,
 		weatherEffect           = 40,
@@ -102,7 +92,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	unemployed = {
-		name                    = "unemployed",
+        name                    = CharacterProfession.UNEMPLOYED:getName(),
 		type                    = "occupation",
 		visionBonus             = 0.50,
 		weatherEffect           = 10,
@@ -117,7 +107,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	burgerflipper = {
-		name                    = "burgerflipper",
+        name                    = CharacterProfession.BURGER_FLIPPER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -131,7 +121,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	doctor = {
-		name                    = "doctor",
+        name                    = CharacterProfession.DOCTOR:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -153,7 +143,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	fitnessInstructor = {
-		name                    = "fitnessInstructor",
+        name                    = CharacterProfession.FITNESS_INSTRUCTOR:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -167,7 +157,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	repairman = {
-		name                    = "repairman",
+        name                    = CharacterProfession.REPAIRMAN:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -189,7 +179,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	electrician = {
-		name                    = "electrician",
+        name                    = CharacterProfession.ELECTRICIAN:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -200,7 +190,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	engineer = {
-		name                    = "engineer",
+        name                    = CharacterProfession.ENGINEER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -211,7 +201,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	metalworker = {
-		name                    = "metalworker",
+        name                    = CharacterProfession.METALWORKER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -222,7 +212,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	constructionworker = {
-		name                    = "constructionworker",
+        name                    = CharacterProfession.CONSTRUCTION_WORKER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -233,7 +223,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	carpenter = {
-		name                    = "carpenter",
+        name                    = CharacterProfession.CARPENTER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 0,
@@ -244,7 +234,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	burglar = {
-		name                    = "burglar",
+		name                    = CharacterProfession.BURGLAR:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 5,
@@ -257,7 +247,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	securityguard = {
-		name                    = "securityguard",
+        name                    = CharacterProfession.SECURITY_GUARD:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 5,
@@ -270,7 +260,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	policeofficer = {
-		name                    = "policeofficer",
+        name                    = CharacterProfession.POLICE_OFFICER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 5,
@@ -283,7 +273,7 @@ forageSystem.forageSkillDefinitions = {
 		},
 	},
 	fireofficer = {
-		name                    = "fireofficer",
+        name                    = CharacterProfession.FIRE_OFFICER:getName(),
 		type                    = "occupation",
 		visionBonus             = 0,
 		weatherEffect           = 5,
@@ -311,32 +301,6 @@ forageSystem.forageSkillDefinitions = {
 		darknessEffect          = 0,
 		specialisations         = {
 			["Stones"]            = 30,
-		},
-	},
-	Unlucky = {
-		name                    = "Unlucky",
-		type                    = "trait",
-		visionBonus             = -1.0,
-		weatherEffect           = 0,
-		darknessEffect          = 0,
-		specialisations         = {
-			["ForestRarities"]      = -5,
-			["Medical"]             = -5,
-			["Ammunition"]          = -5,
-			["JunkWeapons"]         = -5,
-		},
-	},
-	Lucky = {
-		name                    = "Lucky",
-		type                    = "trait",
-		visionBonus             = 1.0,
-		weatherEffect           = 0,
-		darknessEffect          = 0,
-		specialisations         = {
-			["ForestRarities"]      = 5,
-			["Medical"]             = 5,
-			["Ammunition"]          = 5,
-			["JunkWeapons"]         = 5,
 		},
 	},
 	Formerscout = {
@@ -571,9 +535,6 @@ forageSystem.forageSkillDefinitions = {
 		testFuncs               = { forageSystem.doGlassesCheck },
 	},
 };
-
---[[--======== forageZones ========--
-]]--
 
 forageZones = {
 	DeepForest = {

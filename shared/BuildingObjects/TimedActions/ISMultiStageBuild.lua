@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 12/05/16
--- Time: 11:01
--- To change this template use File | Settings | File Templates.
---
-
 require "TimedActions/ISBaseTimedAction"
 
 ISMultiStageBuild = ISBaseTimedAction:derive("ISMultiStageBuild");

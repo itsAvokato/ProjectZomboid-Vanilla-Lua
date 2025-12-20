@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObject"
 
 CRainBarrelGlobalObject = CGlobalObject:derive("CRainBarrelGlobalObject")

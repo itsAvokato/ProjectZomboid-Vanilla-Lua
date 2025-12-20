@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ItemBindingHandler = {};
 
 local function predicateLightSource(item)
@@ -37,6 +33,7 @@ function ItemBindingHandler.toggleLight(key)
 	if secondary ~= nil and secondary:canEmitLight() and secondary:getType() ~= "CandleLit" and secondary:getType() ~= "Lantern_HurricaneLit" then
 		if secondary:canBeActivated() then
 			secondary:setActivated(not secondary:isActivated())
+			syncItemActivated(playerObj, secondary)
 			secondary:playActivateDeactivateSound()
 		end
 		return
@@ -45,6 +42,7 @@ function ItemBindingHandler.toggleLight(key)
 	if primary ~= nil and primary:canEmitLight() and primary:getType() ~= "CandleLit" and primary:getType() ~= "Lantern_HurricaneLit" then
 		if primary:canBeActivated() then
 			primary:setActivated(not primary:isActivated())
+			syncItemActivated(playerObj, primary)
 			primary:playActivateDeactivateSound()
 		end
 		return
@@ -55,6 +53,8 @@ function ItemBindingHandler.toggleLight(key)
 		if item:canEmitLight() and item:getType() ~= "CandleLit" and item:getType() ~= "Lantern_HurricaneLit" and not instanceof(item, "HandWeapon") then
 			if item:canBeActivated() then
 				item:setActivated(not item:isActivated())
+				syncItemActivated(playerObj, item)
+				item:playActivateDeactivateSound()
 			end
 			return
 		end
@@ -63,8 +63,7 @@ function ItemBindingHandler.toggleLight(key)
 	local lightSource = playerObj:getInventory():getBestEvalRecurse(predicateLightSource, compareLightStrength);
 	if lightSource ~= nil then
 		ISInventoryPaneContextMenu.transferIfNeeded(playerObj, lightSource);
-		ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, lightSource, 50, instanceof(lightSource, "HandWeapon"), false));	
-		if not lightSource:isActivated() then lightSource:setActivated(true) end;
+		ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, lightSource, 50, instanceof(lightSource, "HandWeapon"), false));
 	end
 end
 

@@ -1,12 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISRadialMenu"
 
 ISFirearmRadialMenu = ISBaseObject:derive("ISFirearmRadialMenu")
-
------
 
 local BaseCommand = ISBaseObject:derive("BaseCommand")
 
@@ -24,8 +18,6 @@ end
 function BaseCommand:fillMenu(menu, weapon)
 	error "forgot to derive fillMenu()"
 end
-
------
 
 local CInsertMagazine = BaseCommand:derive("CInsertMagazine")
 
@@ -56,7 +48,7 @@ function CInsertMagazine:invoke()
 	ISTimedActionQueue.add(ISInsertMagazine:new(self.character, weapon, magazine))
 end
 
------
+
 
 local CEjectMagazine = BaseCommand:derive("CEjectMagazine")
 
@@ -82,7 +74,7 @@ function CEjectMagazine:invoke()
 	ISTimedActionQueue.add(ISEjectMagazine:new(self.character, weapon))
 end
 
------
+
 
 local CLoadBulletsInMagazine = BaseCommand:derive("CLoadBulletsInMagazine")
 
@@ -107,7 +99,8 @@ end
 
 function CLoadBulletsInMagazine:hasBulletsForMagazine(magazine)
 	local inventory = self.character:getInventory()
-	return inventory:getCountTypeRecurse(magazine:getAmmoType()) > 0
+	local itemKey = magazine:getAmmoType():getItemKey();
+	return inventory:getCountTypeRecurse(itemKey) > 0
 end
 
 function CLoadBulletsInMagazine:fillMenu(menu, weapon)
@@ -129,12 +122,11 @@ function CLoadBulletsInMagazine:invoke()
 	if not magazine then return end
 	if not self:hasBulletsForMagazine(magazine) then return end
 	ISInventoryPaneContextMenu.transferIfNeeded(self.character, magazine)
-	local ammoCount = ISInventoryPaneContextMenu.transferBullets(self.character, magazine:getAmmoType(), magazine:getCurrentAmmoCount(), magazine:getMaxAmmo())
+	local itemKey = magazine:getAmmoType():getItemKey();
+	local ammoCount = ISInventoryPaneContextMenu.transferBullets(self.character, itemKey, magazine:getCurrentAmmoCount(), magazine:getMaxAmmo())
 	if ammoCount == 0 then return end
 	ISTimedActionQueue.add(ISLoadBulletsInMagazine:new(self.character, magazine, ammoCount))
 end
-
------
 
 local CLoadRounds = BaseCommand:derive("CLoadRounds")
 
@@ -145,7 +137,8 @@ end
 
 function CLoadRounds:hasBullets(weapon)
 	local inventory = self.character:getInventory()
-	return inventory:getCountTypeRecurse(weapon:getAmmoType()) > 0
+	local itemKey = weapon:getAmmoType():getItemKey();
+	return inventory:getCountTypeRecurse(itemKey) > 0
 end
 
 function CLoadRounds:fillMenu(menu, weapon)
@@ -166,11 +159,10 @@ function CLoadRounds:invoke()
 	if weapon:getMagazineType() then return end
 	if weapon:getCurrentAmmoCount() >= weapon:getMaxAmmo() then return end
 	if not self:hasBullets(weapon) then return end
-	ISInventoryPaneContextMenu.transferBullets(self.character, weapon:getAmmoType(), weapon:getCurrentAmmoCount(), weapon:getMaxAmmo())
+	local itemKey = weapon:getAmmoType():getItemKey();
+	ISInventoryPaneContextMenu.transferBullets(self.character, itemKey, weapon:getCurrentAmmoCount(), weapon:getMaxAmmo())
 	ISTimedActionQueue.add(ISReloadWeaponAction:new(self.character, weapon))
 end
-
------
 
 local CUnloadRounds = BaseCommand:derive("CUnloadRounds")
 
@@ -198,7 +190,7 @@ function CUnloadRounds:invoke()
 	ISTimedActionQueue.add(ISUnloadBulletsFromFirearm:new(self.character, weapon, false))
 end
 
------
+
 
 local CRack = BaseCommand:derive("CRack")
 
@@ -234,7 +226,7 @@ function CRack:invoke()
 	ISTimedActionQueue.add(ISRackFirearm:new(self.character, weapon))
 end
 
------
+
 
 function ISFirearmRadialMenu:center()
 	local menu = getPlayerRadialMenu(self.playerNum)
@@ -306,7 +298,7 @@ function ISFirearmRadialMenu:new(character)
 	return o
 end
 
------
+
 
 function ISFirearmRadialMenu.checkWeapon(playerObj)
 	local weapon = playerObj:getPrimaryHandItem()
@@ -316,7 +308,7 @@ function ISFirearmRadialMenu.checkWeapon(playerObj)
 	return true
 end
 
------
+
 
 function ISFirearmRadialMenu.getBestLBButtonAction(buttonPrompt)
 --	buttonPrompt:setLBPrompt("RACK", nil, buttonPrompt.player)
@@ -388,16 +380,18 @@ function ISFirearmRadialMenu.onJoypadButtonReleased(buttonPrompt, button, joypad
 	end
 end
 
------
-
 function ISFirearmRadialMenu.checkKey(key)
 	if not getCore():isKey("ReloadWeapon", key) then
+		return false
+	end
+	local playerObj = getSpecificPlayer(0)
+	if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():isSharpenable() then
+        ISFirearmRadialMenu.sharpenWeapon(playerObj:getPrimaryHandItem(), playerObj)
 		return false
 	end
 	if UIManager.getSpeedControls() and (UIManager.getSpeedControls():getCurrentGameSpeed() == 0) then
 		return false
 	end
-	local playerObj = getSpecificPlayer(0)
 	if not playerObj or playerObj:isDead() then
 		return false
 	end
@@ -480,6 +474,36 @@ function ISFirearmRadialMenu.onKeyReleased(key)
 	end
 end
 
+function ISFirearmRadialMenu.sharpenWeapon(item, playerObj)
+    local sharpenRecipe = getScriptManager():getCraftRecipe("SharpenBlade")
+    if sharpenRecipe then
+        local containers = ISInventoryPaneContextMenu.getContainers(playerObj)
+        local logic = HandcraftLogic.new(playerObj, nil, nil);
+
+        logic:setContainers(containers);
+        logic:setRecipeFromContextClick(sharpenRecipe, item);
+        if not logic:canPerformCurrentRecipe() then
+            sharpenRecipe = nil
+        end
+    end
+    if not sharpenRecipe then
+        sharpenRecipe = getScriptManager():getCraftRecipe("SharpenBladePoorlyWithFile")
+        if sharpenRecipe then
+            local containers = ISInventoryPaneContextMenu.getContainers(playerObj)
+            local logic = HandcraftLogic.new(playerObj, nil, nil);
+
+            logic:setContainers(containers);
+            logic:setRecipeFromContextClick(sharpenRecipe,item);
+            if not logic:canPerformCurrentRecipe() then
+                sharpenRecipe = nil
+            end
+        end
+    end
+    if sharpenRecipe then
+        ISInventoryPaneContextMenu.OnNewCraft(item, sharpenRecipe, playerObj:getPlayerNum(), false)
+    end
+end
+
 local function OnGameStart()
 	Events.OnKeyStartPressed.Add(ISFirearmRadialMenu.onKeyPressed)
 	Events.OnKeyKeepPressed.Add(ISFirearmRadialMenu.onKeyRepeat)
@@ -487,4 +511,3 @@ local function OnGameStart()
 end
 
 Events.OnGameStart.Add(OnGameStart)
-

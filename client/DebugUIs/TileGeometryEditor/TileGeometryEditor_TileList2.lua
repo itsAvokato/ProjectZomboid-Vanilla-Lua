@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 TileGeometryEditor_TileList2 = ISPanel:derive("TileGeometryEditor_TileList2")
@@ -296,7 +292,7 @@ function TileList2:render()
 
 	if self.mouseDown and self.mouseDownParams then
 		local timestampMS = getTimestampMs()
-		if timestampMS - self.mouseDownParams.time >= 1000 then
+		if timestampMS - self.mouseDownParams.time >= 1000 then --assign depth texture delay
 			local col = self.mouseDownParams.col
 			local row = self.mouseDownParams.row
 			self.mouseDownParams = nil

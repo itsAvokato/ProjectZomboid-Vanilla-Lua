@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISStitch = ISBaseTimedAction:derive("ISStitch");
@@ -95,8 +91,8 @@ function ISStitch:complete()
         basePain = 5;
     end
 
-    if self.character:HasTrait("Hemophobic") then
-        self.character:getStats():setPanic(self.character:getStats():getPanic() + 50);
+    if self.character:hasTrait(CharacterTrait.HEMOPHOBIC) then
+        self.character:getStats():add(CharacterStat.PANIC, 50);
         --Stat_Panic
         syncPlayerStats(self.character, 0x00000100);
     end

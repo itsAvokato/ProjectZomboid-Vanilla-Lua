@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISWorldMenuElements = ISWorldMenuElements or {};
 
 function ISWorldMenuElements.ContextDisassemble()
@@ -44,6 +39,7 @@ function ISWorldMenuElements.ContextDisassemble()
         end
 
         local disassembleMenu = _data.context:addOption(getText("ContextMenu_Disassemble"), _data.player, nil);
+        disassembleMenu.iconTexture = getTexture("Item_Hammer");
         local subMenu = ISContextMenu:getNew(_data.context);
         _data.context:addSubMenu(disassembleMenu, subMenu);
 
@@ -101,7 +97,7 @@ function ISWorldMenuElements.ContextDisassemble()
                     if instanceof(_v.object,"IsoLightSwitch") and _v.object:hasLightBulb() then
                         ISTimedActionQueue.add(ISLightActions:new("RemoveLightBulb",_data.player, _v.object));
                     end
-                    if _v.object:getProperties():Is(IsoFlagType.solidfloor) then
+                    if _v.object:getProperties():has(IsoFlagType.solidfloor) then
                         local adjacent = AdjacentFreeTileFinder.Find(_v.square, _data.player)
                         if adjacent ~= nil then
                             ISTimedActionQueue.add(ISWalkToTimedAction:new(_data.player, adjacent))

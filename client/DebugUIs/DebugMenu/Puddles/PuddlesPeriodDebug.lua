@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
-
 require "ISUI/ISCollapsableWindow"
 
 PuddlesPeriodDebug = ISCollapsableWindow:derive("PuddlesPeriodDebug");

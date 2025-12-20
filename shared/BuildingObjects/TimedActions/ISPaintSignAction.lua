@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPaintSignAction = ISBaseTimedAction:derive("ISPaintSignAction");
@@ -33,11 +29,11 @@ function ISPaintSignAction:perform()
 end
 
 function ISPaintSignAction:complete()
-    if self.wall:getProperties():Is("WallW") then
+    if self.wall:getProperties():has("WallW") then
         self.sign = self.sign + 8;
     end
     self.wall:setOverlaySprite("constructedobjects_signs_01_" .. self.sign, self.r,self.g,self.b,1);
-    if not self.character:isBuildCheat() then
+    if not ISBuildMenu.cheat then
         self.paintPot:Use();
     end
 
@@ -45,7 +41,7 @@ function ISPaintSignAction:complete()
 end
 
 function ISPaintSignAction:getDuration()
-    if self.character:isTimedActionInstant() or self.character:isBuildCheat() then
+    if self.character:isTimedActionInstant() or ISBuildMenu.cheat then
         return 1;
     end
     return 100

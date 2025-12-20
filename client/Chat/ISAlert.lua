@@ -32,7 +32,7 @@ function ISAlert:prerender()
     if self.servermsg then
                 local x = getCore():getScreenWidth() / 2 - self:getX()
                 local y = getCore():getScreenHeight() / 4 - self:getY();
-                self:drawTextCentre(self.servermsg, x, y, 1, 0.1, 0.1, 1, UIFont.Title);
+                self:drawTextCentre(self.servermsg, x, y, 1, 0.1, 0.1, 1, UIFont.Large);
                 self.servermsgTimer = self.servermsgTimer - UIManager.getMillisSinceLastRender();
                 if self.servermsgTimer < 0 then
                     self.servermsg = nil;

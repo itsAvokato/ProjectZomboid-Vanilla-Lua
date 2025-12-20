@@ -1,11 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    A generic title header widget
---]]
 require "ISUI/ISPanel"
 
 ISWidgetTitleHeader = ISPanel:derive("ISWidgetTitleHeader");
@@ -560,10 +552,6 @@ function ISWidgetTitleHeader:onFavouritesClick()
     end
 end
 
---************************************************************************--
---** ISWidgetTitleHeader:new
---**
---************************************************************************--
 function ISWidgetTitleHeader:new(x, y, width, height, recipe, player, logic, isFavourite)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

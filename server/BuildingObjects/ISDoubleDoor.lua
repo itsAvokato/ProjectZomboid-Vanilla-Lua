@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISDoubleDoor = ISBuildingObject:derive("ISDoubleDoor");
 
---************************************************************************--
---** ISDoubleDoor:new
---**
---************************************************************************--
 function ISDoubleDoor:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISDoubleDoor\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -332,4 +324,3 @@ function ISDoubleDoor:partExists(square, index)
 	end
 	return false
 end
-

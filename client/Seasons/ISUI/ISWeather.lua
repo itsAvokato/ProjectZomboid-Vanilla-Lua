@@ -1,16 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISWeather = ISPanel:derive("ISWeather");
-
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISWeather:initialise()
 	ISPanel.initialise(self);
@@ -33,11 +23,6 @@ function ISWeather:removeImages()
 	self.images = {};
 end
 
-
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISWeather:prerender()
 	local width = 43;
 	local x = 43;
@@ -57,10 +42,7 @@ function ISWeather:prerender()
     -- turned it off until can reposition it.
     self:setVisible(false);
 end
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
+
 function ISWeather:new (x, y, width, height)
 	local o = {}
 	--o.data = {}
@@ -81,4 +63,3 @@ function ISWeather:new (x, y, width, height)
 	o.anchorBottom = false;
    return o
 end
-

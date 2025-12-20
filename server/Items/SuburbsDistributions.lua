@@ -1,15 +1,9 @@
---***********************************************************
---**				LEMMY/ROBERT JOHNSON				   **
---***********************************************************
--- made some changes to support merging of distribution tables for itemzed/mod, the SuburbsDistributions spawn table contents are moved to Distributions.lua. Turbo.
-
--- used to not spawn items inside item container (bags) in this room
 NoContainerFillRooms = { armysurplus = {}, armysurplustorage = {}, bookstore = {}, camping = {}, campingstorage = {}, carsupply = {}, clothingstore = {}, clothingstorage = {}, hunting = {}, jayschicken_dining = {}, jayschicken_kitchen = {}, pawnshop = {}, pawnshopoffice = {}, pawnshopstorage = {}, spiffo_dining = {}, spiffoskitchen = {} }
 
 WeaponUpgrades = {
 	VarmintRifle = {"x2Scope", "x4Scope", "x8Scope", "RecoilPad"},
 	HuntingRifle = {"x2Scope", "x4Scope", "x8Scope", "RecoilPad"},
-	Shotgun = {"Sling", "ChokeTubeFull", "ChokeTubeImproved"},
+	Shotgun = {"AmmoStraps", "ChokeTubeFull", "ChokeTubeImproved"},
 	Pistol = {},
 	Pistol2 = {},
 	Pistol3 = {},
@@ -191,14 +185,9 @@ local function mergeDistributions()
 	SuburbsDistributions.toolstorage = SuburbsDistributions.toolstorestorage
 	SuburbsDistributions.Satchel = SuburbsDistributions.Bag_Satchel
 	SuburbsDistributions.policestorage = SuburbsDistributions.policegunstorage -- this is needed because the two roomdefs are consitently used interchangably on the map
-	
-	--print("###################################")
 end
 
 local function postDistributionMerge()
-	--RemoveItemFromDistribution(SuburbsDistributions, "Razor")
-
-	--DeepPrintDistributionTable(SuburbsDistributions,"")
 end
 
 function DeepPrintDistributionTable (_dist, tab)

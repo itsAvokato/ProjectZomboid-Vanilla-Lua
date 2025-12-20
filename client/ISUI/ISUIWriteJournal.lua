@@ -1,15 +1,6 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISUIWriteJournal = ISCollapsableWindowJoypad:derive("ISUIWriteJournal");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---************************************************************************--
---** ISUIWriteJournal:initialise
---**
---************************************************************************--
 
 function ISUIWriteJournal:initialise()
     ISCollapsableWindowJoypad.initialise(self);
@@ -211,7 +202,7 @@ function ISUIWriteJournal:onClick(button)
         self.lockButton:setImage(getTexture("media/ui/lock.png"));
         self.lockButton.internal = "UNLOCKBOOK";
         self.notebook:setLockedBy(self.character:getUsername());
-		if self.notebook:hasTag("LockOnWrite") then
+		if self.notebook:hasTag(ItemTag.LOCK_ON_WRITE) then
 			self.notebook:setLockedBy(tostring(ZombRand(1000000))) 
 		end
         self.title:setEditable(false);
@@ -227,7 +218,7 @@ function ISUIWriteJournal:onClick(button)
         self.lockButton:setTooltip("Prevent the journal from being edited");
         self:setJoypadButtons(self.joyfocus)
     else
-		if button.internal == "OK" and self.notebook:hasTag("LockOnWrite") then 
+		if button.internal == "OK" and self.notebook:hasTag(ItemTag.LOCK_ON_WRITE) then
 			self.notebook:setLockedBy(tostring(ZombRand(1000000))) 	
 		end
         self.newPage[self.currentPage] = self.entry:getText();
@@ -252,10 +243,6 @@ function ISUIWriteJournal:prerender()
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
 end
 
---************************************************************************--
---** ISUIWriteJournal:render
---**
---************************************************************************--
 function ISUIWriteJournal:render()
     if self.joyfocus then
         if self.joypadIndexY <= #self.joypadButtonsY then
@@ -309,10 +296,6 @@ function ISUIWriteJournal:onJoypadDirDown(joypadData)
     ISCollapsableWindowJoypad.onJoypadDirDown(self, joypadData)
 end
 
---************************************************************************--
---** ISUIWriteJournal:new
---**
---************************************************************************--
 function ISUIWriteJournal:new(x, y, width, height, target, onclick, character, notebook, defaultEntryText, title, lineNumber, editable, numberOfPages)
     local o = {}
     o = ISCollapsableWindowJoypad:new(x, y, width, height);
@@ -359,4 +342,3 @@ function ISUIWriteJournal:new(x, y, width, height, target, onclick, character, n
     end
     return o;
 end
-

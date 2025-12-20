@@ -1,13 +1,5 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
-
 local function testModData()
-    print("OnInitGlobalModData")
     if not ModData.exists("TestTable") then
-        print("Creating testTable")
         local t = ModData.create("TestTable");
 
         t.SomeKey = "Some value";

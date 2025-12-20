@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISInventoryMenuElements = ISInventoryMenuElements or {};
 
 function ISInventoryMenuElements.ContextMedia()

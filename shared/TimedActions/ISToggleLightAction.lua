@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISToggleLightAction = ISBaseTimedAction:derive("ISToggleLightAction");
@@ -23,7 +19,7 @@ end
 
 function ISToggleLightAction:perform()
 	-- needed to remove from queue / start next.
-	if not self.object:getProperties() or not self.object:getProperties():Is("streetlight") then
+	if not self.object:getProperties() or not self.object:getProperties():has("streetlight") then
 	    self.object:getSquare():playSound("LightSwitch");
 	end
 	ISBaseTimedAction.perform(self)

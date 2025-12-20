@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 local MainPanel = ISPanelJoypad:derive("GameSoundsMainPanel")
@@ -159,8 +155,6 @@ function MainPanel:new(x, y, width, height)
 	o.highlightedLabel = nil
 	return o
 end
-
--- -- -- -- --
 
 ISGameSounds = ISPanelJoypad:derive("ISGameSounds")
 

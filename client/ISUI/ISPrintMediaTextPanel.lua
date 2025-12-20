@@ -5,11 +5,6 @@ local IMAGE_PAD = 5
 
 ISPrintMediaTextPanel.drawMargins = false
 
---************************************************************************--
---** ISPrintMediaTextPanel:initialise
---**
---************************************************************************--
-
 function ISPrintMediaTextPanel:initialise()
 	ISPanel.initialise(self);
 end
@@ -345,12 +340,7 @@ function ISPrintMediaTextPanel:onMouseWheel(del)
 	self:setYScroll(self:getYScroll() - (del*18));
     return true;
 end
---************************************************************************--
---** ISPrintMediaTextPanel:paginate
---**
---** Splits multiline text up into seperate lines, and positions images to be
---** rendered
---************************************************************************--
+
 function ISPrintMediaTextPanel:paginate()
 	local lines = 1;
 	self.textDirty = false;
@@ -513,10 +503,6 @@ function ISPrintMediaTextPanel:setContentTransparency(alpha)
     self.contentTransparency = alpha;
 end
 
---************************************************************************--
---** ISPrintMediaTextPanel:render
---**
---************************************************************************--
 function ISPrintMediaTextPanel:render()
 
     self.r = 1;
@@ -642,8 +628,6 @@ function ISPrintMediaTextPanel:render()
 end
 
 
------
-
 require 'ISUI/Maps/ISMapDefinitions'
 require 'ISUI/ISUIElement'
 
@@ -674,8 +658,6 @@ function ISPrintMediaMap:new(x, y, width, height)
 	local o = ISUIElement.new(self, x, y, width, height)
 	return o
 end
-
------
 
 function ISPrintMediaTextPanel:renderMap(index, map)
 	self.mapUI = self.mapUI or {}
@@ -715,10 +697,6 @@ function ISPrintMediaTextPanel:setMargins(left, top, right, bottom)
 	self.marginBottom = bottom
 end
 
---************************************************************************--
---** ISPrintMediaTextPanel:new
---**
---************************************************************************--
 function ISPrintMediaTextPanel:new (x, y, width, height)
 	local o = {}
 	--o.data = {}

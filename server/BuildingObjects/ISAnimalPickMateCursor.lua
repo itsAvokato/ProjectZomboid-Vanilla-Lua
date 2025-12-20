@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISPickCharacterCursor"
 
 ISAnimalPickMateCursor = ISPickCharacterCursor:derive("ISAnimalPickMateCursor")

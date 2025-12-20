@@ -1,6 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
 local max_total = 3
 local max_base = max_total
 -- local max_spice = max_total
@@ -33,6 +30,13 @@ function ISAddItemInRecipe:start()
     end
     self.baseItem:setJobType(getText("IGUI_JobType_AddingIngredient", self.usedItem:getDisplayName(), self.baseItem:getDisplayName()));
     local soundName = self.recipe:getAddIngredientSound() or "AddItemInRecipe"
+    if soundName == "AddItemInBeverage" then
+        if self.usedItem and self.usedItem:hasTag(ItemTag.WET_BEVERAGE_INGREDIENT) then
+            soundName = "AddWetItemInBeverage"
+        else
+            soundName = "AddDryItemInBeverage"
+        end
+    end
     self.sound = self.character:getEmitter():playSoundImpl(soundName, nil)
 end
 
@@ -161,7 +165,7 @@ ISAddItemInRecipe.checkName = function(baseItem, recipe)
 			end
 			local food = baseItem:getSpices():get(i);
 			local name = getItemEvolvedRecipeName(food) or getItemDisplayName(food);
-			if isItemFood(food) and not hasItemTag(food, "MinorIngredient") then
+			if isItemFood(food) and not hasItemTag(food, ItemTag.MINOR_INGREDIENT) then
 				if getItemFoodType(food) == "NoExplicit" or not getItemFoodType(food) then -- no explicit appear only if there's no other ingredient inside the recipe
 					if count == 0 then
 						foodTypeList["NoExplicit"] = getItemDisplayName(food);

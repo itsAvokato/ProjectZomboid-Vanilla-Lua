@@ -1,12 +1,6 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- To change this template use File | Settings | File Templates.
---
-
 ISFitnessUI = ISPanelJoypad:derive("ISFitnessUI");
 ISFitnessUI.instance = {};
-ISFitnessUI.enduranceLevelTreshold = 2;
+ISFitnessUI.enduranceLevelThreshold = 2;
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
@@ -16,11 +10,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 local function noise(str)
 	if getDebug() then print(str) end
 end
-
---************************************************************************--
---** ISFitnessUI:initialise
---**
---************************************************************************--
 
 function ISFitnessUI:setVisible(bVisible)
 	if self.javaObject == nil then
@@ -255,11 +244,11 @@ function ISFitnessUI:updateButtons(currentAction)
 	if currentAction and (currentAction.Type == "ISFitnessAction") and currentAction.action then
 		self.cancel.enable = true;
 	end
-	if self.player:getMoodles():getMoodleLevel(MoodleType.Endurance) > ISFitnessUI.enduranceLevelTreshold then
+	if self.player:getMoodles():getMoodleLevel(MoodleType.ENDURANCE) > ISFitnessUI.enduranceLevelThreshold then
 		self.ok.enable = false;
 		self.ok.tooltip = getText("Tooltip_TooExhaustedFitness");
 	end
-	if self.player:getMoodles():getMoodleLevel(MoodleType.HeavyLoad) > 2 then
+	if self.player:getMoodles():getMoodleLevel(MoodleType.HEAVY_LOAD) > 2 then
 		self.ok.enable = false;
 		self.ok.tooltip = getText("Tooltip_TooHeavyFitness");
 	end
@@ -274,7 +263,7 @@ function ISFitnessUI:updateButtons(currentAction)
 		self:removeFromUIManager();
 		ISFitnessUI.instance[self.player:getPlayerNum()+1] = nil;
 	end
-	if self.player:getMoodles():getMoodleLevel(MoodleType.Pain) > 3 then
+	if self.player:getMoodles():getMoodleLevel(MoodleType.PAIN) > 3 then
 		self.ok.enable = false;
 		self.ok.tooltip = getText("Tooltip_TooMuchPainFitness");
 	end
@@ -367,11 +356,6 @@ function ISFitnessUI:onJoypadDown(button)
 	end
 end
 
-
---************************************************************************--
---** ISFitnessUI:new
---**
---************************************************************************--
 function ISFitnessUI:new(x, y, width, height, player, clickedSquare)
 	local fontScale = FONT_HGT_SMALL / 15
 	width = math.min(width * fontScale, getCore():getScreenWidth() - 150)

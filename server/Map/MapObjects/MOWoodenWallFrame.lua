@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 local function noise(message) print('MOWoodenWalFrame.lua: '..message) end

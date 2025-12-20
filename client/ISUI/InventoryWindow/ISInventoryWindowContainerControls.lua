@@ -1,11 +1,8 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 require "ISUI/InventoryWindow/Handlers/TransferAll"
 require "ISUI/InventoryWindow/Handlers/TransferSameType"
+require "ISUI/InventoryWindow/Handlers/TransferSameTypeMultiContainer"
 
 ISInventoryWindowContainerControls = ISPanelJoypad:derive("ISInventoryWindowContainerControls")
 
@@ -32,8 +29,7 @@ end
 -- These could go into the individual handler files, but the order would depend on file name.
 ISInventoryWindowContainerControls.AddHandler(ISInventoryWindowControlHandler_TransferAll)
 ISInventoryWindowContainerControls.AddHandler(ISInventoryWindowControlHandler_TransferSameType)
-
------
+ISInventoryWindowContainerControls.AddHandler(ISInventoryWindowControlHandler_TransferSameTypeMultiContainer)
 
 function ISInventoryWindowContainerControls:createChildren()
 end

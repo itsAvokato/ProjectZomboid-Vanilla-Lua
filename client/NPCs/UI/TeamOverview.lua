@@ -18,10 +18,6 @@ function TeamOverview:initialise()
 	self.group:addMember(self.c);
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function TeamOverview:createChildren()
 
 	self.memberList = ISScrollingListBox:new(0, 16, self.width, self.height-16);

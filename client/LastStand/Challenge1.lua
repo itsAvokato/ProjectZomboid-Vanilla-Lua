@@ -1,5 +1,3 @@
-
-
 Challenge1 = {}
 Challenge1.zombiesSpawned = 0;
 Challenge1.deadZombie = 0;
@@ -51,7 +49,6 @@ Challenge1.AddPlayer = function(playerNum, playerObj)
 	luautils.updatePerksXp(Perks.Strength, pl)
 	luautils.updatePerksXp(Perks.Aiming, pl)
 
-    print("adding challenge inventory");
   --  local torch = pl:getInventory():AddItem("Base.Torch");
 
       --local pistol = pl:getInventory():AddItem("Base.Schoolbag");
@@ -223,9 +220,9 @@ Challenge1.Tick = function()
 		local playerObj = getSpecificPlayer(i-1)
 		if playerObj and not playerObj:isDead() then
 			setAggroTarget(i-1, playerObj:getX(), playerObj:getY())
-			playerObj:getStats():setHunger(0.0)
-			playerObj:getStats():setThirst(0.0)
-			playerObj:getStats():setFatigue(0.0)
+			playerObj:getStats():reset(CharacterStat.HUNGER)
+			playerObj:getStats():reset(CharacterStat.THIRST)
+			playerObj:getStats():reset(CharacterStat.FATIGUE)
 		end
 	end
 end

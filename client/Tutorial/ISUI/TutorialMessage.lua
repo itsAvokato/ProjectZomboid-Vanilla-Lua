@@ -4,20 +4,10 @@ require "ISUI/ISButton"
 
 TutorialMessage = ISPanelJoypad:derive("TutorialMessage");
 
-
---************************************************************************--
---** ISDemoPopup:initialise
---**
---************************************************************************--
-
 function TutorialMessage:initialise()
     ISPanelJoypad.initialise(self);
 end
 
---************************************************************************--
---** ISDemoPopup:instantiate
---**
---************************************************************************--
 function TutorialMessage:createChildren()
 
     -- CREATE TUTORIAL PANEL
@@ -75,10 +65,6 @@ function TutorialMessage:onMouseWheel(del)
     return false;
 end
 
---************************************************************************--
---** ISDemoPopup:update
---**
---************************************************************************--
 function TutorialMessage:update()
     if self.test ~= nil then
         if(self.test()) then
@@ -179,10 +165,6 @@ TutorialMessage.getInstance = function(x, y, w, h, message, clickToSkip, target,
     return TutorialMessage.instance;
 end
 
---************************************************************************--
---** ISDemoPopup:new
---**
---************************************************************************--
 function TutorialMessage:new (x, y, width, height, clickToSkip, message)
     local o = {}
     --o.data = {}

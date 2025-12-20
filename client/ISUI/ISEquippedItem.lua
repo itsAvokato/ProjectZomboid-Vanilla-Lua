@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISEquippedItem = ISPanel:derive("ISEquippedItem");
 ISEquippedItem.text = nil;
 
@@ -95,7 +91,6 @@ function ISEquippedItem:prerender()
         self.movablePopup:setVisible(false);
     end
 
-    ----
     if self.searchBtn then
         if ISSearchManager.players[self.chr] and ISSearchManager.players[self.chr].isSearchMode then
             self.searchBtn:setImage(self.searchIconOn);
@@ -103,7 +98,6 @@ function ISEquippedItem:prerender()
             self.searchBtn:setImage(self.searchIconOff);
         end;
     end;
-    ----
 
     if self.metaPopup then
         if self.zoneBtn:isMouseOver() then
@@ -171,29 +165,34 @@ function ISEquippedItem:prerender()
                 self.warManagerBtn:setX(self.adminBtn:getX())
                 self.warManagerBtn:setY(self.adminBtn:getY())
             else
-                self.warManagerBtn:setX(self.warManagerBtnX)
-                self.warManagerBtn:setY(self.warManagerBtnY)
+                self.warManagerBtn:setX(self.adminBtn:getX())
+                self.warManagerBtn:setY(self.adminBtn:getBottom() + UI_BORDER_SPACING + 5)
             end
 
             local warX = self.warManagerBtn:getX()
             local warY = self.warManagerBtn:getY()
+            local clockWid = self.clockTexture:getWidth()
+            local clockX = self.width - self.clockTexture:getWidthOrig() + clockWid
+            local clockOffsetY = (self.warManagerBtn.height - self.clockTexture:getHeight()) / 2
+            local textOffsetY = (self.warManagerBtn.height - FONT_HGT_SMALL) / 2
+            local textX = clockX + self.clockTexture:getWidthOrig() + 4
 
             if war:getState():name() == "Claimed" then
-                self:drawTexture(self.lockTexture, warX + UI_BORDER_SPACING, warY + UI_BORDER_SPACING, 1,1,1,1)
-                self:drawText(tostring(war:getTime()), warX + self.lockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, warY + UI_BORDER_SPACING, 1,1,1,1, UIFont.Small)
+                self:drawTexture(self.clockTexture, clockX, warY + clockOffsetY, 1,1,1,1)
+                self:drawText(tostring(war:getTime()), textX, warY + textOffsetY, 1,1,1,1, UIFont.Small)
                 self.warManagerBtn:setImage(self.warIconOff)
             end
 
             if war:getState():name() == "Accepted" then
-                self:drawTexture(self.lockTexture, warX + UI_BORDER_SPACING, warY + UI_BORDER_SPACING, 1,1,1,1)
-                self:drawText(tostring(war:getTime()), warX + self.lockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, warY + UI_BORDER_SPACING, 1,1,1,1,UIFont.Small)
+                self:drawTexture(self.clockTexture, clockX, warY + clockOffsetY, 1,1,1,1)
+                self:drawText(tostring(war:getTime()), textX, warY + textOffsetY, 1,1,1,1,UIFont.Small)
                 -- TODO - make war button flash off and on when war is about to start
                 self.warManagerBtn:setImage(self.warSoon)
             end
 
             if war:getState():name() == "Started" then
-                self:drawTexture(self.lockTexture, warX + UI_BORDER_SPACING, warY + UI_BORDER_SPACING, 1,1,1,1)
-                self:drawText(tostring(war:getTime()), warX + self.lockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, warY + UI_BORDER_SPACING, 1,1,1,1,UIFont.Small)
+                self:drawTexture(self.clockTexture, clockX, warY + clockOffsetY, 1,1,1,1)
+                self:drawText(tostring(war:getTime()), textX, warY + textOffsetY, 1,1,1,1,UIFont.Small)
                 self.warManagerBtn:setImage(self.warIconOn)
             end
         else
@@ -204,14 +203,10 @@ function ISEquippedItem:prerender()
         end
     end
 
-    ---
-
     local safetyEnabled = getServerOptions():getBoolean("SafetySystem");
     local toggleTimeMax = getServerOptions():getInteger("SafetyToggleTimer");
     local cooldownTimerMax = getServerOptions():getInteger("SafetyCooldownTimer");
     local isNonPvpZone = NonPvpZone.getNonPvpZone(self.chr:getX(), self.chr:getY())
-
-
 
     if isClient() then
         self.safetyBtn:setVisible(safetyEnabled);
@@ -224,7 +219,7 @@ function ISEquippedItem:prerender()
 
             if self.safety:getToggle() > 0 or self.safety:getCooldown() > 0 then
 
-                self:drawTexture(self.lockTexture, safetyX + UI_BORDER_SPACING, safetyY + UI_BORDER_SPACING, 1,1,1,1);
+                self:drawTexture(self.clockTexture, safetyX + UI_BORDER_SPACING, safetyY + UI_BORDER_SPACING, 1,1,1,1);
 
                 if self.safety:getToggle() > 0 then
 
@@ -239,7 +234,7 @@ function ISEquippedItem:prerender()
                         self.safetyBtn:setImage(self.safetyOff);
                     end
 
-                    self:drawText(tostring(math.ceil(self.safety:getToggle())), safetyX + self.lockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, safetyY + UI_BORDER_SPACING, 1,1,1,1, UIFont.Small);
+                    self:drawText(tostring(math.ceil(self.safety:getToggle())), safetyX + self.clockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, safetyY + UI_BORDER_SPACING, 1,1,1,1, UIFont.Small);
 
                 elseif self.safety:getCooldown() > 0 then
 
@@ -254,7 +249,7 @@ function ISEquippedItem:prerender()
                         self.safetyBtn:setImage(self.safetyOff);
                     end
 
-                    self:drawText(tostring(math.ceil(self.safety:getCooldown())), safetyX + self.lockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, safetyY + UI_BORDER_SPACING, 1,1,1,1, UIFont.Small);
+                    self:drawText(tostring(math.ceil(self.safety:getCooldown())), safetyX + self.clockTexture:getWidthOrig() + UI_BORDER_SPACING + 5, safetyY + UI_BORDER_SPACING, 1,1,1,1, UIFont.Small);
 
                 end
             elseif not isNonPvpZone then
@@ -274,7 +269,6 @@ function ISEquippedItem:prerender()
             end
         end
     end
-    ---
 
     if "Tutorial" == getCore():getGameMode() then
         self.movableBtn:setVisible(false);
@@ -290,31 +284,6 @@ function ISEquippedItem:prerender()
     if getCell():getDrag(playerID) and getCell():getDrag(playerID).isPlace3DCursor then -- draw some help text when placing a 3D item in the world
         local cursor = getCell():getDrag(playerID);
         cursor:drawPrompt(playerID, self);
-    end
-
-    if isClient() then
-
-        local maxY = getCore():getScreenHeight();
-        local maxX = getCore():getScreenWidth();
-        local statusData = getMPStatus()
-
-        local tmpY = UI_BORDER_SPACING*2 + FONT_HGT_MEDIUM*2
-        local tmpX = UI_BORDER_SPACING*3
-
-        if tonumber(getMaxPlayers()) > 32 then
-            self:drawTextRight(getText("UI_MaxPlayers_Notification"), maxX-tmpX, maxY-tmpY , 0.8, 0.8, 0.8, 1, UIFont.NewMedium);
-            tmpY = tmpY + UI_BORDER_SPACING + FONT_HGT_MEDIUM
-        end
-
-        if isShowServerInfo() then
-            self:drawTextRight(statusData.serverTime .. "   " .. statusData.position .. " : " .. statusData.lastPing, maxX-tmpX, maxY-tmpY, 0.8, 0.8, 0.8, 1, UIFont.NewMedium);
-            tmpY = tmpY + UI_BORDER_SPACING + FONT_HGT_MEDIUM
-        end
-
-        if isShowConnectionInfo() then
-            self:drawTextRight("\"" .. getServerName() .. "\" (" .. getServerIP() .. ":" .. getServerPort() .. ")", maxX-tmpX, maxY-tmpY, 0.8, 0.8, 0.8, 1, UIFont.NewMedium);
-            tmpY = tmpY + UI_BORDER_SPACING + FONT_HGT_MEDIUM
-        end
     end
 end
 
@@ -676,14 +645,14 @@ function ISEquippedItem:new (x, y, width, height, chr)
     o.adminIconOn = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/Admin_Icon_On_" .. TEXTURE_WIDTH .. ".png");
     o.adminIconOff = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/Admin_Icon_Off_" .. TEXTURE_WIDTH .. ".png");
     --war
-    o.warIconOn = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/War_Icon_On_" .. TEXTURE_WIDTH .. ".png");
-    o.warIconOff = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/War_Icon_Off_" .. TEXTURE_WIDTH .. ".png");
+    o.warIconOn = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/War_On_" .. TEXTURE_WIDTH .. ".png");
+    o.warIconOff = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/War_Off_" .. TEXTURE_WIDTH .. ".png");
     --safety
     o.safetyOn = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/Safety_On_" .. TEXTURE_WIDTH .. ".png");
     o.safetyOff = getTexture("media/ui/Sidebar/" .. TEXTURE_WIDTH .."/Safety_Off_" .. TEXTURE_WIDTH .. ".png");
 
     o.warSoon = getTexture("media/ui/war_soon.png");
-    o.lockTexture = getTexture("media/ui/pvpicon_clock.png");
+    o.clockTexture = getTexture("media/ui/pvpicon_clock.png");
     o.disableTexture = getTexture("media/ui/pvpicon_off.png"); --getTexture("media/ui/SafetyDISABLE.png");
     o.healthIconOscillatorLevel = 0.0;
     o.healthIconOscillator = 0.0;
@@ -902,7 +871,7 @@ function ISEquippedItem:initialise()
             self:addMouseOverToolTipItem(self.debugBtn, getText("IGUI_DebugMenu"));
 
             self:setHeight(self.debugBtn:getBottom())
-            y = self.debugBtn:getY() + self.debugIconOff:getHeightOrig() + 5
+            y = self.debugBtn:getBottom() + UI_BORDER_SPACING + 5
         elseif self.mapBtn then
             self:setHeight(self.mapBtn:getBottom());
         elseif self.searchBtn then
@@ -943,7 +912,7 @@ function ISEquippedItem:initialise()
             self:addChild(self.clientBtn);
     
             self:setHeight(self.clientBtn:getBottom())
-            y = y + self.clientIconOff:getHeightOrig() + 5
+            y = self.clientBtn:getBottom() + UI_BORDER_SPACING + 5
 
             self.adminBtn = ISButton:new(0, y, TEXTURE_WIDTH, TEXTURE_HEIGHT, "", self, ISEquippedItem.onOptionMouseDown);
             self.adminBtn:setImage(self.adminIconOff);
@@ -957,7 +926,7 @@ function ISEquippedItem:initialise()
             self:addChild(self.adminBtn);
 
             self:setHeight(self.adminBtn:getBottom())
-            y = y + self.adminIconOff:getHeightOrig() + 5
+            y = self.adminBtn:getBottom() + UI_BORDER_SPACING + 5
 
             self.warManagerBtn = ISButton:new(0, y, TEXTURE_WIDTH, TEXTURE_HEIGHT, "", self, ISEquippedItem.onOptionMouseDown);
             self.warManagerBtn:setImage(self.warIconOff);
@@ -971,7 +940,6 @@ function ISEquippedItem:initialise()
             self:addChild(self.warManagerBtn);
 
             self:setHeight(self.warManagerBtn:getBottom())
-            y = self.warManagerBtn:getY() + self.warIconOn:getHeightOrig() + 5
         end
     end
 
@@ -1075,8 +1043,6 @@ function ISEquippedItem:checkSidebarSizeOption()
     self:removeFromUIManager()
     playerData.equipped = launchEquippedItem(self.chr)
 end
-
------
 
 ISMoveablesIconPopup = ISPanel:derive("ISMoveablesIconPopup")
 
@@ -1189,8 +1155,6 @@ function ISMoveablesIconPopup:new (x, y, width, height)
     return o
 end
 
------
-
 ISMapPopup = ISPanel:derive("ISMapPopup")
 
 function ISMapPopup:prerender()
@@ -1253,7 +1217,6 @@ function ISMapPopup:new(x, y, width, height)
 
     return o
 end
------
 
 ISMetaPopup = ISPanel:derive("ISMetaPopup")
 
@@ -1320,8 +1283,6 @@ function ISMetaPopup:new(x, y, width, height)
     return o
 end
 
------
-
 function ISEquippedItem:toggleSafety()
     local player = getPlayer()
     if player:getSafety():isToggleAllowed() then
@@ -1344,8 +1305,6 @@ ISEquippedItem.onKeyPressed = function(key)
         end
     end
 end
-
------
 
 function launchEquippedItem(playerObj)
 	local playerNum = playerObj:getPlayerNum()

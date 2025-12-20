@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 require "ISUI/ISScrollingListBox"
 require "ISUI/ISTextEntryBox"
@@ -9,8 +5,6 @@ require "ISUI/ISTextEntryBox"
 ISComboBox = ISPanel:derive("ISComboBox");
 ISComboBoxEditor = ISTextEntryBox:derive("ISComboBoxEditor");
 ISComboBoxPopup = ISScrollingListBox:derive("ISComboBoxPopup");
-
------
 
 function ISComboBoxEditor:new(x, y, width, height, comboBox)
     local o = ISTextEntryBox.new(self, "", x, y, width, height)
@@ -31,8 +25,6 @@ function ISComboBoxEditor:onOtherKey(key)
         self.parentCombo:hidePopup()
     end
 end
-
------
 
 function ISComboBoxPopup:new(x, y, width, height)
     local o = ISScrollingListBox:new(x, y, width, height)
@@ -186,11 +178,6 @@ function ISComboBoxPopup:setComboBox(comboBox)
     self.parentCombo = comboBox
     self:ensureVisible(self.selected)
 end
-
---************************************************************************--
---** ISComboBox:initialise
---**
---************************************************************************--
 
 function ISComboBox:initialise()
 	ISPanel.initialise(self);
@@ -356,10 +343,6 @@ function ISComboBox:onMouseDown(x, y)
 	return true
 end
 
---************************************************************************--
---** ISComboBox:onMouseUp
---**
---************************************************************************--
 function ISComboBox:onMouseUp(x, y)
     if self.disabled or not self.sawMouseDown then return end
     self.sawMouseDown = false
@@ -401,6 +384,15 @@ function ISComboBox:onMouseDownOutside(x, y)
 end
 function ISComboBox:onMouseMove(dx, dy)
 	self.mouseOver = true;
+end
+
+function ISComboBox:selectOptionFromText(text)
+    for i=1,#self.options do
+        if text == self.options[i].text then
+            self.selected = i;
+            return;
+        end
+    end
 end
 
 function ISComboBox:select(option)

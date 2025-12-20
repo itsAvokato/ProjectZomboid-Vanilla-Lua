@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDetachTrailerFromVehicle = ISBaseTimedAction:derive("ISDetachTrailerFromVehicle")
@@ -34,6 +30,12 @@ end
 
 function ISDetachTrailerFromVehicle:perform()
 	self:stopSound()
+
+	if self.character:DistTo(self.hitchPos:x(), self.hitchPos:y()) > 4 then
+		ISBaseTimedAction.perform(self)
+		return
+	end
+
 	local args = { vehicle = self.vehicle:getId() }
 	sendClientCommand(self.character, 'vehicle', 'detachTrailer', args)
 	-- needed to remove from queue / start next.

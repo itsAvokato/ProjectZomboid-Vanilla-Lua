@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 IS9Patch = ISUIElement:derive("IS9Patch");

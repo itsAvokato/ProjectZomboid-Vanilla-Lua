@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ISAdmPanelClimate = ISDebugSubPanelBase:derive("ISAdmPanelClimate");
@@ -11,11 +6,6 @@ local FONT_HGT_MED = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAdmPanelClimate:initialise
---**
---************************************************************************--
 
 function ISAdmPanelClimate:createChildren()
     ISPanel.createChildren(self);
@@ -119,8 +109,6 @@ function ISAdmPanelClimate:createChildren()
     oUi:setCurrentValue(0);
     self:addUI("Darkness",oTitle,oValue,oUi);
 
-    ----------------------------------- EXTERIOR -----------------------------------
-
     rowY = ISDebugUtils.addHorzBar(self,rowY+BUTTON_HGT+UI_BORDER_SPACING)+UI_BORDER_SPACING;
     local tickOptions = {};
     table.insert(tickOptions, { text = getText("IGUI_climate_Daylight"), ticked = false });
@@ -180,8 +168,6 @@ function ISAdmPanelClimate:createChildren()
 
     y = self.LightColorPanelAlpha_ext:getY() + self.LightColorPanelAlpha_ext:getHeight();
 
-    ----------------------------------- INTERIOR -----------------------------------
-
     rowY = rowY+BUTTON_HGT+UI_BORDER_SPACING;
     y, oValue = ISDebugUtils.addLabel(self,"LightValR_int",col2_x-20,rowY+2,"0", UIFont.Small, false);
     y, oUi = ISDebugUtils.addSlider(self,"LightSliderR_int",col2_x,rowY+(BUTTON_HGT/2)-9,colW-10, 18,ISAdmPanelClimate.onSliderChange);
@@ -237,8 +223,6 @@ function ISAdmPanelClimate:createChildren()
     self:addChild(self.LightColorPanelAlpha_int);
 
     y = self.LightColorPanelAlpha_int:getY() + self.LightColorPanelAlpha_int:getHeight();
-
-    ----------------------------------------------------------------------
 
     rowY = ISDebugUtils.addHorzBar(self,rowY+BUTTON_HGT+UI_BORDER_SPACING)+UI_BORDER_SPACING;
     local tickOptions = {};
@@ -420,7 +404,6 @@ function ISAdmPanelClimate:onSliderChange(_newval, _slider)
     if self.LightColorPanelAlpha_ext and (_slider.customData=="LightSliderA_ext") then
         if last~=self.sliderLightA_extSlider:getCurrentValue() then
             last = self.sliderLightA_extSlider:getCurrentValue();
-            print("A = "..tostring(self.sliderLightA_extSlider:getCurrentValue()/255));
         end
         self.LightColorPanelAlpha_ext.backgroundColor.r = self.sliderLightA_extSlider:getCurrentValue()/255;
         self.LightColorPanelAlpha_ext.backgroundColor.g = self.sliderLightA_extSlider:getCurrentValue()/255;
@@ -584,10 +567,6 @@ function ISAdmPanelClimate:onMadeActive()
     getClimateManager():transmitRequestAdminVars();
 end
 
---************************************************************************--
---** ISAdmPanelClimate:new
---**
---************************************************************************--
 function ISAdmPanelClimate:new(x, y, width, height, player)
     local o = {}
     o = ISDebugSubPanelBase:new(x, y, width, height);

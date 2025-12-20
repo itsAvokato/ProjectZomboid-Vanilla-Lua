@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 25/01/2022
--- Time: 10:08
--- To change this template use File | Settings | File Templates.
---
-
 AnimalAvatarDefinition = {};
 
 AnimalAvatarDefinition["cow"] = {};

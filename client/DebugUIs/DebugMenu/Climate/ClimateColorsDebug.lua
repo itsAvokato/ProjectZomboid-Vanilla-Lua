@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ClimateColorsDebug = ISDebugSubPanelBase:derive("ClimateColorsDebug");
@@ -154,7 +149,7 @@ function ClimateColorsDebug:addColorOption(_info,_x,_y,_w)
     _info.textColVal_ext = obj2;
 
     _y = math.max(colorbox:getBottom(), y2) + UI_BORDER_SPACING;
-    -------------------------------------------------------------------------------------
+
     local curX = _x;
     local colorbox = ISPanel:new(curX,_y,(boxW),boxH);
     colorbox:initialise();

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 
 ISJoypadListBox = ISScrollingListBox:derive("ISJoypadListBox")

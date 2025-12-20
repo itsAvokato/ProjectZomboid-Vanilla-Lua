@@ -5,11 +5,6 @@ ISToolTip = ISPanel:derive("ISToolTip");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISToolTip:initialise()
 	ISPanel.initialise(self);
 end
@@ -69,11 +64,6 @@ function ISToolTip:prerender()
 	self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
 end
 
-
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISToolTip:render()
 
 	local mx = getMouseX() + 32
@@ -360,10 +350,6 @@ function ISToolTip:reset()
     self.followMouse = true
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISToolTip:new()
    local o = ISPanel.new(self, 0, 0, 0, 0);
    o:noBackground();

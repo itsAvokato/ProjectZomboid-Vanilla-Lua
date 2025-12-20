@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "RadioCom/RadioWindowModules/RWMPanel"
 
 RWMPower = RWMPanel:derive("RWMPower");
@@ -138,9 +134,6 @@ function RWMPower:update()
             self.toggleOnOffButton:setTitle(getText("ContextMenu_Turn_On"));
         end
 
-        --if isOn then
-            --self:powerUpdateSimulation();                               --FIXME remove testing thing -----------------------------------<<<
-        --end
         self.batteryStatus:setPower( self.deviceData:getPower() );
 
         if self.deviceData:getHasBattery() then

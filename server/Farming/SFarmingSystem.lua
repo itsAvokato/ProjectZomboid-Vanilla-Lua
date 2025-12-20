@@ -1,17 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
------------------------------------------------------------------------
---                          FARMING MOD                              --
---                      CODE BY ROBERT JOHNSON                       --
---                       TEXTURES BY THUZTOR                         --
------------------------------------------------------------------------
---                          OFFICIAL TOPIC                           --
---  http://www.theindiestone.com/community/viewtopic.php?f=33&t=8675 --
---                                                                   --
------------------------------------------------------------------------
-
 if isClient() then return end
 
 require "Map/SGlobalObjectSystem"
@@ -350,9 +336,9 @@ function SFarmingSystem:harvest(luaObject, player)
 	local numberOfVeg = getVegetablesNumber(props.minVeg, props.maxVeg, props.minVegAutorized, props.maxVegAutorized, luaObject, skill)
 
 	if numberOfVeg > 0 and props.isFlower and player then
-        player:getBodyDamage():setUnhappynessLevel(player:getBodyDamage():getUnhappynessLevel() - numberOfVeg/2 )
-        player:getBodyDamage():setBoredomLevel(player:getBodyDamage():getBoredomLevel() - numberOfVeg/2 )
-        player:getStats():setStress(player:getStats():getBasicStress() - numberOfVeg/2 )
+        player:getStats():remove(CharacterStat.UNHAPPINESS, numberOfVeg/2)
+        player:getStats():remove(CharacterStat.BOREDOM, numberOfVeg/2)
+        player:getStats():remove(CharacterStat.STRESS, numberOfVeg/2)
 	end
 
 	if props.vegetableName and player then
@@ -511,8 +497,7 @@ end
 
 -- make the player more tired etc. when plowing land
 function SFarmingSystem:changePlayer(player)
-	-- 	player:getStats():setFatigue(player:getStats():getFatigue() + 0.006)
-	player:getStats():setEndurance(player:getStats():getEndurance() - 0.0013)
+	player:getStats():remove(CharacterStat.ENDURANCE, 0.0013)
 
 	--Stat_Endurance
 	syncPlayerStats(player, 0x00000002);
@@ -524,7 +509,7 @@ function SFarmingSystem:plow(square)
     -- we remove grass and vegetation from the square
 -- 	self:removeTallGrass(square)
 --     local floor = square:getFloor();
---     if (floor and floor:getSprite():getProperties():Val("grassFloor")) and square:checkHaveGrass() == true then
+--     if (floor and floor:getSprite():getProperties():get("grassFloor")) and square:checkHaveGrass() == true then
 -- 	    square:removeGrass()
 -- 	end
 	-- we set the square to be shovelled to eliminate dirt exploits
@@ -580,8 +565,8 @@ function SFarmingSystem:removeTallGrass(sq)
 		local o = sq:getObjects():get(i-1)
 		-- FIXME: blends_grassoverlays tiles should have 'vegitation' flag
 		if o:getSprite() and (
-				o:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) or
-				(o:getSprite():getProperties():Is(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
+				o:getSprite():getProperties():has(IsoFlagType.canBeRemoved) or
+				(o:getSprite():getProperties():has(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
 				(o:getSprite():getName() and luautils.stringStarts(o:getSprite():getName(), "blends_grassoverlays"))) then
 			sq:transmitRemoveItemFromSquare(o)
 		end
@@ -623,22 +608,22 @@ function SFarmingSystem:hasWeeds2(v)
         spriteName = v:getSprite():getName() or v:getSpriteName()
     end
     if v:getSprite() and (
-            v:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) or
-            (v:getSprite():getProperties():Is(IsoFlagType.vegitation) and v:getType() ~= IsoObjectType.tree) or
+            v:getSprite():getProperties():has(IsoFlagType.canBeRemoved) or
+            (v:getSprite():getProperties():has(IsoFlagType.vegitation) and v:getType() ~= IsoObjectType.tree) or
             (v:getSprite():getName() and luautils.stringStarts(v:getSprite():getName(), "blends_grassoverlays"))) then
        return true
     end
-    if v:getSprite() and v:getSprite():getProperties() and v:getSprite():getProperties():Is(IsoFlagType.canBeCut) then
+    if v:getSprite() and v:getSprite():getProperties() and v:getSprite():getProperties():has(IsoFlagType.canBeCut) then
         return true
     end
-    if v:getSprite() and v:getSprite():getProperties() and v:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) then
+    if v:getSprite() and v:getSprite():getProperties() and v:getSprite():getProperties():has(IsoFlagType.canBeRemoved) then
         return true
     end
     local attached = v:getAttachedAnimSprite()
     if attached then
         for n=1,attached:size() do
             local sprite = attached:get(n-1)
-            -- if sprite and sprite:getParentSprite() and sprite:getParentSprite():getProperties():Is(IsoFlagType.canBeCut) then
+            -- if sprite and sprite:getParentSprite() and sprite:getParentSprite():getProperties():has(IsoFlagType.canBeCut) then
             if sprite and sprite:getParentSprite() and sprite:getParentSprite():getName() and luautils.stringStarts(sprite:getParentSprite():getName(), "f_wallvines_") then
                 return true
             end

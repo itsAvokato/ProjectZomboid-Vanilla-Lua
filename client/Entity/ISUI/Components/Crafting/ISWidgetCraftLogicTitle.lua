@@ -1,11 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: spurcival 				   **
---***********************************************************
-
---[[
-    A generic title header widget
---]]
 require "ISUI/ISPanel"
 
 ISWidgetCraftLogicTitle = ISPanel:derive("ISWidgetCraftLogicTitle");
@@ -104,10 +96,6 @@ function ISWidgetCraftLogicTitle:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISWidgetCraftLogicTitle:new
---**
---************************************************************************--
 function ISWidgetCraftLogicTitle:new(x, y, width, height, player, logic)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

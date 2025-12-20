@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugPanelBase";
 
 ISAudioDebugPanel = ISDebugPanelBase:derive("ISAudioDebugPanel");

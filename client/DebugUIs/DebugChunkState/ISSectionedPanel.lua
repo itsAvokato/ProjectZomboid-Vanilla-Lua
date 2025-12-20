@@ -1,15 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local SBAR_WID = 13
 
 ISSectionedPanel = ISPanel:derive("ISSectionedPanel")
-
------
 
 ISSectionedPanel_Section = ISPanel:derive("ISSectionedPanel_Section")
 local Section = ISSectionedPanel_Section
@@ -79,8 +73,6 @@ function Section:new(x, y, width, height, panel, title)
 	o.expanded = true
 	return o
 end
-
------
 
 function ISSectionedPanel:addSection(panel, title)
 	local sbarWid = self.vscroll and SBAR_WID or 0

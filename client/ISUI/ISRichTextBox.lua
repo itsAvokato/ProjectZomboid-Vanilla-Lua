@@ -1,14 +1,4 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISRichTextBox = ISPanelJoypad:derive("ISRichTextBox");
-
-
---************************************************************************--
---** ISRichTextBox:initialise
---**
---************************************************************************--
 
 function ISRichTextBox:initialise()
 	ISPanel.initialise(self);
@@ -107,10 +97,6 @@ function ISRichTextBox:prerender()
 	end
 end
 
---************************************************************************--
---** ISRichTextBox:render
---**
---************************************************************************--
 function ISRichTextBox:render()
 
 end
@@ -152,10 +138,6 @@ function ISRichTextBox:onJoypadDown(button, joypadData)
 	end
 end
 
---************************************************************************--
---** ISRichTextBox:new
---**
---************************************************************************--
 function ISRichTextBox:new(x, y, width, height, text, defaultEntryText, target, onclick, player, param1, param2, param3, param4)
 	local o = {}
 	o = ISPanel:new(x, y, width, height);

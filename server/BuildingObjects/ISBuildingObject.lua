@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** Class wich help you to drag an item over the world, it display a ghost render of the item
---** You can either press R or let the left mouse btn down and drag the mouse around to rotate the item                     **
---***********************************************************
 require "ISBaseObject"
 require "TimedActions/ISInventoryTransferUtil"
 
@@ -12,25 +7,9 @@ local function predicateNotBroken(item)
 	return not item:isBroken()
 end
 
---************************************************************************--
---** ISBuildingObject:initialise
---**
---************************************************************************--
 function ISBuildingObject:initialise()
 
 end
-
---************************************************************************--
---** ISBuildingObject:new
---**
---************************************************************************--
---~ function ISBuildingObject:derive (type)
---~     local o = {}
---~     setmetatable(o, self)
---~     self.__index = self
---~ 	o.Type= type;
---~     return o
---~ end
 
 function ISBuildingObject:setCanPassThrough(passThrough)
 	self.canPassThrough = passThrough;
@@ -168,7 +147,7 @@ function DoTileBuilding(draggingItem, isRender, x, y, z, square)
 	if isRender then
 		-- we first call the isValid function of our item
 		draggingItem.canBeBuild = draggingItem:isValid(square, draggingItem.north)
-		if not draggingItem.canBeBuild and (draggingItem.craftRecipe and draggingItem.craftRecipe:hasTag("autorotate")) then
+		if not draggingItem.canBeBuild and (draggingItem.craftRecipe and draggingItem.craftRecipe:isAutoRotate()) then
 			local nSprite = draggingItem.nSprite
 			local canBeBuild = false
 			for ii = 1, 4 do
@@ -244,7 +223,7 @@ function ISBuildingObject:tryBuild(x, y, z)
 			return nil;
 		else
 			if not self.noNeedHammer and not ISBuildMenu.cheat then
-				local hammer = playerInv:getFirstTagEvalRecurse("Hammer", predicateNotBroken)
+				local hammer = playerInv:getFirstTagEvalRecurse(ItemTag.HAMMER, predicateNotBroken)
 				if hammer then
 					ISInventoryPaneContextMenu.equipWeapon(hammer, true, false, self.player)
 				end
@@ -331,9 +310,9 @@ function ISBuildingObject:walkTo(x, y, z)
 	end
 
 	-- We can build wooden floor through window or door
-	if self.Type == "ISWoodenFloor" and square and (square:Is(IsoFlagType.collideN) or square:Is(IsoFlagType.collideW)) then
+	if self.Type == "ISWoodenFloor" and square and (square:has(IsoFlagType.collideN) or square:has(IsoFlagType.collideW)) then
 		if luautils.walkAdj(playerObj, square) then return true end
-		return luautils.walkAdjWall(playerObj, square, square:Is(IsoFlagType.collideN))
+		return luautils.walkAdjWall(playerObj, square, square:has(IsoFlagType.collideN))
 	end
 	-- For walls on 2+ floor we can walk to them from both sides
 	if self.currentMoveProps then
@@ -441,7 +420,7 @@ function ISBuildingObject:haveMaterial(square)
 	end
 	
 	if not self.noNeedHammer and not ISBuildMenu.cheat then
-		local hammer = playerInv:getFirstTagEvalRecurse("Hammer", predicateNotBroken);
+		local hammer = playerInv:getFirstTagEvalRecurse(ItemTag.HAMMER, predicateNotBroken);
 		if not hammer then
 			return false;
 		end
@@ -538,7 +517,7 @@ function ISBuildingObject:getSprite()
 end
 
 function ISBuildingObject:isValid(square)
-    if self.notExterior and not square:Is(IsoFlagType.exterior) then return false end
+    if self.notExterior and not square:has(IsoFlagType.exterior) then return false end
 	if not self:haveMaterial(square) then return false end
 	if square:isVehicleIntersecting() then return false end
 	if self.canBeAlwaysPlaced then
@@ -580,7 +559,7 @@ function ISBuildingObject:render(x, y, z, square)
 	end
 
 	local sharedSprite = getSprite(self.RENDER_SPRITE_NAME)
-	if square and sharedSprite and sharedSprite:getProperties():Is("IsStackable") then
+	if square and sharedSprite and sharedSprite:getProperties():has("IsStackable") then
 		local props = ISMoveableSpriteProps.new(self.RENDER_SPRITE)
 		local offsetY = props:getTotalTableHeight(square)
 		local r,g,b,a = 1,1,1,0.6

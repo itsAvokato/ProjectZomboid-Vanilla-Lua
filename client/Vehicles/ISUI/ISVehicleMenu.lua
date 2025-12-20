@@ -1,13 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISInventoryTransferUtil"
 
 ISVehicleMenu = {}
 
 local function predicateWeldingMask(item)
-	return item:hasTag("WeldingMask") or item:getType() == "WeldingMask"
+	return item:hasTag(ItemTag.WELDING_MASK) or item:getType() == "WeldingMask"
 end
 
 local function predicatePetrol(item)
@@ -99,7 +95,7 @@ function ISVehicleMenu.showRadialMenu(playerObj)
 					menu:addSlice(getText("ContextMenu_VehicleStartEngine"), getTexture("media/ui/vehicles/vehicle_ignitionON.png"), ISVehicleMenu.onStartEngine, playerObj)
 				elseif not vehicle:isHotwired() and (playerObj:getInventory():haveThisKeyId(vehicle:getKeyId()) or vehicle:isKeysInIgnition()) then
 					menu:addSlice(getText("ContextMenu_VehicleStartEngine"), getTexture("media/ui/vehicles/vehicle_ignitionON.png"), ISVehicleMenu.onStartEngine, playerObj)
-				elseif not vehicle:isHotwired() and ((playerObj:getPerkLevel(Perks.Electricity) >= 2 and playerObj:getPerkLevel(Perks.Mechanics) >= 3) or playerObj:HasTrait("Burglar"))then
+				elseif not vehicle:isHotwired() and ((playerObj:getPerkLevel(Perks.Electricity) >= 2 and playerObj:getPerkLevel(Perks.Mechanics) >= 3) or playerObj:hasTrait(CharacterTrait.BURGLAR))then
 --					menu:addSlice("Hotwire Vehicle", getTexture("media/ui/vehicles/vehicle_ignitionON.png"), ISVehicleMenu.onHotwire, playerObj)
 				elseif vehicle:isHotwired() then
 					menu:addSlice(getText("ContextMenu_VehicleStartEngine"), getTexture("media/ui/vehicles/vehicle_ignitionON.png"), ISVehicleMenu.onStartEngine, playerObj)
@@ -117,7 +113,7 @@ function ISVehicleMenu.showRadialMenu(playerObj)
 			not SandboxVars.VehicleEasyUse and
 			not vehicle:isKeysInIgnition() and
 			not playerObj:getInventory():haveThisKeyId(vehicle:getKeyId()) then
-		if ((playerObj:getPerkLevel(Perks.Electricity) >= 1 and playerObj:getPerkLevel(Perks.Mechanics) >= 2) or playerObj:HasTrait("Burglar")) then
+		if ((playerObj:getPerkLevel(Perks.Electricity) >= 1 and playerObj:getPerkLevel(Perks.Mechanics) >= 2) or playerObj:hasTrait(CharacterTrait.BURGLAR)) then
 			menu:addSlice(getText("ContextMenu_VehicleHotwire"), getTexture("media/ui/vehicles/vehicle_ignitionON.png"), ISVehicleMenu.onHotwire, playerObj)
 		else
 			menu:addSlice(getText("ContextMenu_VehicleHotwireSkill"), getTexture("media/ui/vehicles/vehicle_ignitionOFF.png"), nil, playerObj)
@@ -197,7 +193,7 @@ function ISVehicleMenu.showRadialMenu(playerObj)
 		
 	
 		local isZombies = playerObj:getStats():getNumVisibleZombies() > 0 or playerObj:getStats():getNumChasingZombies() > 0 or playerObj:getStats():getNumVeryCloseZombies() > 0
-		if sleepNeeded and (playerObj:getStats():getFatigue() <= 0.3) then
+		if sleepNeeded and (playerObj:getStats():get(CharacterStat.FATIGUE) <= 0.3) then
 			menu:addSlice(getText("IGUI_Sleep_NotTiredEnough"), getTexture("media/ui/vehicles/vehicle_sleep.png"), nil, playerObj, vehicle)
 			doSleep = false;
 		elseif not vehicle:isStopped() then
@@ -214,11 +210,11 @@ function ISVehicleMenu.showRadialMenu(playerObj)
 			-- Sleeping pills counter those sleeping problems
 			elseif playerObj:getSleepingTabletEffect() < 2000 then
 				-- In pain, can still sleep if really tired
-				if playerObj:getMoodles():getMoodleLevel(MoodleType.Pain) >= 2 and playerObj:getStats():getFatigue() <= 0.85 then
+				if playerObj:getMoodles():getMoodleLevel(MoodleType.PAIN) >= 2 and playerObj:getStats():get(CharacterStat.FATIGUE) <= 0.85 then
 					menu:addSlice(getText("ContextMenu_PainNoSleep"), getTexture("media/ui/vehicles/vehicle_sleep.png"), nil, playerObj, vehicle)
 					doSleep = false;
 					-- In panic
-				elseif playerObj:getMoodles():getMoodleLevel(MoodleType.Panic) >= 1 then
+				elseif playerObj:getMoodles():getMoodleLevel(MoodleType.PANIC) >= 1 then
 					menu:addSlice(getText("ContextMenu_PanicNoSleep"), getTexture("media/ui/vehicles/vehicle_sleep.png"), nil, playerObj, vehicle)
 					doSleep = false;
 					-- tried to sleep not so long ago
@@ -875,7 +871,7 @@ function ISVehicleMenu.getVehicleDisplayName(vehicle)
 end
 
 local function predicateBlowTorch(item)
-	return (item:hasTag("BlowTorch") or item:getType() == "BlowTorch") and item:getCurrentUses() >= 10
+	return (item:hasTag(ItemTag.BLOW_TORCH) or item:getType() == "BlowTorch") and item:getCurrentUses() >= 10
 end
 
 function ISVehicleMenu.onRemoveBurntVehicle(player, vehicle)
@@ -1062,24 +1058,22 @@ function ISVehicleMenu.FillPartMenu(playerIndex, context, slice, vehicle)
 		if not vehicle:isEngineStarted() and part:isContainer() and part:getContainerContentType() == "Gasoline" then
 			if playerObj:getInventory():containsEvalRecurse(predicatePetrol) and part:getContainerContentAmount() < part:getContainerCapacity() then
 				if slice then
-					slice:addSlice(getText("ContextMenu_VehicleAddGas"), getTexture("media/ui/vehicles/vehicle_add_gas.png"), ISVehiclePartMenu.onAddGasoline, playerObj, part)
+					slice:addSlice(getText("ContextMenu_VehicleAddGas"), getTexture("media/ui/vehicles/gas_refuel.png"), ISVehiclePartMenu.onAddGasoline, playerObj, part)
 				else
 					ISVehiclePartMenu.doAddFuelMenu(playerObj, part, context)
-					-- context:addOption(getText("ContextMenu_VehicleAddGas"), playerObj,ISVehiclePartMenu.onAddGasoline, part)
 				end
 			end
 			if (ISVehiclePartMenu.getGasCanNotFull(playerObj, typeToItem) or playerObj:getInventory():containsEvalRecurse(predicateEmptyPetrol) or playerObj:getInventory():containsEvalRecurse(predicatePetrolNotFull)) 
 			and part:getContainerContentAmount() > 0 then
-				local hose = playerObj:getInventory():getFirstTagRecurse("SiphonGas")
+				local hose = playerObj:getInventory():getFirstTagRecurse(ItemTag.SIPHON_GAS)
 				if slice then
 					if hose then
-						slice:addSlice(getText("ContextMenu_VehicleSiphonGas"), getTexture("Item_Petrol"), ISVehiclePartMenu.onTakeGasoline, playerObj, part)
+						slice:addSlice(getText("ContextMenu_VehicleSiphonGas"), getTexture("media/ui/vehicles/gas_siphon.png"), ISVehiclePartMenu.onTakeGasoline, playerObj, part)
 					else													
 						slice:addSlice(getText("ContextMenu_VehicleNeedHose"), getTexture("Item_Petrol"))			
 					end
 				else
 					local gas = ISVehiclePartMenu.doSiphonFuelMenu(playerObj, part, context)
-					-- context:addOption(getText("ContextMenu_VehicleSiphonGas"), playerObj, ISVehiclePartMenu.onTakeGasoline, part)
 				end
 			end
 			local fuelStation = ISVehiclePartMenu.getNearbyFuelPump(vehicle)
@@ -1723,4 +1717,3 @@ end
 Events.OnFillWorldObjectContextMenu.Add(ISVehicleMenu.OnFillWorldObjectContextMenu)
 Events.OnKeyPressed.Add(ISVehicleMenu.onKeyPressed);
 Events.OnKeyStartPressed.Add(ISVehicleMenu.onKeyStartPressed);
-

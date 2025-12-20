@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISShovelAction = ISBaseTimedAction:derive("ISShovelAction");
@@ -68,7 +64,7 @@ function ISShovelAction:complete()
         -- we remove grass and vegetation from the square
         SFarmingSystem:removeTallGrass(sq)
         local floor = sq:getFloor();
-        if (floor and floor:getSprite():getProperties():Val("grassFloor")) and sq:checkHaveGrass() == true then
+        if (floor and floor:getSprite():getProperties():get("grassFloor")) and sq:checkHaveGrass() == true then
             sq:removeGrass()
         end
     end

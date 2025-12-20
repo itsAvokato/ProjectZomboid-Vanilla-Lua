@@ -1,15 +1,6 @@
---***********************************************************
---**                LEMMY/ROBERT JOHNSON                   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISContextMenu = ISPanel:derive("ISContextMenu");
-
---************************************************************************--
---** ISContextMenu:initialise
---**
---************************************************************************--
 
 function ISContextMenu:initialise()
 	ISPanel.initialise(self);
@@ -19,10 +10,6 @@ function ISContextMenu:isMouseOut()
 	return self.mouseOut;
 end
 
---************************************************************************--
---** ISContextMenu:onMouseMove
---**
---************************************************************************--
 function ISContextMenu:onMouseMove(dx, dy)
 	self.mouseOut = false;
 	if self:topmostMenuWithMouse(getMouseX(), getMouseY()) ~= self then return end
@@ -52,10 +39,6 @@ function ISContextMenu:hideSelfAndChildren2()
 	end
 end
 
---************************************************************************--
---** ISContextMenu:onMouseMoveOutside
---**
---************************************************************************--
 function ISContextMenu:onMouseMoveOutside(dx, dy)
 	if self.player == 0 then
 		self.mouseOut = true;
@@ -64,10 +47,6 @@ function ISContextMenu:onMouseMoveOutside(dx, dy)
 	end
 end
 
---************************************************************************--
---** ISContextMenu:onMouseUp
---**
---************************************************************************--
 function ISContextMenu:onMouseUp(x, y)
 	if self:getScrollHeight() > self:getScrollAreaHeight() then
 		if y < self.padTopBottom + self.scrollIndicatorHgt - self:getYScroll() then
@@ -322,17 +301,10 @@ function ISContextMenu:onMouseDownOutside(x, y)
 		end
 	end
 end
---************************************************************************--
---** ISContextMenu:onMouseDown
---**
---************************************************************************--
-function ISContextMenu:onMouseDown(x, y)
 
+function ISContextMenu:onMouseDown(x, y)
 end
---************************************************************************--
---** ISContextMenu:render
---**
---************************************************************************--
+
 function ISContextMenu:prerender()
 	if displayCursorReminder == nil then
 		displayCursorReminder = getCore():isDisplayCursor();
@@ -956,7 +928,7 @@ end
 
 function ISContextMenu:addDebugOption(name, target, onSelect, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10)
 	local option = self:addOption(name, target, onSelect, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10);
-	option.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
+	option.iconTexture = getTexture("media/textures/Item_Plumpabug_Left.png");
 -- 	option.iconTexture = getTexture("media/ui/BugIcon.png");
 	option.color = nil;
 	if getDebugOptions():getBoolean("UI.HideDebugContextMenuOptions") then
@@ -1181,10 +1153,6 @@ function ISContextMenu:setFontFromOption()
 	end
 end
 
---************************************************************************--
---** ISContextMenu:new
---**
---************************************************************************--
 function ISContextMenu:new (x, y, width, height, zoom)
 	local o = {}
 	--o.data = {}
@@ -1298,5 +1266,3 @@ ISContextMenu.wantNoise = false
 ISContextMenu.noise = function(msg)
 	if (ISContextMenu.wantNoise) then print('ISContextMenu: '..msg) end
 end
-
-

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 require "Map/SGlobalObject"
@@ -106,10 +102,10 @@ function SCampfireGlobalObject:addContainer()
 	if container then return end
 	container = ItemContainer.new("campfire", square, isoObject, 1, 1)
 	local capacity = 10
-	if self:getIsoObject():getSprite() and self:getIsoObject():getSprite():getProperties() and self:getIsoObject():getSprite():getProperties():Val("ContainerCapacity") then
-	    capacity = tonumber(self:getIsoObject():getSprite():getProperties():Val("ContainerCapacity"))
+	if self:getIsoObject():getSprite() and self:getIsoObject():getSprite():getProperties() and self:getIsoObject():getSprite():getProperties():get("ContainerCapacity") then
+	    capacity = tonumber(self:getIsoObject():getSprite():getProperties():get("ContainerCapacity"))
 	end
--- 	container:setCapacity(tonumber(self:getIsoObject():getSprite():getProperties():Val("ContainerCapacity")))
+-- 	container:setCapacity(tonumber(self:getIsoObject():getSprite():getProperties():get("ContainerCapacity")))
 	container:setCapacity(capacity)
 	container:setExplored(true)
 	isoObject:setContainer(container)
@@ -121,7 +117,7 @@ function SCampfireGlobalObject:addFireObject()
 	if not square then return end
 	-- Create a 'permanent' IsoFire object.  It won't spread to adjacent squares but will burn.
 	local fireObj = IsoFire.new(getCell(), square)
-	fireObj:AttachAnim("Fire", "01", IsoFire.NUM_FRAMES_FIRE, IsoFireManager.FireAnimDelay, 1 * Core.getTileScale(), -1 * Core.getTileScale(), true, 0, false, 0.7, IsoFireManager.FireTintMod)
+	fireObj:AttachAnim("Fire", "01", IsoFire.NUM_FRAMES_FIRE, IsoFireManager.FIRE_ANIM_DELAY, 1 * Core.getTileScale(), -1 * Core.getTileScale(), true, 0, false, 0.7, IsoFireManager.FIRE_TINT_MOD)
 	square:AddTileObject(fireObj)
 -- 	self:noise('added campfire IsoFire at index='..fireObj:getObjectIndex())
 end
@@ -132,7 +128,7 @@ function SCampfireGlobalObject:removeFireObject()
 	local square = self:getSquare()
 -- 	self:noise('removed campfire IsoFire at index='..fireObj:getObjectIndex())
 	square:transmitRemoveItemFromSquare(fireObj)
-	square:getProperties():UnSet(IsoFlagType.burning)
+	square:getProperties():unset(IsoFlagType.burning)
 end
 
 function SCampfireGlobalObject:transferItemsToGround()

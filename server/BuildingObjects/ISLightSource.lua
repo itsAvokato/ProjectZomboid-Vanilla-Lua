@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISLightSource = ISBuildingObject:derive("ISLightSource");
 
---************************************************************************--
---** ISLightSource:new
---**
---************************************************************************--
 function ISLightSource:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISLightSource\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();

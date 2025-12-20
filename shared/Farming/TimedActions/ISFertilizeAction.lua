@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISFertilizeAction = ISBaseTimedAction:derive("ISFertilizeAction");
@@ -51,7 +47,9 @@ function ISFertilizeAction:perform()
 	if self.sound and self.sound ~= 0 then
 		self.character:getEmitter():stopOrTriggerSound(self.sound)
 	end
-	self.item:getContainer():setDrawDirty(true);
+	if (self.item:getContainer() ~= nil) then
+		self.item:getContainer():setDrawDirty(true);
+	end
 	self.item:setJobDelta(0.0);
 
     -- needed to remove from queue / start next.
@@ -61,7 +59,7 @@ end
 function ISFertilizeAction:complete()
 	local plant = SFarmingSystem.instance:getLuaObjectAt(self.plant.x, self.plant.y, self.plant.z);
 	if plant then
-		local args = { compost = self.item:hasTag("Compost"), skill = self.character:getPerkLevel(Perks.Farming) }
+		local args = { compost = self.item:hasTag(ItemTag.COMPOST), skill = self.character:getPerkLevel(Perks.Farming) }
 		plant:fertilize(args);
 	end
 

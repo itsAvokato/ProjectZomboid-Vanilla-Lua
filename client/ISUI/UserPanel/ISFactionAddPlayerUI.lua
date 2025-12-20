@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISFactionAddPlayerUI = ISPanel:derive("ISFactionAddPlayerUI");
 ISFactionAddPlayerUI.messages = {};
 
@@ -10,11 +6,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISFactionAddPlayerUI:initialise
---**
---************************************************************************--
 
 function ISFactionAddPlayerUI:initialise()
     ISPanel.initialise(self);
@@ -155,10 +146,6 @@ function ISFactionAddPlayerUI:onClick(button)
     end
 end
 
---************************************************************************--
---** ISFactionAddPlayerUI:new
---**
---************************************************************************--
 function ISFactionAddPlayerUI:new(x, y, width, height, faction, player)
     local o = {}
     o = ISPanel:new(x, y, width, height);

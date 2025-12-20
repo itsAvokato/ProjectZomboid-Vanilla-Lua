@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                 author: tea-spurcival                 **
---***********************************************************
-
 BuildRecipeCode = BuildRecipeCode or {}
 BuildRecipeCode.barricade = {}
 BuildRecipeCode.canBePlastered = {}
@@ -99,21 +94,24 @@ function BuildRecipeCode.barricade.OnCreate(params)
     local craftRecipeData = params.craftRecipeData;
     local character = params.character;
     local square = thumpable:getSquare();
-    local opposite = false;
+    local checkSquare = square;
     if params.facing == "s" then
-        opposite = true;
-        square = getWorld():getCell():getGridSquare(square:getX(), square:getY()+1, square:getZ());
+    	checkSquare = getWorld():getCell():getGridSquare(square:getX(), square:getY()+1, square:getZ());
     elseif params.facing == "e" then
-        opposite = true;
-        square = getWorld():getCell():getGridSquare(square:getX()+1, square:getY(), square:getZ());
+    	checkSquare = getWorld():getCell():getGridSquare(square:getX()+1, square:getY(), square:getZ());
     end
-	local objects = square:getObjects();
-	local barricade;
-
+    local opposite = false;
+	local objects = checkSquare:getObjects();
+	local barricade = nil;
+	local created = false;
 
 	for i=objects:size()-1, 0, -1 do
 		local object = objects:get(i);
 		if instanceof(object, "IsoDoor") or instanceof(object,"IsoWindow") or (instanceof(object, "IsoThumpable") and (object:isDoor() or object:isWindow())) then
+            local oppositeSq = object:getOppositeSquare();
+            if square == oppositeSq then
+                opposite = true
+            end
             if opposite and object:getBarricadeOnOppositeSquare() and object:getBarricadeOnOppositeSquare():canAddPlank() then
                 barricade = object:getBarricadeOnOppositeSquare();
                 local plank = craftRecipeData:getAllRecordedConsumedItems() and (not craftRecipeData:getAllRecordedConsumedItems():isEmpty()) and craftRecipeData:getAllRecordedConsumedItems():get(0);
@@ -122,7 +120,7 @@ function BuildRecipeCode.barricade.OnCreate(params)
                 else
                     barricade:addPlank(character, plank);
                 end
-            elseif object:getBarricadeOnSameSquare() and object:getBarricadeOnSameSquare():canAddPlank() then
+            elseif not opposite and object:getBarricadeOnSameSquare() and object:getBarricadeOnSameSquare():canAddPlank() then
                 barricade = object:getBarricadeOnSameSquare();
                 local plank = craftRecipeData:getAllRecordedConsumedItems() and (not craftRecipeData:getAllRecordedConsumedItems():isEmpty()) and craftRecipeData:getAllRecordedConsumedItems():get(0);
                 if not plank then
@@ -136,14 +134,29 @@ function BuildRecipeCode.barricade.OnCreate(params)
                     items = ArrayList.new();
                 end
                 barricade = object:addBarricadesFromCraftRecipe(character, items, craftRecipeData, opposite);
+                if barricade then
+                    created = true
+                end
             end
+            break
         end
 	end
     if thumpable:hasModData() and barricade then
         local modData = thumpable:getModData();
         barricade:setModData(modData);
     end
-	thumpable:getSquare():transmitRemoveItemFromSquare(thumpable);
+    if barricade then
+        square:RemoveTileObject(thumpable) -- The thumpable was only added on the server, clients did not see it.
+        if isServer() then
+            if created then
+                barricade:transmitCompleteItemToClients()
+            else
+                barricade:sendObjectChange('state')
+            end
+        end
+        return { objectAlreadyTransmitted = true };
+    end
+    return nil -- This will keep the thumpable, which is better than nothing?
 end
 
 function BuildRecipeCode.stairs.OnIsValid(params)
@@ -213,7 +226,7 @@ function BuildRecipeCode.stairs.OnCreate(params)
 	local z = thumpable:getZ();
 
 	local square = thumpable:getSquare();
-	local overWater = (square:getFloor() ~= nil) and square:getFloor():getSprite():getProperties():Is(IsoFlagType.water);
+	local overWater = (square:getFloor() ~= nil) and square:getFloor():getSprite():getProperties():has(IsoFlagType.water);
 
 	-- remove removable objects
 	local objects = square:getObjects();
@@ -222,8 +235,8 @@ function BuildRecipeCode.stairs.OnCreate(params)
 		if object and object ~= thumpable then
 			local objProps = object:getProperties();
 
-			local shouldRemove = objProps and ((object:getProperties():Is(IsoFlagType.vegitation) and object:getType() ~= IsoObjectType.tree) or object:getProperties():Is(IsoFlagType.canBeRemoved));
-			overWater = overWater or object:getSprite():getProperties():Is(IsoFlagType.water) or object:getSprite():getProperties():Is(IsoFlagType.taintedWater);
+			local shouldRemove = objProps and ((object:getProperties():has(IsoFlagType.vegitation) and object:getType() ~= IsoObjectType.tree) or object:getProperties():has(IsoFlagType.canBeRemoved));
+			overWater = overWater or object:getSprite():getProperties():has(IsoFlagType.water) or object:getSprite():getProperties():has(IsoFlagType.taintedWater);
 
 			if object:getTextureName() ~= nil and string.contains(object:getTextureName(), "floors_rugs") then
 				shouldRemove = false;
@@ -258,7 +271,7 @@ function BuildRecipeCode.stairs.OnCreate(params)
 					above = IsoGridSquare.new(getCell(), nil, x, y-1, z+1);
 					getCell():ConnectNewSquare(above, false);
 				end
-				if not above:getProperties():Is(IsoFlagType.solidfloor) then
+				if not above:getProperties():has(IsoFlagType.solidfloor) then
 					above:addFloor(floorTile);
 				end
 			end
@@ -269,7 +282,7 @@ function BuildRecipeCode.stairs.OnCreate(params)
 					above = IsoGridSquare.new(getCell(), nil, x-1, y, z+1);
 					getCell():ConnectNewSquare(above, false);
 				end
-				if not above:getProperties():Is(IsoFlagType.solidfloor) then
+				if not above:getProperties():has(IsoFlagType.solidfloor) then
 					above:addFloor(floorTile);
 				end
 			end
@@ -364,7 +377,7 @@ function BuildRecipeCode.floor.OnCreate(params)
 		if object and object ~= thumpable then
 			local objProps = object:getProperties();
 
-			local shouldRemove = objProps and (object:getProperties():Is(IsoFlagType.canBeRemoved) or object:getProperties():Is(IsoFlagType.solidfloor) or object:getProperties():Is(IsoFlagType.noStart) or (object:getProperties():Is(IsoFlagType.vegitation) and object:getType() ~= IsoObjectType.tree) or object:getProperties():Is(IsoFlagType.taintedWater));
+			local shouldRemove = objProps and (object:getProperties():has(IsoFlagType.canBeRemoved) or object:getProperties():has(IsoFlagType.solidfloor) or object:getProperties():has(IsoFlagType.noStart) or (object:getProperties():has(IsoFlagType.vegitation) and object:getType() ~= IsoObjectType.tree) or object:getProperties():has(IsoFlagType.taintedWater));
 			shouldRemove = shouldRemove or (object:getTextureName() ~= nil and (string.contains(object:getTextureName(), "blends_grassoverlays")));
 
 			if object:getTextureName() ~= nil and string.contains(object:getTextureName(), "floors_rugs") then

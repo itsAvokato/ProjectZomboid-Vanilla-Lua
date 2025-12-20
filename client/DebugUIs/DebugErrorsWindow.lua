@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 DebugErrorsWindow = ISCollapsableWindow:derive("DebugErrorsWindow")

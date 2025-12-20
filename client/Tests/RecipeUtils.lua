@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 RecipeUtils = {}
 
 function RecipeUtils.CreateSourceItem1(recipe, source, sourceFullType, options)

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISSLFrame = ISPanel:derive("ISSLFrame");
@@ -244,11 +240,8 @@ function ISSLFrame:setStoryEvent( _event )
 
                 table.insert(self.eventData, {eventSound=eSound, dataPoints= dataPoints});
 
-                print(eSound:getColor():getRed().." "..eSound:getColor():getGreen().." "..eSound:getColor():getBlue());
-                print(eSound:getName());
                 for i=0, dataPoints:size()-1 do
                     local data = dataPoints:get(i);
-                    print("time "..tostring(data:getTime()).." intensity "..tostring(data:getIntensity()))
                 end
             end
         end

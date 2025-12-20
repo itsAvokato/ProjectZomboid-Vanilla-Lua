@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: yuri				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugPanelBase";
 
 UnitTestsDebug = ISDebugPanelBase:derive("UnitTestsDebug");

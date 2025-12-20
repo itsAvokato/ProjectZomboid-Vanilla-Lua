@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISBuildRampCursor = ISBuildingObject:derive("ISBuildRampCursor")
 
 function ISBuildRampCursor:create(x, y, z, north, sprite)

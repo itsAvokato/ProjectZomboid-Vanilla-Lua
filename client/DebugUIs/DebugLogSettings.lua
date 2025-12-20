@@ -1,15 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 DebugLogSettings = ISCollapsableWindow:derive("DebugLogSettings")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
-
----------------------------------------------------------------------------------------------
 
 local HorizontalLine = ISPanel:derive("HorizontalLine")
 
@@ -24,8 +18,6 @@ function HorizontalLine:new(x, y, width)
 	local o = ISPanel.new(self, x, y, width, 2)
 	return o
 end
-
----------------------------------------------------------------------------------------------
 
 function DebugLogSettings:onComboBox(comboBox, debugType)
 	local logSeverity = comboBox:getOptionData(comboBox.selected)

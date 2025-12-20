@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISLootZed = ISPanelJoypad:derive("ISLootZed");
 ISLootZed.instance = nil
 ISLootZed.cheat = false

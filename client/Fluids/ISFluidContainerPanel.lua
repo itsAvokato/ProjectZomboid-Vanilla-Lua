@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Displays a fluidcontainer, both inventoryitem or isoobject.
---]]
-
 require "ISUI/ISPanel"
 
 ISFluidContainerPanel = ISPanel:derive("ISFluidContainerPanel");

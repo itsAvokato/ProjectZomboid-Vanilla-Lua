@@ -1,7 +1,3 @@
---***********************************************************
---**                LEMMY/ROBERT JOHNSON                   **
---***********************************************************
-
 require "ISUI/ISPanel"
 require "ISUI/ISButton"
 require "ISUI/ISInventoryPane"
@@ -27,14 +23,9 @@ function MainScreen:getLatestSave()
     MainScreen.latestSaveGameMode = latestSave[2];
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function MainScreen:setBottomPanelVisible(visible)
     self.javaObject:setVisible(visible);
-    if self.parent and self.parent.versionDetail then
-        self.parent.versionDetail:setVisible(visible);
+    if self.parent then
         if self.parent.resetLua ~= nil then
             self.parent.resetLua:setVisible(visible)
         end
@@ -114,6 +105,17 @@ function MainScreen:instantiate()
         self.serverConnectPopup:setAnchorTop(true);
         self.serverConnectPopup.backgroundColor = {r=0, g=0, b=0, a=0.8};
         self.serverConnectPopup.borderColor = {r=1, g=1, b=1, a=0.5};
+
+        self.multiplayer = MultiplayerUI:new(0, 0, self.width, self.height);
+
+        self.multiplayer:initialise();
+        self.multiplayer:setVisible(false);
+        self.multiplayer:setAnchorRight(true);
+        self.multiplayer:setAnchorLeft(true);
+        self.multiplayer:setAnchorBottom(true);
+        self.multiplayer:setAnchorTop(true);
+        self.multiplayer.backgroundColor = {r=0, g=0, b=0, a=0.8};
+        self.multiplayer.borderColor = {r=1, g=1, b=1, a=0.5};
 
         self.soloScreen = NewGameScreen:new(0, 0, self.width, self.height);
         self.soloScreen:initialise();
@@ -310,6 +312,7 @@ function MainScreen:instantiate()
         self:addChild(self.bootstrapConnectPopup);
         self:addChild(self.connectToServer);
         self:addChild(self.serverConnectPopup);
+        self:addChild(self.multiplayer);
 		self:addChild(self.lastStandPlayerSelect);
         if self.workshopSubmit then
             self:addChild(self.workshopSubmit)
@@ -329,8 +332,10 @@ function MainScreen:instantiate()
 	self:setWidth(w);
 	self:setHeight(h);
 	self:recalcSize();
+    -- ui, widthScaleMod, heightScaleMod, minWidth, minHeight
     local uis = {
         { self.scoreboard, 0.6, 0.7 },
+        { self.multiplayer, 1.0, 1.0 },
         { self.connectToServer, 0.7, 0.8 },
         { self.onlineCoopScreen, 0.5, 0.6 },
         { self.soloScreen, 0.7, 0.8 },
@@ -346,7 +351,7 @@ function MainScreen:instantiate()
         { self.mainOptions, 0.7, 0.8 },
         { self.workshopSubmit, 0.9, 0.9 },
         { self.serverWorkshopItem, 0.9, 0.9 },
-        { self.serverSettingsScreen, 0.5, 0.8 },
+        { self.serverSettingsScreen, 0.5, 0.8, 960 },
     }
 
     for _,ui in ipairs(uis) do
@@ -356,6 +361,12 @@ function MainScreen:instantiate()
             if w <= 1024 then
                 width = w * 0.95
                 height = h * 0.95
+            end
+            if ui[4] and width < ui[4] then
+                width = ui[4]
+            end
+            if ui[5] and height < ui[5] then
+                height = ui[5]
             end
             ui[1]:setWidth(width)
             ui[1]:setHeight(height)
@@ -430,7 +441,7 @@ function MainScreen:instantiate()
             labelY = labelY + labelHgt
 
         else
-    
+
             local hasSaveFiles = #getFullSaveDirectoryTable() > 0
 
             self.latestSaveOption = ISLabel:new(labelX, labelY, labelHgt, getText("UI_mainscreen_continue"), 1, 1, 1, 1, UIFont.Large, true);
@@ -455,7 +466,7 @@ function MainScreen:instantiate()
                 labelY = labelY + labelHgt
                 labelY = labelY + labelSeparator
             end
-    
+
             self.tutorialOption = ISLabel:new(labelX, labelY, labelHgt, getText("UI_mainscreen_tutorial"), 1, 1, 1, 1, UIFont.Large, true);
             self.tutorialOption.internal = "TUTORIAL";
             self.tutorialOption:initialise();
@@ -468,6 +479,22 @@ function MainScreen:instantiate()
             self.survivalOption:initialise();
             self.bottomPanel:addChild(self.survivalOption);
             self.survivalOption.onMouseDown = MainScreen.onMenuItemMouseDownMainMenu;
+            labelY = labelY + labelHgt
+
+            self.onlineOption = ISLabel:new(labelX, labelY, labelHgt, getText("UI_mainscreen_multiplayer"), 1, 1, 1, 1, UIFont.Large, true);
+            self.onlineOption.internal = "MULTIPLAYER";
+            self.onlineOption:initialise();
+            self.bottomPanel:addChild(self.onlineOption);
+            self.onlineOption.onMouseDown = MainScreen.onMenuItemMouseDownMainMenu;
+            self.onlineOption:setVisible(true)
+            labelY = labelY + labelHgt
+
+            self.onlineCoopOption = ISLabel:new(labelX, labelY, labelHgt, getText("UI_mainscreen_coop"), 1, 1, 1, 1, UIFont.Large, true);
+            self.onlineCoopOption.internal = "COOP";
+            self.onlineCoopOption:initialise();
+            self.bottomPanel:addChild(self.onlineCoopOption);
+            self.onlineCoopOption.onMouseDown = MainScreen.onMenuItemMouseDownMainMenu;
+            self.onlineCoopOption:setVisible(true)
             labelY = labelY + labelHgt
 
             labelY = labelY + labelSeparator
@@ -590,24 +617,11 @@ function MainScreen:instantiate()
         end
     end
     self.bottomPanel:setX(logoX + math.max(0, logoWidth - maxWidth) / 2)
-    print(logoX + math.max(0, logoWidth - maxWidth) / 2)
     self.bottomPanel:setWidth(maxWidth)
     self.bottomPanel:setHeight(labelY)
 
-    self.versionDetail = ISButton:new(self.width - btnWidth - UI_BORDER_SPACING*4, self.height - FONT_HGT_SMALL - UI_BORDER_SPACING*4, btnWidth, BUTTON_HGT, getText("UI_Details") , self, MainScreen.onClickVersionDetail);
-    self.versionDetail:initialise();
-    self.versionDetail.borderColor = {r=1, g=1, b=1, a=0.7};
-    self.versionDetail.textColor =  {r=1, g=1, b=1, a=0.7};
-    self:addChild(self.versionDetail);
-    self.versionDetail:setAnchorLeft(false)
-    self.versionDetail:setAnchorTop(false)
-    self.versionDetail:setAnchorRight(true)
-    self.versionDetail:setAnchorBottom(true)
-    self.versionDetail.internal = "VERSIONDETAIL";
-
-    local reportY = self.versionDetail and self.versionDetail.y or self.versionDetail.y
-    reportY = reportY - UI_BORDER_SPACING - BUTTON_HGT
-    self.reportBug = ISButton:new(self.versionDetail.x, reportY, btnWidth, BUTTON_HGT, getText("UI_ReportBug"), self, MainScreen.onClickReportBug);
+    local reportY = self.height - FONT_HGT_SMALL - UI_BORDER_SPACING*4
+    self.reportBug = ISButton:new(self.width - btnWidth - UI_BORDER_SPACING*4, reportY, btnWidth, BUTTON_HGT, getText("UI_ReportBug"), self, MainScreen.onClickReportBug);
     self.reportBug:initialise();
     self.reportBug.borderColor = {r=1, g=0, b=0, a=1};
     self.reportBug.textColor =  {r=1, g=1, b=1, a=1};
@@ -618,7 +632,7 @@ function MainScreen:instantiate()
     self:addChild(self.reportBug);
 
     if self.inGame then
-        self.modListDetail = ISButton:new(self.versionDetail.x, self.reportBug.y - UI_BORDER_SPACING - BUTTON_HGT, btnWidth, BUTTON_HGT, getText("UI_NewGame_Mods") , self, MainScreen.onClickModList);
+        self.modListDetail = ISButton:new(self.reportBug.x, self.reportBug.y - UI_BORDER_SPACING - BUTTON_HGT, btnWidth, BUTTON_HGT, getText("UI_NewGame_Mods") , self, MainScreen.onClickModList);
         self.modListDetail:initialise();
         self.modListDetail.borderColor = {r=1, g=1, b=1, a=0.7};
         self.modListDetail.textColor =  {r=1, g=1, b=1, a=0.7};
@@ -633,7 +647,7 @@ function MainScreen:instantiate()
     if not self.inGame then
         local termsY = self.modListDetail and self.modListDetail.y or self.reportBug.y
         termsY = termsY - UI_BORDER_SPACING - BUTTON_HGT
-        self.termsOfService = ISButton:new(self.versionDetail.x, termsY, btnWidth, BUTTON_HGT, getText("UI_TermsOfService_MainMenu"), self, MainScreen.onClickTermsOfService);
+        self.termsOfService = ISButton:new(self.reportBug.x, termsY, btnWidth, BUTTON_HGT, getText("UI_TermsOfService_MainMenu"), self, MainScreen.onClickTermsOfService);
         self.termsOfService:initialise();
         self.termsOfService.borderColor = {r=1, g=1, b=1, a=0.7};
         self.termsOfService.textColor =  {r=1, g=1, b=1, a=0.7};
@@ -647,29 +661,40 @@ function MainScreen:instantiate()
         end
     end
 
-    --
-
-    local version = getCore():getVersion();
+    local version = self.version;
     if getSteamModeActive() then
         version = getText("UI_mainscreen_version_steam", version);
     else
         version = getText("UI_mainscreen_version", version);
     end
-	self.versionLabel = ISLabel:new(-12, 0, FONT_HGT_SMALL, version , 1, 1, 1, 0.7, UIFont.Small);
-	self.versionLabel:initialise();
-	self.versionDetail:addChild(self.versionLabel);
+    local versionWidth = getTextManager():MeasureStringX(UIFont.Small, version) + 10;
+
+    self.versionBtn = ISButton:new(self.reportBug.x - 15 - versionWidth, self.reportBug:getY(), 100, BUTTON_HGT, version, self, self.copyRev);
+    self.versionBtn.borderColor.a = 0.0;
+    self.versionBtn.backgroundColor.a = 0;
+    self.versionBtn.backgroundColorMouseOver.a = 0;
+    self.versionBtn:setAnchorLeft(false)
+    self.versionBtn:setAnchorTop(false)
+    self.versionBtn:setAnchorRight(true)
+    self.versionBtn:setAnchorBottom(true)
+	self.versionBtn:initialise();
+	self:addChild(self.versionBtn);
 
     if self.inGame then
-        local seed = getText("UI_mainscreen_seed", WGParams.instance:getSeedString())
-        self.seedLabel = ISLabel:new(-12, -20, FONT_HGT_SMALL, seed , 1, 1, 1, 0.7, UIFont.Small);
+        local seed = getText("UI_mainscreen_seed", WorldGenParams.INSTANCE:getSeedString())
+        self.seedLabel = ISLabel:new(self.versionBtn.x + 5, self.versionBtn.y - FONT_HGT_SMALL, FONT_HGT_SMALL, seed, 1, 1, 1, 0.7, UIFont.Small, true);
+        self.seedLabel:setAnchorLeft(false)
+        self.seedLabel:setAnchorTop(false)
+        self.seedLabel:setAnchorRight(true)
+        self.seedLabel:setAnchorBottom(true)
         self.seedLabel:initialise();
-        self.versionDetail:addChild(self.seedLabel);
+        self:addChild(self.seedLabel);
     end
 
     self.mainOptions:create();
 
     for _,child in pairs(self.bottomPanel:getChildren()) do
-        if child ~= self.controllerLabel and child ~= self.controllerLabel2 and child ~= self.abutton and child ~= self.versionLabel then
+        if child ~= self.controllerLabel and child ~= self.controllerLabel2 and child ~= self.abutton and child ~= self.versionBtn then
             child.fade = UITransition.new()
             child.fade:setFadeIn(false)
             child.prerender = MainScreen.prerenderBottomPanelLabel
@@ -693,6 +718,7 @@ function MainScreen:instantiate()
         self.soloScreen:create();
         self.loadScreen:create();
         self.onlineCoopScreen:create();
+        self.multiplayer:create();
         self.bootstrapConnectPopup:create();
         self.connectToServer:create();
         self.serverConnectPopup:create();
@@ -707,16 +733,11 @@ function MainScreen:instantiate()
         end
         self.serverSettingsScreen:create()
 
-        -- do the update news
-            -- TODO DISABLED FOR NOW
---        if getGameVersion() ~= getCore():getSeenUpdateText() then
---			self:onClickVersionDetail()
---        end
-
-        if not getCore():isAnimPopupDone() and not (getDebug() and getDebugOptions():getBoolean("UI.DisableWelcomeMessage")) and getCore():getOptionShowWelcomeMessage() then
-            local windowSize = 600+(getCore():getOptionFontSizeReal()*100);
-            self.animPopup = ISModalRichText:new((getCore():getScreenWidth()-windowSize)/2,getCore():getScreenHeight()/2-300,windowSize,600, getText("UI_News_Anim3"), true, nil, function(_, button)
-                getCore():setOptionUsePhysicsHitReaction(button.internal == "YES")
+        if getCore():getOptionShowWelcomeMessage() then
+            local windowSize = 790+(getCore():getOptionFontSizeReal()*100);
+            self.animPopup = ISModalRichText:new((getCore():getScreenWidth()-windowSize)/2,getCore():getScreenHeight()/2-300,windowSize,600, getText("UI_B42MP"), false, nil, function(_, button)
+                getCore():setOptionShowWelcomeMessage(false)
+                getCore():saveOptions();
             end);
             self.animPopup:initialise();
             self.animPopup.backgroundColor = {r=0, g=0, b=0, a=0.9};
@@ -728,7 +749,7 @@ function MainScreen:instantiate()
             self.animPopup.prevFocus = self;
             getCore():setAnimPopupDone(true)
         end
-    
+
 --        local text = " <SIZE:medium> You're great at this! <LINE> <LINE> Let's have a look at your character information. <LINE> <LINE> <SIZE:large> Hold the <IMAGE:media/ui/backbutton.png> and select <IMAGE:media/ui/Heart2_On.png,32,32> <LINE> ";
 --        self.animPopup = ISModalRichText:new(getCore():getScreenWidth()/2-350,getCore():getScreenHeight()/2-300,900,600, text, false);
 --        self.animPopup:initialise();
@@ -761,11 +782,15 @@ function MainScreen:instantiate()
 		self.threeD:setState("sprint")
 		self.threeD:setDirection(IsoDirections.S)
     end
+
+	if not self.inGame and not isDemo() then
+		deleteAllGameModeSaves("LastStand")
+		deleteAllGameModeSaves("Tutorial")
+	end
 end
 
-function MainScreen:OnClickNews()
-    getCore():setSeenUpdateText(getGameVersion());
-    getCore():saveOptions();
+function MainScreen:copyRev()
+    Clipboard.setClipboard(getCore():getGitSha())
 end
 
 function MainScreen:render()
@@ -817,10 +842,6 @@ function MainScreen:prerender()
 
 	ISPanel.prerender(self);
     if(self.inGame) then
-        if isClient() and getPlayer():getRole() then
-            self.scoreOption:setEnabled(getPlayer():getRole():hasCapability(Capability.SeePlayersConnected))
-            self.scoreOption:setVisible(getPlayer():getRole():hasCapability(Capability.SeePlayersConnected))
-        end
         self:drawRect(0, 0, self.width, self.height, 0.5, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
         if isQuitCooldown() then
             self.exitOption:setColor(0.5, 0.5, 0.5)
@@ -884,14 +905,14 @@ function MainScreen:prerender()
             self.creditsIndex = self.creditsIndex + 1;
         end
         if self.credits:size() > self.creditsIndex and not self.inGame and ISDemoPopup.instance == nil then
-            textManager:DrawString(UIFont.Cred1, (getCore():getScreenWidth()*0.75)+50 , getCore():getScreenHeight()*0.1, self.credits:get(self.creditsIndex).title, 1, 1, 1, credAlpha2);
+            textManager:DrawString(UIFont.Small, (getCore():getScreenWidth()*0.75)+50 , getCore():getScreenHeight()*0.1, self.credits:get(self.creditsIndex).title, 1, 1, 1, credAlpha2);
 
             local x = (getCore():getScreenWidth()*0.75);
-            local xwid = textManager:MeasureStringX(UIFont.Cred2, self.credits:get(self.creditsIndex).name);
+            local xwid = textManager:MeasureStringX(UIFont.Large, self.credits:get(self.creditsIndex).name);
             if(x + xwid > getCore():getScreenWidth()) then
                x = x - ((x + xwid) - getCore():getScreenWidth()) - 10;
             end
-            textManager:DrawString(UIFont.Cred2, x, (getCore():getScreenHeight()*0.1) + 26, self.credits:get(self.creditsIndex).name, 1, 1, 1, credAlpha);
+            textManager:DrawString(UIFont.Large, x, (getCore():getScreenHeight()*0.1) + 26, self.credits:get(self.creditsIndex).name, 1, 1, 1, credAlpha);
         end
 
     end
@@ -1003,7 +1024,7 @@ end
 MainScreen.checkTutorial = function(button)
 --	return true;
 --    MainScreen.startTutorial();
-	
+
     if not getCore():isTutorialDone() then
         MainScreen.instance.tutorialButton = button
         local modal = ISModalRichText:new(getCore():getScreenWidth() / 2 - 145, getCore():getScreenHeight() / 2 - 60, 290, 120, getText("UI_Tooltip_Popup"), true, nil, MainScreen.onTutorialModalClick);
@@ -1141,7 +1162,7 @@ function MainScreen.checkSaveFile()
         text = text .. getText("IGUI_Gametime_GameMode", gameMode) .. " <LINE> <H2> "
         text = text .. " <TEXT> <RED> " .. getText("UI_mainscreen_SavefileNotFound") .. " <RGB:1,1,1> <LINE> "
         MainScreen.displayCheckSavefileModal(text, true, saveInfo.activeMods)
-        return
+        return false
     end
     local worldVersion = tonumber(saveInfo.worldVersion)
     local errorMsg = nil
@@ -1268,7 +1289,11 @@ function MainScreen.onCheckSavefileModalClick(model, button)
     end
 end
 
-function MainScreen.continueLatestSaveAux(fromResetLua)
+function MainScreen.continueLatestSaveAux(fromResetLua, checkWorldVersion)
+    if checkWorldVersion == nil then
+        checkWorldVersion = true
+    end
+    
     local defaultMods = ActiveMods.getById("default")
     local currentMods = ActiveMods.getById("currentGame")
     local saveInfo = getSaveInfo(getWorld():getWorld())
@@ -1279,6 +1304,27 @@ function MainScreen.continueLatestSaveAux(fromResetLua)
         currentMods:copyFrom(defaultMods)
     end
     if not MainScreen.checkSaveFile() then
+        return
+    end
+    if checkWorldVersion and tonumber(saveInfo.worldVersion) < 240 then
+        local modal = ISModalRichText:new(getCore():getScreenWidth() / 2 - 650 / 2,
+            getCore():getScreenHeight() / 2 - 350/2, 650, 350, getText("UI_worldscreen_SavefileOld42_13"), true,
+            nil, function(_, button)
+                if button.internal == "YES" then
+                    MainScreen.continueLatestSaveAux(fromResetLua, false)
+                end
+                MainScreen.instance.checkSavefileModal = nil
+            end)
+        modal:initialise()
+        modal:addToUIManager()
+        modal:setAlwaysOnTop(true)
+        MainScreen.instance.checkSavefileModal = modal
+        
+        local joypadData = JoypadState.getMainMenuJoypad()
+        if joypadData then
+            joypadData.focus = modal
+            updateJoypadFocus(joypadData)
+        end
         return
     end
 
@@ -1436,8 +1482,6 @@ MainScreen.continueLatestSave = function(gameMode, saveName)
 end
 
 MainScreen.onMenuItemMouseDownMainMenu = function(item, x, y)
-    print("EXITDEBUG: onMenuItemMouseDownMainMenu 1 (item="..tostring(item.internal)..")")
-
     if item.internal ~= "LATESTSAVE" then
         -- "Continue" will either play this or UIActivatePlayButton depending
         -- on whether the player exists.
@@ -1475,10 +1519,8 @@ MainScreen.onMenuItemMouseDownMainMenu = function(item, x, y)
 
     if item.internal == "EXIT" then
         if isQuitCooldown() then
-            print("EXITDEBUG: pvp quit cooldown")
             return
         end
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 2")
 --        if MainScreen.instance.inGame then
 --            saveGame();
 --            MainScreen.instance:getLatestSave();
@@ -1491,33 +1533,32 @@ MainScreen.onMenuItemMouseDownMainMenu = function(item, x, y)
         else
             MainScreen:quitToDesktopFunc()
         end
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 3")
     end
     if item.internal == "QUIT_TO_DESKTOP" then
         if isQuitCooldown() then
-            print("EXITDEBUG: pvp quit cooldown")
             return
         end
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 4")
         MainScreen:quitToDesktopFunc()
         return
     end
     if item.internal == "RETURN" then
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 5")
         ToggleEscapeMenu(getCore():getKey("Main Menu"))
         return
     end
 
+    if item.internal == "MULTIPLAYER" then
+        MainScreen.instance.bottomPanel:setVisible(false);
+        MainScreen.instance.multiplayer:setVisible(true, joypadData);
+        MainScreen.instance.multiplayer:requestServerList()
+    end
     if item.internal == "COOP" then
         MainScreen.instance.bottomPanel:setVisible(false);
         MainScreen.instance.onlineCoopScreen:aboutToShow()
         MainScreen.instance.onlineCoopScreen:setVisible(true, joypadData);
     end
     if item.internal == "SCOREBOARD" then
-        if getPlayer():getRole():hasCapability(Capability.SeePlayersConnected) then
-            MainScreen.instance.scoreboard:setVisible(true, joypadData);
-            scoreboardUpdate()
-        end
+        MainScreen.instance.scoreboard:setVisible(true, joypadData);
+        scoreboardUpdate()
     end
     if item.internal == "OPTIONS" then
         MainScreen.instance.mainOptions:toUI()
@@ -1540,26 +1581,22 @@ MainScreen.onMenuItemMouseDownMainMenu = function(item, x, y)
         ModSelector.instance.returnToUI = MainScreen.instance
     end
     if item.internal == "ADMINPANEL" then
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 5")
         if ISAdminPanelUI.instance then
             ISAdminPanelUI.instance:close()
         end
         local modal = ISAdminPanelUI:new(200, 200, 350, 400)
         modal:initialise();
         modal:addToUIManager();
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 6")
         ToggleEscapeMenu(getCore():getKey("Main Menu"))
         return
     end
     if item.internal == "USERPANEL" then
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 7")
         if ISUserPanelUI.instance then
             ISUserPanelUI.instance:close()
         end
         local modal = ISUserPanelUI:new(200, 200, 400, 250, getPlayer())
         modal:initialise();
         modal:addToUIManager();
-        print("EXITDEBUG: onMenuItemMouseDownMainMenu 8")
         ToggleEscapeMenu(getCore():getKey("Main Menu"))
         return
     end
@@ -1649,35 +1686,6 @@ function MainScreen:onConfirmQuitToDesktop(button)
         MainScreen.instance.bottomPanel:setVisible(true)
     end
     self.quitToDesktopDialog = nil
-end
-
-function MainScreen:onClickVersionDetail()
-    if not self.infoRichText then
-        self.infoRichText = ISNewsUpdate:new(0,0,getCore():getScreenWidth() - 300,getCore():getScreenHeight()-150, false, self, MainScreen.OnClickNews);
-        self.infoRichText:setX(getCore():getScreenWidth() / 2 - self.infoRichText.width/2);
-        self.infoRichText:setY(getCore():getScreenHeight() / 2 - self.infoRichText.height/2);
-        self.infoRichText:initialise();
-        self.infoRichText:addToUIManager();
-        self.infoRichText.backgroundColor = {r=0, g=0, b=0, a=0.9};
-        self.infoRichText.alwaysOnTop = true;
-        self.infoRichText:setVisible(true);
-        self.infoRichText:bringToTop();
-    else
-        self.infoRichText:setVisible(not self.infoRichText:isVisible());
-        self.infoRichText:bringToTop();
-    end
-    local player = 0
-    if player and JoypadState.players[player+1] then
-        self.infoRichText.prevFocus = JoypadState.players[player+1].focus
-        setJoypadFocus(player, self.infoRichText)
-    else
-        local joypadData = JoypadState.getMainMenuJoypad()
-        if joypadData then
-            self.infoRichText.prevFocus = joypadData.focus
-            joypadData.focus = self.infoRichText
-            updateJoypadFocus(joypadData)
-        end
-    end
 end
 
 function MainScreen:onClickTermsOfService(button)
@@ -1961,10 +1969,12 @@ function MainScreen:onKeyRelease(key)
     local uis = {
         { self.charCreationMain },
         { self.charCreationProfession },
+        { self.lastStandPlayerSelect },
         { self.loadScreen },
         { self.mainOptions },
         { self.mapSpawnSelect },
         { self.modSelect },
+        { self.sandOptions },
         { self.soloScreen },
         { self.worldSelect }
     }
@@ -2005,12 +2015,13 @@ function MainScreen:new (inGame)
     o.creditTime = 0;
     o:doCredits();
     o.time = 0;
-    o.inGame =inGame;
+    o.inGame = inGame;
+    o.version = getCore():getVersion();
 
     useTextureFiltering(true)
     o.logoTexture = getTexture("media/ui/PZ_Logo_New.png")
     useTextureFiltering(false)
- 
+
     MainScreen.instance = o;
     MainScreenInstance = o;
     return o
@@ -2186,7 +2197,7 @@ MainScreenPanelJoinSteam = function ()
 		if JoypadState.players[player+1] then
 			setJoypadFocus(player, modal)
 		end
-	else 
+	else
 		local argsServer = getServerAddressFromArgs();
 		if argsServer then
 			local ss = argsServer:split(":")
@@ -2216,8 +2227,8 @@ function MainScreen:onGainJoypadFocus(joypadData)
 		{ self.loadOption },
         { self.tutorialOption },
 		{ self.survivalOption },
-		--{ self.onlineOption },
-		--{ self.onlineCoopOption },
+		{ self.onlineOption },
+		{ self.onlineCoopOption },
 		{ self.returnOption },
 		{ self.scoreOption },
 --		{ self.adminPanel },
@@ -2256,9 +2267,10 @@ function MainScreen:onGainJoypadFocus(joypadData)
             end
         end
     end
-    if self.joyfocus and not isIngameState() then
-        self.versionDetail:setJoypadButton(Joypad.Texture.XButton)
-        self.termsOfService:setJoypadButton(Joypad.Texture.YButton)
+    if self.joyfocus then
+        if self.termsOfService then
+            self.termsOfService:setJoypadButton(Joypad.Texture.YButton);
+        end
     end
 end
 
@@ -2271,9 +2283,7 @@ function MainScreen:onJoypadDown(button, joypadData)
     if button == Joypad.AButton and self.joypadButtonsY[self.joypadIndex] then
         MainScreen.onMenuItemMouseDownMainMenu(self.joypadButtons[self.joypadIndex], 0,0);
     end
-    if button == Joypad.XButton then
-        self.versionDetail:forceClick();
-    elseif button == Joypad.YButton then
+    if button == Joypad.YButton then
         -- the TOS button is not available in the pause menu.
         if self.termsOfService then
             self.termsOfService:forceClick();
@@ -2316,9 +2326,10 @@ function MainScreen.onResolutionChange(oldw, oldh, neww, newh)
 	self:setWidth(neww)
 	self:setHeight(newh)
 	self:recalcSize()
-
+    -- ui, widthScaleMod, heightScaleMod, minWidth, minHeight
 	local uis = {
         { self.scoreboard, 0.6, 0.7 },
+        { self.multiplayer, 1.0, 1.0 },
         { self.connectToServer, 0.7, 0.8 },
         { self.onlineCoopScreen, 0.5, 0.6 },
         { self.soloScreen, 0.7, 0.8 },
@@ -2334,7 +2345,7 @@ function MainScreen.onResolutionChange(oldw, oldh, neww, newh)
         { self.mainOptions, 0.7, 0.8 },
         { self.workshopSubmit, 0.9, 0.9 },
         { self.serverWorkshopItem, 0.9, 0.9 },
-        { self.serverSettingsScreen, 0.5, 0.8 },
+        { self.serverSettingsScreen, 0.5, 0.8, 960 },
 	}
 
 	for _,ui in ipairs(uis) do
@@ -2345,6 +2356,12 @@ function MainScreen.onResolutionChange(oldw, oldh, neww, newh)
 				width = neww * 0.95
 				height = newh * 0.95
 			end
+            if ui[4] and width < ui[4] then
+                width = ui[4]
+            end
+            if ui[5] and height < ui[5] then
+                height = ui[5]
+            end
 			ui[1]:setWidth(width)
 			ui[1]:setHeight(height)
 			ui[1]:setX((neww - width) / 2)
@@ -2383,6 +2400,9 @@ function MainScreen.onResolutionChange(oldw, oldh, neww, newh)
 	if self.serverSettingsScreen then
 		self.serverSettingsScreen:onResolutionChange(oldw, oldh, neww, newh)
 	end
+    if self.multiplayer then
+        self.multiplayer:onResolutionChange(oldw, oldh, neww, newh)
+    end
     if self.onlineCoopScreen then
         self.onlineCoopScreen:onResolutionChange(oldw, oldh, neww, newh)
     end
@@ -2444,6 +2464,7 @@ function MainScreen:getAllUIs()
 	return {
 		self.animPopup,
 		self.scoreboard,
+		self.multiplayer,
 		self.onlineCoopScreen,
 		self.soloScreen,
 		self.loadScreen,
@@ -2467,7 +2488,7 @@ function MainScreen.OnJoypadBeforeDeactivate(index)
 	local self = MainScreen.instance
 	if not self then return end
 	if self.joyfocus and self.joyfocus.id == index then
-		
+
 	end
 	if CoopCharacterCreation.instance then
 		CoopCharacterCreation.instance:OnJoypadBeforeDeactivate(index)
@@ -2493,6 +2514,29 @@ function MainScreen:getCurrentFocusForController()
 	return nil
 end
 
+function MainScreen.setKeyboardMouseActivated()
+    local joypadData = JoypadState.getMainMenuJoypad();
+    if joypadData then
+        MainScreen.instance:onLoseJoypadFocus(joypadData);
+        joypadData.player = nil;
+        if joypadData.focus ~= nil then
+            joypadData.focus:onLoseJoypadFocus(joypadData);
+            joypadData.focus = nil;
+        end;
+        if joypadData.listBox then
+            joypadData.listBox:removeFromUIManager();
+            joypadData.listBox = nil;
+        end;
+    end;
+    JoypadState.players[1] = nil;
+    JoypadState.joypads[1]:clearController();
+    if MainScreen.instance.termsOfService then
+        MainScreen.instance.termsOfService:setJoypadButton(nil);
+    end
+    MainScreen.instance.joyfocus = nil;
+    revertToKeyboardAndMouseFromMainMenu();
+end
+
 Events.OnResolutionChange.Add(MainScreen.onResolutionChange)
 
 Events.OnMainMenuEnter.Add(LoadMainScreenPanel);
@@ -2511,3 +2555,5 @@ Events.OnAcceptInvite.Add(MainScreen.onAcceptInvite);
 Events.OnSteamGameJoin.Add(MainScreenPanelJoinSteam);
 
 Events.OnJoypadBeforeDeactivate.Add(MainScreen.OnJoypadBeforeDeactivate);
+
+Events.OnGamepadDisconnect.Add(MainScreen.setKeyboardMouseActivated)

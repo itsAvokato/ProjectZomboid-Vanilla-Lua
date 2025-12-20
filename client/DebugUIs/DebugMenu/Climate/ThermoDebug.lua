@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ThermoDebug = {};
 
 ThermoDebug = ISCollapsableWindow:derive("ThermoDebug");

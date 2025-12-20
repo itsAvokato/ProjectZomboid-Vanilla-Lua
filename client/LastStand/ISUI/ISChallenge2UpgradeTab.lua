@@ -1,8 +1,3 @@
---***********************************************************
---**                      ROBERT JOHNSON                         **
---** Panel with all the character information (skills, health..) **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISChallenge2UpgradeTab = ISCollapsableWindow:derive("ISChallenge2UpgradeTab");

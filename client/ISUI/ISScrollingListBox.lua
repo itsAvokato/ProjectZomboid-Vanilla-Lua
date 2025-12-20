@@ -4,28 +4,11 @@ require "ISUI/ISMouseDrag"
 require "TimedActions/ISTimedActionQueue"
 require "TimedActions/ISEatFoodAction"
 
-
-
 ISScrollingListBox = ISPanelJoypad:derive("ISScrollingListBox");
 ISScrollingListBox.joypadListIndex = 1;
 ISScrollingListBox.stopPrerender = false;
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---
--- Created by IntelliJ IDEA.
--- User: LEMMY
--- Date: 10/10/12
--- Time: 03:48
--- To change this template use File | Settings | File Templates.
---
-
---
-
---************************************************************************--
---** ISInventoryPane:initialise
---**
---************************************************************************--
 
 function ISScrollingListBox:initialise()
 	ISPanelJoypad.initialise(self);
@@ -43,9 +26,7 @@ function ISScrollingListBox:setJoypadFocused(focused, joypadData)
 				end
 				self.selectedBeforeReset = nil
 			end
-			if self.onmousedown and self.items[self.selected] then
-				self.onmousedown(self.target, self.items[self.selected].item);
-			end
+            self:invokeOnMouseDownFunction()
 		end
 	end
 	self.joypadFocused = focused;
@@ -67,10 +48,6 @@ function ISScrollingListBox:onJoypadDirLeft(joypadData)
 	end
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ISScrollingListBox:instantiate()
 
 	--self:initialise();
@@ -302,9 +279,21 @@ function ISScrollingListBox:setOnMouseDownFunction(target, onmousedown)
 	self.target = target;
 end
 
+function ISScrollingListBox:invokeOnMouseDownFunction()
+	if self.onmousedown and self.items[self.selected] then
+		self.onmousedown(self.target, self.items[self.selected].item);
+	end
+end
+
 function ISScrollingListBox:setOnMouseDoubleClick(target, onmousedblclick)
 	self.onmousedblclick = onmousedblclick;
 	self.target = target;
+end
+
+function ISScrollingListBox:invokeOnMouseDoubleClick()
+	if self.onmousedblclick and self.items[self.selected] then
+		self.onmousedblclick(self.target, self.items[self.selected].item);
+	end
 end
 
 function ISScrollingListBox:doDrawItem(y, item, alt)
@@ -382,10 +371,13 @@ end
 
 function ISScrollingListBox.sortByName(a, b)
 	return not string.sort(a.text, b.text);
-
 end
-function ISScrollingListBox:sort()
-	table.sort(self.items, ISScrollingListBox.sortByName);
+
+function ISScrollingListBox:sort(comparator)
+    if not comparator then
+        comparator = ISScrollingListBox.sortByName
+    end
+	table.sort(self.items, comparator);
 	for i,item in ipairs(self.items) do
 		item.itemindex = i;
 	end
@@ -577,9 +569,7 @@ function ISScrollingListBox:onMouseDoubleClick(x, y)
 	if self:isMouseOverScrollBar() then
 		return self.vscroll:onMouseDoubleClick(x - self.vscroll.x, y + self:getYScroll() - self.vscroll.y)
 	end
-	if self.onmousedblclick and self.items[self.selected] ~= nil then
-		self.onmousedblclick(self.target, self.items[self.selected].item);
-	end
+	self:invokeOnMouseDoubleClick()
 end
 
 
@@ -605,9 +595,7 @@ function ISScrollingListBox:onMouseDown(x, y)
 
 	self.selected = row;
 
-	if self.onmousedown then
-		self.onmousedown(self.target, self.items[self.selected].item);
-	end
+    self:invokeOnMouseDownFunction()
 end
 
 
@@ -622,9 +610,7 @@ function ISScrollingListBox:onJoypadDirUp()
 
 	self:ensureVisible(self.selected)
 
-	if self.onmousedown and self.items[self.selected] then
-		self.onmousedown(self.target, self.items[self.selected].item);
-	end
+    self:invokeOnMouseDownFunction()
 end
 
 function ISScrollingListBox:onJoypadDirDown()
@@ -637,9 +623,7 @@ function ISScrollingListBox:onJoypadDirDown()
 
 	self:ensureVisible(self.selected)
 
-	if self.onmousedown and self.items[self.selected] then
-		self.onmousedown(self.target, self.items[self.selected].item);
-	end
+    self:invokeOnMouseDownFunction()
 end
 
 function ISScrollingListBox:ensureVisible(index)
@@ -673,7 +657,7 @@ function ISScrollingListBox:onJoypadDown(button, joypadData)
 	if button == Joypad.AButton and self.onmousedblclick then
 		if (#self.items > 0) and (self.selected ~= -1) then
 			local previousSelected = self.selected;
-			self.onmousedblclick(self.target, self.items[self.selected].item);
+			self:invokeOnMouseDoubleClick()
 			self.selected = previousSelected;
 		end
 	elseif button == Joypad.BButton and self.joypadParent then
@@ -716,11 +700,6 @@ function ISScrollingListBox:getIndexOf(itemText)
 	return -1
 end
 
-
---************************************************************************--
---** ISInventoryPane:new
---**
---************************************************************************--
 function ISScrollingListBox:new (x, y, width, height)
 	local o = {}
 	--o.data = {}
@@ -759,4 +738,3 @@ function ISScrollingListBox:new (x, y, width, height)
 	o.columns = {};
 	return o
 end
-

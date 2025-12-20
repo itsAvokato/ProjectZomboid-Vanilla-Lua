@@ -1,24 +1,11 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 20/01/2022
--- Time: 09:27
--- To change this template use File | Settings | File Templates.
---
-
 require "BuildingObjects/ISAnimalPickMateCursor"
 
 AnimalContextMenu = {};
-AnimalContextMenu.cheat = getDebug();
---AnimalContextMenu.cheat = false;
+AnimalContextMenu.cheat = false
 
 local function predicateNotBroken(item)
     return not item:isBroken()
 end
-
------
-
------
 
 AnimalContextMenu.doInventoryMenu = function(player, context, animalInv, test)
     local animal = animalInv:getAnimal();
@@ -38,7 +25,7 @@ AnimalContextMenu.doInventoryMenu = function(player, context, animalInv, test)
 end
 
 AnimalContextMenu.doFeedFromHandMenu = function(playerObj, animal, context)
-    if animal:getStats():getHunger() <= 0 then
+    if animal:getStats():get(CharacterStat.HUNGER) <= 0 then
         return;
     end
     local foods = playerObj:getInventory():getAllEvalRecurse(function(item)
@@ -206,7 +193,7 @@ AnimalContextMenu.doMenu = function(player, context, animal, test)
     end
 
     if animal:getData():getMilkQuantity() > 0.1 and animal:canBeMilked() then
-        --local bucketList = playerInv:getAllTagEval("Bucket", predicateNotBroken)
+        --local bucketList = playerInv:getAllTagEval(ItemTag.Bucket, predicateNotBroken)
         local bucketList = playerInv:getAvailableFluidContainer(animal:getData():getBreed():getMilkType())
         local choosenBuckets = {};
         local existingBucket = {};
@@ -250,7 +237,7 @@ AnimalContextMenu.doMenu = function(player, context, animal, test)
     end
 
     if animal:canBeSheared() and animal:getData():getWoolQuantity() > 1 then
-        local shears = playerInv:getAllTagRecurse("Shear", ArrayList.new());
+        local shears = playerInv:getAllTagRecurse(ItemTag.SHEAR, ArrayList.new());
         if not shears:isEmpty() then
             local shearOption = animalSubMenu:addOption(getText("ContextMenu_Shear"), nil, nil);
             local shearSubMenu = ISContextMenu:getNew(animalSubMenu);
@@ -267,23 +254,6 @@ AnimalContextMenu.doMenu = function(player, context, animal, test)
                 end
             end
         end
-
-        --local shear = playerInv:getItemFromType("SheepElectricShears", true, true) or playerInv:getItemFromType("SheepShears", true, true);
-
-        --local shear = playerInv:getFirstTagRecurse("Shear");
-        --local shearOption = animalSubMenu:addOption(getText("ContextMenu_Shear"), animal, AnimalContextMenu.onShearAnimal, playerObj, shear);
-        --local shearOk = true;
-        --if not shear then
-        --    shearOption.notAvailable = true;
-        --    local tooltip = ISWorldObjectContextMenu.addToolTip();
-        --    tooltip:setName(getText("Tooltip_Animal_NoShear"));
-        --    shearOption.toolTip = tooltip;
-        --elseif instanceof(shear, "DrainableComboItem") and shear:getCurrentUsesFloat() <= 0 then
-        --    shearOption.notAvailable = true;
-        --    local tooltip = ISWorldObjectContextMenu.addToolTip();
-        --    tooltip:setName(getText("Tooltip_Animal_ShearNoBattery"));
-        --    shearOption.toolTip = tooltip;
-        --end
     end
 
     if animal:canBePicked(playerObj) then
@@ -336,15 +306,15 @@ AnimalContextMenu.doMenu = function(player, context, animal, test)
         end
     end
 
-    if animal:getStats():getThirst() >= 0.1 then
+    if animal:getStats():get(CharacterStat.THIRST) >= 0.1 then
         AnimalContextMenu.doWaterAnimalMenu(animalSubMenu, animal, playerObj);
     end
-    if animal:getStats():getHunger() >= 0.1 then
+    if animal:getStats():get(CharacterStat.HUNGER) >= 0.1 then
         AnimalContextMenu.doFeedFromHandMenu(playerObj, animal, animalSubMenu);
     end
 
     if not animal:isWild() then
-        local weapon = playerInv:getAllTagEval("KillAnimal", predicateNotBroken);
+        local weapon = playerInv:getAllTagEval(ItemTag.KILL_ANIMAL, predicateNotBroken);
         if animal:canBeKilledWithoutWeapon() or (weapon and not weapon:isEmpty()) then
             local option = animalSubMenu:addOption(getText("ContextMenu_KillAnimal"), animal, AnimalContextMenu.onKillAnimal, playerObj);
             if animal:canBeKilledWithoutWeapon() then
@@ -362,93 +332,93 @@ AnimalContextMenu.doMenu = function(player, context, animal, test)
     end
 
     if AnimalContextMenu.cheat then
-        local debugOption = animalSubMenu:addDebugOption("Debug", nil, nil)
+        local debugOption = animalSubMenu:addOption("Debug", nil, nil)
         local debugSubMenu = ISContextMenu:getNew(animalSubMenu);
         context:addSubMenu(debugOption, debugSubMenu);
 
-        debugSubMenu:addDebugOption(getText("ContextMenu_RemoveAnimal"), animal, AnimalContextMenu.onRemoveAnimal, playerObj);
-        debugSubMenu:addDebugOption(getText("ContextMenu_AnimalBehaviorDebug"), animal, AnimalContextMenu.onAnimalBehavior, playerObj);
-        debugSubMenu:addDebugOption(getText("ContextMenu_SetAnimalAge"), animal, AnimalContextMenu.onSetAnimalAge, player);
+        debugSubMenu:addOption(getText("ContextMenu_RemoveAnimal"), animal, AnimalContextMenu.onRemoveAnimal, playerObj);
+        debugSubMenu:addOption(getText("ContextMenu_AnimalBehaviorDebug"), animal, AnimalContextMenu.onAnimalBehavior, playerObj);
+        debugSubMenu:addOption(getText("ContextMenu_SetAnimalAge"), animal, AnimalContextMenu.onSetAnimalAge, player);
         if animal:getMilkType() then
-            debugSubMenu:addDebugOption(getText("ContextMenu_AddBucketMilk"), animal, AnimalContextMenu.onAddBucketMilk, playerObj);
+            debugSubMenu:addOption(getText("ContextMenu_AddBucketMilk"), animal, AnimalContextMenu.onAddBucketMilk, playerObj);
         end
         if animal:getBabyType() then
             if animal:getEggsPerDay() > 0 then
-                debugSubMenu:addDebugOption(getText("ContextMenu_AddEgg"), animal, AnimalContextMenu.onAddEgg, playerObj);
+                debugSubMenu:addOption(getText("ContextMenu_AddEgg"), animal, AnimalContextMenu.onAddEgg, playerObj);
                 if animal:getData():isFertilized() then
-                    debugSubMenu:addDebugOption(getText("ContextMenu_RemoveFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, false);
-                    debugSubMenu:addDebugOption(getText("ContextMenu_SetFertilizedTime"), animal, AnimalContextMenu.SetFertilizedTime, player);
+                    debugSubMenu:addOption(getText("ContextMenu_RemoveFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, false);
+                    debugSubMenu:addOption(getText("ContextMenu_SetFertilizedTime"), animal, AnimalContextMenu.SetFertilizedTime, player);
                 else
-                    debugSubMenu:addDebugOption(getText("ContextMenu_SetFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, true);
-                    debugSubMenu:addDebugOption("Pick male to mate with", animal, AnimalContextMenu.PickMate, playerObj)
+                    debugSubMenu:addOption(getText("ContextMenu_SetFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, true);
+                    debugSubMenu:addOption("Pick male to mate with", animal, AnimalContextMenu.PickMate, playerObj)
                 end
             else
                 if animal:getData():isFertilized() then
-                    debugSubMenu:addDebugOption(getText("ContextMenu_RemoveFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, false);
+                    debugSubMenu:addOption(getText("ContextMenu_RemoveFertilized"), animal, AnimalContextMenu.SetFertilized, playerObj, false);
                 else
-                    debugSubMenu:addDebugOption("Pick male to mate with", animal, AnimalContextMenu.PickMate, playerObj)
+                    debugSubMenu:addOption("Pick male to mate with", animal, AnimalContextMenu.PickMate, playerObj)
                 end
                 if animal:getData():isPregnant() then
-                    debugSubMenu:addDebugOption(getText("ContextMenu_StopPregnancy"), animal, AnimalContextMenu.Impregnate, playerObj, false);
-                    debugSubMenu:addDebugOption(getText("ContextMenu_SetPregnancyPeriod"), animal, AnimalContextMenu.SetPregnancyPeriod, player);
+                    debugSubMenu:addOption(getText("ContextMenu_StopPregnancy"), animal, AnimalContextMenu.Impregnate, playerObj, false);
+                    debugSubMenu:addOption(getText("ContextMenu_SetPregnancyPeriod"), animal, AnimalContextMenu.SetPregnancyPeriod, player);
                 else
-                    debugSubMenu:addDebugOption(getText("ContextMenu_Impregnate"), animal, AnimalContextMenu.Impregnate, playerObj, true);
+                    debugSubMenu:addOption(getText("ContextMenu_Impregnate"), animal, AnimalContextMenu.Impregnate, playerObj, true);
                 end
-                debugSubMenu:addDebugOption(getText("ContextMenu_AddAnimalBaby"), animal, AnimalContextMenu.onAddAnimalBaby, playerObj);
+                debugSubMenu:addOption(getText("ContextMenu_AddAnimalBaby"), animal, AnimalContextMenu.onAddAnimalBaby, playerObj);
             end
         end
         if animal:getData():canHaveMilk() then
-            debugSubMenu:addDebugOption(getText("ContextMenu_SetMilkQty"), animal, AnimalContextMenu.onSetMilkQty, player);
+            debugSubMenu:addOption(getText("ContextMenu_SetMilkQty"), animal, AnimalContextMenu.onSetMilkQty, player);
         end
         if animal:canBeSheared() then
-            debugSubMenu:addDebugOption(getText("ContextMenu_SetWoolQty"), animal, AnimalContextMenu.onSetWoolQty, player);
+            debugSubMenu:addOption(getText("ContextMenu_SetWoolQty"), animal, AnimalContextMenu.onSetWoolQty, player);
         end
 
-        debugSubMenu:addDebugOption(getText("ContextMenu_SetAnimalHungry"), animal, AnimalContextMenu.onSetHungry, playerObj);
+        debugSubMenu:addOption(getText("ContextMenu_SetAnimalHungry"), animal, AnimalContextMenu.onSetHungry, playerObj);
 
-        debugSubMenu:addDebugOption(getText("ContextMenu_ModifyGenome"), animal, AnimalContextMenu.onAnimalGenome, playerObj);
+        debugSubMenu:addOption(getText("ContextMenu_ModifyGenome"), animal, AnimalContextMenu.onAnimalGenome, playerObj);
 
-        debugSubMenu:addDebugOption("Simulate 24 hours meta grow", animal, AnimalContextMenu.onForceAnimalGrowAway, playerObj);
+        debugSubMenu:addOption("Simulate 24 hours meta grow", animal, AnimalContextMenu.onForceAnimalGrowAway, playerObj);
 
-        debugSubMenu:addDebugOption("Set Stress", animal, AnimalContextMenu.onDebugSetStress, player);
+        debugSubMenu:addOption("Set Stress", animal, AnimalContextMenu.onDebugSetStress, player);
 
-        debugSubMenu:addDebugOption("Full Acceptance", animal, AnimalContextMenu.onDebugSetAcceptance, playerObj, 100);
+        debugSubMenu:addOption("Full Acceptance", animal, AnimalContextMenu.onDebugSetAcceptance, playerObj, 100);
 
-        debugSubMenu:addDebugOption("Attack Player", animal, AnimalContextMenu.onDebugAttackPlayer, playerObj);
+        debugSubMenu:addOption("Attack Player", animal, AnimalContextMenu.onDebugAttackPlayer, playerObj);
 
-        debugSubMenu:addDebugOption("Kill", animal, AnimalContextMenu.onKill, playerObj);
+        debugSubMenu:addOption("Kill", animal, AnimalContextMenu.onKill, playerObj);
 
         if not animal:isAnimalSitting() then
-            debugSubMenu:addDebugOption("Force sit", animal, AnimalContextMenu.onForceSit, playerObj);
+            debugSubMenu:addOption("Force sit", animal, AnimalContextMenu.onForceSit, playerObj);
         else
-            debugSubMenu:addDebugOption("Force stand up", animal, AnimalContextMenu.onForceSit, playerObj);
+            debugSubMenu:addOption("Force stand up", animal, AnimalContextMenu.onForceSit, playerObj);
         end
 
-        debugSubMenu:addDebugOption("Random Idle Anim", animal, AnimalContextMenu.onRandomIdleAnim, playerObj);
+        debugSubMenu:addOption("Random Idle Anim", animal, AnimalContextMenu.onRandomIdleAnim, playerObj);
         if animal:haveHappyAnim() then
-            debugSubMenu:addDebugOption("Random Happy Anim", animal, AnimalContextMenu.onRandomHappyAnim, playerObj);
+            debugSubMenu:addOption("Random Happy Anim", animal, AnimalContextMenu.onRandomHappyAnim, playerObj);
         end
 
         local text = "Make Invincible";
         if animal:isInvincible() then
             text = "Remove Invicibility";
         end
-        debugSubMenu:addDebugOption(text, animal, AnimalContextMenu.onToggleInvincible, playerObj, 100);
+        debugSubMenu:addOption(text, animal, AnimalContextMenu.onToggleInvincible, playerObj, 100);
         if animal:canHaveEggs() then
-            debugSubMenu:addDebugOption("Force egg now", animal, AnimalContextMenu.onDebugForceEgg, playerObj);
+            debugSubMenu:addOption("Force egg now", animal, AnimalContextMenu.onDebugForceEgg, playerObj);
         end
         if animal:needHutch() then
-            debugSubMenu:addDebugOption("Force enter hutch for 2h", animal, AnimalContextMenu.onDebugForceHutch, playerObj);
+            debugSubMenu:addOption("Force enter hutch for 2h", animal, AnimalContextMenu.onDebugForceHutch, playerObj);
         end
         if animal:canPoop() then
-            debugSubMenu:addDebugOption("Force poop", animal, AnimalContextMenu.onDebugForcePoop, playerObj);
+            debugSubMenu:addOption("Force poop", animal, AnimalContextMenu.onDebugForcePoop, playerObj);
         end
-        debugSubMenu:addDebugOption("Force wander now", animal, AnimalContextMenu.onForceWanderNow, playerObj);
-        debugSubMenu:addDebugOption("Force eat from mom", animal, AnimalContextMenu.onForceEatMom, playerObj);
+        debugSubMenu:addOption("Force wander now", animal, AnimalContextMenu.onForceWanderNow, playerObj);
+        debugSubMenu:addOption("Force eat from mom", animal, AnimalContextMenu.onForceEatMom, playerObj);
 
-        debugSubMenu:addDebugOption("Set on fire", animal, AnimalContextMenu.onSetFire, playerObj);
+        debugSubMenu:addOption("Set on fire", animal, AnimalContextMenu.onSetFire, playerObj);
 
-        debugSubMenu:addDebugOption("Generate world sound", animal, AnimalContextMenu.onGenerateWorldSound, playerObj);
+        debugSubMenu:addOption("Generate world sound", animal, AnimalContextMenu.onGenerateWorldSound, playerObj);
 
         --debugSubMenu:addDebugOption("SANTA!", animal, AnimalContextMenu.onSanta, playerObj);
         --debugSubMenu:addDebugOption("Bowtie Gold", animal, AnimalContextMenu.onBowtieGold, playerObj);
@@ -561,7 +531,12 @@ AnimalContextMenu.onAnimalBehavior = function(animal, player)
 end
 
 AnimalContextMenu.onRandomIdleAnim = function(animal)
-    animal:debugRandomIdleAnim();
+    if isClient() then
+        sendClientCommandV(playerObj, "animal", "randomIdle",
+                "id", animal:getOnlineID())
+    else
+        animal:debugRandomIdleAnim();
+    end
 end
 
 AnimalContextMenu.onRandomHappyAnim = function(animal, playerObj)
@@ -584,7 +559,12 @@ AnimalContextMenu.onKill = function(animal, playerObj)
 end
 
 AnimalContextMenu.onForceSit = function(animal)
-    animal:debugForceSit();
+    if isClient() then
+        sendClientCommandV(playerObj, "animal", "forceSit",
+                "id", animal:getOnlineID())
+    else
+        animal:debugForceSit();
+    end
 end
 
 AnimalContextMenu.onToggleInvincible = function(animal, playerObj)
@@ -650,7 +630,7 @@ end
 
 AnimalContextMenu.onDebugAttackPlayer = function(animal, playerObj)
     if isClient() then
-        -- TODO
+        sendClientCommandV(playerObj, "animal", "attackPlayer", "id", animal:getOnlineID())
     else
         animal:getBehavior():goAttack(playerObj)
     end
@@ -667,7 +647,7 @@ end
 
 AnimalContextMenu.doAnimalBodyMenuFromInv = function(context, playerObj, animalbody)
     if animalbody:hasAnimalParts() and not playerObj:getVehicle() then
-        local knife = playerObj:getInventory():getFirstTagEvalRecurse("ButcherAnimal", predicateNotBroken)
+        local knife = playerObj:getInventory():getFirstTagEvalRecurse(ItemTag.BUTCHER_ANIMAL, predicateNotBroken)
         local butcherOption = context:addOption(getText("ContextMenu_ButcherAnimal", animalbody:getDisplayName()), animalbody, AnimalContextMenu.onButcherAnimalFromInv, playerObj, knife);
         if not knife then
             butcherOption.notAvailable = true;
@@ -696,7 +676,7 @@ AnimalContextMenu.doAnimalBodyMenu = function(context, player, animalbody)
     ISWorldObjectContextMenu.initWorldItemHighlightOption(grabOption, animalbody)
 
     if animalbody:hasAnimalParts() then
-        local knife = playerObj:getInventory():getFirstTagEvalRecurse("ButcherAnimal", predicateNotBroken)
+        local knife = playerObj:getInventory():getFirstTagEvalRecurse(ItemTag.BUTCHER_ANIMAL, predicateNotBroken)
         local butcherOption = context:addOption(getText("ContextMenu_ButcherAnimal", animalbody:getCustomName()), animalbody, AnimalContextMenu.onButcherAnimal, playerObj, knife);
         if not knife then
             butcherOption.notAvailable = true;
@@ -783,8 +763,8 @@ AnimalContextMenu.onSetHungry = function(animal, playerObj)
                 "id", animal:getOnlineID(),
                 "value", 1)
     else
-        animal:getStats():setHunger(1);
-        animal:getStats():setThirst(1);
+        animal:getStats():set(CharacterStat.HUNGER, 1);
+        animal:getStats():set(CharacterStat.THIRST, 1);
     end
 end
 
@@ -1165,7 +1145,7 @@ function AnimalContextMenu:onKillAnimalConfirm(button)
             ISInventoryPaneContextMenu.dropItem(animalItem, playerObj:getPlayerNum())
         end
         if not animal:canBeKilledWithoutWeapon() then
-            local weapon = playerObj:getInventory():getAllTagEval("KillAnimal", predicateNotBroken):get(0);
+            local weapon = playerObj:getInventory():getAllTagEval(ItemTag.KILL_ANIMAL, predicateNotBroken):get(0);
             ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), weapon, true, weapon:isTwoHandWeapon())
         end
         if luautils.walkAdj(playerObj, animal:getSquare()) then
@@ -1197,7 +1177,13 @@ function AnimalContextMenu.attachAnimalToObject(attachAnimalTo, playerObj, world
                     text = getText("IGUI_Breed_" .. animal:getData():getBreed():getName()) .. " " .. text;
                 end
                 text = animal:getCustomName() or text;
-                subMenu:addOption(text , animal, ISWorldObjectContextMenu.onAttachAnimalToTree, playerObj, attachAnimalTo);
+                local animalOption = subMenu:addOption(text, animal, ISWorldObjectContextMenu.onAttachAnimalToTree, playerObj, attachAnimalTo);
+                animalOption.onHighlightParams = { animal }
+                animalOption.onHighlight = function(_option, _menu, _isHighlighted, _animal)
+                    _animal:setOutlineHighlight(_menu.player, true)
+                    _animal:setOutlineHighlightCol(_menu.player, 1, 1, 1, 1)
+                    _menu.highlightedOption = nil -- call every render()
+                end
             end
         end
     end
@@ -1225,7 +1211,7 @@ function AnimalContextMenu.showRadialMenu(playerObj)
     local animal = AnimalContextMenu.getAnimalToInteractWith(playerObj);
     if not animal or animal:isWild() then return; end
 
-    local weapon = playerObj:getInventory():getAllTagEval("KillAnimal", predicateNotBroken);
+    local weapon = playerObj:getInventory():getAllTagEval(ItemTag.KILL_ANIMAL, predicateNotBroken);
     if weapon and not weapon:isEmpty() then
         menu:addSlice(getText("ContextMenu_KillAnimal"), getTexture("media/ui/AnimalActions_Kill.png"), AnimalContextMenu.onKillAnimal, animal, playerObj);
     end
@@ -1256,9 +1242,19 @@ function AnimalContextMenu.showRadialMenu(playerObj)
             menu:addSlice(getText("ContextMenu_AttachAnimal"), getTexture("media/ui/AnimalActions_Rope.png"), AnimalContextMenu.onAttachAnimal, animal, playerObj);
         end
     end
+    if (animal:getBehavior():canBeAttached() or AnimalContextMenu.cheat) and animal:getData():getAttachedPlayer() then
+        menu:addSlice(getText("ContextMenu_DetachAnimal"), getTexture("media/ui/AnimalActions_Rope.png"), AnimalContextMenu.onDetachAnimal, animal, playerObj);
+    end
+    if animal:getData():getAttachedTree() then
+        local text = getText("ContextMenu_DetachAnimalFromObject", animal:getData():getAttachedTree():getName())
+        if instanceof(animal:getData():getAttachedTree(), "IsoTree") then
+            text = getText("ContextMenu_DetachAnimalFromTree");
+        end
+        menu:addSlice(text, getTexture("media/ui/AnimalActions_Rope.png"), AnimalContextMenu.onDetachAnimalTree, animal, playerObj);
+    end
 
     if animal:canBeSheared() and animal:getData():getWoolQuantity() > 1 then
-        local shears = playerObj:getInventory():getAllTagRecurse("Shear", ArrayList.new());
+        local shears = playerObj:getInventory():getAllTagRecurse(ItemTag.SHEAR, ArrayList.new());
         if not shears:isEmpty() then
             menu:addSlice(getText("ContextMenu_Shear"), getTexture("media/ui/AnimalActions_Shear.png"), AnimalContextMenu.onShearAnimal, animal, playerObj, shears:get(0));
         end

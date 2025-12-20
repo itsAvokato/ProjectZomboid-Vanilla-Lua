@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default entity ui window.
---]]
-
 require "Entity/ISUI/ISBaseEntityWindow"
 
 ISEntityWindow = ISBaseEntityWindow:derive("ISEntityWindow");
@@ -57,13 +48,7 @@ function ISEntityWindow:createChildren()
     self:xuiRecalculateLayout();
 end
 
---[[
-    Function calculateLayout can be given a preferred with and height, which may be passed nil or 0 to ignore.
-    Note that there is no guarantee this will be the actual width or height.
-    The actual width and height may be limited to the minimum sizes of child elements.
---]]
 function ISEntityWindow:calculateLayout(_preferredWidth, _preferredHeight)
-    --print("############# CALC LAYOUT ##############")
     self:validateSizeBounds();
 
     local th = self:titleBarHeight();

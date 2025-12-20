@@ -4,7 +4,7 @@ Fishing.Fish = {}
 
 local Fish = Fishing.Fish
 
-function Fish:new(character, lure, fishingRod, x, y)
+function Fish:new(character, lure, isReel, x, y)
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -13,7 +13,7 @@ function Fish:new(character, lure, fishingRod, x, y)
     o.x = x
     o.y = y
     o.isRiver = Fishing.isRiver(x, y)   --getCell():getGridSquare(x, y, 0):getWater():getFlow() > 0
-	o.fishingRod = fishingRod
+	o.isReel = isReel
     o.lure = lure
     o.fishingLvl = character:getPerkLevel(Perks.Fishing)
 
@@ -67,7 +67,6 @@ end
 
 function Fish:getFishByLure()
     local item = nil
-	local isReel = self.fishingRod:getTension() >= 0.1
     local trashFactor = FishSchoolManager.getInstance():getTrashAbundance(self.x, self.y)
 	
 	-- Set speed to Normal in case players have sped their game up.
@@ -97,7 +96,7 @@ function Fish:getFishByLure()
         for _, fishConfig in ipairs(Fishing.fishes) do
 			local canCatch = fishConfig.maxWeight <= skillSizeLimit
             if fishConfig.isPredator then
-                if not isReel then
+                if not self.isReel then
                     canCatch = false
                 end
             end

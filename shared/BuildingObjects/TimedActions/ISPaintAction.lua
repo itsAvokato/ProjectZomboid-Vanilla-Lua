@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPaintAction = ISBaseTimedAction:derive("ISPaintAction");
@@ -52,17 +48,17 @@ function ISPaintAction:complete()
             north = "North";
         end
     else
-        if self.thumpable:getSprite():getProperties():Is("WallN") == true or
-                self.thumpable:getSprite():getProperties():Is(IsoFlagType.WindowN) == true or
-                self.thumpable:getSprite():getProperties():Is("DoorWallN") == true then
+        if self.thumpable:getSprite():getProperties():has("WallN") == true or
+                self.thumpable:getSprite():getProperties():has(IsoFlagType.WindowN) == true or
+                self.thumpable:getSprite():getProperties():has("DoorWallN") == true then
             north = "North";
         end
-        if self.thumpable:getSprite():getProperties():Is("WallNW") == true then
+        if self.thumpable:getSprite():getProperties():has("WallNW") == true then
             north = "Corner";
         end
     end
     local sprite = nil;
-    local paintingType = self.thumpable:getSprite():getProperties():Val("PaintingType");
+    local paintingType = self.thumpable:getSprite():getProperties():get("PaintingType");
     if self.isThump then
         if Painting[ISPaintMenu.getWallType(self.thumpable)] then
             sprite = Painting[ISPaintMenu.getWallType(self.thumpable)][self.painting .. north];

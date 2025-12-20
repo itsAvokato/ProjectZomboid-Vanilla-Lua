@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "OptionScreens/ModSelector/ModSelector"
 
@@ -107,6 +103,7 @@ function ModListPanel:createChildren()
     self.searchEntry.setText = ModListPanel.setText
     self.searchEntry:initialise()
     self.searchEntry:instantiate()
+    self.searchEntry:setClearButton(true)
     self.filterPanel:addChild(self.searchEntry)
 
     local tickboxWidth = BUTTON_HGT + UI_BORDER_SPACING + getTextManager():MeasureStringX(UIFont.Small, getText("UI_modselector_showEnabledMods"))
@@ -202,8 +199,6 @@ function ModListPanel:onOptionMouseDown(button, x, y)
         self:updateView()
     end
 end
-
-------------------
 
 function ModListPanel.setText(self, str)
     if not str then

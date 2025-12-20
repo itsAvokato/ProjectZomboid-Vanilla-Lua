@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISAdminTicketsUI = ISPanel:derive("ISAdminTicketsUI");
 ISAdminTicketsUI.messages = {};
 
@@ -15,11 +11,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 local COL_1_WIDTH = 200
 local COL_2_WIDTH = 50
 local COL_3_WIDTH = 75
-
---************************************************************************--
---** ISAdminTicketsUI:initialise
---**
---************************************************************************--
 
 function ISAdminTicketsUI:initialise()
     ISPanel.initialise(self);
@@ -259,10 +250,6 @@ function ISAdminTicketsUI:onAnswerTicket(button)
     end
 end
 
---************************************************************************--
---** ISAdminTicketsUI:new
---**
---************************************************************************--
 function ISAdminTicketsUI:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

@@ -38,7 +38,6 @@ function ISStatisticsPanel:render()
 end
 
 function ISStatisticsPanel:renderStatistics()
-    local statisticsData = getMPStatistics()
 
     --base measurements
     local width = self.width - SCROLLBAR;
@@ -56,178 +55,72 @@ function ISStatisticsPanel:renderStatistics()
     local cC = width - (width/4) - UI_BORDER_SPACING;
     local sC = width - UI_BORDER_SPACING;
 
-    --CPU
-    if ISStatisticsUI.instance.showCPU then
-        entries = 3 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("CPU", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Cores :", lC, statisticsData.clientCPUCores, cC, statisticsData.serverCPUCores, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Load (%) :", lC, statisticsData.clientCPULoad, cC, statisticsData.serverCPULoad, sC, y, dR, dG, dB, dA, false)
-        y = y + UI_BORDER_SPACING
-    end
+    --PERFORMANCE
+    if ISStatisticsUI.instance.showPerformance then
 
-    --MEMORY
-    if ISStatisticsUI.instance.showMemory then
-        entries = 5 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Memory", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Free (MB) :", lC, statisticsData.clientMemFree, cC, statisticsData.serverMemFree, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Used (MB) :", lC, statisticsData.clientMemUsed, cC, statisticsData.serverMemUsed, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Total (MB) :", lC, statisticsData.clientMemTotal, cC, statisticsData.serverMemTotal, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Max (MB) :", lC, statisticsData.clientMemMax, cC, statisticsData.serverMemMax, sC, y, dR, dG, dB, dA, false)
-        y = y + UI_BORDER_SPACING
-    end
+        local performanceLocal = getPerformanceLocal()
+        local performanceRemote = getPerformanceRemote()
 
-    --FPS
-    if ISStatisticsUI.instance.showFPS then
-        entries = 3 --include title row
+        entries = 8 --include title row
         self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
         self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("FPS", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
+        y = self:drawRow("Performance", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
         self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Main :", lC, statisticsData.clientFPS, cC, statisticsData.serverFPS, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Networking :", lC, "", cC, statisticsData.serverNetworkingFPS, sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("Free (MB) :", lC, tostring(performanceLocal["memory-free"]), cC, tostring(performanceRemote["memory-free"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("Used (MB) :", lC, tostring(performanceLocal["memory-used"]), cC, tostring(performanceRemote["memory-used"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("Total (MB) :", lC, tostring(performanceLocal["memory-total"]), cC, tostring(performanceRemote["memory-total"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("Max (MB) :", lC, tostring(performanceLocal["memory-max"]), cC, tostring(performanceRemote["memory-max"]), sC, y, dR, dG, dB, dA, false)
+        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
+        y = self:drawRow("FPS :", lC, tostring(performanceLocal["fps"]), cC, tostring(performanceRemote["fps"]), sC, y, dR, dG, dB, dA, true)
         y = y + UI_BORDER_SPACING
     end
 
     --NETWORK
     if ISStatisticsUI.instance.showNetwork then
-        entries = 5 --include title row
+
+        local networkLocal = getNetworkLocal()
+        local networkRemote = getNetworkRemote()
+
+        entries = 11 --include title row
         self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
         self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
         y = self:drawRow("Network", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
         self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("RX (KB) :", lC, statisticsData.clientRX, cC, statisticsData.serverRX, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("TX (KB) :", lC, statisticsData.clientTX, cC, statisticsData.serverTX, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Resent (KB) :", lC, statisticsData.clientResent, cC, statisticsData.serverResent, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Loss (%) :", lC, statisticsData.clientLoss, cC, statisticsData.serverLoss, sC, y, dR, dG, dB, dA, false)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --VOIP
-    if ISStatisticsUI.instance.showVOIP then
-        entries = 4 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("VOIP", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
+        y = self:drawRow("RX (P) :", lC, tostring(networkLocal["received-packets"]), cC, tostring(networkRemote["received-packets"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("TX (P) :", lC, tostring(networkLocal["sent-packets"]), cC, tostring(networkRemote["sent-packets"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("RX (KB) :", lC, tostring(networkLocal["received-bytes"]), cC, tostring(networkRemote["received-bytes"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("TX (KB) :", lC, tostring(networkLocal["sent-bytes"]), cC, tostring(networkRemote["sent-bytes"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("RAKNET RX (KB) :", lC, tostring(networkLocal["last-actual-bytes-received"]), cC, tostring(networkRemote["last-actual-bytes-received"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("RAKNET TX (KB) :", lC, tostring(networkLocal["last-actual-bytes-sent"]), cC, tostring(networkRemote["last-actual-bytes-sent"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("RAKNET Resent (KB) :", lC, tostring(networkLocal["last-user-message-bytes-resent"]), cC, tostring(networkRemote["last-user-message-bytes-resent"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("RAKNET Loss (%) :", lC, tostring(networkLocal["packet-loss-last-second"]), cC, tostring(networkRemote["packet-loss-last-second"]), sC, y, dR, dG, dB, dA, false)
         self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("RX (KB) :", lC, statisticsData.clientVOIPRX, cC, statisticsData.serverVOIPRX, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("TX (KB) :", lC, statisticsData.clientVOIPTX, cC, statisticsData.serverVOIPTX, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Source :", lC, statisticsData.clientVOIPSource, cC, statisticsData.clientVOIPFreq, sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("VOIP RX (KB) :", lC, tostring(networkLocal["voip-received"]), cC, tostring(networkRemote["voip-received"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("VOIP TX (KB) :", lC, tostring(networkLocal["voip-sent"]), cC, tostring(networkRemote["voip-sent"]), sC, y, dR, dG, dB, dA, false)
         y = y + UI_BORDER_SPACING
     end
 
-    --PING
-    if ISStatisticsUI.instance.showPing then
-        entries = 4 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Ping", lC, "", cC, "", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Last :", lC, "", cC, statisticsData.clientLastPing, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Average :", lC, "", cC, statisticsData.clientAvgPing, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Minimum :", lC, "", cC, statisticsData.clientMinPing, sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
+    --CHARACTERS
+    if ISStatisticsUI.instance.showCharacters then
 
-    --PACKET PING
-    if ISStatisticsUI.instance.showPing then
-        entries = 6 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --
-        y = self:drawRow("Packet Ping", lC, "", cC, "", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Last :", lC, "", cC, statisticsData.serverPingLast, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Average :", lC, "", cC, statisticsData.serverPingAvg, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Loss :", lC, "", cC, statisticsData.serverPingLoss, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Maximum :", lC, "", cC, statisticsData.serverPingMax, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Minimum :", lC, "", cC, statisticsData.serverPingMin, sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
+        local gameLocal = getGameLocal()
+        local gameRemote = getGameRemote()
 
-    --TIME
-    if ISStatisticsUI.instance.showTime then
-        entries = 4 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --
-        y = self:drawRow("Time", lC, "", cC, "", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Client :", lC, "", cC, statisticsData.clientTime, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Server :", lC, "", cC, statisticsData.serverTime, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("World :", lC, "", cC, getWorldAge(), sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --PLAYERS
-    if ISStatisticsUI.instance.showPlayers then
-        entries = 2 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Players", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Connected :", lC, statisticsData.clientPlayers, cC, statisticsData.serverPlayers, sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --ANIMALS
-    if ISStatisticsUI.instance.showAnimals then
-        entries = 3 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Animals", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Objects :", lC, statisticsData.clientAnimalObjects, cC, statisticsData.serverAnimalObjects, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Instances :", lC, statisticsData.clientAnimalInstances, cC, statisticsData.serverAnimalInstances, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Owned :", lC, statisticsData.clientAnimalOwned, cC, statisticsData.serverAnimalOwned, sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --ZOMBIES
-    if ISStatisticsUI.instance.showZombies then
-        entries = 8 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Zombies", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
-        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Total :", lC, statisticsData.clientZombiesTotal, cC, statisticsData.serverZombiesTotal, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Loaded :", lC, statisticsData.clientZombiesLoaded, cC, statisticsData.serverZombiesLoaded, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Simulated :", lC, statisticsData.clientZombiesSimulated, cC, statisticsData.serverZombiesSimulated, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Culled :", lC, statisticsData.clientZombiesCulled, cC, statisticsData.serverZombiesCulled, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Authorized :", lC, statisticsData.clientZombiesAuthorized, cC, statisticsData.serverZombiesAuthorized, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Unauthorized :", lC, statisticsData.clientZombiesUnauthorized, cC, statisticsData.serverZombiesUnauthorized, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Reusable :", lC, statisticsData.clientZombiesReusable, cC, statisticsData.serverZombiesReusable, sC, y, dR, dG, dB, dA, true)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --CHUNKS
-    if ISStatisticsUI.instance.showChunks then
         entries = 9 --include title row
         self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
         self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Chunks", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
+        y = self:drawRow("Characters", lC, "Client", cC, "Server", sC, y, hR, hG, hB, hA, false)
         self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
-        y = self:drawRow("Relevant :", lC, statisticsData.clientRelevantChunks, cC, statisticsData.serverRelevantChunks, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Stored :", lC, statisticsData.clientStoredChunks, cC, statisticsData.serverStoredChunks, sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Waiting :", lC, "", cC, statisticsData.serverWaitingRequests, sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Sent :", lC, statisticsData.clientSentRequests, cC, "", sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Requested1 :", lC, statisticsData.requested1, cC, "", sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Requested2 :", lC, statisticsData.requested2, cC, "", sC, y, dR, dG, dB, dA, false)
-        y = self:drawRow("Pending1 :", lC, statisticsData.pending1, cC, "", sC, y, dR, dG, dB, dA, true)
-        y = self:drawRow("Pending2 :", lC, statisticsData.pending2, cC, "", sC, y, dR, dG, dB, dA, false)
-        y = y + UI_BORDER_SPACING
-    end
-
-    --VERSION
-    if ISStatisticsUI.instance.showVersion then
-        entries = 1 --include title row
-        self:drawRect(lC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --first vertical line
-        self:drawRect(cC + UI_BORDER_SPACING, y-TEXT_OFFSET, 1, BUTTON_HGT*entries, lA, lR, lG, lB); --second vertical line
-        y = self:drawRow("Version", lC, statisticsData.clientRevision, cC, statisticsData.serverRevision, sC, y, hR, hG, hB, hA, false)
-        y = y + UI_BORDER_SPACING
+        y = self:drawRow("Players Connected :", lC, tostring(gameLocal["players"]), cC, tostring(gameRemote["players"]), sC, y, dR, dG, dB, dA, true)
+        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
+        y = self:drawRow("Animals Objects :", lC, tostring(gameLocal["animals-objects"]), cC, tostring(gameRemote["animals-objects"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("Animals Instances :", lC, tostring(gameLocal["animals-instances"]), cC, tostring(gameRemote["animals-instances"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("Animals Owned :", lC, tostring(gameLocal["animals-owned"]), cC, tostring(gameRemote["animals-owned"]), sC, y, dR, dG, dB, dA, true)
+        self:drawRect(0, y-TEXT_OFFSET, width, 1, lA, lR, lG, lB); --horizontal line between header
+        y = self:drawRow("Zombies Total :", lC, tostring(gameLocal["zombies-total"]), cC, tostring(gameRemote["zombies-total"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("Zombies Loaded :", lC, tostring(gameLocal["zombies-loaded"]), cC, tostring(gameRemote["zombies-loaded"]), sC, y, dR, dG, dB, dA, false)
+        y = self:drawRow("Zombies Simulated :", lC, tostring(gameLocal["zombies-simulated"]), cC, tostring(gameRemote["zombies-simulated"]), sC, y, dR, dG, dB, dA, true)
+        y = self:drawRow("Zombies Culled :", lC, tostring(gameLocal["zombies-culled"]), cC, tostring(gameRemote["zombies-culled"]), sC, y, dR, dG, dB, dA, false)
     end
 
     self:setScrollHeight(y)
@@ -249,50 +142,21 @@ function ISStatisticsPanel:new(x, y, width, height)
     return o
 end
 
------
-
 function ISStatisticsUI:onTickedLeft(index, selected)
     if index == 1 then
-        self.showCPU = selected
-    end
-    if index == 2 then
-        self.showMemory = selected
-    end
-    if index == 3 then
-        self.showFPS = selected
-    end
-    if index == 4 then
-        self.showNetwork = selected
+        self.showPerformance = selected
     end
 end
 
 function ISStatisticsUI:onTickedCenter(index, selected)
     if index == 1 then
-        self.showVOIP = selected
-    end
-    if index == 2 then
-        self.showPing = selected
-    end
-    if index == 3 then
-        self.showTime = selected
-    end
-    if index == 4 then
-        self.showVersion = selected
-    end
+            self.showNetwork = selected
+        end
 end
 
 function ISStatisticsUI:onTickedRight(index, selected)
     if index == 1 then
-        self.showPlayers = selected
-    end
-    if index == 2 then
-        self.showAnimals = selected
-    end
-    if index == 3 then
-        self.showZombies = selected
-    end
-    if index == 4 then
-        self.showChunks = selected
+        self.showCharacters = selected
     end
 end
 
@@ -304,7 +168,7 @@ function ISStatisticsUI:createChildren()
     local tickBoxHeight = getTextManager():getFontHeight(UIFont.Small)
     local width = self.width - SCROLLBAR;
 
-    self.tickBoxLeft = ISTickBox:new(UI_BORDER_SPACING + 10, y, tickBoxWidth, tickBoxHeight, "Settings left", self, self.onTickedLeft)
+    self.tickBoxLeft = ISTickBox:new(UI_BORDER_SPACING, y, tickBoxWidth, tickBoxHeight, "Settings left", self, self.onTickedLeft)
     self.tickBoxLeft.choicesColor = {r=1, g=1, b=1, a=1}
     self.tickBoxLeft:setFont(UIFont.NewSmall)
     self:addChild(self.tickBoxLeft)
@@ -321,45 +185,18 @@ function ISStatisticsUI:createChildren()
 
     local n
 
-    n = self.tickBoxLeft:addOption("CPU")
-    self.tickBoxLeft:setSelected(n, self.showCPU)
+    n = self.tickBoxLeft:addOption("Performance")
+    self.tickBoxLeft:setSelected(n, self.showPerformance)
 
-    n = self.tickBoxLeft:addOption("Memory")
-    self.tickBoxLeft:setSelected(n, self.showMemory)
+    n = self.tickBoxCenter:addOption("Network")
+    self.tickBoxCenter:setSelected(n, self.showNetwork)
 
-    n = self.tickBoxLeft:addOption("FPS")
-    self.tickBoxLeft:setSelected(n, self.showFPS)
+    n = self.tickBoxRight:addOption("Characters")
+    self.tickBoxRight:setSelected(n, self.showCharacters)
 
-    n = self.tickBoxLeft:addOption("Network")
-    self.tickBoxLeft:setSelected(n, self.showNetwork)
+    y = y + UI_BORDER_SPACING
 
-    n = self.tickBoxCenter:addOption("VOIP")
-    self.tickBoxCenter:setSelected(n, self.showVOIP)
-
-    n = self.tickBoxCenter:addOption("Ping")
-    self.tickBoxCenter:setSelected(n, self.showPing)
-
-    n = self.tickBoxCenter:addOption("Time")
-    self.tickBoxCenter:setSelected(n, self.showTime)
-
-    n = self.tickBoxCenter:addOption("Version")
-    self.tickBoxCenter:setSelected(n, self.showVersion)
-
-    n = self.tickBoxRight:addOption("Players")
-    self.tickBoxRight:setSelected(n, self.showPlayers)
-
-    n = self.tickBoxRight:addOption("Animals")
-    self.tickBoxRight:setSelected(n, self.showAnimals)
-
-    n = self.tickBoxRight:addOption("Zombies")
-    self.tickBoxRight:setSelected(n, self.showZombies)
-
-    n = self.tickBoxRight:addOption("Chhunks")
-    self.tickBoxRight:setSelected(n, self.showChunks)
-
-    y = y + tickBoxHeight * 4 + UI_BORDER_SPACING * 2
-
-    self.panel = ISStatisticsPanel:new(0, self:titleBarHeight() + y, self.width, self.height-self:titleBarHeight()-self:resizeWidgetHeight()-y)
+    self.panel = ISStatisticsPanel:new(0, self:titleBarHeight() + y, self.width+UI_BORDER_SPACING, self.height-self:titleBarHeight()-self:resizeWidgetHeight()-y)
     self.panel.anchorBottom = true
     self.panel.anchorRight = true
     self.panel.playerNum = self.playerNum
@@ -395,8 +232,8 @@ function ISStatisticsUI:render()
 end
 
 function ISStatisticsUI:new(x, y, player)
-    local width = 280
-    local height = 980
+    local width = 300
+    local height = 730
     local o = ISCollapsableWindow.new(self, x, y, width, height)
     o.playerNum = player:getPlayerNum()
     if y == 0 then
@@ -417,18 +254,9 @@ function ISStatisticsUI:new(x, y, player)
     o.anchorBottom = true
     o.resizable = true
 
-    o.showCPU = true
-    o.showMemory = true
-    o.showFPS = true
+    o.showPerformance = true
     o.showNetwork = true
-    o.showVOIP = false
-    o.showPing = false
-    o.showTime = false
-    o.showVersion = false
-    o.showPlayers = true
-    o.showAnimals = true
-    o.showZombies = true
-    o.showChunks = false
+    o.showCharacters = true
 
     player:setShowMPInfos(true)
     ISStatisticsUI.instance = o

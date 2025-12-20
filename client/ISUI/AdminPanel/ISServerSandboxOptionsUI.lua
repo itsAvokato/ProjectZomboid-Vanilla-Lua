@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISScrollingListBox"
 
@@ -72,10 +68,6 @@ function SandboxOptionsScreenListBox:onJoypadDirRight(joypadData)
 	joypadData.focus = self.parent.currentPanel
 	updateJoypadFocus(joypadData)
 end
-
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SandboxOptionsScreenPanel:prerender()
 	ISPanelJoypad.prerender(self)
@@ -169,9 +161,6 @@ function SandboxOptionsScreenPanel:onJoypadDirRight(joypadData)
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SandboxOptionsScreenGroupBox:new(x, y, width, height, tickBoxLabel)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -293,9 +282,6 @@ function SandboxOptionsScreenGroupBox:ensureVisible()
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SandboxOptionsScreenPresetPanel:createChildren()
 	
@@ -394,9 +380,6 @@ function SandboxOptionsScreenPresetPanel:settingsToUI(options)
 -- 	self.listbox:setSelectedIndex(index - 1)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ISServerSandboxOptionsUI:doSearch()
 	local searchWord = string.lower(self.searchEntry:getInternalText())
@@ -410,13 +393,6 @@ function ISServerSandboxOptionsUI:doSearch()
 				label.searchFound = false
 			end
 		end
-	end
-end
-
-function ISServerSandboxOptionsUI.searchPrerender(self)
-	ISTextEntryBox.prerender(self)
-	if not self.javaObject:isFocused() and self:getInternalText() == "" then
-		self:drawText(getText("UI_sandbox_searchEntryBoxWord"), 2, 2, 0.9, 0.9, 0.9, 0.5, UIFont.Small)
 	end
 end
 
@@ -454,9 +430,10 @@ function ISServerSandboxOptionsUI:createChildren()
 			_self:onTextChange()
 		end
 	end
-	self.searchEntry.prerender = self.searchPrerender
+    self.searchEntry:setPlaceholderText(getText("UI_sandbox_searchEntryBoxWord"))
 	self.searchEntry:initialise()
 	self.searchEntry:instantiate()
+    self.searchEntry:setClearButton(true)
 	self:addChild(self.searchEntry)
 
 	self.listbox = SandboxOptionsScreenListBox:new(UI_BORDER_SPACING+1, UI_BORDER_SPACING*3 + searchHeight + titleHgt + 1, UI_BORDER_SPACING*2 + maxWid + scrollBarWid, self.height - BUTTON_HGT*2 - titleHgt - UI_BORDER_SPACING*5-2)

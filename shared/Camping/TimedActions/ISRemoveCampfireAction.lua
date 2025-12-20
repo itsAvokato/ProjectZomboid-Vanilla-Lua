@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveCampfireAction = ISBaseTimedAction:derive("ISRemoveCampfireAction");
@@ -26,14 +22,16 @@ function ISRemoveCampfireAction:start()
 	self.character:SetVariable("LootPosition", "Low")
 	self:setOverrideHandModels(nil, nil)
 	self.character:reportEvent("EventLootItem");
+	self.sound = self.character:getEmitter():playSound("CampfireRemove")
 end
 
 function ISRemoveCampfireAction:stop()
+    self:stopSound()
     ISBaseTimedAction.stop(self);
 end
 
 function ISRemoveCampfireAction:perform()
-
+    self:stopSound()
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
 end
@@ -53,6 +51,12 @@ function ISRemoveCampfireAction:getDuration()
         return 1
     end
     return self.maxTime;
+end
+
+function ISRemoveCampfireAction:stopSound()
+	if self.sound and self.character:getEmitter():isPlaying(self.sound) then
+		self.character:stopOrTriggerSound(self.sound)
+	end
 end
 
 function ISRemoveCampfireAction:new (character, campfire, maxTime)

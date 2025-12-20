@@ -15,7 +15,7 @@ function ISWringClothing:start()
     self:setActionAnim("Loot")
     self:setAnimVariable("LootPosition", "")
     self:setOverrideHandModels(nil, nil)
-    self.sound = self.character:playSound("WashClothing")
+    self.sound = self.character:playSound("WringOutWetClothes")
     self.character:reportEvent("EventWashClothing")
 end
 

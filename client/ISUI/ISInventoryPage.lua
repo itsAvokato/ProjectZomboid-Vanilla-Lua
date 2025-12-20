@@ -1,7 +1,3 @@
---***********************************************************
---**               LEMMY/ROBERT JOHNSON                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 require "ISUI/ISButton"
 require "ISUI/ISInventoryPane"
@@ -23,8 +19,6 @@ local MAXIMUM_RENAME_LENGTH = 28
 
 ISInventoryPage.bagSoundDelay = 0.5
 ISInventoryPage.bagSoundTime = 0
-
------
 
 ISInventoryPageContainerButtonPanel = ISPanel:derive("ISInventoryPageContainerButtonPanel")
 
@@ -61,13 +55,6 @@ function ISInventoryPageContainerButtonPanel:new(x, y, w, h)
     return o
 end
 
------
-
---************************************************************************--
---** ISInventoryPage:initialise
---**
---************************************************************************--
-
 function ISInventoryPage:initialise()
 	ISPanel.initialise(self);
 end
@@ -80,10 +67,6 @@ function ISInventoryPage:titleBarHeight(selected)
 	return math.max(16, self.titleFontHgt + 1)
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ISInventoryPage:createChildren()
     self.minimumHeight = 100;
     -- This must be buttonSize pixels wider than InventoryPane's minimum width
@@ -1057,7 +1040,7 @@ function ISInventoryPage:isRemoveButtonVisible()
 	local obj = self.inventory:getParent()
 	if not instanceof(obj, "IsoObject") then return false end
 	local sprite = obj:getSprite()
-	return sprite and sprite:getProperties() and sprite:getProperties():Is("IsTrashCan")
+	return sprite and sprite:getProperties() and sprite:getProperties():has("IsTrashCan")
 end
 
 -- Hack to give priority to another piece of code highlighting an object.
@@ -1212,10 +1195,6 @@ function ISInventoryPage:setForceSelectedContainer(container, ms)
 	self.forceSelectedContainerTime = getTimestampMs() + (ms or 1000)
 end
 
---************************************************************************--
---** ISInventoryPage:prerender
---**
---************************************************************************--
 function ISInventoryPage:prerender()
     if self.blinkContainer then
         if not self.blinkAlphaContainer then self.blinkAlphaContainer = 0.7; self.blinkAlphaIncreaseContainer = false; end
@@ -1292,23 +1271,13 @@ function ISInventoryPage:prerender()
 
 	-- load the current weight of the container
 	self.totalWeight = ISInventoryPage.loadWeight(self.inventoryPane.inventory);
-	-- used handle characters being in seats
-	local occupied;
 
 	local roundedWeight = round(self.totalWeight, 2)
 
 	if self.capacity then
 		local inventory = self.inventoryPane.inventory
-		local part = inventory:getVehiclePart()
 		if inventory == getSpecificPlayer(self.player):getInventory() then
 			self:drawTextRight(roundedWeight .. " / " .. getSpecificPlayer(self.player):getMaxWeight(), self.pinButton:getX(), 0, 1,1,1,1);
-		-- if a vehicle seat is occupied, display it's max maximum capacity at 25%/5 units
-		elseif part and part:getId():contains("Seat") and part:getVehicle():getCharacter(part:getContainerSeatNumber()) then
-			-- local part = inventory:getVehiclePart()
-			-- local seat = vehiclePart.getId().contains("Seat")
-			-- local occupied = part:getVehicle():getCharacter(part:getContainerSeatNumber())
-			self:drawTextRight(roundedWeight .. " / " .. (self.capacity/4), self.pinButton:getX()-buttonOffset, 0, 1,1,1,1);
-			occupied = true;
 		else
 			--display the item total and limit per container in MP
 			if isClient() then
@@ -1351,23 +1320,9 @@ function ISInventoryPage:prerender()
             local campfire = CCampfireSystem.instance:getLuaObjectOnSquare(fireTile:getSquare())
             if campfire then
                 shouldBeVisible = true
---                 local fireState;
---                 if campfire.isLit then
---                     fireState = getText("IGUI_Fireplace_Burning")
---                 else
---                     fireState = getText("IGUI_Fireplace_Unlit")
---                 end
                 text = text .. ": " .. (ISCampingMenu.timeString(luautils.round(campfire.fuelAmt))) -- .. " (" .. fireState .. ")"
             elseif fireTile and fireTile:isFireInteractionObject() then
-                shouldBeVisible = truev
---                 local fireState;
---                 if fireTile:isLit() then
---                     fireState = getText("IGUI_Fireplace_Burning")
---                 elseif fireTile:isSmouldering() then
---                     fireState = getText("IGUI_Fireplace_Smouldering")
---                 else
---                     fireState = getText("IGUI_Fireplace_Unlit")
---                 end
+                shouldBeVisible = true
                 if fireTile:isPropaneBBQ() and not fireTile:hasPropaneTank() then
                     text = text .. ": " .. getText("IGUI_BBQ_NeedsPropaneTank")
                 else
@@ -1375,11 +1330,11 @@ function ISInventoryPage:prerender()
                 end
             end
         end
-		if occupied then
-			self:drawTextRight((text .. " " .. getText("IGUI_invpage_Occupied")), self.width - 20 - weightWid/1.5, (titleBarHeight - fontHgt) / 2, 1,1,1,1);
-		else
-			self:drawTextRight(text, self.width - 20 - weightWid/1.5, (titleBarHeight - fontHgt) / 2, 1,1,1,1);
-		end
+	    -- used handle characters being in seats
+	    if self.inventoryPane.inventory and self.inventoryPane.inventory:isOccupiedVehicleSeat() then
+            text = text .. " " .. getText("IGUI_invpage_Occupied")
+        end
+        self:drawTextRight(text, self.width - 20 - weightWid, (titleBarHeight - fontHgt) / 2, 1,1,1,1);
 	end
 
     -- self:drawRectBorder(self:getWidth()-32, 15, 32, self:getHeight()-16-6, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
@@ -1472,6 +1427,8 @@ function ISInventoryPage:onGainJoypadFocus(joypadData)
     local loot = getPlayerLoot(self.player);
     inv:setVisible(true);
     loot:setVisible(true);
+    inv:bringToTop()
+    loot:bringToTop()
     getPlayerVehicleDashboard(self.player):removeFromUIManager()
     self.inventoryPane.doController = true;
 end
@@ -1881,10 +1838,6 @@ function ISInventoryPage.loadWeight(inv)
 	return inv:getCapacityWeight();
 end
 
---************************************************************************--
---** ISButton:onMouseMove
---**
---************************************************************************--
 function ISInventoryPage:onMouseMove(dx, dy)
 	self.mouseOver = true;
 
@@ -1920,10 +1873,6 @@ function ISInventoryPage:onMouseMove(dx, dy)
     end
 end
 
---************************************************************************--
---** ISButton:onMouseMoveOutside
---**
---************************************************************************--
 function ISInventoryPage:onMouseMoveOutside(dx, dy)
 	self.mouseOver = false;
 
@@ -1965,10 +1914,6 @@ function ISInventoryPage:onMouseMoveOutside(dx, dy)
     end
 end
 
---************************************************************************--
---** ISButton:onMouseUp
---**
---************************************************************************--
 function ISInventoryPage:onMouseUp(x, y)
 	if not self:getIsVisible() then
 		return;
@@ -2312,7 +2257,7 @@ function ISInventoryPage:refreshBackpacks()
 		local it = playerObj:getInventory():getItems()
 		for i = 0, it:size()-1 do
 			local item = it:get(i)
-			if item:getCategory() == "Container" and playerObj:isEquipped(item) or item:getType() == "KeyRing"  or item:hasTag( "KeyRing") then
+			if item:getCategory() == "Container" and playerObj:isEquipped(item) or item:isItemType(ItemType.KEY_RING) or item:hasTag(ItemTag.KEY_RING) then
 				-- found a container, so create a button for it...
 				containerButton = self:addContainerButton(item:getInventory(), item:getTex(), item:getName(), item:getName())
 				if(item:getVisual() and item:getClothingItem()) then
@@ -2675,7 +2620,6 @@ function ISInventoryPage:onRenameContainerClick(button, player, container)
 		local length = button.parent.entry:getInternalText():len()
         if button.parent.entry:getText() and button.parent.entry:getText() ~= "" then
 			if length <= MAXIMUM_RENAME_LENGTH then
-                print("OKAY! " .. button.parent.entry:getText())
 				container:setCustomName(button.parent.entry:getText());
 				local pdata = getPlayerData(playerNum);
 				pdata.playerInventory:refreshBackpacks();
@@ -2692,10 +2636,6 @@ function ISInventoryPage:onRenameContainerClick(button, player, container)
     end
 end
 
---************************************************************************--
---** ISInventoryPage:new
---**
---************************************************************************--
 function ISInventoryPage:new (x, y, width, height, inventory, onCharacter, zoom)
 	local o = {}
 	--o.data = {}
@@ -2847,7 +2787,6 @@ function ISInventoryPage:onInventoryContainerSizeChanged()
 	end
 	local y = -1
 	for _,button in ipairs(self.backpacks) do
-		button:setX(self.width - self.buttonSize)
 		button:setY(y)
 		y = y + self.buttonSize
 		button:setWidth(self.buttonSize)
@@ -2941,7 +2880,5 @@ end
 
 Events.OnKeyPressed.Add(ISInventoryPage.onKeyPressed);
 Events.OnContainerUpdate.Add(ISInventoryPage.OnContainerUpdate)
-
 --Events.OnCreateUI.Add(testInventory);
-
 Events.OnGameStart.Add(ISInventoryPage.ongamestart);

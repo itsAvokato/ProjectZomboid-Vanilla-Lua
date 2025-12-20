@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 25/01/2018
--- Time: 09:20
--- To change this template use File | Settings | File Templates.
---
-
 ISCarMechanicsOverlay = {};
 ISCarMechanicsOverlay.CarList = {};
 ISCarMechanicsOverlay.CarList["Base.CarNormal"] = {imgPrefix = "4door_", x=10,y=0};

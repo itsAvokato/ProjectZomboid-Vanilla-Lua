@@ -135,6 +135,7 @@ StoryClutter.BeachPartyClutter = {
     "Base.BeerEmpty",
     "Base.BeerCanEmpty",
     "Base.BeerCanEmpty",
+    "Base.Sparklers",
 }
 
 -- the clothing that spawns on the foot of the bed in residential bedrooms, used for Randomized Residential Buildings
@@ -212,6 +213,7 @@ StoryClutter.DeadEndClutter = {
     "Base.Suitcase",
     "Base.ToyBear",
     "Base.ToyCar",
+    "Base.ToyPlane",
     "Base.Wallet",
     "Base.Passport",
     "Base.DogTag_Pet",
@@ -678,6 +680,7 @@ StoryClutter.HallClutter = {
     "Base.Sportsbottle",
     "Base.SmokingPipe",
     "Base.ToyCar",
+    "Base.ToyPlane",
     "Base.Wallet",
 }
 
@@ -739,6 +742,7 @@ StoryClutter.HousePartyClutter = {
     "Base.Present_Small",
     "Base.Present_Medium",
     "Base.Card_Birthday",
+    "Base.Sparklers",
 }
 
 -- stuff for the Judge Matt Hass studio in the Triple-N building. Some items are repeated to increase spawn weights.
@@ -782,6 +786,7 @@ StoryClutter.KidClutter = {
     "Base.Bag_Schoolbag_Kids",
     "Base.Yoyo",
     "Base.ToyCar",
+    "Base.ToyPlane",
     "Base.Cube",
     "Base.Bricktoys",
     "Base.Firecracker", -- hell yeah! this kid is AWESOME
@@ -833,6 +838,8 @@ StoryClutter.KidClutter = {
     "Base.GuitarPick",
     "Base.Glasses_SunCheap",
     "Base.HobbyHorse",
+    "Base.Sparklers",
+    "Base.ToyPlane",
 }
 
 -- residential kitchens, used for Randomized Residential Buildings
@@ -1345,10 +1352,10 @@ StoryClutter.RichJerkClutter = {
 StoryClutter.SadCampsiteClutter = {
 	"Base.TinCanEmpty",
 	"Base.TinCanEmpty",
-	"Base.WaterBottleEmpty",
+    "Base.WaterBottle",
 	"Base.RippedSheetsDirty",
 	"Base.BandageDirty",
-	"Base.WaterBottleEmpty",
+    "Base.WaterBottle",
 	"Base.TinOpener",
 	"Base.GuitarAcoustic",
     "Base.Bag_Schoolbag_Kids",
@@ -1366,6 +1373,7 @@ StoryClutter.SadCampsiteClutter = {
     "Base.Suitcase",
     "Base.ToyBear",
     "Base.ToyCar",
+    "Base.ToyPlane",
     "Base.Wallet",
     "Base.Passport",
     "Base.DogTag_Pet",
@@ -1431,7 +1439,7 @@ StoryClutter.SidetableClutter = {
 StoryClutter.SurvivalistCampsiteClutter = {
 	"Base.TinCanEmpty",
 	"Base.TinCanEmpty",
-	"Base.WaterBottleEmpty",
+    "Base.WaterBottle",
 	"Base.RippedSheetsDirty",
 	"Base.BandageDirty",
 	"Base.Lantern_Propane",
@@ -1440,7 +1448,7 @@ StoryClutter.SurvivalistCampsiteClutter = {
 	"Base.Shotgun",
 	"Base.HuntingKnife",
 	"Base.Matches",
-	"Base.WaterBottleEmpty",
+    "Base.WaterBottle",
 	"Base.TinOpener",
 	"Base.ShotgunShellsBox",
 	"Base.Pistol",

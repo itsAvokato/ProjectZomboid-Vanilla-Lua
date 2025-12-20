@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISCleanBlood = ISBaseTimedAction:derive("ISCleanBlood");
@@ -20,7 +16,7 @@ end
 
 function ISCleanBlood:isValid()
 	local playerInv = self.character:getInventory()
-	return (playerInv:containsEvalRecurse(predicateBleach) or playerInv:containsEvalRecurse(predicateCleaningLiquid)) and (playerInv:containsTagEval("CleanStains", predicateNotBroken));
+	return (playerInv:containsEvalRecurse(predicateBleach) or playerInv:containsEvalRecurse(predicateCleaningLiquid)) and (playerInv:containsTagEval(ItemTag.CLEAN_STAINS, predicateNotBroken));
 -- 	return playerInv:contains("Bleach") and (playerInv:contains("BathTowel") or playerInv:contains("DishCloth") or playerInv:contains("Broom") or playerInv:contains("Mop"));
 end
 
@@ -43,8 +39,8 @@ function ISCleanBlood:start()
 	local toiletBrush = false
 	-- Added it as there are cases when an item is not equipped, so it returns nil
 	if primaryItem then
-		twoHanded = primaryItem:hasTag("TwoHandItem") or (instanceof(primaryItem, "HandWeapon") and primaryItem:isTwoHandWeapon())
-		toiletBrush = primaryItem:hasTag("ToiletBrush")
+		twoHanded = (instanceof(primaryItem, "HandWeapon") and primaryItem:isTwoHandWeapon())
+		toiletBrush = primaryItem:hasTag(ItemTag.TOILET_BRUSH)
 	end
 	local wall = false
 	local square = self.square

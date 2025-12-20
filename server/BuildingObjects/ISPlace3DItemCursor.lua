@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 13/08/2021
--- Time: 10:25
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isServer() then return end
 
 require "BuildingObjects/ISBuildingObject"

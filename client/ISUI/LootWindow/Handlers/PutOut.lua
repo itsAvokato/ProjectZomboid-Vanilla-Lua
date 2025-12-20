@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_PutOut = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_PutOut")

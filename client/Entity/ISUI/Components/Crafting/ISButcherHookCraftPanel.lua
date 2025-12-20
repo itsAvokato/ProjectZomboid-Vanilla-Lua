@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: RJ				   **
---***********************************************************
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISButcherHookCraftPanel = ISBaseComponentPanel:derive("ISButcherHookCraftPanel");
@@ -12,11 +7,6 @@ function ISButcherHookCraftPanel.CanCreatePanelFor(_player, _entity, _component,
         return _component:getComponentType()==ComponentType.CraftLogic;
     end
 end
-
---************************************************************************--
---** ISButcherHookCraftPanel:initialise
---**
---************************************************************************--
 
 function ISButcherHookCraftPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -92,11 +82,6 @@ function ISButcherHookCraftPanel:update()
     ISBaseComponentPanel.update(self);
 end
 
-
---************************************************************************--
---** ISButcherHookCraftPanel:new
---**
---************************************************************************--
 function ISButcherHookCraftPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

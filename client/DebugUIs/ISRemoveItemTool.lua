@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 ISRemoveItemTool = ISPanelJoypad:derive("ISRemoveItemTool");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -329,9 +324,6 @@ function ISRemoveItemTool:new(x, y, player)
     return o;
 end
 
---************************************************************************--
---************************************************************************--
-
 function ISRemoveItemTool.removeItem(item, player)
     local srcContainer = item:getContainer()
     local playerObj = getSpecificPlayer(player)
@@ -383,13 +375,15 @@ function ISRemoveItemTool.removeItems(items, player)
     end
 end
 
---************************************************************************--
-
 local function RemoveItemContextOptions(player, context, items)
 
-    if not isDebugEnabled() or (isClient() and not getPlayer():getRole():hasCapability(Capability.EditItem)) then
+    local debug = isDebugEnabled() or (isClient() and getSpecificPlayer(player):getRole():hasCapability(Capability.EditItem))
+
+    if not debug then
         return true
     end
+
+    context = context:getSubMenu(ISInventoryPaneContextMenu.debugContextNum) or context;
 
     local container = nil
     local resItems = {}
@@ -410,12 +404,12 @@ local function RemoveItemContextOptions(player, context, items)
         table.insert(listItems, v)
     end
 
-    local removeOption = context:addDebugOption("Delete:")
+    local removeOption = context:addOption(getText("ContextMenu_Delete"))
     local subMenuRemove = ISContextMenu:getNew(context)
     context:addSubMenu(removeOption, subMenuRemove)
 
-    subMenuRemove:addOption("1 item", listItems[1], ISRemoveItemTool.removeItem, player)
-    subMenuRemove:addOption("selected", listItems, ISRemoveItemTool.removeItems, player)
+    subMenuRemove:addOption(getText("ContextMenu_Delete_OneItem"), listItems[1], ISRemoveItemTool.removeItem, player)
+    subMenuRemove:addOption(getText("ContextMenu_Delete_Selection"), listItems, ISRemoveItemTool.removeItems, player)
 end
 Events.OnFillInventoryObjectContextMenu.Add(RemoveItemContextOptions)
 

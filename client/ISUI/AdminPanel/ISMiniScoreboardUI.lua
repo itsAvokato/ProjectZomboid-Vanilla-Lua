@@ -1,18 +1,9 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISMiniScoreboardUI = ISPanel:derive("ISMiniScoreboardUI");
 ISMiniScoreboardUI.messages = {};
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISMiniScoreboardUI:initialise
---**
---************************************************************************--
 
 function ISMiniScoreboardUI:initialise()
     ISPanel.initialise(self);
@@ -83,7 +74,7 @@ function ISMiniScoreboardUI:onCommand(player, command)
     elseif command == "STATS" then
         local playerObj = getPlayerFromUsername(player.username)
         if not playerObj then return end -- player hasn't been encountered yet
-        local ui = ISPlayerStatsUI:new(50,50,800,800, playerObj, self.admin)
+        local ui = ISPlayerStatsUI:new(50,50,800+(getCore():getOptionFontSizeReal()*50),800, playerObj, self.admin)
         ui:initialise();
         ui:addToUIManager();
         ui:setVisible(true);
@@ -145,10 +136,6 @@ function ISMiniScoreboardUI:close()
     ISMiniScoreboardUI.instance = nil
 end
 
---************************************************************************--
---** ISMiniScoreboardUI:new
---**
---************************************************************************--
 function ISMiniScoreboardUI:new(x, y, width, height, admin)
     local o = {}
     o = ISPanel:new(x, y, width, height);

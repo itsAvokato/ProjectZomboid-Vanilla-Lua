@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 local function FindBarricadeAble(square, dir)
@@ -48,8 +44,6 @@ local function ReplaceExistingObject(object, dir, numPlank, numMetalSheet, numMe
 	barricade:transmitCompleteItemToClients()
 end
 
--- -- -- -- --
-
 local function PlankWest1(object)
 	ReplaceExistingObject(object, IsoDirections.W, 1, nil, nil)
 end
@@ -65,8 +59,6 @@ end
 local function PlankWest4(object)
 	ReplaceExistingObject(object, IsoDirections.W, 4, nil, nil)
 end
-
--- -- -- -- --
 
 local function PlankNorth1(object)
 	ReplaceExistingObject(object, IsoDirections.N, 1, nil, nil)
@@ -84,8 +76,6 @@ local function PlankNorth4(object)
 	ReplaceExistingObject(object, IsoDirections.N, 4, nil, nil)
 end
 
--- -- -- -- --
-
 local function PlankEast1(object)
 	ReplaceExistingObject(object, IsoDirections.E, 1, nil, nil)
 end
@@ -101,8 +91,6 @@ end
 local function PlankEast4(object)
 	ReplaceExistingObject(object, IsoDirections.E, 4, nil, nil)
 end
-
--- -- -- -- --
 
 local function PlankSouth1(object)
 	ReplaceExistingObject(object, IsoDirections.S, 1, nil, nil)
@@ -120,8 +108,6 @@ local function PlankSouth4(object)
 	ReplaceExistingObject(object, IsoDirections.S, 4, nil, nil)
 end
 
--- -- -- -- --
-
 local function MetalSheetWest(object)
 	ReplaceExistingObject(object, IsoDirections.W, nil, 1, nil)
 end
@@ -138,8 +124,6 @@ local function MetalSheetSouth(object)
 	ReplaceExistingObject(object, IsoDirections.S, nil, 1, nil)
 end
 
--- -- -- -- --
-
 local function MetalBarWest(object)
 	ReplaceExistingObject(object, IsoDirections.W, nil, nil, 1)
 end
@@ -155,8 +139,6 @@ end
 local function MetalBarSouth(object)
 	ReplaceExistingObject(object, IsoDirections.S, nil, nil, 1)
 end
-
--- -- -- -- --
 
 local PRIORITY = 5
 
@@ -180,8 +162,6 @@ MapObjects.OnNewWithSprite("carpentry_01_3", PlankSouth2, PRIORITY)
 MapObjects.OnNewWithSprite("carpentry_01_5", PlankSouth3, PRIORITY)
 MapObjects.OnNewWithSprite("carpentry_01_7", PlankSouth4, PRIORITY)
 
--- -- -- -- --
-
 -- Metal sheets have damaged/undamaged sprites.
 MapObjects.OnNewWithSprite("constructedobjects_01_24", MetalSheetWest, PRIORITY)
 MapObjects.OnNewWithSprite("constructedobjects_01_26", MetalSheetWest, PRIORITY)
@@ -191,8 +171,6 @@ MapObjects.OnNewWithSprite("constructedobjects_01_28", MetalSheetEast, PRIORITY)
 MapObjects.OnNewWithSprite("constructedobjects_01_30", MetalSheetEast, PRIORITY)
 MapObjects.OnNewWithSprite("constructedobjects_01_29", MetalSheetSouth, PRIORITY)
 MapObjects.OnNewWithSprite("constructedobjects_01_31", MetalSheetSouth, PRIORITY)
-
--- -- -- -- --
 
 MapObjects.OnNewWithSprite("constructedobjects_01_55", MetalBarWest, PRIORITY)
 MapObjects.OnNewWithSprite("constructedobjects_01_53", MetalBarNorth, PRIORITY)

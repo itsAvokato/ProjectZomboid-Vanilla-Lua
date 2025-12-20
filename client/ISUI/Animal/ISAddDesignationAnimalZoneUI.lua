@@ -1,18 +1,9 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISAddDesignationAnimalZoneUI = ISPanelJoypad:derive("ISAddDesignationAnimalZoneUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.NewSmall)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.NewMedium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAddDesignationAnimalZoneUI:initialise
---**
---************************************************************************--
 
 function ISAddDesignationAnimalZoneUI:initialise()
     ISPanelJoypad.initialise(self);
@@ -160,7 +151,7 @@ function ISAddDesignationAnimalZoneUI:addZone()
         endY = endY - 1;
         startY = startY + 1;
     end
-    local zone = DesignationZoneAnimal.new(self.titleEntry.name, startX, startY,luautils.round(self.player:getZ(),0),endX,endY)
+    local zone = DesignationZoneAnimal.new(self.titleEntry.name, startX, startY, luautils.round(self.player:getZ(), 0), endX, endY, true)
     zone:createSurroundingFence();
 
     -- flag for hotsave - no need to flag all squares as zone is not actually stored on chunk - spurcival
@@ -421,10 +412,6 @@ function ISAddDesignationAnimalZoneUI:onJoypadDirRight(joypadData)
     end
 end
 
---************************************************************************--
---** ISAddDesignationAnimalZoneUI:new
---**
---************************************************************************--
 function ISAddDesignationAnimalZoneUI:new(x, y, width, height, player)
     height = 1 + UI_BORDER_SPACING + FONT_HGT_MEDIUM + UI_BORDER_SPACING + FONT_HGT_SMALL * 2 + UI_BORDER_SPACING + FONT_HGT_SMALL * 3 + UI_BORDER_SPACING + BUTTON_HGT + UI_BORDER_SPACING+1
     local o = ISPanelJoypad.new(self, x, y, width, height);
@@ -438,7 +425,7 @@ function ISAddDesignationAnimalZoneUI:new(x, y, width, height, player)
     end
     o.borderColor = {r=0.4, g=0.4, b=0.4, a=1};
     o.backgroundColor = {r=0, g=0, b=0, a=0.8};
-    o.zoneColor = {r=DesignationZoneAnimal.ZONECOLORR, g=DesignationZoneAnimal.ZONECOLORG, b=DesignationZoneAnimal.ZONECOLORB, a=0.5};
+    o.zoneColor = {r=DesignationZoneAnimal.ZONE_COLOR_R, g=DesignationZoneAnimal.ZONE_COLOR_G, b=DesignationZoneAnimal.ZONE_COLOR_B, a=0.5};
     o.width = width;
     o.height = height;
     o.player = player;

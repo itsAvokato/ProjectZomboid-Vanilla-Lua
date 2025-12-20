@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -192,10 +188,6 @@ function ISCraftRecipeTooltip:setTitleOnly(_b)
     end
 end
 
---************************************************************************--
---** ISCraftRecipeTooltip:new
---**
---************************************************************************--
 function ISCraftRecipeTooltip:new (x, y, width, height, player, recipe, logic, followMouse, debugMode) -- recipeData, craftBench, followMouse)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

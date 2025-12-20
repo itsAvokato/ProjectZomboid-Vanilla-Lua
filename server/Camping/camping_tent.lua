@@ -1,7 +1,3 @@
------------------------------------------------------------------------
---                          ROBERT JOHNSON                           --
------------------------------------------------------------------------
-
 camping = {}
 
 camping.tentSprites = {
@@ -204,4 +200,3 @@ local function OnClientCommand(module, command, player, args)
 end
 
 Events.OnClientCommand.Add(OnClientCommand)
-

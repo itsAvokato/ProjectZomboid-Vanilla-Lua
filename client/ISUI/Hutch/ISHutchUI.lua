@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISCollapsableWindowJoypad"
 require "ISUI/ISUI3DModel"
 
@@ -23,8 +19,6 @@ local PADXY = 20
 local function predicateNotBroken(item)
     return not item:isBroken()
 end
-
------
 
 -- Panel to show one chicken
 ISHutch3DModel = ISUI3DModel:derive("ISHutch3DModel")
@@ -64,8 +58,6 @@ function ISHutch3DModel:new(x, y, width, height)
     return o
 end
 
-
------
 
 -- Panel with eggs or a chicken
 ISHutchNestBox = ISPanel:derive("ISHutchNestBox")
@@ -250,8 +242,6 @@ function ISHutchNestBox:new(x, y, width, height, hutchUI, index)
     return o
 end
 
------
-
 ISHutchNestParentPanel = ISPanelJoypad:derive("ISHutchNestParentPanel")
 
 function ISHutchNestParentPanel:createChildren()
@@ -274,8 +264,6 @@ function ISHutchNestParentPanel:createChildren()
         end
     end
 
-    -----
-
     --self.boxCleanBtn = ISButton:new(0, 0, 90, BUTTON_HGT, "", self.hutchUI, ISHutchUI.onCleanNest);
     --self.boxCleanBtn:initialise();
     --self.boxCleanBtn.anchorTop = false
@@ -291,8 +279,6 @@ function ISHutchNestParentPanel:createChildren()
     self.eggHatchDoorBtn.anchorBottom = false
     self.eggHatchDoorBtn.borderColor = self.hutchUI.btnBorder
     self:addChild(self.eggHatchDoorBtn);
-
-    -----
 
     self.closedDoorPanel = ISPanel:new(0, 0, self.width, self.height)
     self.closedDoorPanel.backgroundColor = {r=0, g=0, b=0, a=1}
@@ -425,8 +411,6 @@ function ISHutchNestParentPanel:new(x, y, width, height, hutchUI)
     return o
 end
 
------
-
 -- Panel to show a roosting chicken (not in a nest)
 ISHutchRoost = ISPanelJoypad:derive("ISHutchRoost")
 
@@ -474,12 +458,15 @@ function ISHutchRoost:getBody()
 end
 
 function ISHutchRoost:onButtonGrab()
-    if self.playerObj:getPrimaryHandItem() or self.playerObj:getSecondaryHandItem() then
-        return;
-    end
     local animal = self:getAnimal()
     if animal then
         if luautils.walkAdj(self.playerObj, self.hutchUI.hutch:getEntrySq()) then
+            if self.playerObj:getPrimaryHandItem() then
+                ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, self.playerObj:getPrimaryHandItem(), 50));
+            end
+            if self.playerObj:getSecondaryHandItem() then
+                ISTimedActionQueue.add(ISUnequipAction:new(self.playerObj, self.playerObj:getSecondaryHandItem(), 50));
+            end
             -- if animal is dead, grab the body instead
             if animal:isDead() then
                 if not self:getBody() then
@@ -500,14 +487,6 @@ function ISHutchRoost:onRightMouseUp(x, y)
     local option = nil
     if animal then
         option = context:addOption(getText("ContextMenu_Grab"), self, self.onButtonGrab);
-        if self.playerObj:getPrimaryHandItem() or self.playerObj:getSecondaryHandItem() then
-            option.notAvailable = true;
-            local toolTip = ISToolTip:new()
-            toolTip:initialise()
-            toolTip:setVisible(false)
-            toolTip:setName(getText("IGUI_Hutch_EmptyHands"))
-            option.toolTip = toolTip
-        end
         context:addOption(getText("ContextMenu_AnimalInfo"), animal, AnimalContextMenu.onAnimalInfo, self.chr);
         if AnimalContextMenu.cheat then
             context:addDebugOption("Force egg now", self, ISHutchRoost.onForceEgg, animal)
@@ -556,7 +535,7 @@ function ISHutchRoost:onCheatAddAnimal()
     local animalType = "hen"
     local breed = AnimalDefinitions.getDef(animalType):getBreedByName("rhodeisland")
     if isClient() then
-        sendClientCommandV(self.playerNum, "animal", "hutch",
+        sendClientCommandV(self.playerObj, "animal", "hutch",
                 "type", animalType,
                 "breed", breed:getName(),
                 "index", self.index,
@@ -601,8 +580,6 @@ function ISHutchRoost:new(x, y, width, height, hutchUI, index)
     return o
 end
 
------
-
 ISHutchRoostParentPanel = ISPanelJoypad:derive("ISHutchRoostParentPanel")
 
 function ISHutchRoostParentPanel:createChildren()
@@ -628,8 +605,6 @@ function ISHutchRoostParentPanel:createChildren()
         chickenY = rowY
     end
 
-    -----
-
     self.birdPooCleanBtn = ISButton:new(0, 0, 60, BUTTON_HGT, "", self.hutchUI, ISHutchUI.onCleanFloor);
     self.birdPooCleanBtn:initialise();
     self.birdPooCleanBtn.anchorTop = false
@@ -645,8 +620,6 @@ function ISHutchRoostParentPanel:createChildren()
     self.doorBtn.anchorBottom = false
     self.doorBtn.borderColor = self.hutchUI.btnBorder
     self:addChild(self.doorBtn);
-
-    -----
 
     self.closedDoorPanel = ISPanel:new(0, 0, self.width, self.height)
     self.closedDoorPanel.backgroundColor = {r=0, g=0, b=0, a=1}
@@ -686,7 +659,7 @@ function ISHutchRoostParentPanel:render()
     local playerInv = self.hutchUI.chr:getInventory()
     local waterSources = playerInv:getAllWaterFluidSources(true);
     --local cleaningSources = playerInv:getAllCleaningFluidSources();
-    local mop = playerInv:containsTagEvalRecurse("CleanStains", predicateNotBroken)
+    local mop = playerInv:containsTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
     --local canClean = playerInv:containsTypeRecurse("Bleach") and (playerInv:containsTypeRecurse("BathTowel") or playerInv:containsTypeRecurse("DishCloth") or playerInv:containsTypeRecurse("Mop") or playerInv:containsTypeEvalRecurse("Broom", predicateNotBroken))
     local canClean = mop and not waterSources:isEmpty() --and not cleaningSources:isEmpty();
     if not canClean then
@@ -716,18 +689,14 @@ function ISHutchRoostParentPanel:render()
     local rowX = 10;
     local rowY = PADXY + NEST_BOX_HEIGHT - SHELF_HEIGHT;
 
-    ---- ROW 1 ----
     self:drawRectBorder(rowX, rowY, SHELF_WIDTH, SHELF_HEIGHT, 0.7, 1, 1, 1)
 
-    ---- ROW 2 ----
     rowY = rowY + NEST_BOX_HEIGHT + 10;
     self:drawRectBorder(rowX, rowY, SHELF_WIDTH, SHELF_HEIGHT, 0.7, 1, 1, 1)
 
-    ---- ROW 3 ----
     rowY = rowY + NEST_BOX_HEIGHT + 10;
     self:drawRectBorder(rowX, rowY, SHELF_WIDTH, SHELF_HEIGHT, 0.7, 1, 1, 1)
 
-    ---- ROW 4 ----
     rowY = rowY + NEST_BOX_HEIGHT + 10;
     self:drawRectBorder(rowX, rowY, SHELF_WIDTH, SHELF_HEIGHT, 0.7, 1, 1, 1)
 
@@ -806,8 +775,6 @@ function ISHutchRoostParentPanel:new(x, y, width, height, hutchUI)
     return o
 end
 
------
-
 ISHutchUI = ISCollapsableWindowJoypad:derive("ISHutchUI");
 ISHutchUI.instance = nil
 ISHutchUI.ui = {};
@@ -883,7 +850,7 @@ function ISHutchUI:onCleanFloor()
     if luautils.walkAdj(self.chr, self.hutch:getEntrySq()) then
         local water = self.chr:getInventory():getFirstWaterFluidSources(true, true)
         local bleach = self.chr:getInventory():getFirstCleaningFluidSources()
-        local mop = self.chr:getInventory():getFirstTagEvalRecurse("CleanStains", predicateNotBroken)
+        local mop = self.chr:getInventory():getFirstTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
         ISWorldObjectContextMenu.equip(self.chr, self.chr:getPrimaryHandItem(), mop, true, false)
         ISTimedActionQueue.add(ISHutchCleanFloor:new(self.chr, self.hutch, water, mop, bleach))
     end

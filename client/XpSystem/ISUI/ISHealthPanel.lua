@@ -7,8 +7,6 @@ ISHealthPanel.cheat = false or getDebug();
 local UI_BORDER_SPACING = 10
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 
------
-
 ISNewHealthPanel = ISUIElement:derive("ISNewHealthPanel")
 
 function ISNewHealthPanel:instantiate()
@@ -17,8 +15,6 @@ function ISNewHealthPanel:instantiate()
     self.javaObject:setX(self.x)
     self.javaObject:setY(self.y)
     self.javaObject:setMovable(false);
---    self.javaObject:setWidth(self.width)
---    self.javaObject:setHeight(self.height)
     self.javaObject:setAnchorLeft(self.anchorLeft)
     self.javaObject:setAnchorRight(self.anchorRight)
     self.javaObject:setAnchorTop(self.anchorTop)
@@ -53,8 +49,6 @@ function ISNewHealthPanel:new(x, y, character)
     o.character = character
     return o
 end
-
------
 
 ISHealthBodyPartPanel = ISBodyPartPanel:derive("ISHealthBodyPartPanel")
 
@@ -99,8 +93,6 @@ function ISHealthBodyPartPanel:new(character, x, y)
     return o
 end
 
------
-
 ISHealthBodyPartListBox = ISScrollingListBox:derive("ISHealthBodyPartListBox")
 
 function ISHealthBodyPartListBox:onMouseUp(x, y)
@@ -118,13 +110,6 @@ function ISHealthBodyPartListBox:new(x, y, width, height)
 	local o = ISScrollingListBox.new(self, x, y, width, height)
 	return o
 end
-
------
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISHealthPanel:initialise()
     ISPanelJoypad.initialise(self);
@@ -373,7 +358,7 @@ function ISHealthPanel:update()
             self:getDoctor():stopReceivingBodyDamageUpdates(self:getPatient())
             return
         end
-        if (not self:getDoctor():getRole():hasCapability(Capability.CanMedicalCheat)) and
+        if (not isMultiplayer() or not self:getDoctor():getRole():hasCapability(Capability.CanMedicalCheat)) and
                 (not ISHealthPanel.IsCharactersInSameCar(self:getDoctor(), self:getPatient())) and
                 (math.abs(self.otherPlayer:getX() - self.otherPlayerX) > 0.5 or
                 math.abs(self.otherPlayer:getY() - self.otherPlayerY) > 0.5 or
@@ -466,7 +451,7 @@ function ISHealthPanel:render()
     end
 
     -- for each damaged body part, we gonna display the body part name + the damage type
-    local painLevel = self:getPatient():getMoodles():getMoodleLevel(MoodleType.Pain)
+    local painLevel = self:getPatient():getMoodles():getMoodleLevel(MoodleType.PAIN)
     if isClient() and not self:getPatient():isLocalPlayer() then
         painLevel = self:getPatient():getBodyDamageRemote():getRemotePainLevel()
     end
@@ -474,8 +459,8 @@ function ISHealthPanel:render()
         self:drawText(getText("Moodles_Pain_lvl" .. painLevel), x, y, 1, 1, 1, 1, UIFont.Small);
         y = y + fontHgt;
    end
-    if self.cheat and self.character:getBodyDamage():getFakeInfectionLevel() > 0 then
-        self:drawText("Fake infection level " .. self.character:getBodyDamage():getFakeInfectionLevel(), x, y, 1, 1, 1, 1, UIFont.Small);
+    if self.cheat and self.character:getStats():get(CharacterStat.ZOMBIE_FEVER) > 0 then
+        self:drawText("Zombie Fever " .. self.character:getStats():get(CharacterStat.ZOMBIE_FEVER), x, y, 1, 1, 1, 1, UIFont.Small);
         y = y + fontHgt;
     end
     if self.cheat and self.character:getReduceInfectionPower() > 0 then
@@ -981,8 +966,6 @@ function ISHealthPanel:new (player, x, y, width, height)
     return o;
 end
 
------
-
 HealthPanelAction = ISBaseTimedAction:derive("HealthPanelAction")
 
 function HealthPanelAction:isValid()
@@ -1020,8 +1003,6 @@ function HealthPanelAction:new(character, handler, arg1, arg2, arg3, arg4, arg5,
     o.args = { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 }
     return o
 end
-
------
 
 local BaseHandler = ISBaseObject:derive("BaseHandler")
 
@@ -1107,7 +1088,7 @@ end
 
 function BaseHandler:getItemOfTag(items, type)
     for _,item in ipairs(items) do
-        if item:hasTag(type) then
+        if item:hasTag(ItemTag.get(ResourceLocation.of(type))) then
             return item
         end
     end
@@ -1147,8 +1128,6 @@ end
 function BaseHandler:getPatient()
     return self.panel.character
 end
-
------
 
 local HApplyBandage = BaseHandler:derive("HApplyBandage")
 
@@ -1199,8 +1178,6 @@ function HApplyBandage:perform(previousAction, itemType)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
 
------
-
 local HRemoveBandage = BaseHandler:derive("HRemoveBandage")
 
 function HRemoveBandage:new(panel, bodyPart)
@@ -1229,8 +1206,6 @@ function HRemoveBandage:perform(previousAction)
     local action = ISApplyBandage:new(self:getDoctor(), self:getPatient(), nil, self.bodyPart, false)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
-
------
 
 local HApplyPoultice = BaseHandler:derive("HApplyPoultice")
 
@@ -1293,15 +1268,11 @@ function HApplyPoultice:perform(previousAction, itemType)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
 
------
-
 local HApplyComfrey = HApplyPoultice:derive("HApplyComfrey")
 
 function HApplyComfrey:new(panel, bodyPart)
     return HApplyPoultice.new(self, panel, bodyPart, "ComfreyCataplasm", "ContextMenu_ComfreyCataplasm", ISComfreyCataplasm)
 end
-
------
 
 local HApplyGarlic = HApplyPoultice:derive("HApplyGarlic")
 
@@ -1309,15 +1280,11 @@ function HApplyGarlic:new(panel, bodyPart)
     return HApplyPoultice.new(self, panel, bodyPart, "WildGarlicCataplasm", "ContextMenu_GarlicCataplasm", ISGarlicCataplasm)
 end
 
------
-
 local HApplyPlantain = HApplyPoultice:derive("HApplyPlantain")
 
 function HApplyPlantain:new(panel, bodyPart)
     return HApplyPoultice.new(self, panel, bodyPart, "PlantainCataplasm", "ContextMenu_PlantainCataplasm", ISPlantainCataplasm)
 end
-
------
 
 local HDisinfect = BaseHandler:derive("HDisinfect")
 
@@ -1375,8 +1342,6 @@ function HDisinfect:perform(previousAction, itemType)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
 
------
-
 local HStitch = BaseHandler:derive("HStitch")
 
 function HStitch:new(panel, bodyPart)
@@ -1386,10 +1351,10 @@ function HStitch:new(panel, bodyPart)
 end
 
 function HStitch:checkItem(item)
-    if item:getType() == "Needle" or item:hasTag("SewingNeedle") then
+    if item:getType() == "Needle" or item:hasTag(ItemTag.SEWING_NEEDLE) then
         self:addItem(self.items.ITEMS, item)
     end
-    if (item:getType() == "Thread" or item:hasTag"Thread") and item:getCurrentUsesFloat() >= 0 then
+    if (item:getType() == "Thread" or item:hasTag(ItemTag.THREAD)) and item:getCurrentUsesFloat() >= 0 then
         self:addItem(self.items.ITEMS, item)
     end
     if item:getType() == "SutureNeedle" then
@@ -1469,8 +1434,6 @@ function HStitch:perform(previousAction, needleType, threadType)
     end
 end
 
------
-
 local HRemoveStitch = BaseHandler:derive("HRemoveStitch")
 
 function HRemoveStitch:new(panel, bodyPart)
@@ -1496,8 +1459,6 @@ function HRemoveStitch:perform(previousAction)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
 
------
-
 local HRemoveGlass = BaseHandler:derive("HRemoveGlass")
 
 function HRemoveGlass:new(panel, bodyPart)
@@ -1507,7 +1468,7 @@ function HRemoveGlass:new(panel, bodyPart)
 end
 
 function HRemoveGlass:checkItem(item)
-    if item:hasTag("RemoveGlass") or item:getType() == "SutureNeedleHolder" or item:getType() == "Tweezers" then
+    if item:hasTag(ItemTag.REMOVE_GLASS) or item:getType() == "SutureNeedleHolder" or item:getType() == "Tweezers" then
         self:addItem(self.items.ITEMS, item)
     end
 end
@@ -1554,8 +1515,6 @@ function HRemoveGlass:perform(previousAction, itemType)
         ISTimedActionQueue.addAfter(previousAction, action)
     end
 end
-
------
 
 local HSplint = BaseHandler:derive("HSplint")
 
@@ -1661,8 +1620,6 @@ function HSplint:perform(previousAction, rippedSheetType, plankType)
     end
 end
 
------
-
 local HRemoveSplint = BaseHandler:derive("HRemoveSplint")
 
 function HRemoveSplint:new(panel, bodyPart)
@@ -1692,8 +1649,6 @@ function HRemoveSplint:perform(previousAction)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
 
------
-
 local HRemoveBullet = BaseHandler:derive("HRemoveBullet")
 
 function HRemoveBullet:new(panel, bodyPart)
@@ -1703,7 +1658,7 @@ function HRemoveBullet:new(panel, bodyPart)
 end
 
 function HRemoveBullet:checkItem(item)
-    if item:hasTag("RemoveBullet") or item:getType() == "Tweezers" or item:getType() == "SutureNeedleHolder" then
+    if item:hasTag(ItemTag.REMOVE_BULLET) or item:getType() == "Tweezers" or item:getType() == "SutureNeedleHolder" then
         self:addItem(self.items.ITEMS, item)
     end
 end
@@ -1741,8 +1696,6 @@ function HRemoveBullet:perform(previousAction, itemType)
     local action = ISRemoveBullet:new(self:getDoctor(), self:getPatient(), self.bodyPart)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
-
------
 
 local HCleanBurn = BaseHandler:derive("HCleanBurn")
 
@@ -1792,8 +1745,6 @@ function HCleanBurn:perform(previousAction, itemType)
     local action = ISCleanBurn:new(self:getDoctor(), self:getPatient(), item, self.bodyPart)
     ISTimedActionQueue.addAfter(previousAction, action)
 end
-
------
 
 function ISHealthPanel:checkItems(handlers)
     local containers = ISInventoryPaneContextMenu.getContainers(self:getDoctor())

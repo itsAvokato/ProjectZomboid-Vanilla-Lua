@@ -1,8 +1,3 @@
----
---- Created by Iurii.
---- DateTime: 3/6/2024 3:46 AM
----
-
 ISModalEditRole = ISPanel:derive("ISModalEditRole");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -10,12 +5,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 20
 local COLUMN_WIDTH = 200
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
-
---************************************************************************--
---** ISRolesList:initialise
---**
---************************************************************************--
 
 function ISModalEditRole:initialise()
     ISPanel.initialise(self);
@@ -293,10 +282,6 @@ function ISModalEditRole:closeModal()
     ISModalEditRole.instance = nil
 end
 
---************************************************************************--
---** ISFactionsList:new
---**
---************************************************************************--
 function ISModalEditRole:new(x, y, width, height, role)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

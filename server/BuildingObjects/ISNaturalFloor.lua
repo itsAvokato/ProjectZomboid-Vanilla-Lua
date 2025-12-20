@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISNaturalFloor = ISBuildingObject:derive("ISNaturalFloor");
 
---************************************************************************--
---** ISNaturalFloor:new
---**
---************************************************************************--
 function ISNaturalFloor:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISNaturalFloor\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	self.sq = getWorld():getCell():getGridSquare(x, y, z);
@@ -64,7 +56,7 @@ function ISNaturalFloor:isValid(square)
 	end
 	if square and square:getProperties() then
 		local props = square:getProperties();
-		if props:Is(IsoFlagType.water) then
+		if props:has(IsoFlagType.water) then
 			return false;
 		end
 	end
@@ -139,4 +131,3 @@ function ISNaturalFloor.getFloorSpriteNames(square)
 	end
 	return sprites
 end
-

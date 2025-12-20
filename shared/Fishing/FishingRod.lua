@@ -10,6 +10,7 @@ function FishingRod:new(player, joypad)
     self.__index = self
 
     o.player = player
+    o.playerIndex = isMultiplayer() and player:getUsername() or player:getPlayerNum()
     o.skillLevel = player:getPerkLevel(Perks.Fishing)
     o.strengthSkill = player:getPerkLevel(Perks.Strength)
     o.isFirstFishing = player:getModData().Fishing_IsFirstFishing == nil
@@ -125,8 +126,8 @@ function FishingRod:updateLine()
             self:damageLine()
             if self.rodItem:getModData().fishing_LineCondition <= 0 then
                 self:brokeLine()
-				if Fishing.ManagerInstances[self.player:getPlayerNum()] then
-					Fishing.ManagerInstances[self.player:getPlayerNum()]:destroy()
+				if Fishing.ManagerInstances[self.playerIndex] then
+					Fishing.ManagerInstances[self.playerIndex]:destroy()
 				end
                 return false
             end
@@ -135,8 +136,8 @@ function FishingRod:updateLine()
         if self.highTensionTimer > self.tensionLimit then
             if ZombRand(4) == 0 then
                 self:brokeLine()
-				if Fishing.ManagerInstances[self.player:getPlayerNum()] then
-					Fishing.ManagerInstances[self.player:getPlayerNum()]:destroy()
+				if Fishing.ManagerInstances[self.playerIndex] then
+					Fishing.ManagerInstances[self.playerIndex]:destroy()
 				end
                 return false
             else
@@ -165,7 +166,7 @@ function FishingRod:updateLineMoveCoeff()
             self.lineMoveCoeff = 0.2
         end
         self.currentLineStatus = "REEL"
-        if self.bobber.nibbleTimer > 0 and not self.bobber.catchFishStarted then
+        if self.bobber.fish and not self.bobber.catchFishStarted then
             self.bobber.catchFishStarted = true
         end
     elseif self:isReleaseLine() then
@@ -247,7 +248,7 @@ function FishingRod:getRodDxDy()
     local aimX, aimY = Fishing.Utils.getAimCoords(self.player, Fishing.actionProperties.defaultLineLen)
     local charX = self.player:getX()
     local charY = self.player:getY()
-    ---------
+
     local vecToBobberX = bobberX - charX
     local vecToBobberY = bobberY - charY
     local vecToBobberLen = IsoUtils.DistanceTo(0, 0, vecToBobberX, vecToBobberY)
@@ -310,7 +311,9 @@ function FishingRod:damageLine()
 end
 
 function FishingRod:brokeLine() -- TODO : move result of broke to fishing file
-    Fishing.ManagerInstances[self.player:getPlayerNum()]:changeState("None")
+    if not isServer() then
+        Fishing.ManagerInstances[self.playerIndex]:changeState("None")
+    end
 
     local breakRod = nil
     local replacement = Fishing.breakRodReplacement[self.rodItem:getFullType()]
@@ -321,13 +324,17 @@ function FishingRod:brokeLine() -- TODO : move result of broke to fishing file
     self.player:playSound("BreakFishingLine")
     addSound(self.player, self.player:getX(), self.player:getY(), self.player:getZ(), 20, 1)
 
-    self.player:getInventory():Remove(self.rodItem);
+    if not isClient() then
+        self.player:getInventory():Remove(self.rodItem);
+        sendRemoveItemFromContainer(self.player:getInventory(), self.item);
+    end
     self.player:setPrimaryHandItem(breakRod)
     self.player:setSecondaryHandItem(breakRod)
     self.rodItem = nil
 end
 
 function FishingRod:missFish()
+    if isServer() then return end
     self.rodItem:getModData().fishing_Lure = nil
     self.rodItem:setName(Translator.getText(self.rodItem:getScriptItem():getDisplayName()))
     self.bobber.fish = nil

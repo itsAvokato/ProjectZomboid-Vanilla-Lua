@@ -1,7 +1,3 @@
---***********************************************************
---**                    Erasmus Crowley                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISTransferWaterAction = ISBaseTimedAction:derive("ISTransferWaterAction");

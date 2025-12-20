@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISTakeFuel = ISBaseTimedAction:derive("ISTakeFuel");
@@ -17,30 +13,30 @@ function ISTakeFuel:waitToStart()
 end
 
 function ISTakeFuel:update()
-	self.petrolCan:setJobDelta(self:getJobDelta())
-	self.character:faceLocation(self.square:getX(), self.square:getY())
-	if not isClient() then
-		local actionCurrent = math.floor(self.amount * self:getJobDelta() + 0.001);
-		local itemCurrent = self.petrolCan:getFluidContainer():getAmount();
-	-- 	local itemCurrent = math.floor(self.petrolCan:getCurrentUsesFloat() / self.petrolCan:getUseDelta() + 0.001)
-		if actionCurrent > itemCurrent then
-			-- FIXME: sync in multiplayer
-			local pumpCurrent = tonumber(self.fuelStation:getPipedFuelAmount())
-			self.fuelStation:setPipedFuelAmount(pumpCurrent - (actionCurrent - itemCurrent))
+	self.character:faceLocation(self.square:getX(), self.square:getY());
+    if not isClient() then
+	    self.petrolCan:setJobDelta(self:getJobDelta());
+	    self:updateUse(self:getJobDelta());
+	end
+end
 
-			self.petrolCan:getFluidContainer():addFluid(Fluid.Petrol, actionCurrent - itemCurrent);
-		end
+function ISTakeFuel:updateUse(delta)
+    local actionCurrent = math.floor(self.amount * delta + 0.001);
+	local itemCurrent = self.petrolCan:getFluidContainer():getAmount();
+	if actionCurrent > itemCurrent then
+        local pumpCurrent = tonumber(self.fuelStation:getPipedFuelAmount())
+		self.fuelStation:setPipedFuelAmount(pumpCurrent - (actionCurrent - itemCurrent))
+		self.petrolCan:getFluidContainer():addFluid(Fluid.Petrol, actionCurrent - itemCurrent);
+        self.petrolCan:syncItemFields();
+        sendItemStats(self.petrolCan)
 	end
     self.character:setMetabolicTarget(Metabolics.LightWork);
 end
 
 function ISTakeFuel:start()
-	if not isClient() then
-		self:init()
-	end
 	self.petrolCan:setJobType(getText("ContextMenu_TakeGasFromPump"))
 	self.petrolCan:setJobDelta(0.0)
-	
+
 	self:setOverrideHandModels(nil, self.petrolCan:getStaticModel())
 	self:setActionAnim("TakeGasFromPump")
 
@@ -74,7 +70,15 @@ function ISTakeFuel:complete()
 end
 
 function ISTakeFuel:serverStart()
+    emulateAnimEvent(self.netAction, 100, "takeFuel", nil);
+end
 
+function ISTakeFuel:animEvent(event, parameter)
+    if isServer() then
+        if event == "takeFuel" then
+		    self:updateUse(self.netAction:getProgress());
+        end
+    end
 end
 
 function ISTakeFuel:getDuration()
@@ -83,10 +87,6 @@ function ISTakeFuel:getDuration()
 	end
 
 	return self.amount * 50
-end
-
-function ISTakeFuel:init()
-
 end
 
 function ISTakeFuel:new(character, fuelStation, petrolCan)

@@ -152,6 +152,23 @@ local distributionTable = {
 				}
 			}
 		},
+        brazier = {
+            rolls = 4,
+            items = {
+                "BrokenGlass", 1,
+                "Log", 4,
+                "SmashedBottle", 4,
+                "TinCanEmpty", 10,
+                "TreeBranch2", 6,
+                "Twigs", 10,
+            },
+            junk = {
+                rolls = 1,
+                items = {
+
+                }
+            }
+        },
 		cardboardbox = {
 			procedural = true,
 			procList = {
@@ -18577,6 +18594,7 @@ local distributionTable = {
 			"Spiffo", 0.01,
 			"ToyBear", 10,
 			"ToyCar", 10,
+			"ToyPlane", 10,
 			"VideoGame", 20,
 			"WalkieTalkie1", 20,
 			"Yoyo", 10,
@@ -20207,6 +20225,10 @@ local distributionTable = {
 
 	Bag_ProtectiveCaseSmall_FirstAid = BagsAndContainers.FirstAidKit,
 
+    FirstAidKit_New = BagsAndContainers.FirstAidKit,
+
+    FirstAidKit_NewPro = BagsAndContainers.FirstAidKit_Pro,
+
 	Bag_ProtectiveCaseSmall_KeyCutting = BagsAndContainers.KeyCutting,
 
 	Bag_ProtectiveCaseSmall_Survivalist = {
@@ -20711,6 +20733,7 @@ local distributionTable = {
 			"Spiffo", 0.001,
 			"ToyBear", 10,
 			"ToyCar", 10,
+			"ToyPlane", 10,
 			"VideoGame", 20,
 		},
 		junk = {

@@ -1,16 +1,7 @@
 require "BuildingObjects/ISBuildingObject"
 
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** Help you to place your campfire by let you dragging a ghost render of the tent around **
---***********************************************************
-
 campingCampfire = ISBuildingObject:derive("campingCampfire");
 
---************************************************************************--
---** campingCampfire:new
---**
---************************************************************************--
 function campingCampfire:create(x, y, z, north, sprite)
 	local sq = getWorld():getCell():getGridSquare(x, y, z);
 
@@ -73,7 +64,7 @@ function campingCampfire:isSquareFree(square)
     if square:getStaticMovingObjects():size() > 0 then return false end
     for i=0,square:getObjects():size()-1 do
         local object = square:getObjects():get(i)
-        if object:getSprite() and not object:getSprite():getProperties():Is(IsoFlagType.solidfloor) then
+        if object:getSprite() and not object:getSprite():getProperties():has(IsoFlagType.solidfloor) then
             if object:getType() == IsoObjectType.tree or object:getType() == IsoObjectType.wall then
                 return false;
             end
@@ -82,4 +73,3 @@ function campingCampfire:isSquareFree(square)
     end
     return true
 end
-

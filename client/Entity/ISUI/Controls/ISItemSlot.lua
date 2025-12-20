@@ -1,7 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
+
 require "ISUI/ISPanel"
 
 ISItemSlot = ISPanel:derive("ISItemSlot");
@@ -752,6 +749,8 @@ function ISItemSlot:new (x, y, width, height, resource, target, onItemDropped, o
     
     o.itemTypeFilter = nil;
     o.itemCount = 0;
+    
+    o.actionAnim = nil;
 
     return o
 end

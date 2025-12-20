@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -307,6 +303,9 @@ function ISWidgetTooltipInput:updateScriptValues(_table)
             if _table.script:allowFrozenItem() then
                text = text .. " <BR> " .. getText("IGUI_CraftingWindow_AllowFrozenItem")
             end
+            if _table.script:dontAllowFrozenItem() then
+               text = text .. " <BR> " .. getText("IGUI_CraftingWindow_DontAllowFrozenItem")
+            end
             if _table.script:allowRottenItem() then
                text = text .. " <BR> " .. getText("IGUI_CraftingWindow_AllowRottenItem")
             end
@@ -409,10 +408,6 @@ function ISWidgetTooltipInput:updateValues()
     end
 end
 
---************************************************************************--
---** ISWidgetTooltipInput:new
---**
---************************************************************************--
 function ISWidgetTooltipInput:new (x, y, width, height, player, logic, inputScript) --recipeData, inputScript)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

@@ -1,13 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Displays FluidContainer contents as bar.
-    Optionally can display amounts being removed or added.
---]]
-
 require "ISUI/ISPanel"
 
 ISFluidBar = ISPanel:derive("ISFluidBar");

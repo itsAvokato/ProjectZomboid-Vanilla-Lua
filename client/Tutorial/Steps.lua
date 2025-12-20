@@ -552,7 +552,7 @@ function InventoryUseStep:begin()
         self:addMessage(getText("IGUI_Tutorial1_InvUse5"), getCore():getScreenWidth()/2, getCore():getScreenHeight()/4, 420, 100, false, InventoryUseStep.lootWeapon);
     end
 
-    getPlayer():getStats():setHunger(0.2);
+    getPlayer():getStats():set(CharacterStat.HUNGER, 0.2);
 
     self:doMessage();
 end
@@ -590,8 +590,8 @@ end
 function InventoryUseStep:eat()
     getCore():setBlinkingMoodle("Hungry");
     ISInventoryPaneContextMenu.blinkOption = getText("ContextMenu_Eat");
-    getPlayer():getBodyDamage():setBoredomLevel(0);
-    getPlayer():getBodyDamage():setUnhappynessLevel(0);
+    getPlayer():getStats():reset(CharacterStat.BOREDOM);
+    getPlayer():getStats():reset(CharacterStat.UNHAPPINESS);
     local itemToEat = getPlayer():getInventory():FindAndReturn(InventoryLootingStep.itemToEat);
     if not InventoryUseStep.dontTurn and getPlayer():getVariableString("PerformingAction") == "Eat" then
         SneakStep.setZoom(0.25);
@@ -634,7 +634,7 @@ function InventoryUseStep:eat()
     if complete then
         Tutorial1.closeBothInv();
         JoypadState.disableYInventory = true;
-        getPlayer():getBodyDamage():setFoodSicknessLevel(40);
+        getPlayer():getStats():set(CharacterStat.FOOD_SICKNESS, 40);
         getCore():setBlinkingMoodle("Sick");
     end
     return complete;
@@ -1449,7 +1449,7 @@ function BandageStep:begin()
         getPlayer():getInventory():AddItem(shotgun);
         getPlayer():getInventory():AddItem(bag);
         bag:getItemContainer():AddItem("Base.Bandage");
-        getPlayer():setWornItem("Back", bag);
+        getPlayer():setWornItem(ItemBodyLocation.BACK, bag);
         getPlayer():setPrimaryHandItem(shotgun);
         getPlayer():setSecondaryHandItem(shotgun);
     
@@ -1865,7 +1865,7 @@ function ShotgunStep:begin()
         getPlayer():getInventory():AddItem(shotgun);
         getPlayer():getInventory():AddItem(bag);
         bag:getItemContainer():AddItem("Base.Bandage");
-        getPlayer():setWornItem("Back", bag);
+        getPlayer():setWornItem(ItemBodyLocation.BACK, bag);
         getPlayer():setPrimaryHandItem(shotgun);
         getPlayer():setSecondaryHandItem(shotgun);
     

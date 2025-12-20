@@ -4,20 +4,11 @@ require "ISUI/ISButton"
 
 ISDemoPopup = ISPanel:derive("ISDemoPopup");
 
-
---************************************************************************--
---** ISDemoPopup:initialise
---**
---************************************************************************--
-
 function ISDemoPopup:initialise()
     ISPanelJoypad.initialise(self);
 end
 
---************************************************************************--
---** ISDemoPopup:instantiate
---**
---************************************************************************--
+
 function ISDemoPopup:createChildren()
 
     -- CREATE TUTORIAL PANEL
@@ -33,15 +24,10 @@ function ISDemoPopup:createChildren()
 
 end
 
-
 function ISDemoPopup:setInfo(item)
 
 end
 
---************************************************************************--
---** ISDemoPopup:onMouseDown
---**
---************************************************************************--
 function ISDemoPopup:onMouseDown(x, y)
     self:removeSelf()
 end
@@ -91,10 +77,6 @@ ISDemoPopup.getInstance = function()
     return ISDemoPopup.instance;
 end
 
---************************************************************************--
---** ISDemoPopup:new
---**
---************************************************************************--
 function ISDemoPopup:new (x, y, width, height)
     local o = {}
     --o.data = {}

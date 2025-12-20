@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 20/03/2017
--- Time: 12:09
--- To change this template use File | Settings | File Templates.
---
-
 ISFishingUI = ISPanelJoypad:derive("ISFishingUI");
 ISFishingUI.instance = {};
 ISFishingUI.messages = {};
@@ -23,14 +15,9 @@ end
 
 local function predicateFishingRodOrSpear(item, playerObj)
     if item:isBroken() then return false end
-    if not item:hasTag("FishingRod") and not item:hasTag("FishingSpear") then return false end
+    if not item:hasTag(ItemTag.FISHING_ROD) and not item:hasTag(ItemTag.FISHING_SPEAR) then return false end
     return true
 end
-
---************************************************************************--
---** ISFishingUI:initialise
---**
---************************************************************************--
 
 function ISFishingUI:setVisible(bVisible)
     if self.javaObject == nil then
@@ -545,7 +532,7 @@ function ISFishingUI:doBagOptions()
     self.containers = self.player:getInventory():getItemsFromCategory("Container");
     for i=0, self.containers:size() - 1 do
         local bag = self.containers:get(i);
-        if (bag:getType() ~= "KeyRing" and not bag:hasTag("KeyRing")) then
+        if (bag:getType() ~= "KeyRing" and not bag:hasTag(ItemTag.KEY_RING)) then
             self.containerSelector:addOptionWithData(bag:getName(), bag);
         end
     end
@@ -627,7 +614,7 @@ function ISFishingUI:checkPlayerPosition()
         for y=plyrY - dist, plyrY + dist do
             local sq = getSquare(x, y, z);
             if sq and sq:getFloor() and sq:getFloor():getSprite() then
-                if sq:getFloor():getSprite():getProperties():Is(IsoFlagType.water) then
+                if sq:getFloor():getSprite():getProperties():has(IsoFlagType.water) then
                     local zone = ISFishingAction.getFishingZoneFixed(x, y, z)
                     if zone ~= nil and zone == zoneClicked then
                         table.insert(self.squareWithSameZone, sq)
@@ -683,10 +670,6 @@ function ISFishingUI:pickBestSquare(squares)
     return bestSquare
 end
 
---************************************************************************--
---** ISFishingUI:new
---**
---************************************************************************--
 function ISFishingUI:new(x, y, width, height, player, clickedSquare)
     local o = {}
     if y == 0 then

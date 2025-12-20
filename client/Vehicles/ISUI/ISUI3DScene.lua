@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISUI3DScene = ISUIElement:derive("ISUI3DScene")

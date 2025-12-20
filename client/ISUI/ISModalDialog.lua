@@ -1,9 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISModalDialog = ISPanelJoypad:derive("ISModalDialog");
@@ -11,11 +5,6 @@ ISModalDialog = ISPanelJoypad:derive("ISModalDialog");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISModalDialog:initialise
---**
---************************************************************************--
 
 function ISModalDialog:initialise()
 	ISPanel.initialise(self);
@@ -207,10 +196,6 @@ function ISModalDialog:onJoypadDown(button)
 --]]
 end
 
---************************************************************************--
---** ISModalDialog:render
---**
---************************************************************************--
 function ISModalDialog:render()
 
 end
@@ -236,10 +221,6 @@ function ISModalDialog.CalcSize(width, height, text)
 	return width,height
 end
 
---************************************************************************--
---** ISModalDialog:new
---**
---************************************************************************--
 function ISModalDialog:new(x, y, width, height, text, yesno, target, onclick, player, param1, param2)
 	text = text:gsub("\\n", "\n")
 	width,height = ISModalDialog.CalcSize(width, height, text)
@@ -281,4 +262,3 @@ function ISModalDialog:new(x, y, width, height, text, yesno, target, onclick, pl
     o.moveWithMouse = false;
     return o;
 end
-

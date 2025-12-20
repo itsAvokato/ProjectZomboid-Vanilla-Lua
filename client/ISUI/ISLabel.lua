@@ -3,12 +3,6 @@ require "ISUI/ISUIElement"
 ISLabel = ISUIElement:derive("ISLabel");
 local UI_BORDER_SPACING = 10
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISLabel:initialise()
 	ISUIElement.initialise(self);
 end
@@ -67,10 +61,6 @@ function ISLabel:setColor(r,g,b)
 	self.b = b;
 end
 
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISLabel:prerender()
     local txt = self.name;
     if self.translation then

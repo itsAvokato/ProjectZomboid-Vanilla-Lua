@@ -1,18 +1,6 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISDigitalCode = ISPanelJoypad:derive("ISDigitalCode");
-
-
---************************************************************************--
---** ISDigitalCode:initialise
---**
---************************************************************************--
 
 function ISDigitalCode:initialise()
 	ISPanel.initialise(self);
@@ -153,10 +141,6 @@ function ISDigitalCode:prerender()
     end
 end
 
---************************************************************************--
---** ISDigitalCode:render
---**
---************************************************************************--
 function ISDigitalCode:render()
 
 end
@@ -190,10 +174,6 @@ function ISDigitalCode:getCode()
     return n1 + n2 + n3
 end
 
---************************************************************************--
---** ISDigitalCode:new
---**
---************************************************************************--
 function ISDigitalCode:new(x, y, width, height, target, onclick, player, padlock, thumpable, new)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height);
@@ -228,4 +208,3 @@ function ISDigitalCode:new(x, y, width, height, target, onclick, player, padlock
     o.new = new;
     return o;
 end
-

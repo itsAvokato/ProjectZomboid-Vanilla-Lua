@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 -- This class manages additional tiles (not the one being edited) displayed in the editor.
 
 require "ISBaseObject"
@@ -54,12 +50,10 @@ function SceneTiles:renderTile(dx, dy, tileName)
 end
 
 function SceneTiles:renderBox3D(tx, ty, tz, rx, ry, rz, minX, minY, minZ, maxX, maxY, maxZ, r, g, b)
-	---
 	self.tempTranslate = self.tempTranslate or Vector3f.new()
 	self.tempRotate = self.tempRotate or Vector3f.new()
 	self.tempExtentsMin = self.tempExtentsMin or Vector3f.new()
 	self.tempExtentsMax = self.tempExtentsMax or Vector3f.new()
-	---
 	self.tempTranslate:set(tx, ty, tz)
 	self.tempRotate:set(rx, ry, rz)
 	self.tempExtentsMin:set(minX, minY, minZ)

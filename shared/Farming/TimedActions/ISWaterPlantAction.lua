@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWaterPlantAction = ISBaseTimedAction:derive("ISWaterPlantAction");

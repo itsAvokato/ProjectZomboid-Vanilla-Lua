@@ -1,17 +1,6 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISModalRichText = ISPanelJoypad:derive("ISModalRichText");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---************************************************************************--
---** ISModalRichText:initialise
---**
---************************************************************************--
 
 function ISModalRichText:initialise()
 	ISPanelJoypad.initialise(self);
@@ -204,10 +193,6 @@ function ISModalRichText:setHeightToContents()
 	self:updateButtons()
 end
 
---************************************************************************--
---** ISModalRichText:new
---**
---************************************************************************--
 function ISModalRichText:new(x, y, width, height, text, yesno, target, onclick, player, param1, param2)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height);
@@ -252,4 +237,3 @@ function ISModalRichText:new(x, y, width, height, text, yesno, target, onclick, 
     o.destroyOnClick = true;
     return o;
 end
-

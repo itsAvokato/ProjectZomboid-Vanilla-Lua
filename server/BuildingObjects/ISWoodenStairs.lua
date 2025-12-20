@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenStairs = ISBuildingObject:derive("ISWoodenStairs");
 
---************************************************************************--
---** ISWoodenStairs:new
---**
---************************************************************************--
 function ISWoodenStairs:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenStairs\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -45,10 +37,10 @@ function ISWoodenStairs:create(x, y, z, north, sprite)
 		squareB = IsoGridSquare.new(getCell(), nil, xb, yb, z);
 		getCell():ConnectNewSquare(squareB, false);
 	end
-	if z == 0 and squareA:getFloor():getSprite():getProperties():Is(IsoFlagType.water) then
+	if z == 0 and squareA:getFloor():getSprite():getProperties():has(IsoFlagType.water) then
 		squareA:addFloor("carpentry_02_57");
 	end
-	if z == 0 and squareB:getFloor():getSprite():getProperties():Is(IsoFlagType.water) then
+	if z == 0 and squareB:getFloor():getSprite():getProperties():has(IsoFlagType.water) then
 		squareB:addFloor("carpentry_02_57");
 	end
 
@@ -267,4 +259,3 @@ function ISWoodenStairs:getSquareTopPos(square, north)
 	end
 	return x, y, z + 1
 end
-

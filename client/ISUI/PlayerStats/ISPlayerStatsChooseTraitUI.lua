@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISPlayerStatsChooseTraitUI = ISPanel:derive("ISPlayerStatsChooseTraitUI");
@@ -18,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsChooseTraitUI:initialise()
     ISPanel.initialise(self);
@@ -40,19 +23,22 @@ function ISPlayerStatsChooseTraitUI:render()
 end
 
 function ISPlayerStatsChooseTraitUI:create()
-    for i=0,TraitFactory.getTraits():size()-1 do
-        local trait = TraitFactory.getTraits():get(i);
-        if not self.chr:getTraits():contains(trait:getType()) then
-            if trait:getCost() >= 0 then
-                table.insert(self.goodTraits, trait)
+    for i=0,CharacterTraitDefinition.getTraits():size()-1 do
+        local characterTraitDefinition = CharacterTraitDefinition.getTraits():get(i);
+        if not self.chr:hasTrait(characterTraitDefinition:getType()) then
+            if characterTraitDefinition:getCost() >= 0 then
+                table.insert(self.goodTraits, characterTraitDefinition)
             else
-                table.insert(self.badTraits, trait)
+                table.insert(self.badTraits, characterTraitDefinition)
             end
         end
     end
+    table.sort(self.goodTraits, function(a,b) return not string.sort(a:getLabel(), b:getLabel()) end)
+    table.sort(self.badTraits, function(a,b) return not string.sort(a:getLabel(), b:getLabel()) end)
 
     self.combo = ISComboBox:new(UI_BORDER_SPACING+1, FONT_HGT_MEDIUM+UI_BORDER_SPACING*2+1, self.width - (UI_BORDER_SPACING+1)*2, BUTTON_HGT, nil,nil);
     self.combo:initialise();
+    self.combo:setEditable(true)
     self.goodTrait = {};
     self:addChild(self.combo);
 
@@ -75,14 +61,14 @@ function ISPlayerStatsChooseTraitUI:create()
     self.ok.internal = "OK";
     self.ok:initialise();
     self.ok:instantiate();
-    self.ok.borderColor = {r=1, g=1, b=1, a=0.1};
+    self.ok:enableAcceptColor();
     self:addChild(self.ok);
 
     self.cancel = ISButton:new((self:getWidth() + UI_BORDER_SPACING) / 2, self.ok:getY(), btnWid, BUTTON_HGT, getText("UI_Cancel"), self, ISPlayerStatsChooseTraitUI.onOptionMouseDown);
     self.cancel.internal = "CANCEL";
     self.cancel:initialise();
     self.cancel:instantiate();
-    self.cancel.borderColor = {r=1, g=1, b=1, a=0.1};
+    self.cancel:enableCancelColor();
     self:addChild(self.cancel);
 
     self:setHeight(self.cancel:getBottom() + UI_BORDER_SPACING+1)

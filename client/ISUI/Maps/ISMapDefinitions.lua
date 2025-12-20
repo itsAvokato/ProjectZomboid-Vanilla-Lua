@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 MapUtils = {}
 
 function MapUtils.initDirectoryMapData(mapUI, directory)
@@ -395,8 +391,6 @@ function MapUtils.renderDarkModeOverlay(mapUI)
 	mapUI:drawTextureScaled(Texture.getWhite(), 0, 0, mapUI.width, mapUI.height, alpha, 0.0, 0.0, 0.0)
 end
 
------
-
 local function replaceWaterStyle(mapUI)
 	if not WATER_TEXTURE then return end
 	local mapAPI = mapUI.javaObject:getAPIv1()
@@ -440,8 +434,6 @@ local function worldMapImage(fileName)
 	end
 	return "media/textures/worldMap/" .. fileName
 end
-
--- -- -- -- --
 
 LootMaps = {}
 LootMaps.Init = {}
@@ -660,8 +652,6 @@ LootMaps.Init.WestpointMap = function(mapUI)
 	MapUtils.overlayPaper(mapUI)
 --	overlayPNG(mapUI, 36*300, 21*300+190, 0.666, "lootMapPNG", "media/ui/LootableMaps/westpointmap.png", 0.5)
 end
-
--- -- -- -- --
 
 LootMaps.Init.MulStashMap1 = function(mapUI)
 	local mapAPI = mapUI.javaObject:getAPIv1()
@@ -1551,8 +1541,6 @@ LootMaps.Init.WorldStashMap23 = function(mapUI)
 	mapAPI:setBoundsInSquares(8672, 14040, 8775, 14159)
 
 end
--- -- -- -- --
-
 PrintMediaMaps = {}
 PrintMediaMaps.Init = {}
 

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_CombinationWasherDryerToggle = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_CombinationWasherDryerToggle")

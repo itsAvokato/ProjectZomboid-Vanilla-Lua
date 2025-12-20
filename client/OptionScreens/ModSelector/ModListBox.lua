@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "OptionScreens/ModSelector/ModSelector"
 

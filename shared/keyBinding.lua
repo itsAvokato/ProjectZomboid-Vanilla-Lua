@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 -- key bindings always:
     -- start with bind = {}
     -- end with table.insert(keyBinding, bind)
@@ -86,6 +82,10 @@ bind.key = Keyboard.KEY_X;
 table.insert(keyBinding, bind);
 bind = {};
 bind.value = "ReloadWeapon";
+bind.key = Keyboard.KEY_R;
+table.insert(keyBinding, bind);
+bind = {};
+bind.value = "SharpenWeapon";
 bind.key = Keyboard.KEY_R;
 table.insert(keyBinding, bind);
 bind = {};

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 MOFeedingTrough = {};
@@ -22,17 +18,16 @@ local function ReplaceExistingObject(isoObject, isNorth)
 	local spriteName = isoObject:getSprite():getName()
 	local index = isoObject:getObjectIndex()
 	removeExistingLuaObject(square)
-	square:transmitRemoveItemFromSquare(isoObject)
+	square:transmitRemoveItemFromSquare(isoObject, false)
 	isoObject = IsoFeedingTrough.new(square, spriteName, nil)
 	isoObject:setNorth(isNorth);
 	isoObject:initWithDef(); -- we have a definition for each feeding trough, with their max feed amount etc..
 	square:AddSpecialObject(isoObject, index)
-	isoObject:transmitCompleteItemToClients()
 	if (isoObject == isoObject:getMasterTrough()) and isoObject:getContainer() then
 		MOFeedingTrough.generateContainer(isoObject);
 	end
-
-	isoObject:checkOverlayFull();
+	isoObject:checkOverlayFull(false);
+	isoObject:transmitCompleteItemToClients()
 	return isoObject
 end
 
@@ -61,10 +56,7 @@ MOFeedingTrough.generateContainer = function(trough)
 			trough:getContainer():AddItem("Base.AnimalFeedBag")
 		end
 	end
-	trough:checkOverlayAfterAnimalEat();
 end
-
--- -- -- -- --
 
 local function NewDoubleW(object)
 	ReplaceExistingObject(object, false)
@@ -112,8 +104,6 @@ MapObjects.OnNewWithSprite("location_farm_accesories_01_20", NewDoubleW, PRIORIT
 MapObjects.OnNewWithSprite("location_farm_accesories_01_21", NewDoubleW, PRIORITY)
 MapObjects.OnNewWithSprite("location_farm_accesories_01_22", NewDoubleW, PRIORITY)
 MapObjects.OnNewWithSprite("location_farm_accesories_01_23", NewDoubleW, PRIORITY)
-
--- -- -- -- --
 
 local function LoadObject(isoObject, isNorth)
 	if not SFeedingTroughSystem.instance:isValidIsoObject(isoObject) then

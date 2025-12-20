@@ -3,8 +3,6 @@ if not isClient() then return end
 local ServerCommands = {}
 local Commands = {}
 
--- -- -- -- --
-
 Commands.player = {}
 Commands.player.setWeight = function(args)
     getPlayer():getNutrition():setWeight(args.weight)
@@ -14,8 +12,6 @@ end
 Commands.player.syncWeight = function(args)
     getPlayer():getNutrition():syncWeight()
 end
-
--- -- -- -- --
 
 Commands.fishing = {}
 
@@ -58,41 +54,6 @@ Commands.fishing.addChumToWater = function(args)
     FishSchoolManager.getInstance():addChum(args.x, args.y, args.force)
 end
 
-Commands.fishing.changeBobberSquare = function(args)
-    if getPlayer():getInventory():containsID(args.rodID) then
-        return;
-    end
-
-    local z = 0;
-    local oldSq = getCell():getGridSquare(args.oldSqX, args.oldSqY, z);
-    if not oldSq then
-        return;
-    end
-
-    local item;
-    local wobs = oldSq:getWorldObjects()
-    for i = 0, wobs:size()-1 do
-        local o = wobs:get(i)
-        item = o:getItem()
-        if item and item:getID() == args.bobberID then
-            oldSq:RemoveTileObject(item:getWorldItem())
-            break;
-        end
-    end
-
-    if not item then
-        print("changeBobberSquare: can't find the item")
-        return;
-    end
-
-    local newSq = getCell():getGridSquare(fastfloor(args.bobberX), fastfloor(args.bobberY), z);
-    if not newSq then
-        return;
-    end
-
-    newSq:AddWorldInventoryItem(item, args.bobberX, args.bobberY, z, false)
-end
-
 Commands.erosion = {};
 Commands.erosion.disableForSquare = function(args)
     local sq = getCell():getGridSquare(args.x, args.y, args.z);
@@ -100,8 +61,6 @@ Commands.erosion.disableForSquare = function(args)
         sq:disableErosion();
     end
 end
-
--- -- -- -- --
 
 Commands.character = {};
 Commands.character.rested = function(args)
@@ -116,8 +75,6 @@ Commands.literature.readLiterature = function(args)
     log(DebugType.Action, '[ServerCommands.literature.readLiterature] '..tostring(getPlayer())..' book '..tostring(book));
 end
 
--- -- -- -- --
-
 Commands.square = {};
 Commands.square.removeGrass = function(args)
     local sq = getCell():getGridSquare(args.x, args.y, args.z);
@@ -126,108 +83,7 @@ Commands.square.removeGrass = function(args)
     end
 end
 
--- -- -- -- --
 Commands.animal = {}
-Commands.animal.forceEgg = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:debugForceEgg()
-end
-Commands.animal.invincible = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:setIsInvincible(args.value)
-end
-Commands.animal.kill = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    if not animal then
-        return;
-    end
-
-    if args.index then
-        local hutch = getHutch(tonumber(args.x), tonumber(args.y), tonumber(args.z))
-        animal:getData():setHutchPosition(tonumber(args.index))
-        hutch:killAnimal(animal)
-    else
-        animal:setAttackedBy(getFakeAttacker())
-        animal:setHealth(0)
-    end
-end
-Commands.animal.setWool = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setWoolQuantity(tonumber(args.value), true)
-end
-Commands.animal.setMilk = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setMaxMilkActual(tonumber(args.value))
-    animal:getData():setMilkQuantity(tonumber(args.value))
-end
-Commands.animal.setStress = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:setDebugStress(tonumber(args.value))
-end
-Commands.animal.setAge = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:setAgeDebug(tonumber(args.value))
-end
-Commands.animal.setHunger = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getStats():setHunger(tonumber(args.value))
-end
-Commands.animal.setThirst = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getStats():setThirst(tonumber(args.value))
-end
-Commands.animal.acceptance = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    local player = getPlayerByOnlineID(tonumber(args.player))
-    animal:setDebugAcceptance(player, tonumber(args.acceptance))
-end
-Commands.animal.updateStatsAway = function(args)
-    print("id="..tostring(args.id))
-    local animal = getAnimal(tonumber(args.id))
-    animal:updateLastTimeSinceUpdate();
-    animal:updateStatsAway(tonumber(args.value));
-end
-Commands.animal.fertilized = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setFertilized(args.value)
-    local male = getAnimal(tonumber(args.male))
-    if male and args.value then
-        animal:getData():setMaleGenome(male:getFullGenome())
-    end
-end
-Commands.animal.fertilizedTime = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setFertilizedTime(args.value)
-end
-Commands.animal.pregnant = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setPregnant(args.value)
-end
-Commands.animal.pregnancyTime = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():setPregnancyTime(args.value)
-end
-Commands.animal.dung = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getData():checkPoop(false, true);
-end
-Commands.animal.happy = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:debugRandomHappyAnim()
-end
-Commands.animal.attach = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    local item = instanceItem(args.item)
-    animal:setAttachedItem(args.location, item)
-end
-Commands.animal.forceWander = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:forceWanderNow()
-end
-Commands.animal.forceHutch = function(args)
-    local animal = getAnimal(tonumber(args.id))
-    animal:getBehavior():callToHutch(nil, true)
-end
 Commands.animal.removeDung = function(args)
     local initialSquare = getSquare(tonumber(args.x), tonumber(args.y), tonumber(args.z))
     if not initialSquare then
@@ -244,7 +100,7 @@ Commands.animal.removeDung = function(args)
         end
     end
 end
--- -- -- -- --
+
 Commands.hutch = {}
 Commands.hutch.dirt = function(args)
     local hutch = getHutch(tonumber(args.x), tonumber(args.y), tonumber(args.z))
@@ -258,12 +114,12 @@ Commands.hutch.nestBoxDirt = function(args)
         hutch:setNestBoxDirt(args.dirt)
     end
 end
--- -- -- -- --
+
 Commands.ui = {}
 Commands.ui.DirtyUI = function(args)
     ISInventoryPage.dirtyUI();
 end
--- -- -- -- --
+
 Commands.recipe = {}
 Commands.recipe.OpenMysteryCan = function(args)
     local item = getPlayer():getInventory():getItemWithID(args.itemId)
@@ -306,7 +162,23 @@ Commands.recipe.SayText = function(args)
         player:Say(text);
     end
 end
--- -- -- -- --
+
+Commands.recipe.openAndEat = function(args)
+    local player = getPlayerByOnlineID(args.onlineID)
+    if player ~= nil then
+        -- The last ISInventoryTransferAction may contain an invalid item object
+        local queue = ISTimedActionQueue.getTimedActionQueue(player)
+        local index = queue:indexOfType("ISInventoryTransferAction")
+        if index >= 0 then
+            table.remove(queue.queue, index)
+        end
+
+        local item = player:getInventory():getItemWithID(args.itemId)
+        if item ~= nil then
+            ISTimedActionQueue.add(ISEatFoodAction:new(player, item, args.eatPercentage));
+        end
+    end
+end
 
 ServerCommands.OnServerCommand = function(module, command, args)
     if Commands[module] and Commands[module][command] then

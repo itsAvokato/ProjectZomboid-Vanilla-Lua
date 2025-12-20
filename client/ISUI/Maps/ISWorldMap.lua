@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/Maps/ISMap"
 require "ISUI/Maps/ISWorldMapSymbols"
@@ -12,8 +8,6 @@ local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local TERRAIN_IMAGE = getDebug()
-
------
 
 WorldMapOptions = ISCollapsableWindowJoypad:derive("WorldMapOptions")
 
@@ -226,8 +220,6 @@ function WorldMapOptions:new(x, y, width, height, map)
 	return o
 end
 
------
-
 ISWorldMapButtonPanel = ISPanelJoypad:derive("ISWorldMapButtonPanel")
 
 function ISWorldMapButtonPanel:render()
@@ -265,8 +257,6 @@ function ISWorldMapButtonPanel:new(x, y, width, height)
 	o:noBackground()
 	return o
 end
-
------
 
 ISWorldMap = ISPanelJoypad:derive("ISWorldMap")
 
@@ -372,7 +362,7 @@ function ISWorldMap:prerender()
     self.mapAPI:getSymbolsAPIv2():initDefaultAnnotations() -- only needed when the map editor changed things
 	self.symbolsUI:prerenderMap()
 	if self.mapAPI:getBoolean("ColorblindPatterns") ~= getCore():getOptionColorblindPatterns() then
-		MapUtils.initDefaultStyleV1(self)
+		MapUtils.initDefaultStyleV3(self)
 		MapUtils.overlayPaper(self)
 	end
 	self:renderPrintMedia()
@@ -447,6 +437,11 @@ function ISWorldMap:render()
 	ISPanelJoypad.render(self)
 end
 
+function ISWorldMap:getPrintMediaIconSize()
+    local zoom = self.mapAPI:getZoomF()
+    return PZMath.lerp(32, 64, (PZMath.clampFloat(zoom, 12.0, 15.0) - 12) / 3)
+end
+
 function ISWorldMap:renderPrintMedia()
     self.mouseOverPrintMedia = nil
     if not self.showPrintMedia then return end
@@ -464,6 +459,7 @@ function ISWorldMap:renderPrintMedia()
         mx = self.width / 2
         my = self.height / 2
     end
+    local iconSize = self:getPrintMediaIconSize()
     local mouseOver = nil
     for i=1,mediaIDList:size() do
         local mediaID = mediaIDList:get(i-1)
@@ -475,10 +471,10 @@ function ISWorldMap:renderPrintMedia()
                     for _,location in ipairs(locations) do
                         local sx = self.mapAPI:worldToUIX(location.x1 / 2 + location.x2 / 2, location.y1 / 2 + location.y2 / 2)
                         local sy = self.mapAPI:worldToUIY(location.x1 / 2 + location.x2 / 2, location.y1 / 2 + location.y2 / 2)
-                        sx = sx - 64 / 2
-                        sy = sy - 64 / 2
-                        self:drawTextureScaledAspect(getTexture("Item_Flier"), sx, sy, 64, 64, 1.0, 1.0, 1.0, 1.0)
-                        if mx >= sx and my >= sy and mx < sx + 64 and my < sy + 64 then
+                        sx = sx - iconSize / 2
+                        sy = sy - iconSize / 2
+                        self:drawTextureScaledAspect(getTexture("Item_Flier"), sx, sy, iconSize, iconSize, 1.0, 1.0, 1.0, 1.0)
+                        if mx >= sx and my >= sy and mx < sx + iconSize and my < sy + iconSize then
                             mouseOver = { mediaID=mediaID, location=location, x=sx, y=sy }
                         end
                     end
@@ -488,9 +484,25 @@ function ISWorldMap:renderPrintMedia()
     end
     if not mouseOver then return end
     if not self:isPointOver(getMouseX(), getMouseY()) then return end
-    self:drawRectBorder(mouseOver.x, mouseOver.y, 64, 64, 1.0, 1.0, 1.0, 1.0)
+    self:drawRectBorder(mouseOver.x, mouseOver.y, iconSize, iconSize, 1.0, 1.0, 1.0, 1.0)
     local location = mouseOver.location
     self:drawMapRect(location)
+    local val = Brochure.get(ResourceLocation.of(mouseOver.mediaID)) or Flier.get(ResourceLocation.of(mouseOver.mediaID))
+    local text = getTextOrNull(val:getTranslationKey())
+    if text then
+        local font = UIFont.Medium
+        local FONT_HGT = getTextManager():getFontHeight(font)
+        local textWid = getTextManager():MeasureStringX(font, text)
+        local rx = Math.round(mouseOver.x + iconSize / 2 - textWid / 2 - 4)
+        local ry = Math.round(mouseOver.y - FONT_HGT - 8)
+        local rw = textWid + 4 * 2
+        local rh = FONT_HGT + 2 * 2
+        local r,g,b,a = 50 / 255.0, 130 / 255.0, 246 / 255.0, 1.0
+        self:drawRect(rx, ry, rw, rh, a, r, g, b)
+        self:drawPolygon(nil, rx, ry, rx, ry + rh, rx - rh / 3, ry + rh * 2 / 3, rx - rh / 3, ry + rh * 1 / 3, r, g, b, a)
+        self:drawPolygon(nil, rx + rw, ry, rx + rw, ry + rh, rx + rw + rh / 3, ry + rh * 2 / 3, rx + rw + rh / 3, ry + rh * 1 / 3, r, g, b, a)
+        self:drawTextCentre(text, mouseOver.x + iconSize / 2, mouseOver.y - FONT_HGT - 6, 1.0, 1.0, 1.0, 1.0, font)
+    end
     self.mouseOverPrintMedia = mouseOver
 end
 
@@ -516,15 +528,15 @@ function ISWorldMap:onMouseUpPrintMedia()
         self.printMedia = nil
     end
     self:closePrintMedia()
-    local val = self.mouseOverPrintMedia.mediaID
+    local val = Brochure.get(ResourceLocation.of(self.mouseOverPrintMedia.mediaID)) or Flier.get(ResourceLocation.of(self.mouseOverPrintMedia.mediaID))
     local win = PZAPI.UI.PrintMedia{
         x = 20, y = 20,
     }
     win.media_id = val
-    win.data = getText("Print_Media_" .. val .. "_info")
-    win.children.bar.children.name.text = getText("Print_Media_" .. val .. "_title")
-    win.textTitle = getText("Print_Text_" .. val .. "_title")
-    win.textData = string.gsub(getText("Print_Text_" .. val .. "_info"), "\\n", "\n")
+    win.data = getText(val:getTranslationInfoKey())
+    win.children.bar.children.name.text = getText(val:getTranslationKey())
+    win.textTitle = win.children.bar.children.name.text
+    win.textData = string.gsub(win.data, "\\n", "\n")
     win:instantiate()
     for i=1,5 do
         win.children.bottomButtons.children["revealOnMap"..i]:setVisible(false)
@@ -591,6 +603,7 @@ function ISWorldMap:renderStashMaps()
         mx = self.width / 2
         my = self.height / 2
     end
+    local iconSize = self:getPrintMediaIconSize()
     local mouseOver = nil
     for i=1,stashNameList:size() do
         local stashName = stashNameList:get(i-1)
@@ -598,10 +611,10 @@ function ISWorldMap:renderStashMaps()
         if bounds and bounds.x1 then
             local sx = self.mapAPI:worldToUIX(bounds.x1 / 2 + bounds.x2 / 2, bounds.y1 / 2 + bounds.y2 / 2)
             local sy = self.mapAPI:worldToUIY(bounds.x1 / 2 + bounds.x2 / 2, bounds.y1 / 2 + bounds.y2 / 2)
-            sx = sx - 64 / 2
-            sy = sy - 64 / 2
-            self:drawTextureScaledAspect(getTexture("Item_Map"), sx, sy, 64, 64, 1.0, 1.0, 1.0, 1.0)
-            if mx >= sx and my >= sy and mx < sx + 64 and my < sy + 64 then
+            sx = sx - iconSize / 2
+            sy = sy - iconSize / 2
+            self:drawTextureScaledAspect(getTexture("Item_Map"), sx, sy, iconSize, iconSize, 1.0, 1.0, 1.0, 1.0)
+            if mx >= sx and my >= sy and mx < sx + iconSize and my < sy + iconSize then
                 mouseOver = { stashName=stashName, bounds=bounds, x=sx, y=sy }
             end
         end
@@ -609,7 +622,7 @@ function ISWorldMap:renderStashMaps()
     if not mouseOver then return end
     if not self:isPointOver(getMouseX(), getMouseY()) then return end
     if self.stashMapUI and self.stashMapUI:isVisible() and self.stashMapUI:isMouseOver() then return end
-    self:drawRectBorder(mouseOver.x, mouseOver.y, 64, 64, 1.0, 1.0, 1.0, 1.0)
+    self:drawRectBorder(mouseOver.x, mouseOver.y, iconSize, iconSize, 1.0, 1.0, 1.0, 1.0)
     local bounds = mouseOver.bounds
     self:drawMapRect(bounds)
     self.mouseOverStashMap = mouseOver
@@ -646,6 +659,7 @@ function ISWorldMap:pickMouseOverStreet()
     streetsAPI:setMouseOverStreet(nil, 0.0, 0.0)
     if not self.mapAPI:getBoolean("ShowStreetNames") then return end
     if self.symbolsUI.currentTool then return end -- don't highlight streets when editing symbols, it's distracting
+    if self.mouseOverPrintMedia then return end
     local mx,my = self:getMouseX(), self:getMouseY()
    	if self.playerNum and ((self.playerNum ~= 0) or (JoypadState.players[self.playerNum+1] ~= nil and not wasMouseActiveMoreRecentlyThanJoypad())) then
         mx = self:getWidth() / 2
@@ -660,8 +674,6 @@ function ISWorldMap:pickMouseOverStreet()
     local worldY = self.mapAPI:uiToWorldY(mx, my)
     streetsAPI:setMouseOverStreet(mouseOverStreet, worldX, worldY)
 end
-
------
 
 AnnotatedMapOverlay = ISPanel:derive("AnnotatedMapOverlay")
 
@@ -711,8 +723,6 @@ function AnnotatedMapOverlay:new(x, y, width, height)
     o.backgroundColor.a = 0.0
     return o
 end
-
------
 
 function ISWorldMap:onMouseUpStashMap()
     if not self.mouseOverStashMap then return false end
@@ -1469,8 +1479,6 @@ function ISWorldMap:new(x, y, width, height)
 	o.texViewTerrainImage = getTexture("media/textures/worldMap/ViewPyramid.png")
 	return o
 end
-
------
 
 function ISWorldMap.IsAllowed()
 	if getCore():getGameMode() == "Tutorial" then return false end

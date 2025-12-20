@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "OptionScreens/CharacterCreationMain"
 
 CoopCharacterCreationMain = CharacterCreationMain:derive("CoopCharacterCreationMain")

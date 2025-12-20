@@ -7,6 +7,8 @@ require "TimedActions/ISBaseTimedAction"
 
 ISDropCorpseIntoContainer = ISBaseTimedAction:derive("ISDropCorpseIntoContainer");
 
+ISDropCorpseIntoContainer.bodyCache = {}
+
 function ISDropCorpseIntoContainer:isValid()
     if not self.character:isDraggingCorpse() then
         return false
@@ -15,29 +17,39 @@ function ISDropCorpseIntoContainer:isValid()
     if getGameSpeed() > 1 then
         return false
     end
-
+    
     return true
 end
 
 function ISDropCorpseIntoContainer:start()
     self.action:setAllowedWhileDraggingCorpses(true)
-    self.action:setTime(4)
+end
+
+function ISDropCorpseIntoContainer:complete()
+    if isServer() then
+        local id = self.character:getOnlineID()
+        local data = ISDropCorpseIntoContainer.bodyCache[id] or {}
+        data[self.grappledChar] = self.targetContainer
+        ISDropCorpseIntoContainer.bodyCache[id] = data
+    end
+    return true;
+end
+
+function ISDropCorpseIntoContainer:getDuration()
+    return 5
 end
 
 function ISDropCorpseIntoContainer:perform()
-    local player = self.character
-    player:throwGrappledIntoInventory(self.targetContainer)
-
+    self.character:throwGrappledIntoInventory(self.targetContainer)
     ISBaseTimedAction.perform(self)
 end
 
 function ISDropCorpseIntoContainer:new(character, targetContainer)
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+    local o = ISBaseTimedAction.new(self, character)
     o.character = character;
-    o.maxTime = 0;
+    o.maxTime = o:getDuration();
     o.targetContainer = targetContainer;
+    o.grappledChar = character:getGrapplingTarget()
 
     return o
 end

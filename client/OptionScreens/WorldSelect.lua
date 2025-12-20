@@ -1,17 +1,13 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 
 WorldSelect = ISPanelJoypad:derive("WorldSelect")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
-local startY = UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE;
+local startY = UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE;
 local firstGeneration = true
 
 function WorldSelect:initialise()
@@ -45,7 +41,6 @@ function WorldSelect:fillList()
 		if IgnoredMap then
 			for i,mapName in ipairs(IgnoredMap) do
 				if mapName == item.name then
-					print("ignoring", item.name)
 					ignore = true;
 				end
 			end
@@ -74,7 +69,6 @@ function WorldSelect:onSelectWorld()
 		if IgnoredMap then
 			for i,mapName in ipairs(IgnoredMap) do
 				if mapName == item.name then
-					print("ignoring", item.name)
 					ignore = true;
 				end
 			end
@@ -155,16 +149,16 @@ function WorldSelect:checkSeed()
 end
 
 function WorldSelect:generateNewSeed()
-	self.seedTextBox:setText(WGUtils.instance:generateSeed())
+	self.seedTextBox:setText(WorldGenUtils.INSTANCE:generateSeed())
 end
 
 function WorldSelect:saveGenParams()
 	self:checkSeed()
-	WGParams.instance:setSeedString(self.seedTextBox:getText())
-	WGParams.instance:setMinXCell(self.minXSlider:getCurrentValue())
-	WGParams.instance:setMinYCell(self.minYSlider:getCurrentValue())
-	WGParams.instance:setMaxXCell(self.maxXSlider:getCurrentValue())
-	WGParams.instance:setMaxYCell(self.maxYSlider:getCurrentValue())
+	WorldGenParams.INSTANCE:setSeedString(self.seedTextBox:getText())
+	WorldGenParams.INSTANCE:setMinXCell(self.minXSlider:getCurrentValue())
+	WorldGenParams.INSTANCE:setMinYCell(self.minYSlider:getCurrentValue())
+	WorldGenParams.INSTANCE:setMaxXCell(self.maxXSlider:getCurrentValue())
+	WorldGenParams.INSTANCE:setMaxYCell(self.maxYSlider:getCurrentValue())
 end
 
 function WorldSelect:onMinXSliderChange(value)
@@ -185,7 +179,7 @@ end
 
 function WorldSelect:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorldSelect_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorldSelect_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	self:drawRectBorder(self.listbox:getX(), self.listbox:getY(), self.listbox:getWidth(), self.listbox:getHeight(), 0.9, 0.4, 0.4, 0.4)
 	self:drawRectBorder(self.mapListbox:getX(), self.mapListbox:getY(), self.mapListbox:getWidth(), self.mapListbox:getHeight(), 0.9, 0.4, 0.4, 0.4)
 end

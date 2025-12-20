@@ -1,13 +1,7 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISVehicleConfirmBox = ISPanelJoypad:derive("ISVehicleConfirmBox")
 ISVehiclePartListBox = ISScrollingListBox:derive("ISVehiclePartListBox")
-
------
 
 function ISVehicleConfirmBox:createChildren()
 	--ISPanel.createChildren(self)
@@ -78,4 +72,3 @@ function ISVehicleConfirmBox:new()
 	o.backgroundColor = {r=0, g=0, b=0, a=0.85};
 	return o
 end
-

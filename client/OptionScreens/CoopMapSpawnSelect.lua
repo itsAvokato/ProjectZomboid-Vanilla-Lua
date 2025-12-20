@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "OptionScreens/MapSpawnSelect"
 
 CoopMapSpawnSelect = MapSpawnSelect:derive("CoopMapSpawnSelect")

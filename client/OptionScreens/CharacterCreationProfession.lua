@@ -1,7 +1,3 @@
---***********************************************************
---**                   ROBERT JOHNSON                      **
---***********************************************************
-
 require"ISUI/ISPanel"
 require"ISUI/ISButton"
 require"ISUI/ISInventoryPane"
@@ -17,7 +13,7 @@ local CharacterCreationProfessionPresetPanel = ISPanelJoypad:derive("CharacterCr
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
@@ -42,10 +38,6 @@ end
 function CharacterCreationProfessionListBox:onJoypadBeforeDeactivate(joypadData)
     self.parent:onJoypadBeforeDeactivate(joypadData)
 end
-
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function CharacterCreationProfessionPresetPanel:render()
     ISPanelJoypad.render(self)
@@ -85,18 +77,10 @@ function CharacterCreationProfessionPresetPanel:onJoypadDirRight(joypadData)
     ISPanelJoypad.onJoypadDirRight(self, button, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
-
 function CharacterCreationProfession:initialise()
     ISPanelJoypad.initialise(self);
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function CharacterCreationProfession:instantiate()
     self.javaObject = UIElement.new(self);
     self.javaObject:setX(self.x);
@@ -111,7 +95,6 @@ function CharacterCreationProfession:instantiate()
 end
 
 function CharacterCreationProfession:create()
-    --self.freeTraits = {};
     self.freeTraits = ArrayList.new();
 
     self.pointToSpend = 0;
@@ -124,7 +107,7 @@ function CharacterCreationProfession:create()
 
     self.tablePadX = UI_BORDER_SPACING
     self.tableWidth = (self:getWidth() - 16 * 2 - self.tablePadX * 2) / 3
-    self.topOfLists = UI_BORDER_SPACING*3 + FONT_HGT_MEDIUM + 1 + FONT_HGT_TITLE
+    self.topOfLists = UI_BORDER_SPACING*3 + FONT_HGT_MEDIUM + 1 + FONT_HGT_LARGE
     self.tooltipHgt = FONT_HGT_SMALL
     if self.width <= 1980 then
         self.tooltipHgt = FONT_HGT_SMALL * 2
@@ -386,7 +369,8 @@ function CharacterCreationProfession:create()
     self.listboxTraitSelected.joyfocusLeft = self.listboxBadTrait
     self.listboxTraitSelected.joyfocusRight = self.presetPanel
 
-    self:onSelectProf(ProfessionFactory.getProfessions():get(0));
+    local characterProfession = self.listboxProf:getItem(1).item
+    self:onSelectProf(characterProfession)
 end
 
 function CharacterCreationProfession:onSelectChosenTrait(item)
@@ -425,16 +409,16 @@ function CharacterCreationProfession:checkXPBoost()
     local levels = {}
     if self.listboxTraitSelected and self.listboxTraitSelected.items then
         for i,v in pairs(self.listboxTraitSelected.items) do
-            if v.item:getXPBoostMap() then
-                local table = transformIntoKahluaTable(v.item:getXPBoostMap())
+            if v.item:getXpBoosts() then
+                local table = transformIntoKahluaTable(v.item:getXpBoosts())
                 for perk,level in pairs(table) do
                     levels[perk] = (levels[perk] or 0) + level:intValue()
                 end
             end
         end
     end
-    if self.profession and self.profession:getXPBoostMap() then
-        local table = transformIntoKahluaTable(self.profession:getXPBoostMap())
+    if self.profession and self.profession:getXpBoosts() then
+        local table = transformIntoKahluaTable(self.profession:getXpBoosts())
         for perk,level in pairs(table) do
             levels[perk] = (levels[perk] or 0) + level:intValue()
         end
@@ -449,60 +433,51 @@ function CharacterCreationProfession:checkXPBoost()
     self.listboxXpBoost:sort()
 end
 
-function CharacterCreationProfession:onSelectProf(item)
-    if self.profession ~= item then
+function CharacterCreationProfession:onSelectProf(characterProfessionDefinition)
+    if self.profession ~= characterProfessionDefinition then
         local removed = {}
         if self.profession then
             -- remove the previous free trait
-            for i = 0, self.profession:getFreeTraits():size() - 1 do
-                local freeTrait = TraitFactory.getTrait(self.profession:getFreeTraits():get(i));
-                local label = freeTrait:getLabel();
+            for i = 0, self.profession:getGrantedTraits():size() - 1 do
+                local freeCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(self.profession:getGrantedTraits():get(i));
+                local label = freeCharacterTraitDefinition:getLabel();
                 self.listboxTraitSelected:removeMatchingItems(label);
-                table.insert(removed, freeTrait);
+                table.insert(removed, freeCharacterTraitDefinition);
                 self.freeTraits:remove(label)
-                --for k=#self.freeTraits, 1, -1 do
-                --	if self.freeTraits[k]:getLabel() == label then
-                --		table.remove(self.freeTraits, k);
-                --	end
-                --end
             end
         end
 
         -- Remove chosen traits that are excluded by the profession's free traits.
         for i=self.listboxTraitSelected:size(),1,-1 do
             local selectedTrait = self.listboxTraitSelected.items[i].item
-            for j=1,item:getFreeTraits():size() do
-                local freeTrait = TraitFactory.getTrait(item:getFreeTraits():get(j-1))
-                -- TODO: use better detection
-                if freeTrait:getMutuallyExclusiveTraits():contains(selectedTrait:getType()) then
-                    --self.listboxTraitSelected.selected = i
+            for j=1,characterProfessionDefinition:getGrantedTraits():size() do
+                local freeCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(characterProfessionDefinition:getGrantedTraits():get(j-1))
+                if freeCharacterTraitDefinition:getMutuallyExclusiveTraits():contains(selectedTrait:getType()) then
                     self:removeTrait(i)
                 end
             end
         end
 
         -- we add the free trait that our selected profession give us
-        for i = 0, item:getFreeTraits():size() - 1 do
-            local freeTrait = TraitFactory.getTrait(item:getFreeTraits():get(i));
-            local newTrait = self.listboxTraitSelected:addUniqueItem(freeTrait:getLabel(), freeTrait);
+        for i = 0, characterProfessionDefinition:getGrantedTraits():size() - 1 do
+            local freeCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(characterProfessionDefinition:getGrantedTraits():get(i));
+            local newTrait = self.listboxTraitSelected:addUniqueItem(freeCharacterTraitDefinition:getLabel(), freeCharacterTraitDefinition);
             if newTrait then
-                newTrait.tooltip = freeTrait:getDescription();
+                newTrait.tooltip = freeCharacterTraitDefinition:getDescription();
             end
-            self.freeTraits:add(freeTrait:getLabel())
-            --table.insert(self.freeTraits, freeTrait);
-            self:doTestForMutuallyExclusiveTraits(freeTrait, false);
+            self.freeTraits:add(freeCharacterTraitDefinition:getLabel())
+            self:doTestForMutuallyExclusiveTraits(freeCharacterTraitDefinition, false);
         end
 
         for _,trait in pairs(removed) do
             self:doTestForMutuallyExclusiveTraits(trait, true)
         end
 
-        self.profession = item;
-
+        self.profession = characterProfessionDefinition;
         local desc = MainScreen.instance.desc;
         desc:setProfessionSkills(self.profession);
-        desc:setProfession(self.profession:getType());
-
+        local characterProfession = self.profession:getType();
+        desc:setCharacterProfession(characterProfession);
         self.cost = self.profession:getCost();
         self:changeClothes();
         self:checkXPBoost();
@@ -535,15 +510,7 @@ function CharacterCreationMain.invertSort(list)
     table.sort(list, CharacterCreationMain.sortByInvertCost);
 end
 
----
--- This function loads the clothing values for each
--- profession in the game. If it can't find one for the
--- selected Profession it will initialise it with default
--- values instead (white shirt, black trousers).
---
--- by RoboMat
 function CharacterCreationProfession:changeClothes()
-
 end
 
 function CharacterCreationProfession:setVisible(visible, joypadData)
@@ -625,27 +592,6 @@ function CharacterCreationProfession:onOptionMouseDown(button, x, y)
         end
         MainScreen.instance.charCreationProfession:setVisible(false);
         MainScreen.instance.charCreationMain:setVisible(true, joypadData);
-        --		-- set the player desc we build
-        --		self:initPlayer();
-        --		-- set up the world
-        --		if not getWorld():getMap() then
-        --			getWorld():setMap("Muldraugh, KY");
-        --        end
-        --		if MainScreen.instance.createWorld then
-        --			createWorld(getWorld():getWorld())
-        --		end
-        --        GameWindow.doRenderEvent(false);
-        --        -- menu activated via joypad, we disable the joypads and will re-set them automatically when the game is started
-        --        if self.joyfocus then
-        --            local joypadData = self.joyfocus
-        --            joypadData.focus = nil;
-        --            updateJoypadFocus(joypadData)
-        --            JoypadState.count = 0
-        --            JoypadState.players = {};
-        --            JoypadState.joypads = {};
-        --            JoypadState.forceActivate = joypadData.id;
-        --        end
-        --		forceChangeState(GameLoadingState.new());
     end
     if button.internal == "ADDTRAIT" then
         if self.listboxTrait.selected > 0 then
@@ -704,39 +650,35 @@ function CharacterCreationProfession:addTrait(trait)
         self.listboxBadTrait:removeMatchingItems(trait:getLabel());
     end
 
-    for i = 0, trait:getFreeTraits():size() - 1 do
-        local freeTrait = TraitFactory.getTrait(trait:getFreeTraits():get(i));
-        self.freeTraits:add(freeTrait:getLabel())
-        -- self:addTrait(freeTrait)
-        self.listboxTraitSelected:addUniqueItem(freeTrait:getLabel(), freeTrait, freeTrait:getDescription());
-        self:doTestForMutuallyExclusiveTraits(freeTrait, false);
+    for i = 0, trait:getGrantedTraits():size() - 1 do
+        local freeCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(trait:getGrantedTraits():get(i));
+        self.freeTraits:add(freeCharacterTraitDefinition:getLabel())
+        self.listboxTraitSelected:addUniqueItem(freeCharacterTraitDefinition:getLabel(), freeCharacterTraitDefinition, freeCharacterTraitDefinition:getDescription());
+        self:doTestForMutuallyExclusiveTraits(freeCharacterTraitDefinition, false);
     end
 
     self:doTestForMutuallyExclusiveTraits(trait, false);
     self:repopulateTraitLists()
 end
 
--- This was commented out due to presumed lack of utility but it suddenly became useful again! - Baph
--- SPIF-3028 is fixed by letting this function run its course after picking a profession.
 function CharacterCreationProfession:doTestForMutuallyExclusiveTraits(trait, isRemovingTrait)
     for i = 0, trait:getMutuallyExclusiveTraits():size() - 1 do
-    	local exclusiveTrait = trait:getMutuallyExclusiveTraits():get(i);
-        exclusiveTrait = TraitFactory.getTrait(exclusiveTrait);
-    	if exclusiveTrait:isFree() then
-    		-- nothing
-    	elseif isRemovingTrait and not self:isTraitExcluded(exclusiveTrait) then
+        local exclusiveTrait = trait:getMutuallyExclusiveTraits():get(i);
+        exclusiveCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(exclusiveTrait);
+        if exclusiveCharacterTraitDefinition:isFree() then
+        elseif isRemovingTrait and not self:isTraitExcluded(exclusiveCharacterTraitDefinition) then
             -- add the previously removed exclusive trait to the available ones
-            if exclusiveTrait:getCost() > 0 then
-                self.listboxTrait:addUniqueItem(exclusiveTrait:getLabel(), exclusiveTrait, exclusiveTrait:getDescription());
+            if exclusiveCharacterTraitDefinition:getCost() > 0 then
+                self.listboxTrait:addUniqueItem(exclusiveCharacterTraitDefinition:getLabel(), exclusiveCharacterTraitDefinition, exclusiveCharacterTraitDefinition:getDescription());
             else
-                self.listboxBadTrait:addUniqueItem(exclusiveTrait:getLabel(), exclusiveTrait, exclusiveTrait:getDescription());
+                self.listboxBadTrait:addUniqueItem(exclusiveCharacterTraitDefinition:getLabel(), exclusiveCharacterTraitDefinition, exclusiveCharacterTraitDefinition:getDescription());
             end
         elseif not isRemovingTrait then
             -- remove from our available traits list the exclusive ones
-            if exclusiveTrait:getCost() > 0 then
-                self.listboxTrait:removeMatchingItems(exclusiveTrait:getLabel());
+            if exclusiveCharacterTraitDefinition:getCost() > 0 then
+                self.listboxTrait:removeMatchingItems(exclusiveCharacterTraitDefinition:getLabel());
             else
-                self.listboxBadTrait:removeMatchingItems(exclusiveTrait:getLabel());
+                self.listboxBadTrait:removeMatchingItems(exclusiveCharacterTraitDefinition:getLabel());
             end
         end
     end
@@ -760,12 +702,11 @@ function CharacterCreationProfession:removeTrait(index)
     end
 
     -- we remove the free trait that our selected trait give us
-    for i = 0, trait:getFreeTraits():size() - 1 do
-        local freeTrait = TraitFactory.getTrait(trait:getFreeTraits():get(i));
-        local label = freeTrait:getLabel();
+    for i = 0, trait:getGrantedTraits():size() - 1 do
+        local freeCharacterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(trait:getGrantedTraits():get(i));
+        local label = freeCharacterTraitDefinition:getLabel();
         self.freeTraits:remove(label)
         if not self.freeTraits:contains(label) then
-            --self:removeTrait(self.listboxTraitSelected:getIndexOf(label))
             self.listboxTraitSelected:removeMatchingItems(label);
         end
     end
@@ -781,7 +722,7 @@ end
 function CharacterCreationProfession:prerender()
     CharacterCreationProfession.instance = self
     ISPanel.prerender(self);
-    self:drawTextCentre(getText("UI_characreation_title2"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+    self:drawTextCentre(getText("UI_characreation_title2"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
 
     -- resize our stuff
     local listWidth = (self:getWidth() - (UI_BORDER_SPACING+1) * 2 - self.tablePadX * 2) / 3
@@ -920,20 +861,37 @@ end
 
 -- fetch all our profession to populate our list box
 function CharacterCreationProfession:populateProfessionList(list)
-    local professionList = ProfessionFactory.getProfessions();
+    local professionList = CharacterProfessionDefinition.getProfessions();
     for i = 0, professionList:size() - 1 do
-        local newitem = list:addItem(i, professionList:get(i));
-        newitem.tooltip = professionList:get(i):getDescription();
+        local profession = professionList:get(i)
+        local newitem = list:addItem(profession:getUIName(), profession);
+        newitem.tooltip = profession:getDescription();
     end
+    list:sort(function(a,b)
+        if a.item:getType() == CharacterProfession.UNEMPLOYED then
+            return true
+        end
+        if b.item:getType() == CharacterProfession.UNEMPLOYED then
+            return true
+        end
+        return not string.sort(a.text, b.text)
+    end)
+end
+
+function CharacterCreationProfession:isTraitEnabled(trait)
+    if trait:getType() == CharacterTrait.INSOMNIAC or trait:getType() == CharacterTrait.NEEDS_LESS_SLEEP or trait:getType() == CharacterTrait.NEEDS_MORE_SLEEP then
+        return not isMultiplayer() or (getServerOptions():getBoolean("SleepAllowed") and getServerOptions():getBoolean("SleepNeeded"))
+    end
+    return true
 end
 
 -- fetch all our traits to populate our list box
 function CharacterCreationProfession:populateTraitList(list)
     list:clear()
-    local traitList = TraitFactory.getTraits();
+    local traitList = CharacterTraitDefinition.getTraits();
     for i = 0, traitList:size() - 1 do
         local trait = traitList:get(i);
-        if not trait:isFree() and trait:getCost() > 0 and not trait:isRemoveInMP() and not self:isTraitExcluded(trait) then
+        if not trait:isFree() and trait:getCost() > 0 and self:isTraitEnabled(trait) and not self:isTraitExcluded(trait) then
             list:addItem(trait:getLabel(), trait, trait:getDescription());
         end
     end
@@ -941,10 +899,10 @@ end
 
 function CharacterCreationProfession:populateBadTraitList(list)
     list:clear()
-    local traitList = TraitFactory.getTraits();
+    local traitList = CharacterTraitDefinition.getTraits();
     for i = 0, traitList:size() - 1 do
         local trait = traitList:get(i);
-        if not trait:isFree() and trait:getCost() < 0 and not trait:isRemoveInMP() and not self:isTraitExcluded(trait) then
+        if not trait:isFree() and trait:getCost() < 0 and self:isTraitEnabled(trait) and not self:isTraitExcluded(trait) then
             list:addItem(trait:getLabel(), trait, trait:getDescription());
         end
     end
@@ -1094,17 +1052,13 @@ function CharacterCreationProfession:drawProfessionMap(y, item, alt)
     end
 
     local x = 7;
-
     -- the name of the profession
     if item.item:getTexture() then
         x = 74;
     end
-    self:drawText(item.item:getName(), x, y + (item.height - self.fontHgt) / 2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
-
-    self.itemheightoverride[item.item:getName()] = self.itemheight;
-
-    y = y + self.itemheightoverride[item.item:getName()];
-
+    self:drawText(item.item:getUIName(), x, y + (item.height - self.fontHgt) / 2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
+    self.itemheightoverride[item.item:getUIName()] = self.itemheight;
+    y = y + self.itemheightoverride[item.item:getUIName()];
     return y;
 end
 
@@ -1137,9 +1091,9 @@ function CharacterCreationProfession.initWorld()
     end
     print('using spawn region '..tostring(spawnRegion.name))
     -- we generate the spawn point for the profession choose
-    local spawn = spawnRegion.points[MainScreen.instance.desc:getProfession()];
+    local spawn = spawnRegion.points[MainScreen.instance.desc:getCharacterProfession():getName()];
     if not spawn then
-        spawn = spawnRegion.points["unemployed"];
+        spawn = spawnRegion.points[CharacterProfession.UNEMPLOYED:getName()];
     end
     if not spawn then
         error "there is no spawn point table for the player's profession, don't know where to spawn the player"
@@ -1278,8 +1232,7 @@ function CharacterCreationProfession:new(x, y, width, height)
     return o
 end
 
--- }}}
-function CharacterCreationProfession.loadBuild(self, box) -- {{{
+function CharacterCreationProfession.loadBuild(self, box)
     local prof = box.options[box.selected];
     if prof == nil then return end;
 
@@ -1291,7 +1244,7 @@ function CharacterCreationProfession.loadBuild(self, box) -- {{{
 
     self:resetBuild();
     for i=1,#self.listboxProf.items do
-        if self.listboxProf.items[i].item:getType() == traits[1] then
+        if self.listboxProf.items[i].item:getType():getName() == traits[1] then
             self.listboxProf.selected = i;
             self:onSelectProf(self:getSelectedProf());
         end
@@ -1301,7 +1254,7 @@ function CharacterCreationProfession.loadBuild(self, box) -- {{{
         for i=1,#self.listboxTrait.items do
             if self.listboxTrait.items[i] ~= nil then
                 local trait = self.listboxTrait.items[i].item;
-                if trait:getType() == traits[j] then
+                if trait:getType():getName() == traits[j] then
                     self.listboxTrait.selected = i;
                     self:onOptionMouseDown(self.addTraitBtn);
                 end
@@ -1313,7 +1266,7 @@ function CharacterCreationProfession.loadBuild(self, box) -- {{{
         for i=1,#self.listboxBadTrait.items do
             if self.listboxBadTrait.items[i] ~= nil then
                 local trait = self.listboxBadTrait.items[i].item;
-                if trait:getType() == traits[j] then
+                if trait:getType():getName() == traits[j] then
                     self.listboxBadTrait.selected = i;
                     self:onOptionMouseDown(self.addBadTraitBtn);
                 end
@@ -1326,7 +1279,6 @@ function CharacterCreationProfession:saveBuildValidate(text)
     return text ~= "" and not text:contains("/") and not text:contains("\\") and
             not text:contains(":") and not text:contains(";") and not text:contains('"')
 end
--- }}}
 
 function CharacterCreationProfession:presetExists(findText)
     return self.savedBuilds:find(function(text, data, findText)
@@ -1334,10 +1286,10 @@ function CharacterCreationProfession:presetExists(findText)
     end, findText) ~= -1
 end
 
-function CharacterCreationProfession:saveBuildStep1() -- {{{
+function CharacterCreationProfession:saveBuildStep1()
     local text = self.savedBuilds.options[self.savedBuilds.selected] or ""
     if text == "" then
-        text = self:getSelectedProf():getName()
+        text = self:getSelectedProf():getUIName()
         if self:presetExists(text) then
             local index = 1
             while self:presetExists(string.format("%s %d", text, index)) do
@@ -1356,8 +1308,8 @@ function CharacterCreationProfession:saveBuildStep1() -- {{{
         updateJoypadFocus(joypadData)
     end
 end
--- }}}
-function CharacterCreationProfession:saveBuildStep2(button, joypadData, param2) -- {{{
+
+function CharacterCreationProfession:saveBuildStep2(button, joypadData, param2)
     if joypadData then
         joypadData.focus = self.presetPanel
         updateJoypadFocus(joypadData)
@@ -1369,11 +1321,12 @@ function CharacterCreationProfession:saveBuildStep2(button, joypadData, param2) 
 
     local builds = BCRC.readSaveFile();
 
-    local prof = self:getSelectedProf():getType();
-    local savestring = prof..";";
+    local characterProfession = self:getSelectedProf():getType();
+    local savestring = characterProfession:getName() .. ";";
     for i=1,#self.listboxTraitSelected.items do
-        if not self.listboxTraitSelected.items[i].item:isFree() then
-            savestring = savestring..self.listboxTraitSelected.items[i].item:getType()..";";
+        local trait = self.listboxTraitSelected.items[i].item
+        if not trait:isFree() then
+            savestring = savestring..trait:getType():getName()..";";
         end
     end
 
@@ -1396,9 +1349,7 @@ function CharacterCreationProfession:saveBuildStep2(button, joypadData, param2) 
         end
         i = i + 1;
     end
-    --    luautils.okModal("Saved this build!", true);
 end
--- }}}
 
 function CharacterCreationProfession:deleteBuildStep1()
     local delBuild = self.savedBuilds.options[self.savedBuilds.selected]
@@ -1417,7 +1368,7 @@ function CharacterCreationProfession:deleteBuildStep1()
     end
 end
 
-function CharacterCreationProfession:deleteBuildStep2(button, joypadData) -- {{{
+function CharacterCreationProfession:deleteBuildStep2(button, joypadData)
     if joypadData then
         joypadData.focus = self.presetPanel
         updateJoypadFocus(joypadData)
@@ -1446,10 +1397,9 @@ function CharacterCreationProfession:deleteBuildStep2(button, joypadData) -- {{{
         self.savedBuilds.selected = #self.savedBuilds.options
     end
     self:loadBuild(self.savedBuilds)
-    --    luautils.okModal("Deleted build "..delBuild.."!", true);
 end
 
-function CharacterCreationProfession:randomizeTraits() -- {{{
+function CharacterCreationProfession:randomizeTraits()
     self:resetBuild();
 
     local size = #self.listboxProf.items;
@@ -1516,14 +1466,11 @@ function CharacterCreationProfession:randomizeTraits() -- {{{
     end
 end
 
-function CharacterCreationProfession:resetBuild() -- {{{
+function CharacterCreationProfession:resetBuild()
     self.listboxProf.selected = 1;
     self:onSelectProf(self:getSelectedProf());
-
     while #self.listboxTraitSelected.items > 0 do
         self:removeTrait(1);
-        --self.listboxTraitSelected.selected = 1;
-        --self:onOptionMouseDown(self.removeTraitBtn);
     end
     self:checkXPBoost();
     self.listboxTraitSelected.selected = -1;
@@ -1531,13 +1478,9 @@ end
 
 function CharacterCreationProfession:resetTraits()
     self:onSelectProf(self.listboxProf.items[1].item);
-
     while #self.listboxTraitSelected.items > 0 do
         self:removeTrait(1);
-        --self.listboxTraitSelected.selected = 1;
-        --self:onOptionMouseDown(self.removeTraitBtn);
     end
-
     self:onSelectProf(self:getSelectedProf());
 end
 
@@ -1548,7 +1491,7 @@ end
 BCRC = {};
 BCRC.savefile = "saved_builds.txt";
 
-function BCRC.inputModal(_centered, _width, _height, _posX, _posY, _text, _onclick, target, param1, param2) -- {{{
+function BCRC.inputModal(_centered, _width, _height, _posX, _posY, _text, _onclick, target, param1, param2)
     -- based on luautils.okModal
     local posX = _posX or 0;
     local posY = _posY or 0;
@@ -1575,8 +1518,8 @@ function BCRC.inputModal(_centered, _width, _height, _posX, _posY, _text, _oncli
 
     return modal;
 end
--- }}}
-function BCRC.readSaveFile() -- {{{
+
+function BCRC.readSaveFile()
     local retVal = {};
 
     local saveFile = getFileReader(BCRC.savefile, true);
@@ -1587,19 +1530,18 @@ function BCRC.readSaveFile() -- {{{
         line = saveFile:readLine();
     end
     saveFile:close();
-
     return retVal;
 end
--- }}}
-function BCRC.writeSaveFile(options) -- {{{
+
+function BCRC.writeSaveFile(options)
     local saved_builds = getFileWriter(BCRC.savefile, true, false); -- overwrite
     for key,val in pairs(options) do
         saved_builds:write(key..":"..val.."\n");
     end
     saved_builds:close();
 end
--- }}}
-BCRC.dump = function(o, lvl) -- {{{ Small function to dump an object.
+
+BCRC.dump = function(o, lvl)
     if lvl == nil then lvl = 5 end
     if lvl < 0 then return "SO ("..tostring(o)..")" end
 
@@ -1618,8 +1560,8 @@ BCRC.dump = function(o, lvl) -- {{{ Small function to dump an object.
         return tostring(o)
     end
 end
--- }}}
-BCRC.pline = function (text) -- {{{ Print text to logfile
+
+BCRC.pline = function (text)
     print(tostring(text));
 end
 

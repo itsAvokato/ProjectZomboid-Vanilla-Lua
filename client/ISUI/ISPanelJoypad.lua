@@ -2,11 +2,6 @@ require "ISUI/ISUIElement"
 
 ISPanelJoypad = ISUIElement:derive("ISPanelJoypad");
 
---************************************************************************--
---** ISPanelJoypad:initialise
---**
---************************************************************************--
-
 function ISPanelJoypad:initialise()
 	ISUIElement.initialise(self);
 end
@@ -332,9 +327,35 @@ function ISPanelJoypad:clearJoypadFocus(joypadData)
     end
 end
 
+function ISPanelJoypad:recordJoypadState()
+    local state = {}
+    state.indexY = math.max(self.joypadIndexY or 1, 1)
+    state.index = math.max(self.joypadIndex or 1, 1)
+    local joypadData = self.joyfocus
+    if joypadData ~= nil and joypadData.focus == self and self.joypadButtons ~= nil and #self.joypadButtons > 0 then
+        self:clearJoypadFocus(joypadData)
+    end
+    return state
+end
+
+function ISPanelJoypad:restoreJoypadState(state)
+    if not state then return end
+    self.joypadIndexY = math.min(state.indexY or 1, #self.joypadButtonsY)
+    self.joypadIndex = math.min(state.index or 1, #self.joypadButtonsY[self.joypadIndexY])
+    self.joypadButtons = self.joypadButtonsY[self.joypadIndexY]
+    local joypadData = self.joyfocus
+    if joypadData ~= nil and joypadData.focus == self then
+        self.joypadButtons[self.joypadIndex]:setJoypadFocused(true, joypadData)
+    end
+end
+
 function ISPanelJoypad:doRightJoystickScrolling(dx, dy)
-    if not self.joyfocus then return end
-    if self.isFocusOnControl and self:isFocusOnControl() then return end
+    if not self.joyfocus then return; end;
+    if self.joyfocus.id == -1 then
+        self.joyfocus = nil;
+        return;
+    end;
+    if self.isFocusOnControl and self:isFocusOnControl() then return; end;
     dx = dx or 20
     dy = dy or 20
     local axisY = getJoypadAimingAxisY(self.joyfocus.id)
@@ -444,20 +465,13 @@ function ISPanelJoypad:onMouseMove(dx, dy)
     end
 end
 
---************************************************************************--
---** ISPanelJoypad:render
---**
---************************************************************************--
 function ISPanelJoypad:prerender()
 	if self.background then
 		self:drawRectStatic(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
 		self:drawRectBorderStatic(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
 	end
 end
---************************************************************************--
---** ISPanelJoypad:new
---**
---************************************************************************--
+
 function ISPanelJoypad:new (x, y, width, height)
 	local o = {}
 	--o.data = {}

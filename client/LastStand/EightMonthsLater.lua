@@ -47,7 +47,6 @@ EightMonthsLater.AddPlayer = function(playerNum, playerObj)
     -- print(p);
     local pl = playerObj;
 
-    print("adding challenge inventory");
 --  local torch = pl:getInventory():AddItem("Base.Torch");
 
 --local pistol = pl:getInventory():AddItem("Base.Schoolbag");

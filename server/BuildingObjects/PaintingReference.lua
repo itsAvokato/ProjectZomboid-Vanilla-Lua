@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 04/02/14
--- Time: 16:44
--- To change this template use File | Settings | File Templates.
---
-
 Painting= {};
 
 Painting["doorframe"] = {};
@@ -332,23 +324,23 @@ WallPaper["dblwindowframeright"]["Wallpaper_GreenDiamond"] = "walls_interior_hou
 WallPaper["dblwindowframeleft"]["Wallpaper_GreenDiamondNorth"] = "walls_interior_house_06_74";
 WallPaper["dblwindowframeright"]["Wallpaper_GreenDiamondNorth"] = "walls_interior_house_06_75";
 
-WallPaper["doorframe"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_12";
-WallPaper["doorframe"]["Wallpaper_GreenFloralNorth"] = "location_hospitality_sunstarmotel_01_13";
+WallPaper["doorframe"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_14";
+WallPaper["doorframe"]["Wallpaper_GreenFloralNorth"] = "location_hospitality_sunstarmotel_01_15";
 WallPaper["pillar"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_7";
 WallPaper["wall"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_4";
 WallPaper["wall"]["Wallpaper_GreenFloralNorth"] = "location_hospitality_sunstarmotel_01_5";
 WallPaper["wall"]["Wallpaper_GreenFloralCorner"] = "location_hospitality_sunstarmotel_01_6";
-WallPaper["windowsframe"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_14";
-WallPaper["windowsframe"]["Wallpaper_GreenFloralNorth"] = "location_hospitality_sunstarmotel_01_15";
+WallPaper["windowsframe"]["Wallpaper_GreenFloral"] = "location_hospitality_sunstarmotel_01_12";
+WallPaper["windowsframe"]["Wallpaper_GreenFloralNorth"] = "location_hospitality_sunstarmotel_01_13";
 
-WallPaper["doorframe"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_8";
-WallPaper["doorframe"]["Wallpaper_PinkChevronNorth"] = "location_hospitality_sunstarmotel_01_5";
+WallPaper["doorframe"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_10";
+WallPaper["doorframe"]["Wallpaper_PinkChevronNorth"] = "location_hospitality_sunstarmotel_01_11";
 WallPaper["pillar"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_3";
 WallPaper["wall"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_0";
 WallPaper["wall"]["Wallpaper_PinkChevronNorth"] = "location_hospitality_sunstarmotel_01_1";
 WallPaper["wall"]["Wallpaper_PinkChevronCorner"] = "location_hospitality_sunstarmotel_01_2";
-WallPaper["windowsframe"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_10";
-WallPaper["windowsframe"]["Wallpaper_PinkChevronNorth"] = "location_hospitality_sunstarmotel_01_11";
+WallPaper["windowsframe"]["Wallpaper_PinkChevron"] = "location_hospitality_sunstarmotel_01_8";
+WallPaper["windowsframe"]["Wallpaper_PinkChevronNorth"] = "location_hospitality_sunstarmotel_01_9";
 
 WallPaper["doorframe"]["Wallpaper_PinkFloral"] = "walls_interior_house_04_62";
 WallPaper["doorframe"]["Wallpaper_PinkFloralNorth"] = "walls_interior_house_04_63";

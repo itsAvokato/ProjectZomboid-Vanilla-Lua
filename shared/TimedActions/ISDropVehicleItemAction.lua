@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDropVehicleItemAction = ISBaseTimedAction:derive("ISDropVehicleItemAction");
@@ -111,10 +107,10 @@ function ISDropVehicleItemAction:getDuration()
 	maxTime = maxTime * (w)
 	maxTime = maxTime * 0.1
 
-	if self.character:HasTrait("Dextrous") then
+	if self.character:hasTrait(CharacterTrait.DEXTROUS) then
 		maxTime = maxTime * 0.5
 	end
-	if self.character:HasTrait("AllThumbs") or self.character:isWearingAwkwardGloves() then
+	if self.character:hasTrait(CharacterTrait.ALL_THUMBS) or self.character:isWearingAwkwardGloves() then
 		maxTime = maxTime * 2.0
 	end
 

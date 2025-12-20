@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_MannequinWearAll = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_MannequinWearAll")

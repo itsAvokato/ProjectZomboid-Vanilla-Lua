@@ -1,19 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ISAdmPanelWeather = ISDebugSubPanelBase:derive("ISAdmPanelWeather");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAdmPanelWeather:initialise
---**
---************************************************************************--
 
 function ISAdmPanelWeather:createChildren() --:initialise()
     ISPanel.createChildren(self); --initialise(self);
@@ -212,10 +202,6 @@ function ISAdmPanelWeather:onClick(_button)
     end
 end
 
---************************************************************************--
---** ISAdmPanelWeather:new
---**
---************************************************************************--
 function ISAdmPanelWeather:new(x, y, width, height, player)
     local o = {}
     o = ISDebugSubPanelBase:new(x, y, width, height);
@@ -228,6 +214,3 @@ function ISAdmPanelWeather:new(x, y, width, height, player)
     o.player = player;
     return o;
 end
-
-
-

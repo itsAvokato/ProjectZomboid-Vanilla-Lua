@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBBQAddFuel = ISBaseTimedAction:derive("ISBBQAddFuel");
@@ -36,8 +32,13 @@ function ISBBQAddFuel:start()
 	self.item:setJobType(campingText.addFuel);
 	self.item:setJobDelta(0.0);
 	self:setActionAnim("Loot")
-	self.character:SetVariable("LootPosition", "Mid")
+	local lootPosition = "Mid"
 	local soundName = "BBQRegularAddFuel"
+	if instanceof(self.fireplace, "IsoFireplace") then
+        soundName = "FireplaceAddFuel"
+        lootPosition = "Low"
+    end
+	self.character:SetVariable("LootPosition", lootPosition)
     local craftBenchSounds = self.fireplace:getComponent(ComponentType.CraftBenchSounds)
     if craftBenchSounds ~= nil then
         local soundName2 = craftBenchSounds:getSoundName("AddFuel", nil)
@@ -64,7 +65,7 @@ function ISBBQAddFuel:perform()
 end
 
 function ISBBQAddFuel:complete()
-	if self.item:IsDrainable() then
+	if self.item:IsDrainable() and not self.item:hasTag(ItemTag.IS_FIRE_FUEL_SINGLE_USE) then
 		self.item:Use(false, false, true)
 	else
 		self.character:removeFromHands(self.item)

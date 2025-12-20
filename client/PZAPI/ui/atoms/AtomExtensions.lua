@@ -8,8 +8,6 @@ local Hooks = PZAPI.UI.Extensions.Hooks
 
 local EMPTY_FUNC = function()  end
 
------------
-
 Extensions.Mouse = function(ui)
     if ui._atomExtMouse and ui._atomExtMouse.hookDone then return end
 
@@ -23,7 +21,6 @@ Extensions.Mouse = function(ui)
     ui._atomExtMouse.isHover = false
     ui._atomExtMouse.pressed = {}
 
-    ---
     local oldFunc = ui.onMouseButtonDown or EMPTY_FUNC
     ui.onMouseButtonDown = function(self, btn, x, y)
         oldFunc(self, btn, x, y)
@@ -108,8 +105,6 @@ Extensions.Mouse = function(ui)
         self._atomExtMouse.isHover = false
     end
 
-    ---
-
     ui._atomExtMouse.hookDone = true
 end
 
@@ -119,8 +114,6 @@ Hooks.onLeftDrag = Extensions.Mouse
 Hooks.onRightDrag = Extensions.Mouse
 Hooks.onMiddleDrag = Extensions.Mouse
 Hooks.onHover = Extensions.Mouse
-
---------
 
 Extensions.Scroll = function(ui)
     if ui._atomExtScroll and ui._atomExtScroll.hookDone then return end

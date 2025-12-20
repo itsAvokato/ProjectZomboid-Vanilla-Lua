@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "OptionScreens/ModSelector/ModSelector"
 
@@ -86,7 +82,7 @@ end
 function ModLoadOrderPanel:prerender()
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b)
     ISPanelJoypad.prerender(self)
-    self:drawTextCentre(getText("UI_modselector_modLoadOrder"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+    self:drawTextCentre(getText("UI_modselector_modLoadOrder"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 
     if self.joyfocus then
         self:drawTextureScaled(self.upTexture, self.backButton.x + 150, self.backButton.y+2, 20, 20, 1, 1, 1, 1)
@@ -302,17 +298,12 @@ function ModLoadOrderPanel:acceptChanges(button)
     ModSelector.instance:setVisible(true, self.joyfocus)
 end
 
-
-----
-
-
 function ModLoadOrderPanel:onGainJoypadFocus(joypadData)
     self:setISButtonForB(self.backButton)
     self.joypadIndex = self.acceptButton.ID
     self.children[self.joypadIndex]:setJoypadFocused(true, joypadData)
     ISPanelJoypad.onGainJoypadFocus(self, joypadData)
 end
-
 
 function ModLoadOrderPanel:onJoypadDown(button, joypadData)
     local child = self.children[self.joypadIndex]

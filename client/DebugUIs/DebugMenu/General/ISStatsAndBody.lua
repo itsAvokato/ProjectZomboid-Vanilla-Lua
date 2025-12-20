@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ISStatsAndBody = ISDebugSubPanelBase:derive("ISStatsAndBody");
@@ -31,56 +27,54 @@ function ISStatsAndBody:createChildren()
     y = ISDebugUtils.addHorzBar(self,y+UI_BORDER_SPACING)+UI_BORDER_SPACING+1;
 
     local player = getPlayer();
-    local stats = player:getStats();
     local body = player:getBodyDamage();
     local nutrition = player:getNutrition()
     self.sliderOptions = {};
     self.boolOptions = {};
 
-    local op = self:addSliderOption(stats,"Hunger", 0, 1);
+    local op = self:addSliderOptionEnum(CharacterStat.HUNGER);
     op.title = getText("IGUI_StatsAndBody_Hunger");
     op = self:addSliderOption(body,"HealthFromFoodTimer", 0, 10000);
     op.title = getText("IGUI_StatsAndBody_HealthFromFoodTimer");
-    op = self:addSliderOption(stats,"Thirst", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.THIRST);
     op.title = getText("IGUI_StatsAndBody_Thirst");
-    op = self:addSliderOption(stats,"Fatigue", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.FATIGUE);
     op.title = getText("IGUI_StatsAndBody_Fatigue");
-    op = self:addSliderOption(stats,"Endurance", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.ENDURANCE);
     op.title = getText("IGUI_StatsAndBody_Endurance");
-    op = self:addSliderOption(stats,"Fitness", 0, 2); -- -1 to 1, use applymod due to slider
-    op.applyMod = 1;
+    op = self:addSliderOptionEnum(CharacterStat.FITNESS, 0.01);
+    op.min = -1
+    op.max = 1
     op.title = getText("IGUI_StatsAndBody_Fitness");
-    op = self:addSliderOption(stats,"Drunkenness", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_Drunkenness");
-    op = self:addSliderOption(stats,"Anger", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.INTOXICATION, 1);
+    op.title = getText("IGUI_StatsAndBody_Intoxication");
+    op = self:addSliderOptionEnum(CharacterStat.ANGER);
     op.title = getText("IGUI_StatsAndBody_Anger");
-    op = self:addSliderOption(stats,"Fear", 0, 1);
-    op.title = getText("IGUI_StatsAndBody_Fear");
-    op = self:addSliderOption(stats,"Pain", 0, 100, 1);
+    op = self:addSliderOptionEnum(CharacterStat.PAIN, 1);
     op.title = getText("IGUI_StatsAndBody_Pain");
-    op = self:addSliderOption(stats,"Panic", 0, 100, 1);
+    op = self:addSliderOptionEnum(CharacterStat.PANIC, 1);
     op.title = getText("IGUI_StatsAndBody_Panic");
-    op = self:addSliderOption(stats,"Morale", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.MORALE);
     op.title = getText("IGUI_StatsAndBody_Morale");
-    op = self:addSliderOption(stats,"Stress", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.STRESS);
     op.title = getText("IGUI_StatsAndBody_Stress");
-    op = self:addSliderOption(stats,"StressFromCigarettes", 0, stats:getMaxStressFromCigarettes());
-    op.title = getText("IGUI_StatsAndBody_StressFromCigarettes");
+    op = self:addSliderOptionEnum(CharacterStat.NICOTINE_WITHDRAWAL);
+    op.title = getText("IGUI_StatsAndBody_NicotineWithdrawal");
     op = self:addSliderOption(player,"TimeSinceLastSmoke", 0, 10);
     op.title = getText("IGUI_StatsAndBody_TimeSinceLastSmoke");
-    op = self:addSliderOption(body,"BoredomLevel", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_BoredomLevel");
-    op = self:addSliderOption(stats,"Idleness", 0, 1, 0.001);
+    op = self:addSliderOptionEnum(CharacterStat.BOREDOM, 1);
+    op.title = getText("IGUI_StatsAndBody_Boredom");
+    op = self:addSliderOptionEnum(CharacterStat.IDLENESS, 0.001);
     op.title = getText("IGUI_StatsAndBody_Idleness");
-    op = self:addSliderOption(body,"UnhappynessLevel", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_UnhappynessLevel");
-    op = self:addSliderOption(stats,"Sanity", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.UNHAPPINESS, 1);
+    op.title = getText("IGUI_StatsAndBody_Unhappiness");
+    op = self:addSliderOptionEnum(CharacterStat.SANITY);
     op.title = getText("IGUI_StatsAndBody_Sanity");
-    op = self:addSliderOption(body,"DiscomfortLevel", 0, 100);
-    op.title = getText("IGUI_StatsAndBody_DiscomfortLevel");
-    op = self:addSliderOption(body,"Wetness", 0, 100, 1);
+    op = self:addSliderOptionEnum(CharacterStat.DISCOMFORT, 1);
+    op.title = getText("IGUI_StatsAndBody_Discomfort");
+    op = self:addSliderOptionEnum(CharacterStat.WETNESS, 1);
     op.title = getText("IGUI_StatsAndBody_Wetness");
-    op = self:addSliderOption(body,"Temperature", 20, 40, 0.1);
+    op = self:addSliderOptionEnum(CharacterStat.TEMPERATURE, 0.1);
     op.title = getText("IGUI_StatsAndBody_Temperature");
     op = self:addSliderOption(body,"ColdDamageStage", 0, 1);
     op.title = getText("IGUI_StatsAndBody_ColdDamageStage");
@@ -88,14 +82,14 @@ function ISStatsAndBody:createChildren()
     op.title = getText("IGUI_StatsAndBody_OverallBodyHealth");
     op = self:addSliderOption(body,"ColdStrength", 0, 100, 1);
     op.title = getText("IGUI_StatsAndBody_ColdStrength");
-    op = self:addSliderOption(stats,"Sickness", 0, 1);
+    op = self:addSliderOptionEnum(CharacterStat.SICKNESS);
     op.title = getText("IGUI_StatsAndBody_Sickness");
-    op = self:addSliderOption(body,"InfectionLevel", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_InfectionLevel");
-    op = self:addSliderOption(body,"FakeInfectionLevel", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_FakeInfectionLevel");
-    op = self:addSliderOption(body,"FoodSicknessLevel", 0, 100, 1);
-    op.title = getText("IGUI_StatsAndBody_FoodSicknessLevel");
+    op = self:addSliderOptionEnum(CharacterStat.ZOMBIE_INFECTION, 1);
+    op.title = getText("IGUI_StatsAndBody_ZombieInfection");
+    op = self:addSliderOptionEnum(CharacterStat.ZOMBIE_FEVER, 1);
+    op.title = getText("IGUI_StatsAndBody_ZombieFever");
+    op = self:addSliderOptionEnum(CharacterStat.FOOD_SICKNESS, 1);
+    op.title = getText("IGUI_StatsAndBody_FoodSickness");
 	op = self:addSliderOption(nutrition,"Carbohydrates", -500, 1000, 1);
     op.title = getText("Fluid_Prop_Carbohydrates");
 	op = self:addSliderOption(nutrition,"Lipids", -500, 1000, 1);
@@ -106,7 +100,7 @@ function ISStatsAndBody:createChildren()
     op.title = getText("IGUI_StatsAndBody_Calories");
     op = self:addSliderOption(nutrition, "Weight", 30, 130, 1);
     op.title = getText("IGUI_StatsAndBody_Weight");
-    op = self:addSliderOption(body, "PoisonLevel", 0, 1000, 1);
+    op = self:addSliderOptionEnum(CharacterStat.POISON, 1);
     op.title = getText("IGUI_StatsAndBody_Poison");
     self:addBoolOption(body,getText("IGUI_StatsAndBody_IsInfected"), "IsInfected", "setInfected");
     self:addBoolOption(body,getText("IGUI_StatsAndBody_IsFakeInfected"), "IsFakeInfected", "setIsFakeInfected");
@@ -114,7 +108,6 @@ function ISStatsAndBody:createChildren()
     self:addBoolOption(player,getText("IGUI_StatsAndBody_Ghost"), "isGhostMode", "setGhostMode");
     self:addBoolOption(player,getText("IGUI_StatsAndBody_GodMod"), "isGodMod", "setGodMod");
     self:addBoolOption(player,getText("IGUI_StatsAndBody_Invisible"), "isInvisible", "setInvisible");
-    --self:addBoolOption(body,"HasACold", "isHasACold", "setHasACold");
 
     local barMod = UI_BORDER_SPACING;
     local y2, label, value, slider;
@@ -128,10 +121,13 @@ function ISStatsAndBody:createChildren()
         v.label = label;
         v.labelValue = value;
         v.slider = slider;
-        --slider:setCurrentValue(v.java[v.get](v.java[v.get]));
         slider:setValues(v.min, v.max, v.step, v.step, true);
-        local val = v.java[v.get](v.java) + v.applyMod;
-        --print(v.var.." = "..tostring(val))
+        local val;
+        if v.enum then
+            val = getPlayer():getStats():get(v.enum)
+        else
+            val = v.java[v.get](v.java) + v.applyMod;
+        end
         slider:setCurrentValue(val);
 
         y = ISDebugUtils.addHorzBar(self,math.max(y,y2)+barMod)+barMod+1;
@@ -152,6 +148,19 @@ function ISStatsAndBody:createChildren()
     end
 
     self:setScrollHeight(y+1);
+end
+
+function ISStatsAndBody:addSliderOptionEnum(_enum, _step)
+    local option = {
+        enum = _enum,
+        var = _enum:getId(),
+        min = _enum:getMinimumValue(),
+        max = _enum:getMaximumValue(),
+        step = _step or 0.01,
+        applyMod = 0,
+    };
+    table.insert(self.sliderOptions,option);
+    return option;
 end
 
 function ISStatsAndBody:addSliderOption(_java, _var, _min, _max, _step, _get, _set)
@@ -185,7 +194,11 @@ function ISStatsAndBody:prerender()
 
     local val;
     for k,v in ipairs(self.sliderOptions) do
-        val = v.java[v.get](v.java);
+        if v.enum then
+            val = getPlayer():getStats():get(v.enum);
+        else
+            val = v.java[v.get](v.java);
+        end
         v.slider.currentValue = val + v.applyMod;
 
         if v.slider.pretext then
@@ -201,36 +214,48 @@ function ISStatsAndBody:prerender()
     end
 end
 
-function ISStatsAndBody:onSliderChange(_newval, _slider)
+function ISStatsAndBody:onSliderChange(_newVal, _slider)
     local v = _slider.customData;
 
     if v.var=="Fitness" then
-        local playerXP = getPlayer():getXp();
-        local newLevel = (_newval / 2) * 10;
-        local currentLevel = getPlayer():getPerkLevel(Perks.Fitness);
-        -- stops resetting of the fitness xp to 0 for the current level during panel creation
-        if currentLevel ~= newLevel then
-            playerXP:setXPToLevel(Perks.Fitness, newLevel);
-            getPlayer():setPerkLevelDebug(Perks.Fitness, newLevel);
-            return;
-        end;
+        local player = getPlayer()
+        local newFitness = math.max(-1, math.min(1, _newVal))
+        player:getStats():set(CharacterStat.FITNESS, newFitness)
+        local newLevel = math.floor((newFitness + 1) * 5 + 0.5)
+        if player:getPerkLevel(Perks.Fitness) ~= newLevel then
+            player:setPerkLevelDebug(Perks.Fitness, newLevel)
+            player:getXp():setXPToLevel(Perks.Fitness, newLevel)
+        end
+        return;
     elseif v.var=="OverallBodyHealth" then
         local b = getPlayer():getBodyDamage();
-        if _newval<b:getOverallBodyHealth() then
-            b:ReduceGeneralHealth(b:getOverallBodyHealth()-_newval);
-        elseif _newval>b:getOverallBodyHealth() then
-            b:AddGeneralHealth(_newval-b:getOverallBodyHealth());
+        if _newVal <b:getOverallBodyHealth() then
+            b:ReduceGeneralHealth(b:getOverallBodyHealth()- _newVal);
+        elseif _newVal >b:getOverallBodyHealth() then
+            b:AddGeneralHealth(_newVal -b:getOverallBodyHealth());
         end
         return;
     elseif v.var=="ColdStrength" then
         local b = getPlayer():getBodyDamage();
-        if _newval>0 then
+        if _newVal >0 then
             b:setHasACold(true);
         else
             b:setHasACold(false);
         end
     end
-    v.java[v.set](v.java,_newval-v.applyMod);
+    if v.enum then
+        getPlayer():getStats():set(v.enum, _newVal -v.applyMod)
+        if isClient() then
+            sendPlayerStat(getPlayer(), v.enum)
+        end
+    else
+        v.java[v.set](v.java,_newVal-v.applyMod);
+        if v.java == getPlayer():getNutrition() then
+            if isClient() then
+                sendPlayerNutrition(getPlayer())
+            end
+        end
+    end
 end
 
 function ISStatsAndBody:onTicked(_index, _selected, _arg1, _arg2, _tickbox)
@@ -249,4 +274,3 @@ function ISStatsAndBody:new(x, y, width, height, doStencil)
     self.__index = self;
     return o;
 end
-

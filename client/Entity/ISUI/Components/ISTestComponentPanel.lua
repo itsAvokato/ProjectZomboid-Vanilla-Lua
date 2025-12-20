@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Test Dummy
---]]
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISTestComponentPanel = ISBaseComponentPanel:derive("ISTestComponentPanel");
@@ -16,11 +7,6 @@ function ISTestComponentPanel.CanCreatePanelFor(_player, _entity, _component, _c
         return _component:getComponentType()==ComponentType.TestComponent;
     end
 end
-
---************************************************************************--
---** ISTestComponentPanel:initialise
---**
---************************************************************************--
 
 function ISTestComponentPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -103,11 +89,6 @@ function ISTestComponentPanel:update()
     ISBaseComponentPanel.update(self);
 end
 
-
---************************************************************************--
---** ISTestComponentPanel:new
---**
---************************************************************************--
 function ISTestComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

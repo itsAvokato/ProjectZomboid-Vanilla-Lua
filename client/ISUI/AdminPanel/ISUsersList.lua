@@ -1,20 +1,9 @@
----
---- Created by Iurii.
---- DateTime: 3/6/2024 3:46 AM
----
-
 ISUsersList = ISPanel:derive("ISUsersList");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
-
---************************************************************************--
---** ISUsersList:initialise
---**
---************************************************************************--
 
 function ISUsersList:initialise()
     ISPanel.initialise(self);
@@ -472,10 +461,6 @@ function ISUsersList:closeModal()
     ISUsersList.instance = nil
 end
 
---************************************************************************--
---** ISFactionsList:new
---**
---************************************************************************--
 function ISUsersList:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

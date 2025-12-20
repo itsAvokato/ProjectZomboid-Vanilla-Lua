@@ -12,11 +12,6 @@ ISCollapsableWindow = ISPanel:derive("ISCollapsableWindow");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
---************************************************************************--
---** ISInventoryPage:initialise
---**
---************************************************************************--
-
 function ISCollapsableWindow:initialise()
 	ISPanel.initialise(self);
 end
@@ -29,10 +24,6 @@ function ISCollapsableWindow:getTitle()
 	return self.title;
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ISCollapsableWindow:createChildren()
 
 	local titleBarHeight = self:titleBarHeight()
@@ -223,10 +214,6 @@ function ISCollapsableWindow:render()
 	end
 end
 
---************************************************************************--
---** ISButton:onMouseMove
---**
---************************************************************************--
 function ISCollapsableWindow:onMouseMove(dx, dy)
 	self.mouseOver = true;
 
@@ -250,11 +237,6 @@ function ISCollapsableWindow:uncollapse()
 	end
 end
 
-
---************************************************************************--
---** ISButton:onMouseMoveOutside
---**
---************************************************************************--
 function ISCollapsableWindow:onMouseMoveOutside(dx, dy)
 	self.mouseOver = false;
 
@@ -278,11 +260,6 @@ function ISCollapsableWindow:onMouseMoveOutside(dx, dy)
 	end
 end
 
-
---************************************************************************--
---** ISButton:onMouseUp
---**
---************************************************************************--
 function ISCollapsableWindow:onMouseUp(x, y)
 	if not self:getIsVisible() then
 		return;
@@ -341,6 +318,26 @@ function ISCollapsableWindow:resizeWidgetHeight()
 	return (BUTTON_HGT/2)+2
 end
 
+function ISCollapsableWindow:minTitleBarWidth()
+	local width = 0
+	if self.closeButton and self.closeButton:isVisible() then
+        width = width + self.closeButton:getWidth()
+    end
+	if self.infoButton and self.infoButton:isVisible() then
+        width = width + self.infoButton:getWidth()
+    end
+	if self.pinButton and self.pinButton:isVisible() then
+        width = width + self.pinButton:getWidth()
+    end
+	if self.collapseButton and self.collapseButton:isVisible() then
+        width = width + self.collapseButton:getWidth()
+    end
+    if self.title then
+        width = width + 2 * 4 + getTextManager():MeasureStringX(self.titleBarFont, self.title)
+    end
+    return width + 2
+end
+
 function ISCollapsableWindow:setResizable(resizable)
 	self.resizable = resizable
 	if self.resizeWidget then
@@ -381,10 +378,6 @@ function ISCollapsableWindow:setDrawFrame(visible)
 	end
 end
 
---************************************************************************--
---** ISInventoryPage:new
---**
---************************************************************************--
 function ISCollapsableWindow:new (x, y, width, height)
 	local o = {}
 	--o.data = {}

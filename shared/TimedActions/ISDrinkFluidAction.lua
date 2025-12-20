@@ -1,13 +1,9 @@
---***********************************************************
---**                    SOUL FILCHER                       **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDrinkFluidAction = ISBaseTimedAction:derive("ISDrinkFluidAction");
 
 function ISDrinkFluidAction:isValidStart()
-	return self.character:getMoodles():getMoodleLevel(MoodleType.FoodEaten) < 3 -- or self.character:getNutrition():getCalories() < 1000
+	return self.character:getMoodles():getMoodleLevel(MoodleType.FOOD_EATEN) < 3 -- or self.character:getNutrition():getCalories() < 1000
 end
 
 function ISDrinkFluidAction:waitToStart()
@@ -18,7 +14,7 @@ function ISDrinkFluidAction:isValid()
 	if self.item:getWorldItem() ~= nil and self.item:getWorldItem():getFluidContainer() == self.fluidContainer then
 		return true;
 	end
-    if isClient() and self.item and ISFluidUtil.validateContainer(self.item) then
+    if isClient() and self.item then
         return self.character:getInventory():containsID(self.item:getID());
     else
         return self.character:getInventory():contains(self.item);
@@ -34,6 +30,18 @@ function ISDrinkFluidAction:update()
 	self.item:setJobDelta(self:getJobDelta());
     if self.eatSound ~= "" and self.eatAudio ~= 0 and not self.character:getEmitter():isPlaying(self.eatAudio) then
         self.eatAudio = self.character:getEmitter():playSound(self.eatSound);
+    end
+end
+
+function ISDrinkFluidAction:serverStart()
+    emulateAnimEvent(self.netAction, 100, "drinkFluid", nil);
+end
+
+function ISDrinkFluidAction:animEvent(event, parameter)
+    if isServer() then
+        if event == "drinkFluid" then
+		    self:updateEat(self.netAction:getProgress());
+        end
     end
 end
 

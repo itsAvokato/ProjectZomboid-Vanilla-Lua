@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 AcceptItemFunction = {}
 
 -- The item.AcceptItemFunction script property for item containers
@@ -21,21 +17,21 @@ end
 -- end
 
 function AcceptItemFunction.AmmoStrap_Bullets(container, item)
-	return item:hasTag("Ammo") and not item:hasTag("ShotgunShell")
+	return item:hasTag(ItemTag.AMMO) and not item:hasTag(ItemTag.SHOTGUN_SHELL)
 end
 
 function AcceptItemFunction.AmmoStrap_Shells(container, item)
-	return item:hasTag("ShotgunShell")
+	return item:hasTag(ItemTag.SHOTGUN_SHELL)
 end
 
 function AcceptItemFunction.KeyRing(container, item)
-	return item:getCategory() == "Key" or item:hasTag("FitsKeyRing")
+	return item:getCategory() == "Key" or item:hasTag(ItemTag.FITS_KEY_RING)
 end
 
 function AcceptItemFunction.HolsterShoulder(container, item)
-	return item:hasTag("PistolMagazine") and container:getItems():size() < 2
+	return item:hasTag(ItemTag.PISTOL_MAGAZINE) and container:getItems():size() < 2
 end
 
 function AcceptItemFunction.Wallet(container, item)
-	return item:IsMap() or item:IsLiterature() or item:hasTag("FitsWallet");
+	return item:IsMap() or item:IsLiterature() or item:hasTag(ItemTag.FITS_WALLET);
 end

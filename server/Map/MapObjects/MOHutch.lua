@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 MOHutch = {};
@@ -100,7 +96,7 @@ local function ReplaceExistingObject(isoObject)
 
 
 	for i,v in ipairs(objToRemove) do
-		square:transmitRemoveItemFromSquare(v)
+		square:transmitRemoveItemFromSquare(v, false)
 		v:getSquare():RemoveTileObject(v, false);
 	end
 
@@ -117,6 +113,7 @@ local function ReplaceExistingObject(isoObject)
 		--local hutch = IsoHutch.new(getSquare(square:getX() + cords.x, square:getY() + cords.y, square:getZ()), true, def.baseSprite, def, nil);
 		local hutch = IsoHutch.new(getSquare(baseX, baseY, square:getZ()), true, def.baseSprite, def, nil);
 		hutch:toggleDoor();
+        hutch:transmitCompleteItemToClients();
 	end
 
 --	for x=square:getX()-1,square:getX()+2 do
@@ -138,8 +135,6 @@ local function ReplaceExistingObject(isoObject)
 --	end
 --
 end
-
--- -- -- -- --
 
 local function NewHutch(object)
 	ReplaceExistingObject(object)

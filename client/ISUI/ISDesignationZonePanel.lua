@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 require "ISUI/ISCollapsableWindowJoypad"
 
 ISDesignationZonePanel = ISCollapsableWindowJoypad:derive("ISDesignationZonePanel");
@@ -10,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.NewSmall)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.NewMedium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISDesignationZonePanel:initialise
---**
---************************************************************************--
 
 function ISDesignationZonePanel:initialise()
     ISCollapsableWindowJoypad.initialise(self);
@@ -264,7 +255,7 @@ end
 
 function ISDesignationZonePanel:onRemoveZone(button)
     if button.internal == "YES" then
-        DesignationZoneAnimal.removeZone(button.parent.selectedZone);
+        DesignationZoneAnimal.removeZone(button.parent.selectedZone, true);
 
         -- flag for hotsave, no need to flag all squares as DesignationZoneAnimal is not actually on chunk - spurcival
         getSquare(button.parent.selectedZone:getX(), button.parent.selectedZone:getY(), button.parent.selectedZone:getZ()):flagForHotSave();
@@ -333,10 +324,6 @@ ISDesignationZonePanel.toggleZoneUI = function(playerNum)
     end
 end
 
---************************************************************************--
---** ISDesignationZonePanel:new
---**
---************************************************************************--
 function ISDesignationZonePanel:new(x, y, width, height, player)
     x = getCore():getScreenWidth() / 2 - (width / 2);
     y = getCore():getScreenHeight() / 2 - (height / 2);
@@ -356,3 +343,13 @@ function ISDesignationZonePanel:new(x, y, width, height, player)
     o:setTitle(getText("IGUI_DesignationZone_Title"));
     return o;
 end
+
+function ISDesignationZonePanel.OnDesignationZoneUpdatedNetwork()
+    if ISDesignationZonePanel.instance and ISDesignationZonePanel.instance:getIsVisible() then
+        ISDesignationZonePanel.instance:populateList();
+    end
+end
+
+LuaEventManager.AddEvent("OnDesignationZoneUpdatedNetwork")
+Events.OnDesignationZoneUpdatedNetwork.Add(ISDesignationZonePanel.OnDesignationZoneUpdatedNetwork)
+

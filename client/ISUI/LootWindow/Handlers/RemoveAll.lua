@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_RemoveAll = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_RemoveAll")
@@ -13,7 +9,7 @@ function Handler:shouldBeVisible()
 	if isClient() and not getServerOptions():getBoolean("TrashDeleteAll") then return false end
 	if not instanceof(self.object, "IsoObject") then return false end
 	local sprite = self.object:getSprite()
-	return sprite and sprite:getProperties() and sprite:getProperties():Is("IsTrashCan")
+	return sprite and sprite:getProperties() and sprite:getProperties():has("IsTrashCan")
 end
 
 function Handler:getControl()

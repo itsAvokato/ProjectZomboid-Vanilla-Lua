@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISChopTreeCursor = ISBuildingObject:derive("ISChopTreeCursor")
 
 function ISChopTreeCursor:create(x, y, z, north, sprite)

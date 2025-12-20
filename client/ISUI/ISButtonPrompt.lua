@@ -4,19 +4,10 @@ ISButtonPrompt = ISUIElement:derive("ISButtonPrompt");
 
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISButtonPrompt:initialise()
     ISUIElement.initialise(self);
 end
 
---************************************************************************--
---** ISButtonPrompt:render
---**
---************************************************************************--
 function ISButtonPrompt:prerender()
 
     if self.player ~= nil and (getFocusForPlayer(self.player) ~= nil and not getFocusForPlayer(self.player).overrideBPrompt) then
@@ -445,7 +436,7 @@ function ISButtonPrompt:testAButtonAction(dir)
                 end
             end
             -- Light switch on adjacent solidtrans square
-            if self.aPrompt == nil and square2:getRoom() and not square2:isSomethingTo(square1) and square2:Is(IsoFlagType.solidtrans) then
+            if self.aPrompt == nil and square2:getRoom() and not square2:isSomethingTo(square1) and square2:has(IsoFlagType.solidtrans) then
                 for i=1,square2:getObjects():size() do
                     local object = square2:getObjects():get(i-1)
                     if instanceof(object, "IsoLightSwitch") then
@@ -581,7 +572,7 @@ function ISButtonPrompt:doAButtonDoorOrWindowOrWindowFrame(dir, obj)
             -- nothing
         elseif obj:IsOpen() then
             self:setAPrompt(getText("ContextMenu_Close_window"), ISButtonPrompt.closeWindow, obj)
-        elseif not obj:getSprite() or not obj:getSprite():getProperties():Is("WindowLocked") then
+        elseif not obj:getSprite() or not obj:getSprite():getProperties():has("WindowLocked") then
             self:setAPrompt(getText("ContextMenu_Open_window"), ISButtonPrompt.openWindow, obj)
         end
         return
@@ -1142,10 +1133,6 @@ function ISButtonPrompt:onJoypadButtonReleased(button, joypadData)
     ISFirearmRadialMenu.onJoypadButtonReleased(self, button, joypadData)
 end
 
---************************************************************************--
---** ISButtonPrompt:new
---**
---************************************************************************--
 function ISButtonPrompt:new (player)
     local o = {}
     --o.data = {}

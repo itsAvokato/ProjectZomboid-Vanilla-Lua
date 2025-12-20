@@ -54,16 +54,10 @@ function FishingManager:eventHooks()
         self:update()
     end
     Events.OnTick.Add(self.onTickFunc)
-
-    self.onSave = function()
-        self:destroy()
-    end
-    Events.OnSave.Add(self.onSave)
 end
 
 function FishingManager:removeEventHooks()
     Events.OnTick.Remove(self.onTickFunc)
-    Events.OnSave.Remove(self.onSave)
 end
 
 function FishingManager:update()

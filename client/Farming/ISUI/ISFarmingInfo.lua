@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**    The (not so) famouns farming info panel            **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISFarmingInfo = ISPanelJoypad:derive("ISFarmingInfo");
@@ -18,11 +13,6 @@ local nowateredsince_rgb = {["r"]=255.0,["g"]=255.0,["b"]=255.0};
 local disease_rgb = {["0r"]=255.0,["0g"]=255.0,["0b"]=255.0};
 local title_rgb = {["r"]=1.0,["g"]=1.0,["b"]=1.0};
 
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISFarmingInfo:initialise()
 	ISPanelJoypad.initialise(self);
 end
@@ -37,11 +27,6 @@ function ISFarmingInfo:setEnabled(val)
 	self.isEnabled = val
 end
 
-
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISFarmingInfo:prerender()
 	if self:isPlantValid() then
 		local square = self.plant:getSquare()
@@ -56,7 +41,6 @@ function ISFarmingInfo:prerender()
 		end
 	end
 end
-
 
 function ISFarmingInfo:render()
 	if not self:isPlantValid() then return end
@@ -165,8 +149,8 @@ function ISFarmingInfo:render()
     end
     local magnifierFactor = 0
     local hasMagnifier = false
-    if self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag("Magnifier") then hasMagnifier = true
-    elseif self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag("Magnifier") then hasMagnifier = true end
+    if self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag(ItemTag.MAGNIFIER) then hasMagnifier = true
+    elseif self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag(ItemTag.MAGNIFIER) then hasMagnifier = true end
     if hasMagnifier then magnifierFactor = magnifierFactor + 2 end
 
     if((farmingLevel + magnifierFactor) >= 3 or ISFarmingMenu.cheat) and ISFarmingInfo.hasDisease(self.plant) then
@@ -249,7 +233,6 @@ function ISFarmingInfo:render()
 	self:setHeightAndParentHeight(y + 8)
 end
 
-
 function ISFarmingInfo.hasDisease(plant)
     return plant.aphidLvl > 0 or plant.fliesLvl > 0 or plant.mildewLvl > 0 or plant.slugsLvl > 0
 end
@@ -266,8 +249,6 @@ function ISFarmingInfo.getDiseaseString(diseaseLvl, farmingLevel)
     end
     return string
 end
-
-
 
 function ISFarmingInfo:update()
 	if not self.plant:getObject() then
@@ -467,10 +448,6 @@ local function maxWidthOfTexts(texts)
 	return max
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISFarmingInfo:new (x, y, width, height, character, plant)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height);

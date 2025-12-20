@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                  Author: turbotutone                  **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISMoveablesAction = ISBaseTimedAction:derive("ISMoveablesAction")
@@ -10,8 +5,8 @@ ISMoveablesAction = ISBaseTimedAction:derive("ISMoveablesAction")
 function ISMoveablesAction:isReachableObjectType()
     local moveProps = self.moveProps;
     local object = moveProps.object;
-    local isWall = moveProps.spriteProps:Is("WallNW") or moveProps.spriteProps:Is("WallN") or moveProps.spriteProps:Is("WallW");
-    local isWallTrans = moveProps.spriteProps:Is("WallNWTrans") or moveProps.spriteProps:Is("WallNTrans") or moveProps.spriteProps:Is("WallWTrans");
+    local isWall = moveProps.spriteProps:has("WallNW") or moveProps.spriteProps:has("WallN") or moveProps.spriteProps:has("WallW");
+    local isWallTrans = moveProps.spriteProps:has("WallNWTrans") or moveProps.spriteProps:has("WallNTrans") or moveProps.spriteProps:has("WallWTrans");
     local isDoor = instanceof(object, "IsoDoor");
     local isWindow = instanceof(object, "IsoWindow") or moveProps.type == "Window";
     local isFence = (instanceof(object, "IsoObject") or instanceof(object, "IsoThumpable")) and object:isHoppable();
@@ -147,10 +142,10 @@ function ISMoveablesAction:start()
         local isFloor = self.moveProps and self.moveProps.object and self.moveProps.object:isFloor()
         if self.moveProps and self.mode=="scrap" and self.moveProps:startScrapAction(self) then
             -- Hack for scrapping curtains
-        elseif self.character:hasEquipped("BlowTorch") then
+        elseif self.character:hasEquippedTag(ItemTag.BLOW_TORCH) then
             self:setActionAnim(isFloor and "BlowTorchFloor" or "BlowTorch")
             self:setOverrideHandModels(self.character:getPrimaryHandItem(), nil)
-        elseif self.character:hasEquippedTag("Hammer") then
+        elseif self.character:hasEquippedTag(ItemTag.HAMMER) then
             self:setActionAnim(isFloor and "BuildLow" or "Build")
             self:setOverrideHandModels(self.character:getPrimaryHandItem(), nil)
         else
@@ -254,7 +249,7 @@ function ISMoveablesAction:new(character, square, mode, origSpriteName, object, 
         o.moveProps = ISMoveableSpriteProps.fromObject( object );
         if o.moveProps.spriteName ~= origSpriteName then
             --check for attached sprites
-            if o.moveProps.spriteProps ~= nil and (o.moveProps.spriteProps:Is("WallNW") or o.moveProps.spriteProps:Is("WallN") or o.moveProps.spriteProps:Is("WallW")) then
+            if o.moveProps.spriteProps ~= nil and (o.moveProps.spriteProps:has("WallNW") or o.moveProps.spriteProps:has("WallN") or o.moveProps.spriteProps:has("WallW")) then
                 local sprList = object:getChildSprites();
                 if sprList then
                     local list_size 	= sprList:size();

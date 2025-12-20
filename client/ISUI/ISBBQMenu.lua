@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
---require 'Camping/camping_fuel'
-
 ISBBQMenu = {}
 
 local function predicateNotEmpty(item)

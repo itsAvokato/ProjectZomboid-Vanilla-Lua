@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require('ISUI/Maps/Editor/WorldMapEditorMode')
 
@@ -11,8 +7,6 @@ local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 ISMultiplayerZoneEditor = ISPanelJoypad:derive("ISMultiplayerZoneEditor")
-
------
 
 ISMultiplayerZoneEditor_ButtonPanel = ISPanelJoypad:derive("ISMultiplayerZoneEditor_ButtonPanel")
 
@@ -110,8 +104,6 @@ function ISMultiplayerZoneEditor_ButtonPanel:new(x, y, width, height, editor)
 	o.editor = editor
 	return o
 end
-
------
 
 function ISMultiplayerZoneEditor:instantiate()
 	self.javaObject = UIWorldMap.new(self)

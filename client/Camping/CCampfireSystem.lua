@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObjectSystem"
 
 CCampfireSystem = CGlobalObjectSystem:derive("CCampfireSystem")

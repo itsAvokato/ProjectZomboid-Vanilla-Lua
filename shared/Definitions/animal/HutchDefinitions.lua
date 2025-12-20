@@ -1,13 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 24/03/2022
--- Time: 08:46
--- To change this template use File | Settings | File Templates.
---
-
--- define all the hutch (sorry Starsky) we can have in game
-
 HutchDefinitions = HutchDefinitions or {};
 HutchDefinitions.hutchs = {};
 HutchDefinitions.hutchs["hutchhen"] = {};

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISTakePillAction = ISBaseTimedAction:derive("ISTakePillAction");
@@ -20,8 +16,6 @@ end
 
 function ISTakePillAction:update()
 	self.item:setJobDelta(self:getJobDelta());
--- 	if self.item:hasTag("eatBox") then
--- 	    self:setAnimVariable("FoodType", "eatBox");
 	if self.item:getEatType() then
 	    self:setAnimVariable("FoodType", self.item:getEatType());
 		self:setActionAnim(CharacterActionAnims.Eat);
@@ -106,8 +100,8 @@ function ISTakePillAction:new (character, item)
 	o.stopOnAim = false;
 	o.maxTime = o:getDuration();
     o.isEating = true;
-    o.carLighter = item:hasTag("Smokable") and character:getVehicle() and character:getVehicle():canLightSmoke(character)
+    o.carLighter = item:hasTag(ItemTag.SMOKABLE) and character:getVehicle() and character:getVehicle():canLightSmoke(character)
     o.openFlame = false;
-    if item:hasTag("Smokable") then o.openFlame = ISInventoryPaneContextMenu.hasOpenFlame(character) end
+    if item:hasTag(ItemTag.SMOKABLE) then o.openFlame = ISInventoryPaneContextMenu.hasOpenFlame(character) end
 	return o
 end

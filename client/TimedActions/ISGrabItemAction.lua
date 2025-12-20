@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISGrabItemAction = ISBaseTimedAction:derive("ISGrabItemAction");
@@ -9,7 +5,7 @@ ISGrabItemAction = ISBaseTimedAction:derive("ISGrabItemAction");
 function ISGrabItemAction:isValid()
     -- Prevent grabbing item if another player acts with it
     if isClient() then
-        if not self.started and not isItemTransactionConsistent(nil, self.sourceContainer, self.destContainer, nil) then
+        if not self.started and not isItemTransactionConsistent(nil, self.sourceContainer, self.destContainer, nil, self.character) then
             -- self.corpse, ItemContainer.new("floor", self.corpseBody:getSquare(), nil)
             return false
         end

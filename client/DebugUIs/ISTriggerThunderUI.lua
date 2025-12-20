@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 ISTriggerThunderUI = ISCollapsableWindow:derive("ISTriggerThunderUI");
 
 function ISTriggerThunderUI:createChildren()

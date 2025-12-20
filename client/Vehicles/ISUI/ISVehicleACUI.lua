@@ -1,19 +1,6 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 04/12/2017
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISVehicleACUI = ISPanelJoypad:derive("ISVehicleACUI");
-
---************************************************************************--
---** ISVehicleACUI:initialise
---**
---************************************************************************--
 
 function ISVehicleACUI:createChildren()
 	local btnWid = 100
@@ -164,10 +151,6 @@ function ISVehicleACUI:setVehicle(vehicle)
 	self:updateButtons();
 end
 
---************************************************************************--
---** ISVehicleACUI:new
---**
---************************************************************************--
 function ISVehicleACUI:new(x, y, character)
 	local o = {}
 	local width = 300;

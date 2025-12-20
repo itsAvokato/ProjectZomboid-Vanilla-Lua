@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -73,10 +69,6 @@ function ISWidgetAutoToggle:onMouseMoveOutside(x, y)
     self.hover = false;
 end
 
---************************************************************************--
---** ISWidgetAutoToggle:new
---** default image is 50x12 pix
---************************************************************************--
 function ISWidgetAutoToggle:new (x, y, width, height, doSmall, target, onToggled)
     if width==nil then
         if doSmall then

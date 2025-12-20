@@ -1,18 +1,7 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISAdminMessage = ISPanel:derive("ISAdminMessage");
 ISAdminMessage.messages = {};
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---************************************************************************--
---** ISAdminMessage:initialise
---**
---************************************************************************--
 
 function ISAdminMessage:initialise()
     ISPanel.initialise(self);
@@ -118,10 +107,6 @@ function ISAdminMessage:update()
     end
 end
 
---************************************************************************--
---** ISAdminMessage:new
---**
---************************************************************************--
 function ISAdminMessage:new(x, y, width, height, text, px,py,pz)
     local o = {}
     o = ISPanel:new(x, y, width, height);
@@ -159,7 +144,6 @@ ISAdminMessage.AddAdminMessage = function(message,x,y,z)
     if x > -1 then
         message = message .. " <LINE> <LINE> Teleport?";
     end
-    print("GET MSG", message)
     modal = ISAdminMessage:new(getCore():getScreenWidth() - 260, ((getCore():getScreenHeight() / 2) - 60), 250, 120, message, x,y,z);
     modal:initialise();
     modal:addToUIManager();

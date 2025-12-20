@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 03/02/14
--- Time: 09:28
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISCollapsableWindow"
 require "ISUI/ISRichTextPanel"
 require "ISUI/ISButton"

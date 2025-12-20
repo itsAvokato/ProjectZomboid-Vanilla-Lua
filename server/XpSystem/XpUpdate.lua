@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**       Here we gonna handle all the xp add/lose        **
---***********************************************************
-
 xpUpdate = {};
 xpUpdate.characterInfo = nil;
 -- timer to see how much time since last strength xp gain, if it's too long we start losing xp
@@ -16,7 +11,7 @@ xpUpdate.onPlayerMove = function(player)
 	local y = player:getY();
 	-- pacing/sprinting xp
 	-- if you're running and your endurance has changed
-	if (player:IsRunning() or player:isSprinting()) and player:getStats():getEndurance() > player:getStats():getEndurancewarn() then
+	if (player:IsRunning() or player:isSprinting()) and player:getStats():get(CharacterStat.ENDURANCE) > player:getStats():getEnduranceWarning() then
 		-- you may gain 1 xp in sprinting or fitness
 		if xpUpdate.randXp() then
 		    addXp(player, Perks.Fitness, 1)
@@ -69,7 +64,7 @@ xpUpdate.onWeaponHitXp = function(owner, weapon, hitObject, damage, hitCount)
         end
     end
 	-- if you sucessful swing your non ranged weapon
-	if owner:getStats():getEndurance() > owner:getStats():getEndurancewarn() and not weapon:isRanged() then
+	if owner:getStats():get(CharacterStat.ENDURANCE) > owner:getStats():getEnduranceWarning() and not weapon:isRanged() then
 	    addXp(owner, Perks.Fitness, 1)
 	end
 	-- we add xp depending on how many target you hit
@@ -86,22 +81,22 @@ xpUpdate.onWeaponHitXp = function(owner, weapon, hitObject, damage, hitCount)
 	end
 	-- add either blunt or blade xp (blade xp's perk name is Axe)
 	if hitCount > 0 and not weapon:isRanged() then
-		if weapon:getScriptItem():containsWeaponCategory("Axe") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.AXE) then
 		    addXp(owner, Perks.Axe, exp)
 		end
-		if weapon:getScriptItem():containsWeaponCategory("Blunt") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.BLUNT) then
 		    addXp(owner, Perks.Blunt, exp)
 		end
-		if weapon:getScriptItem():containsWeaponCategory("Spear") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.SPEAR) then
 		    addXp(owner, Perks.Spear, exp)
 		end
-		if weapon:getScriptItem():containsWeaponCategory("LongBlade") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.LONG_BLADE) then
 		    addXp(owner, Perks.LongBlade, exp)
 		end
-		if weapon:getScriptItem():containsWeaponCategory("SmallBlade") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.SMALL_BLADE) then
 		    addXp(owner, Perks.SmallBlade, exp)
 		end
-		if weapon:getScriptItem():containsWeaponCategory("SmallBlunt") then
+		if weapon:getScriptItem():containsWeaponCategory(WeaponCategory.SMALL_BLUNT) then
 		    addXp(owner, Perks.SmallBlunt, exp)
 		end
 	end
@@ -158,7 +153,11 @@ end
 
 -- do we get xp ?
 xpUpdate.randXp = function()
-	return ZombRand(700 * GameTime.getInstance():getInvMultiplier()) == 0;
+	if isServer() then
+		return ZombRand(100 * GameTime.getInstance():getInvMultiplier()) == 0;
+	else
+		return ZombRand(700 * GameTime.getInstance():getInvMultiplier()) == 0;
+	end
 end
 
 -- handle when you gain xp, we gonna apply the xp multiplier
@@ -195,66 +194,68 @@ xpUpdate.levelPerk = function(owner, perk, level, addBuffer)
 	-- first Strength skill, grant you some traits that gonna help you to carry more stuff, hitting harder, etc.
 	if perk == Perks.Strength then
 		-- we start to remove all previous Strength related traits
-		owner:getTraits():remove("Weak");
-		owner:getTraits():remove("Feeble");
-		owner:getTraits():remove("Stout");
-		owner:getTraits():remove("Strong");
+		owner:getCharacterTraits():remove(CharacterTrait.WEAK);
+		owner:getCharacterTraits():remove(CharacterTrait.FEEBLE);
+		owner:getCharacterTraits():remove(CharacterTrait.STOUT);
+		owner:getCharacterTraits():remove(CharacterTrait.STRONG);
 
         -- now we add trait depending on your current lvl
         if level >= 0 and level <= 1 then
-            owner:getTraits():add("Weak");
+            owner:getCharacterTraits():add(CharacterTrait.WEAK);
         elseif level >= 2 and level <= 4 then
-            owner:getTraits():add("Feeble");
+            owner:getCharacterTraits():add(CharacterTrait.FEEBLE);
         elseif level >= 6 and level <= 8 then
-            owner:getTraits():add("Stout");
+            owner:getCharacterTraits():add(CharacterTrait.STOUT);
         elseif level >= 9 then
-            owner:getTraits():add("Strong");
+            owner:getCharacterTraits():add(CharacterTrait.STRONG);
         end
 	end
 
 	-- then Fitness skill, grant you some traits that gonna help you to run faster, recovery faster, etc..
 	if perk == Perks.Fitness then
 		-- we start to remove all previous Fitness related traits
-        owner:getTraits():remove("Unfit");
-        owner:getTraits():remove("Out of Shape");
-		owner:getTraits():remove("Fit");
-		owner:getTraits():remove("Athletic");
+        owner:getCharacterTraits():remove(CharacterTrait.UNFIT);
+        owner:getCharacterTraits():remove(CharacterTrait.OUT_OF_SHAPE);
+		owner:getCharacterTraits():remove(CharacterTrait.FIT);
+		owner:getCharacterTraits():remove(CharacterTrait.ATHLETIC);
 
 		-- now we add trait depending on your current lvl
 		if level >= 0 and level <= 1 then
-			owner:getTraits():add("Unfit");
+			owner:getCharacterTraits():add(CharacterTrait.UNFIT);
 		elseif level >= 2 and level <= 4 then
-			owner:getTraits():add("Out of Shape");
+			owner:getCharacterTraits():add(CharacterTrait.OUT_OF_SHAPE);
 		elseif level >= 6 and level <= 8 then
-			owner:getTraits():add("Fit");
+			owner:getCharacterTraits():add(CharacterTrait.FIT);
 		elseif level >= 9 then
-			owner:getTraits():add("Athletic");
+			owner:getCharacterTraits():add(CharacterTrait.ATHLETIC);
 		end
 	end
 
+	local modifier = 0
+	if owner:hasTrait(CharacterTrait.INVENTIVE) then modifier = 1 end
     -- learn all the growing seasons at Farming 10
-	if perk == Perks.Farming and level > 9 then
+	if perk == Perks.Farming and level + modifier > 9 then
         for typeOfSeed,props in pairs(farming_vegetableconf.props) do
             if props.seasonRecipe then
-                owner:learnRecipe(props.seasonRecipe)
+                xpUpdate.checkForLearningRecipe(owner, props.seasonRecipe)
             end
         end
     end
     -- learn Mechanics recipes at high levels of Mechanics
 	if perk == Perks.Mechanics then
-	    if level > 9 then
-           owner:learnRecipe("Advanced Mechanics")
+	    if level + modifier > 9 then
+            xpUpdate.checkForLearningRecipe(owner, "Advanced Mechanics")
         end
-	    if level > 8 then
-            owner:learnRecipe("Intermediate Mechanics")
+	    if level + modifier > 8 then
+            xpUpdate.checkForLearningRecipe(owner, "Intermediate Mechanics")
         end
-	    if level > 7 then
-           owner:learnRecipe("Basic Mechanics")
+	    if level + modifier > 7 then
+            xpUpdate.checkForLearningRecipe(owner, "Basic Mechanics")
         end
     end
     -- learn Generator at Electrical 3
-    if perk == Perks.Electricity and level > 2 then
-        owner:learnRecipe("Generator")
+    if perk == Perks.Electricity and level + modifier > 2 then
+        xpUpdate.checkForLearningRecipe(owner, "Generator")
     end
 
 	-- we reset the xp multiplier for this perk
@@ -264,6 +265,13 @@ xpUpdate.levelPerk = function(owner, perk, level, addBuffer)
 	if addBuffer then
 --		owner:getXp():AddXP(perk, 5, false);
 	end
+end
+
+xpUpdate.checkForLearningRecipe = function(playerObj, recipe)
+    if playerObj:isRecipeActuallyKnown(recipe) then return end
+
+    playerObj:learnRecipe(recipe)
+    HaloTextHelper.addGoodText(playerObj, Translator.getText("IGUI_HaloNote_LearnedRecipe", getRecipeDisplayName(recipe)), "[br/]")
 end
 
 xpUpdate.checkForLosingLevel = function(playerObj, perk)
@@ -330,8 +338,10 @@ end
 
 xpUpdate.onLoad = function()
 	local playerObj = getSpecificPlayer(0)
+	local modifier = 0
+	if playerObj:hasTrait(CharacterTrait.INVENTIVE) then modifier = 1 end
     -- learn all the growing seasons at Farming 10
-	if playerObj:getPerkLevel(Perks.Farming) > 9 then
+	if playerObj:getPerkLevel(Perks.Farming) + modifier > 9 then
         for typeOfSeed,props in pairs(farming_vegetableconf.props) do
             if props.seasonRecipe then
                 playerObj:learnRecipe(props.seasonRecipe)
@@ -339,17 +349,17 @@ xpUpdate.onLoad = function()
         end
     end
     -- learn Mechanics recipes at high levels of Mechanics
-    if playerObj:getPerkLevel(Perks.Mechanics) > 9 then
+    if playerObj:getPerkLevel(Perks.Mechanics) + modifier > 9 then
        playerObj:learnRecipe("Advanced Mechanics")
     end
-    if playerObj:getPerkLevel(Perks.Mechanics) > 8 then
+    if playerObj:getPerkLevel(Perks.Mechanics) + modifier > 8 then
         playerObj:learnRecipe("Intermediate Mechanics")
     end
-    if playerObj:getPerkLevel(Perks.Mechanics) > 7 then
+    if playerObj:getPerkLevel(Perks.Mechanics) + modifier > 7 then
        playerObj:learnRecipe("Basic Mechanics")
     end
     -- learn Generator at Electrical 3
-    if playerObj:getPerkLevel(Perks.Mechanics) > 2 then
+    if playerObj:getPerkLevel(Perks.Electricity) + modifier > 2 then
         playerObj:learnRecipe("Generator")
     end
 end

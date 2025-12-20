@@ -20,7 +20,7 @@ end
 Events.OnEquipPrimary.Add(Fishing.Handler.onEquipPrimary)
 
 function Fishing.Handler.handleFishing(player, primaryHandItem)
-    local playerIndex = player:getPlayerNum()
+    local playerIndex = isMultiplayer() and player:getUsername() or player:getPlayerNum()
 
     if Fishing.Handler.isFishingValid(primaryHandItem) then
         if Fishing.ManagerInstances[playerIndex] == nil then
@@ -35,5 +35,5 @@ function Fishing.Handler.handleFishing(player, primaryHandItem)
 end
 
 function Fishing.Handler.isFishingValid(primaryHandItem)
-    return primaryHandItem ~= nil and primaryHandItem:hasTag("FishingRod")
+    return primaryHandItem ~= nil and primaryHandItem:hasTag(ItemTag.FISHING_ROD)
 end

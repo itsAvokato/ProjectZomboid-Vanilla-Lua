@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 
 ISVehicleHSV = ISCollapsableWindow:derive("ISVehicleHSV")

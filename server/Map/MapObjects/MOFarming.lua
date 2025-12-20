@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 require "Farming/SFarmingSystem"
@@ -103,9 +99,9 @@ function NewPlant(isoObject, typeOfSeed)
 	isoObject:setSprite(luaObject.spriteName)
     if farming_vegetableconf.props[typeOfSeed].isHouseplant then
         --getPlayer():Say("Houseplant")
-	   isoObject:getSprite():getProperties():Set("IsMoveAble", "true")
-	   --isoObject:getSprite():getProperties():Set("TileBlockStyle", nil)
-	   --isoObject:getSprite():getProperties():Set("Movement", "HedgeLow")
+	   isoObject:getSprite():getProperties():set("IsMoveAble", "true")
+	   --isoObject:getSprite():getProperties():set("TileBlockStyle", nil)
+	   --isoObject:getSprite():getProperties():set("Movement", "HedgeLow")
 	end
 	luaObject:toModData(isoObject:getModData())
 	luaObject:setSpriteName(farming_vegetableconf.getSpriteName(luaObject))
@@ -122,6 +118,10 @@ local function NewCabbages(isoObject)
 	NewPlant(isoObject, "Cabbages")
 end
 local function NewCorn(isoObject)
+	NewPlant(isoObject, "Corn")
+end
+local function NewCornFromLegacyTiles(isoObject)
+	isoObject:setSpriteFromName("vegetation_farming_01_78")
 	NewPlant(isoObject, "Corn")
 end
 local function NewGarlic(isoObject)
@@ -287,7 +287,7 @@ end
 
 local PRIORITY = 5
 
-MapObjects.OnNewWithSprite("vegetation_farming_01_1", NewPlow, PRIORITY)
+-- MapObjects.OnNewWithSprite("vegetation_farming_01_1", NewPlow, PRIORITY)
 MapObjects.OnNewWithSprite("vegetation_farming_01_13", NewDestroyed, PRIORITY)
 MapObjects.OnNewWithSprite("vegetation_farming_01_14", NewDestroyed, PRIORITY)
 
@@ -295,6 +295,8 @@ MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Broccoli, NewBroccoli, P
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Cabbages, NewCabbages, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Carrots, NewCarrots, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Corn, NewCorn, PRIORITY)
+MapObjects.OnNewWithSprite("vegetation_farm_01_0", NewCornFromLegacyTiles, PRIORITY)
+MapObjects.OnNewWithSprite("vegetation_farm_01_1", NewCornFromLegacyTiles, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Garlic, NewGarlic, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Greenpeas, NewGreenpeas, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Kale, NewKale, PRIORITY)
@@ -347,8 +349,6 @@ MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Roses, NewRosemary, PRIO
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Sage, NewSage, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.Thyme, NewThyme, PRIORITY)
 MapObjects.OnNewWithSprite(farming_vegetableconf.sprite.WildGarlic, NewWildGarlic, PRIORITY)
-
--- -- -- -- --
 
 local function LoadPlow(isoObject)
 	if not SFarmingSystem.instance:isValidIsoObject(isoObject) then
@@ -568,7 +568,6 @@ end
 	-- LoadPlant(isoObject, "ChineseEvergreen")
 -- end
 
-MapObjects.OnLoadWithSprite("vegetation_farming_01_1", LoadPlow, PRIORITY)
 MapObjects.OnLoadWithSprite("vegetation_farming_01_13", LoadDestroyed, PRIORITY)
 MapObjects.OnLoadWithSprite("vegetation_farming_01_14", LoadDestroyed, PRIORITY)
 MapObjects.OnLoadWithSprite(farming_vegetableconf.sprite.Broccoli, LoadBroccoli, PRIORITY)

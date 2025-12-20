@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
@@ -147,4 +143,3 @@ function DebugScenarios.ongamestart()
         selectedDebugScenario.onStart();
     end
 end
-

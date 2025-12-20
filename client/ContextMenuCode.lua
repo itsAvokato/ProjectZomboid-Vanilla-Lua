@@ -1,20 +1,11 @@
---***********************************************************
---**                     SOUL FILCHER                      **
---**                         2025                          **
---***********************************************************
-
 ContextMenuCode = {}
 ContextMenuCode.Items = {}
 ContextMenuCode.Tiles = {}
-
--- Items
 
 function ContextMenuCode.Items.PlaceCarBatteryCharger(carBatteryCharger, playerObj, param)
 	ISInventoryPaneContextMenu.transferIfNeeded(playerObj, carBatteryCharger)
 	ISTimedActionQueue.add(ISPlaceCarBatteryChargerAction:new(playerObj, carBatteryCharger))
 end
-
--- Tiles
 
 function ContextMenuCode.AddDispenserBottle(context, param)
     local option = param.option;

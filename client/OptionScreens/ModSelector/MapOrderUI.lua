@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "OptionScreens/ModSelector/ModSelector"
 
@@ -50,7 +46,7 @@ end
 function MapOrderUI:prerender()
 	self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b)
 	ISPanelJoypad.prerender(self)
-	self:drawTextCentre(getText("UI_modselector_mapLoadOrder"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_modselector_mapLoadOrder"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 
 	if self.joyfocus then
 		self:drawTextureScaled(self.upTexture, self.backButton.x + 150, self.backButton.y+2, 20, 20, 1, 1, 1, 1)
@@ -136,8 +132,6 @@ function MapOrderUI:onOptionMouseDown(button, x, y)
 		modal:setAlwaysOnTop(true);
 	end
 end
-
--------
 
 function MapOrderUI:onGainJoypadFocus(joypadData)
 	self:setISButtonForB(self.backButton)

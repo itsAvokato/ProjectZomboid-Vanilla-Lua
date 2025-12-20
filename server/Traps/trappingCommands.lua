@@ -69,6 +69,15 @@ function Commands.addAnimalDebug(player, args)
 	end
 end
 
+function Commands.checkTrap(player, args)
+	local trap = getTrapAt(args.x, args.y, args.z)
+	if trap then
+        ISTrapMenu.onCheckTrap(nil, player, trap);
+	else
+		noise('no trap found at '..args.x..','..args.y..','..args.z)
+	end
+end
+
 function Commands.removeBait(player, args)
 	local trap = getTrapAt(args.x, args.y, args.z)
 	if trap then

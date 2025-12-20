@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWearClothing = ISBaseTimedAction:derive("ISWearClothing");
@@ -28,30 +24,30 @@ end
 
 -- BodyLocation -> String used by AnimSets
 WearClothingAnimations = {}
-WearClothingAnimations.Belt = "Waist"
-WearClothingAnimations.BeltExtra = "Waist"
-WearClothingAnimations.Dress = "Legs"
-WearClothingAnimations.Ears = "Face"
-WearClothingAnimations.EarTop = "Face"
-WearClothingAnimations.Eyes = "Face"
-WearClothingAnimations.FannyPackBack = "Waist"
-WearClothingAnimations.FannyPackFront = "Waist"
-WearClothingAnimations.FullHat = "Face"
-WearClothingAnimations.Hat = "Face"
-WearClothingAnimations.Jacket = "Jacket"
-WearClothingAnimations.JacketHat = "Jacket"
-WearClothingAnimations.Legs1 = "Legs"
-WearClothingAnimations.Mask = "Face"
-WearClothingAnimations.MaskEyes = "Face"
-WearClothingAnimations.Nose = "Face"
-WearClothingAnimations.Pants = "Legs"
-WearClothingAnimations.Shoes = "Feet"
-WearClothingAnimations.Skirt = "Legs"
-WearClothingAnimations.Socks = "Feet"
-WearClothingAnimations.Shirt = "Jacket"
-WearClothingAnimations.ShortSleeveShirt = "Jacket"
-WearClothingAnimations.TankTop = "Pullover"
-WearClothingAnimations.Tshirt = "Pullover"
+WearClothingAnimations[ItemBodyLocation.BELT] = "Waist"
+WearClothingAnimations[ItemBodyLocation.BELT_EXTRA] = "Waist"
+WearClothingAnimations[ItemBodyLocation.DRESS] = "Legs"
+WearClothingAnimations[ItemBodyLocation.EARS] = "Face"
+WearClothingAnimations[ItemBodyLocation.EAR_TOP] = "Face"
+WearClothingAnimations[ItemBodyLocation.EYES] = "Face"
+WearClothingAnimations[ItemBodyLocation.FANNY_PACK_BACK] = "Waist"
+WearClothingAnimations[ItemBodyLocation.FANNY_PACK_FRONT] = "Waist"
+WearClothingAnimations[ItemBodyLocation.FULL_HAT] = "Face"
+WearClothingAnimations[ItemBodyLocation.HAT] = "Face"
+WearClothingAnimations[ItemBodyLocation.JACKET] = "Jacket"
+WearClothingAnimations[ItemBodyLocation.JACKET_HAT] = "Jacket"
+WearClothingAnimations[ItemBodyLocation.LEGS1] = "Legs"
+WearClothingAnimations[ItemBodyLocation.MASK] = "Face"
+WearClothingAnimations[ItemBodyLocation.MASK_EYES] = "Face"
+WearClothingAnimations[ItemBodyLocation.NOSE] = "Face"
+WearClothingAnimations[ItemBodyLocation.PANTS] = "Legs"
+WearClothingAnimations[ItemBodyLocation.SHOES] = "Feet"
+WearClothingAnimations[ItemBodyLocation.SKIRT] = "Legs"
+WearClothingAnimations[ItemBodyLocation.SOCKS] = "Feet"
+WearClothingAnimations[ItemBodyLocation.SHIRT] = "Jacket"
+WearClothingAnimations[ItemBodyLocation.SHORT_SLEEVE_SHIRT] = "Jacket"
+WearClothingAnimations[ItemBodyLocation.TANK_TOP] = "Pullover"
+WearClothingAnimations[ItemBodyLocation.TSHIRT] = "Pullover"
 
 function ISWearClothing:start()
 	if isClient() and self.item then
@@ -59,7 +55,6 @@ function ISWearClothing:start()
 	end
 
 	if self:isAlreadyEquipped(self.item) then
-        print("IS ALREADY EQUIPPED")
 		self:forceComplete()
 		return
 	end
@@ -90,7 +85,7 @@ function ISWearClothing:perform()
     self.item:setJobDelta(0.0);
 
 	self.item:getContainer():setDrawDirty(true);
-	if (self.item:IsInventoryContainer() or self.item:hasTag("Wearable")) and self.item:canBeEquipped() ~= "" then
+	if (self.item:IsInventoryContainer() or self.item:hasTag(ItemTag.WEARABLE)) and self.item:canBeEquipped() ~= "" then
 		getPlayerInventory(self.character:getPlayerNum()):refreshBackpacks();
 	end
 
@@ -105,18 +100,17 @@ end
 
 function ISWearClothing:complete()
 	if self:isAlreadyEquipped(self.item) then
-        print("IS ALREADY EQUIPPED")
 		return false;
 	end
 
 	-- kludge for knapsack sprayers
-	if self.item:hasTag("ReplacePrimary") then
+	if self.item:hasTag(ItemTag.REPLACE_PRIMARY) then
 		if self.character:getPrimaryHandItem() then
 			self.character:removeFromHands(self.character:getPrimaryHandItem())
 		end
 		self.character:setPrimaryHandItem(self.item)
 	end
-	if (instanceof(self.item, "InventoryContainer") or self.item:hasTag("Wearable")) and self.item:canBeEquipped() ~= "" then
+	if (instanceof(self.item, "InventoryContainer") or self.item:hasTag(ItemTag.WEARABLE)) and self.item:canBeEquipped() ~= "" then
 		self.character:removeFromHands(self.item);
 		self.character:setWornItem(self.item:canBeEquipped(), self.item);
 	elseif self.item:getCategory() == "Clothing" or self.item:getCategory() == "AlarmClock" then
@@ -124,7 +118,7 @@ function ISWearClothing:complete()
 			self.character:setWornItem(self.item:getBodyLocation(), self.item);
 
 			-- here we handle flating the mohawk!
-			if self.character:getHumanVisual():getHairModel():contains("Mohawk") and (self.item:getBodyLocation() == "Hat" or self.item:getBodyLocation() == "FullHat") then
+			if self.character:getHumanVisual():getHairModel():contains("Mohawk") and (self.item:getBodyLocation() == ItemBodyLocation.HAT or self.item:getBodyLocation() == ItemBodyLocation.FULL_HAT) then
 				self.character:getHumanVisual():setHairModel("MohawkFlat");
 				self.character:resetModel();
 			end
@@ -134,7 +128,7 @@ function ISWearClothing:complete()
 end
 
 function ISWearClothing:isAlreadyEquipped(item)
-	if (instanceof(self.item, "InventoryContainer") or self.item:hasTag("Wearable")) and self.item:canBeEquipped() ~= "" then
+	if (instanceof(self.item, "InventoryContainer") or self.item:hasTag(ItemTag.WEARABLE)) and self.item:canBeEquipped() ~= "" then
 		return self.character:getWornItem(self.item:canBeEquipped()) == self.item;
 	end
 	if self.item:getCategory() == "Clothing" and self.item:getBodyLocation() ~= "" then
@@ -167,5 +161,48 @@ function ISWearClothing:new(character, item)
 	o.maxTime = o:getDuration();
 	o.fromHotbar = true; -- just to disable hotbar:update() during the wearing
 	o.clothingAction = true;
+	o.stopOnWalk = ISWearClothing.isStopOnWalk(item);
+	o.stopOnRun = true;
 	return o;
 end
+
+
+ISWearClothing.WalkBodyLocations = {
+    ItemBodyLocation.AMMO_STRAP,
+    ItemBodyLocation.BACK,
+    ItemBodyLocation.ELBOW_LEFT,
+    ItemBodyLocation.ELBOW_RIGHT,
+    ItemBodyLocation.EYES,
+    ItemBodyLocation.FULL_HAT,
+    ItemBodyLocation.HANDS,
+    ItemBodyLocation.HANDS_LEFT,
+    ItemBodyLocation.HANDS_RIGHT,
+    ItemBodyLocation.HAT,
+    ItemBodyLocation.LEFT_MIDDLE_FINGER,
+    ItemBodyLocation.LEFT_RING_FINGER,
+    ItemBodyLocation.LEFT_EYE,
+    ItemBodyLocation.LEFT_WRIST,
+    ItemBodyLocation.MASK,
+    ItemBodyLocation.MASK_EYES,
+    ItemBodyLocation.MASK_FULL,
+    ItemBodyLocation.NECKLACE,
+    ItemBodyLocation.NECKLACE_LONG,
+    ItemBodyLocation.NECK,
+    ItemBodyLocation.RIGHT_MIDDLE_FINGER,
+    ItemBodyLocation.RIGHT_RING_FINGER,
+    ItemBodyLocation.RIGHT_EYE,
+    ItemBodyLocation.RIGHT_WRIST,
+    ItemBodyLocation.SATCHEL,
+    ItemBodyLocation.SCARF,
+    }
+
+ISWearClothing.isStopOnWalk = function(item)
+    if not item:getClothingItem() then return false end
+    for i,bodyLocation in ipairs(ISWearClothing.WalkBodyLocations) do
+        if (item:getBodyLocation() and item:getBodyLocation() == bodyLocation) or (item:canBeEquipped() and item:canBeEquipped() == bodyLocation) then
+            return false
+        end
+    end
+    return true
+end
+

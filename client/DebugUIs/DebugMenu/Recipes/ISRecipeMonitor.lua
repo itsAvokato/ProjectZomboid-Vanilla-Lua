@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISRecipeMonitor = ISCollapsableWindow:derive("ISRecipeMonitor");

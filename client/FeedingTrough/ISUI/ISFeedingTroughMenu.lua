@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISFeedingTroughMenu = {}
 
 ISFeedingTroughMenu.FEED_PER_DELTA = 10;
@@ -89,37 +85,91 @@ function ISFeedingTroughMenu.OnFillWorldObjectContextMenu(player, context, world
 end
 
 ISFeedingTroughMenu.onAddWaterDebug = function(playerObj, isoObject)
-	if isoObject:getContainer() then
-		isoObject:getContainer():removeAllItems();
-	end
+    if isClient() then
+        local x;
+        local y;
 
-	if not isoObject:getFluidContainer() then
-		isoObject:createFluidContainer();
-	end
-	isoObject:addWater(FluidType.TaintedWater, isoObject:getMaxWater());
+        if isoObject:getLinkedX() > 0 and isoObject:getLinkedY() > 0 then
+            x = isoObject:getLinkedX();
+            y = isoObject:getLinkedY();
+        else
+            x = isoObject:getX();
+            y = isoObject:getY();
+        end
 
-	isoObject:checkOverlayAfterAnimalEat();
+        sendClientCommandV(playerObj, "feedingThrough", "addWaterDebug",
+        			"x", x,
+        			"y", y,
+        			"z", isoObject:getZ());
+    else
+        if isoObject:getContainer() then
+        	isoObject:getContainer():removeAllItems();
+        end
+
+        if not isoObject:getFluidContainer() then
+        	isoObject:createFluidContainer();
+        end
+
+        isoObject:addWater(FluidType.TaintedWater, isoObject:getMaxWater());
+        isoObject:checkOverlayAfterAnimalEat();
+    end
 end
 
 ISFeedingTroughMenu.onRemoveFoodDebug = function(playerObj, isoObject)
-	isoObject:getContainer():removeAllItems();
+    if isClient() then
+        local x;
+        local y;
 
-	if not isoObject:getFluidContainer() then
-		isoObject:createFluidContainer();
-	end
+        if isoObject:getLinkedX() > 0 and isoObject:getLinkedY() > 0 then
+            x = isoObject:getLinkedX();
+            y = isoObject:getLinkedY();
+        else
+            x = isoObject:getX();
+            y = isoObject:getY();
+        end
 
-	isoObject:checkOverlayAfterAnimalEat();
+        sendClientCommandV(playerObj, "feedingThrough", "removeFoodDebug",
+        			"x", x,
+        			"y", y,
+        			"z", isoObject:getZ());
+	else
+        isoObject:getContainer():removeAllItems();
+
+        if not isoObject:getFluidContainer() then
+        	isoObject:createFluidContainer();
+        end
+
+        isoObject:checkOverlayAfterAnimalEat();
+    end
 end
 
 ISFeedingTroughMenu.onAddFoodDebug = function(playerObj, isoObject)
-	isoObject:removeFluidContainer();
-	if not isoObject:getContainer() then
-		isoObject:setContainer(ItemContainer.new());
+    if isClient() then
+        local x;
+        local y;
+
+        if isoObject:getLinkedX() > 0 and isoObject:getLinkedY() > 0 then
+            x = isoObject:getLinkedX();
+            y = isoObject:getLinkedY();
+        else
+            x = isoObject:getX();
+            y = isoObject:getY();
+        end
+
+        sendClientCommandV(playerObj, "feedingThrough", "addFoodDebug",
+        			"x", x,
+        			"y", y,
+        			"z", isoObject:getZ());
+    else
+	    isoObject:removeFluidContainer();
+	    if not isoObject:getContainer() then
+	    	isoObject:setContainer(ItemContainer.new());
+	    end
+
+	    isoObject:getContainer():addItems(ItemKey.Drainable.ANIMAL_FEED_BAG, 2)
+
+	    isoObject:checkOverlayAfterAnimalEat();
 	end
-
-	isoObject:getContainer():addItems(ItemKey.Drainable.ANIMAL_FEED_BAG, 2)
-
-	isoObject:checkOverlayAfterAnimalEat();
 end
 
 ISFeedingTroughMenu.onEmptyWater = function(playerObj, isoObject)

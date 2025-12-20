@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISDestroyCursor = ISBuildingObject:derive("ISDestroyCursor");
@@ -31,13 +27,13 @@ function ISDestroyCursor:walkTo(x, y, z)
 			self:_isDoorFrame(destroy) or self:_isWall(destroy) then
 		return luautils.walkAdjWindowOrDoor(playerObj, square, destroy, true)
 	end
-	if destroy and destroy:getProperties():Is(IsoFlagType.solidfloor) then
+	if destroy and destroy:getProperties():has(IsoFlagType.solidfloor) then
 		local adjacent = AdjacentFreeTileFinder.Find(square, playerObj)
 		if adjacent ~= nil then
 			ISTimedActionQueue.add(ISWalkToTimedAction:new(playerObj, adjacent))
 			return true
 		else
-			return luautils.walkAdjWall(playerObj, square, square:Is(IsoFlagType.collideN))
+			return luautils.walkAdjWall(playerObj, square, square:has(IsoFlagType.collideN))
 		end
 	end
 	return luautils.walkAdj(playerObj, square, true)
@@ -45,7 +41,7 @@ end
 
 function ISDestroyCursor:_isWall(object)
 	if object and object:getProperties() then
-		return object:getProperties():Is(IsoFlagType.cutW) or object:getProperties():Is(IsoFlagType.cutN)
+		return object:getProperties():has(IsoFlagType.cutW) or object:getProperties():has(IsoFlagType.cutN)
 	end
 	return false
 end
@@ -67,18 +63,18 @@ function ISDestroyCursor:_isDoorW(object)
 end
 
 function ISDestroyCursor:_isDoorWallN(object)
-	return object and object:getProperties() and object:getProperties():Is("DoorWallN")
+	return object and object:getProperties() and object:getProperties():has("DoorWallN")
 end
 
 function ISDestroyCursor:_isDoorWallW(object)
-	return object and object:getProperties() and object:getProperties():Is("DoorWallW")
+	return object and object:getProperties() and object:getProperties():has("DoorWallW")
 end
 
 function ISDestroyCursor:rotateKey(key)
 	if getCore():isKey("Rotate building", key) then
 		--special handling for corner walls, which should be treated as two separate walls, and destroyed accordingly
 		--only need to test for "CornerWestWall", if it has that, it will have CornerNorthWall as well
-		if self.cornerCounter == 0 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():Is("CornerWestWall") then
+		if self.cornerCounter == 0 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():has("CornerWestWall") then
 			--if 0, destroy west wall, keep north. if 1, destroy north wall, keep west
 			self.cornerCounter = 1
 		else
@@ -154,11 +150,11 @@ function ISDestroyCursor:render(x, y, z, square)
 		else
 			local offsetX,offsetY = 0,(object:getRenderYOffset() * Core.getTileScale())
 			--corner walls need special handling here
-			if object:getSprite():getProperties():Is("CornerNorthWall") then --if it has one, it will have the other
-				if self.cornerCounter == 0 and object:getSprite():getProperties():Is("CornerNorthWall") then
-					getSprite(object:getSprite():getProperties():Val("CornerNorthWall")):RenderGhostTileColor(x, y, z, offsetX, offsetY, color.r, color.g, color.b, 0.8)
-				elseif self.cornerCounter == 1 and object:getSprite():getProperties():Is("CornerWestWall") then
-					getSprite(object:getSprite():getProperties():Val("CornerWestWall")):RenderGhostTileColor(x, y, z, offsetX, offsetY, color.r, color.g, color.b, 0.8)
+			if object:getSprite():getProperties():has("CornerNorthWall") then --if it has one, it will have the other
+				if self.cornerCounter == 0 and object:getSprite():getProperties():has("CornerNorthWall") then
+					getSprite(object:getSprite():getProperties():get("CornerNorthWall")):RenderGhostTileColor(x, y, z, offsetX, offsetY, color.r, color.g, color.b, 0.8)
+				elseif self.cornerCounter == 1 and object:getSprite():getProperties():has("CornerWestWall") then
+					getSprite(object:getSprite():getProperties():get("CornerWestWall")):RenderGhostTileColor(x, y, z, offsetX, offsetY, color.r, color.g, color.b, 0.8)
 				end
 			else
 				object:getSprite():RenderGhostTileColor(x, y, z, offsetX, offsetY, color.r, color.g, color.b, 0.8)
@@ -177,7 +173,7 @@ function ISDestroyCursor:onJoypadPressButton(joypadIndex, joypadData, button)
 
 	if button == Joypad.RBumper then
 		--special handling for corner walls, which should be treated as two separate walls, and destroyed accordingly
-		if self.cornerCounter == 0 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():Is("CornerWestWall") then
+		if self.cornerCounter == 0 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():has("CornerWestWall") then
 			--if 0, destroy west wall, keep north. if 1, destroy north wall, keep west
 			self.cornerCounter = 1
 		else
@@ -192,7 +188,7 @@ function ISDestroyCursor:onJoypadPressButton(joypadIndex, joypadData, button)
 
 	if button == Joypad.LBumper then
 		--special handling for corner walls, which should be treated as two separate walls, and destroyed accordingly
-		if self.cornerCounter == 1 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():Is("CornerWestWall") then
+		if self.cornerCounter == 1 and self.currentObject ~= nil and self.currentObject:getSprite():getProperties():has("CornerWestWall") then
 			--if 0, destroy west wall, keep north. if 1, destroy north wall, keep west
 			self.cornerCounter = 0
 		else
@@ -208,7 +204,7 @@ end
 
 function ISDestroyCursor:getAPrompt()
 	if self.currentObject then
-		if self.currentObject:getProperties():Is(IsoFlagType.solidfloor) then
+		if self.currentObject:getProperties():has(IsoFlagType.solidfloor) then
 			return getText("ContextMenu_DestroyFloor")
 		end
 		return getText("ContextMenu_Destroy")
@@ -231,12 +227,12 @@ function ISDestroyCursor:getRBPrompt()
 end
 
 function ISDestroyCursor:couldSeeOpposite(object, square)
-	if object:getProperties():Is(IsoFlagType.cutN) or object:getProperties():Is(IsoFlagType.collideN) or self:_isDoorN(object) or
+	if object:getProperties():has(IsoFlagType.cutN) or object:getProperties():has(IsoFlagType.collideN) or self:_isDoorN(object) or
 			(object:getType() == IsoObjectType.doorFrN) then
 		local sq = getCell():getGridSquare(square:getX(), square:getY() - 1, square:getZ())
 		return sq and sq:isCouldSee(self.player)
 	end
-	if object:getProperties():Is(IsoFlagType.cutW) or object:getProperties():Is(IsoFlagType.collideW) or self:_isDoorW(object) or
+	if object:getProperties():has(IsoFlagType.cutW) or object:getProperties():has(IsoFlagType.collideW) or self:_isDoorW(object) or
 			(object:getType() == IsoObjectType.doorFrW) then
 		local sq = getCell():getGridSquare(square:getX() - 1, square:getY(), square:getZ())
 		return sq and sq:isCouldSee(self.player)
@@ -266,13 +262,13 @@ function ISDestroyCursor:canDestroy(object)
 	if not props then return false end
 
 	-- No sledgehammering the daffodils.
-	if props:Is(IsoFlagType.vegitation) then return false end
+	if props:has(IsoFlagType.vegitation) then return false end
 
 	-- Sheetropes
-	if props:Is(IsoFlagType.climbSheetTopW) or props:Is(IsoFlagType.climbSheetTopE) or
-			props:Is(IsoFlagType.climbSheetTopN) or props:Is(IsoFlagType.climbSheetTopS) or
-			props:Is(IsoFlagType.climbSheetW) or props:Is(IsoFlagType.climbSheetE) or
-			props:Is(IsoFlagType.climbSheetN) or props:Is(IsoFlagType.climbSheetS) then
+	if props:has(IsoFlagType.climbSheetTopW) or props:has(IsoFlagType.climbSheetTopE) or
+			props:has(IsoFlagType.climbSheetTopN) or props:has(IsoFlagType.climbSheetTopS) or
+			props:has(IsoFlagType.climbSheetW) or props:has(IsoFlagType.climbSheetE) or
+			props:has(IsoFlagType.climbSheetN) or props:has(IsoFlagType.climbSheetS) then
 		return false
 	end
 
@@ -308,17 +304,17 @@ function ISDestroyCursor:canDestroy(object)
 		return false
 	end
 
-	if props:Is(IsoFlagType.solidfloor) then return object:getZ() > 0 end
+	if props:has(IsoFlagType.solidfloor) then return object:getZ() > 0 end
 	return true
 end
 
 function ISDestroyCursor:isFloorAtTopOfStairs(object)
 	local props = object:getProperties()
-	if not props:Is(IsoFlagType.solidfloor) then return false end
+	if not props:has(IsoFlagType.solidfloor) then return false end
 	local square = getCell():getGridSquare(object:getX() + 1, object:getY(), object:getZ() - 1)
-	if square and square:Has(IsoObjectType.stairsTW) then return true end
+	if square and square:has(IsoObjectType.stairsTW) then return true end
 	square = getCell():getGridSquare(object:getX(), object:getY() + 1, object:getZ() - 1)
-	if square and square:Has(IsoObjectType.stairsTN) then return true end
+	if square and square:has(IsoObjectType.stairsTN) then return true end
 	return false
 end
 

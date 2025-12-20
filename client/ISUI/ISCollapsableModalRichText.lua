@@ -1,15 +1,4 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISCollapsableModalRichText = ISCollapsableWindow:derive("ISCollapsableModalRichText");
-
---************************************************************************--
---** ISCollapsableModalRichText:initialise
---**
---************************************************************************--
 
 function ISCollapsableModalRichText:createChildren()
     ISCollapsableWindow.createChildren(self)
@@ -163,10 +152,6 @@ function ISCollapsableModalRichText:update()
 --	end
 end
 
---************************************************************************--
---** ISCollapsableModalRichText:new
---**
---************************************************************************--
 function ISCollapsableModalRichText:new(x, y, width, height, text, yesno, target, onclick, player, param1, param2)
 	local o = {}
 	o = ISCollapsableWindow:new(x, y, width, height);
@@ -219,4 +204,3 @@ function ISCollapsableModalRichText:close()
 		setJoypadFocus(self.player, nil)
 	end
 end
-

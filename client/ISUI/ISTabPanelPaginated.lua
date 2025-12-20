@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** A collapsable window with multiple tab, can be dragged out or in to make new tab **
---***********************************************************
-
 require "ISUI/ISTabPanel"
 
 ISTabPanelPaginated = ISTabPanel:derive("ISTabPanelPaginated");
@@ -21,11 +16,6 @@ ISTabPanelPaginated.forwardView = nil
 ISTabPanelPaginated.backwardView = nil
 ISTabPanelPaginated.forwardIndex = -2
 ISTabPanelPaginated.backwardIndex = -1
-
---************************************************************************--
---** ISTabPanelPaginated:initialise
---**
---************************************************************************--
 
 function ISTabPanelPaginated:initialise()
 	ISTabPanel.initialise(self);
@@ -81,11 +71,6 @@ function ISTabPanelPaginated:getWidthOfAllTabs()
 	end
 	return width
 end
-
---************************************************************************--
---** ISTabPanelPaginated:render
---**
---************************************************************************--
 
 function ISTabPanelPaginated:renderView(viewObject, tabDragSelected, _x, tabWidth, gap)
     tabWidth = self.equalTabWidth and self.maxLength or viewObject.tabWidth
@@ -334,11 +319,6 @@ ISTabPanelPaginated.redoTab = function(self)
 	ISTabPanel.viewDragging = nil;
 end
 
---************************************************************************--
---** ISTabPanelPaginated:onMouseUp
---**
---************************************************************************--
-
 function ISTabPanelPaginated:getViewByIndex(index)
 	for ind,value in ipairs(self.viewList) do
 		-- we get the view we want to display
@@ -413,4 +393,3 @@ end
 
 ISTabPanelPaginated.tabSelected = getTexture("media/ui/XpSystemUI/tab_selected.png");
 ISTabPanelPaginated.tabUnSelected = getTexture("media/ui/XpSystemUI/tab_unselected.png");
-

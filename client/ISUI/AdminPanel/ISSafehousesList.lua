@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISSafehousesList = ISPanel:derive("ISSafehousesList");
 ISSafehousesList.messages = {};
 
@@ -9,11 +5,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISSafehousesList:initialise
---**
---************************************************************************--
 
 function ISSafehousesList:initialise()
     ISPanel.initialise(self);
@@ -125,10 +116,6 @@ function ISSafehousesList:close()
     ISSafehousesList.instance = nil
 end
 
---************************************************************************--
---** ISSafehousesList:new
---**
---************************************************************************--
 function ISSafehousesList:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

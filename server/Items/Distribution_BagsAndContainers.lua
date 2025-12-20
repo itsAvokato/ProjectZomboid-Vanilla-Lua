@@ -301,6 +301,7 @@ BagsAndContainers.BanditItems = {
 	"Toothpaste", 1,
 	"ToyBear", 1,
 	"ToyCar", 1,
+	"ToyPlane", 1,
 	"TrapMouse", 1,
 	"VideoGame", 1,
 	"Yoyo", 1,
@@ -749,6 +750,7 @@ BagsAndContainers.CigarBox_Kids = {
 		"RubberSpider", 10,
 		"SwitchKnife", 0.001,
 		"ToyCar", 50,
+		"ToyPlane", 50,
 		"Whistle", 20,
 		"Yoyo", 20,
 	},
@@ -1093,6 +1095,43 @@ BagsAndContainers.Farming = {
 			
 		}
 	},
+}
+
+BagsAndContainers.FirstAidKit_Pro = {
+    rolls = 2,
+    items = {
+        "AlcoholWipes", 50,
+        "AlcoholWipes", 20,
+        "AlcoholWipes", 10,
+        "Bandage", 50,
+        "Bandage", 20,
+        "Bandage", 10,
+        "Bandaid", 50,
+        "Bandaid", 20,
+        "Bandaid", 10,
+        "BookFirstAid1", 10,
+        "Coldpack", 10,
+        "CottonBalls", 10,
+        "Disinfectant", 10,
+        "Gloves_Surgical", 10,
+        "Gloves_Surgical", 10,
+        "Pills", 10,
+        "Scalpel", 5,
+        "ScissorsBlunt", 10,
+        "ScissorsBluntMedical", 10,
+        "Scotchtape", 10,
+        "SutureNeedle", 50,
+        "SutureNeedle", 20,
+        "SutureNeedle", 10,
+        "SutureNeedleHolder", 20,
+        "Tweezers", 10,
+    },
+    junk = {
+        rolls = 1,
+        items = {
+
+        }
+    },
 }
 
 BagsAndContainers.FirstAidKit = {
@@ -1784,6 +1823,7 @@ BagsAndContainers.Parcel_ExtraSmall = {
 		"Socks_Long_White", 10,
 		"StraightRazor", 10,
 		"ToyCar", 10,
+		"ToyPlane", 10,
 		"TrickMag1", 1,
 		"VHS_Retail", 10,
 		"VideoGame", 10,

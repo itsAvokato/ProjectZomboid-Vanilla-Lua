@@ -1,15 +1,11 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISShovelGroundCursor = ISBuildingObject:derive("ISShovelGroundCursor")
 
 local function predicateEmpty(item)
-	return item:hasTag("HoldDirt") and item:getInventory():isEmpty();
+	return item:hasTag(ItemTag.HOLD_DIRT) and item:getInventory():isEmpty();
 end
 
 local function predicateShovel(item)
-	return not item:isBroken() and item:hasTag("TakeDirt")
+	return not item:isBroken() and item:hasTag(ItemTag.TAKE_DIRT)
 end
 
 local function predicateNotFull(item, type)
@@ -145,4 +141,3 @@ end
 function ISShovelGroundCursor:getEmptyItem()
 	return ISShovelGroundCursor.GetEmptyItem(self.character, self.groundType)
 end
-

@@ -135,10 +135,6 @@ function ISTimedActionQueue:isCurrentActionAddingOtherActions()
     return (current ~= nil) and current._isAddingActions and (tonumber(current._numAddedActions) ~= nil)
 end
 
---************************************************************************--
---** ISTimedActionQueue:new
---**
---************************************************************************--
 function ISTimedActionQueue:new (character)
 	local o = {}
 	setmetatable(o, self)

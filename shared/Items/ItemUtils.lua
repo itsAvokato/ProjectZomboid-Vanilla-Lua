@@ -1,8 +1,6 @@
 
 ItemUtils = {};
 
-print("ItemUtils")
-
 ItemUtils.getContainers = function(character)
     if not character then return end
 

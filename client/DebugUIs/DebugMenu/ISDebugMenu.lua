@@ -44,16 +44,14 @@ function ISDebugMenu:setupButtons()
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_MapEdit"), function() showWorldMapEditor(nil) end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_VehicleEdit"), function() showVehicleEditor(nil) end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_WorldFlares"), function() WorldFlaresDebug.OnOpenPanel() end, "DEV");
-	self:addButtonInfo(getText("IGUI_DebugMenu_Dev_Stats"), function() ISGameStatisticPanel.OnOpenPanel() end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_GlobalModData"), function() GlobalModDataDebug.OnOpenPanel() end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_NewUI"), function() doNewUIDebug() end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_UnitTests"), function() UnitTestsDebug:OnOpenPanel() end, "DEV");
     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_CharacterDebug"), function() ISCharacterDebugUI.OnOpenPanel() end, "DEV");
---     self:addButtonInfo(getText("IGUI_DebugMenu_Dev_TestWildlifeSoundInCity"), function() getAmbientStreamManager():addRandomAmbient(true) end, "DEV");
 
     --sort buttons alphabetically
     table.sort(self.buttons, function(a, b) return string.sort(b.title, a.title) end);
-    self:bringToTop(general);-- reason: muscle memory :D
+    self:bringToTop(general);
     --add close buttons after sorting so they're always at the bottom
     self:addButtonInfo(getText("IGUI_DebugMenu_Close"), nil, "MAIN");
     self:addButtonInfo(getText("IGUI_DebugMenu_Close"), nil, "DEV");
@@ -241,7 +239,6 @@ function ISDebugMenu:new(x, y, width, height)
     o.buttonBorderColor = {r=0.7, g=0.7, b=0.7, a=0.5};
     o.zOffsetSmallFont = 25;
     o.moveWithMouse = true;
-    --ISDebugMenu.instance = o
     ISDebugMenu.RegisterClass(self);
     return o;
 end
@@ -264,8 +261,6 @@ end
 
 Events.OnPlayerDeath.Add(ISDebugMenu.OnPlayerDeath)
 
----
-
 local printMediaWindow = nil
 
 local function addButtons(self, data)
@@ -277,7 +272,7 @@ local function addButtons(self, data)
             anchorLeft = 0, anchorRight = 0,
             children = {
                 label = UI.TextButton.children.label{
-                    text = val
+                    text = getText(val.title)
                 }
             },
             onLeftClick = function()
@@ -290,11 +285,11 @@ local function addButtons(self, data)
                 local win = UI.PrintMedia{
                     x = 675, y = 10,
                 }
-                win.media_id = val
-                win.data = getText("Print_Media_" .. val .. "_info")
-                win.children.bar.children.name.text = getText("Print_Media_" .. val .. "_title")
-                win.textTitle = getText("Print_Text_" .. val .. "_title")
-                win.textData = string.gsub(getText("Print_Text_" .. val .. "_info"), "\\n", "\n")
+                win.media_id = val.title
+                win.data = getText(val.info)
+                win.children.bar.children.name.text = getText(val.title)
+                win.textTitle = getText(val.title)
+                win.textData = string.gsub(getText(val.info), "\\n", "\n")
 
                 win:instantiate()
 
@@ -331,8 +326,8 @@ function doNewUIDebug()
                                         children = {},
                                         init = function(self)
                                             local data = {}
-                                            for i, book in ipairs(PrintMediaDefinitions.Fliers) do
-                                                table.insert(data, book)
+                                            for i = 0, Registries.FLIER:values():size() - 1 do
+                                                table.insert(data, {title=Registries.FLIER:values():get(i):getTranslationKey(), info=Registries.FLIER:values():get(i):getTranslationInfoKey()})
                                             end
                                             addButtons(self, data)
                                             self.parent.children.scrollBar.container = self
@@ -357,8 +352,8 @@ function doNewUIDebug()
                                         children = {},
                                         init = function(self)
                                             local data = {}
-                                            for i, book in ipairs(PrintMediaDefinitions.Brochures) do
-                                                table.insert(data, book)
+                                            for i = 0, Registries.BROCHURE:values():size() - 1 do
+                                                table.insert(data, {title=Registries.BROCHURE:values():get(i):getTranslationKey(), info=Registries.BROCHURE:values():get(i):getTranslationInfoKey()})
                                             end
                                             addButtons(self, data)
                                             self.parent.children.scrollBar.container = self
@@ -383,11 +378,11 @@ function doNewUIDebug()
                                         children = {},
                                         init = function(self)
                                             local data = {}
-                                            for i, book in ipairs(PrintMediaDefinitions.Newspapers) do
-                                                local details = PrintMediaDefinitions.NewspaperDetails[book]
-                                                local issues = details.issues
-                                                for j, issue in ipairs(issues) do
-                                                    table.insert(data, book .. "_" .. issue)
+                                            for i = 0, Registries.NEWSPAPER:values():size() - 1 do
+                                                local book = Registries.NEWSPAPER:values():get(i);
+
+                                                for j = 0, book:getIssues():size() - 1 do
+                                                    table.insert(data, {title=book:getTitle(book:getIssues():get(j)), info=book:getTranslationInfoKey(book:getIssues():get(j))})
                                                 end
                                             end
                                             addButtons(self, data)

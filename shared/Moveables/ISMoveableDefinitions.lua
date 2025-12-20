@@ -1,23 +1,18 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                  Author: turbotutone                  **
---***********************************************************
-
 local instance  = nil;
 ISMoveableDefinitions = {};
 ISMoveableDefinitions.cheat = false;
 
 local ItemTypeToTag = {
-    ["Base.Hammer"] = "Hammer",
-    ["Base.Saw"] = "Saw",
-    ["Base.Screwdriver"] = "Screwdriver",
-    ["Base.Shovel"] = "DigPlow",
-    ["Tag.Crowbar"] = "Crowbar",
-    ["Tag.SharpKnife"] = "SharpKnife",
-    ["Tag.Scissors"] = "Scissors",
-    ["Tag.WeldingMask"] = "WeldingMask",
-    ["Tag.SewingNeedle"] = "SewingNeedle",
-    ["Tag.Rope"] = "Rope",
+    ["Base.Hammer"] = ItemTag.HAMMER,
+    ["Base.Saw"] = ItemTag.SAW,
+    ["Base.Screwdriver"] = ItemTag.SCREWDRIVER,
+    ["Base.Shovel"] = ItemTag.DIG_PLOW,
+    ["Tag.Crowbar"] = ItemTag.CROWBAR,
+    ["Tag.SharpKnife"] = ItemTag.SHARP_KNIFE,
+    ["Tag.Scissors"] = ItemTag.SCISSORS,
+    ["Tag.WeldingMask"] = ItemTag.WELDING_MASK,
+    ["Tag.SewingNeedle"] = ItemTag.SEWING_NEEDLE,
+    ["Tag.Rope"] = ItemTag.ROPE,
 }
 
 function ISMoveableDefinitions:getInstance()

@@ -1,17 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**              Panel wich display all our skills        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISChallenge2WeaponRepairWindow = ISPanelJoypad:derive("ISChallenge2WeaponRepairWindow");
-
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISChallenge2WeaponRepairWindow:initialise()
 	ISPanelJoypad.initialise(self);

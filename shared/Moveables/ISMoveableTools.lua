@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                  Author: turbotutone                  **
---***********************************************************
-
 ISMoveableTools = {};
 
 function ISMoveableTools.getScrapableObjects( _char, _square )
@@ -63,7 +58,7 @@ function ISMoveableTools.isObjectMoveable(  _object )
         if moveProps and moveProps.isMoveable then
             return moveProps, false;
         elseif moveProps and moveProps.spriteProps then
-            if moveProps.spriteProps:Is("WallNW") or moveProps.spriteProps:Is("WallN") or moveProps.spriteProps:Is("WallW") then
+            if moveProps.spriteProps:has("WallNW") or moveProps.spriteProps:has("WallN") or moveProps.spriteProps:has("WallW") then
                 local sprList = _object:getChildSprites();
                 if sprList then
                     local list_size 	= sprList:size();

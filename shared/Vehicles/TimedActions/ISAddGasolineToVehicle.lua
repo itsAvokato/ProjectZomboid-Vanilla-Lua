@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISAddGasolineToVehicle = ISBaseTimedAction:derive("ISAddGasolineToVehicle")
@@ -150,7 +146,7 @@ function ISAddGasolineToVehicle:getDuration()
     self.tankTarget = self.tankStart + take;
     self.itemTarget = self.itemStart - take;
     self.amountSent = self.tankStart
-    return take * 50
+    return take * 25
 end
 
 function ISAddGasolineToVehicle:new(character, part, item, otherItems)

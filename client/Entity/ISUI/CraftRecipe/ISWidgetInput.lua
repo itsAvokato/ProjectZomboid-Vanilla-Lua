@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**             Author: turbotutone / spurcival           **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -318,7 +314,13 @@ end
 function ISWidgetInput:onMouseDown(x, y)
     if self.primary and self.primary.selectInputButton then
         getSoundManager():playUISound("UIActivateButton")
-        self:onSelectInputsClicked(self.primary.selectInputButton)
+        if isShiftKeyDown() and not self.isBuildMenu then
+            local filterPanel = self.parent.parent.parent.parent.parent.parent.recipesPanel.recipeFilterPanel;
+            local inputFullName = self.secondary and self.secondary.inputFullName or self.primary.inputFullName or "";
+            filterPanel:filter("!" .. inputFullName, getText("IGUI_FilterType_OutputName"))
+        else
+            self:onSelectInputsClicked(self.primary.selectInputButton)
+        end
     end
 end
 
@@ -473,6 +475,9 @@ function ISWidgetInput:updateScriptValues(_table)
             if _table.script:allowFrozenItem() then
                text = text .. " <BR> " .. getText("IGUI_CraftingWindow_AllowFrozenItem")
             end
+            if _table.script:dontAllowFrozenItem() then
+               text = text .. " <BR> " .. getText("IGUI_CraftingWindow_DontAllowFrozenItem")
+            end
             if _table.script:allowRottenItem() then
                text = text .. " <BR> " .. getText("IGUI_CraftingWindow_AllowRottenItem")
             end
@@ -571,7 +576,7 @@ function ISWidgetInput:updateValues()
         
         if self.primary.label.amountValue~=maxAmount or self.primary.label.satisfiedValue~=satisfiedAmount then
             self.editedLabels = true;
-            if not self.primary.isKeep and self.primary.inputItem and self.primary.inputItem:getTypeString() == "Drainable" and not self.inputScript:isItemCount() then
+            if not self.primary.isKeep and self.primary.inputItem and self.primary.inputItem:isItemType(ItemType.DRAINABLE) and not self.inputScript:isItemCount() then
                 self.iconConsumed.texture = self.textureUsed;
                 self.iconConsumed.mouseovertext = getText("IGUI_CraftingWindow_WillBeConsume", tostring(amount));
             end
@@ -629,10 +634,6 @@ function ISWidgetInput:onRebuildItemNodes(_inputItems)
     end
 end
 
---************************************************************************--
---** ISWidgetInput:new
---**
---************************************************************************--
 function ISWidgetInput:new (x, y, width, height, player, logic, inputScript) --recipeData, inputScript)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

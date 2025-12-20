@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Extension to ISBuildMenu containing all entity related functions.
---]]
-
 local SHOW_ALL_MENU = true;
 
 ISEntityBuildMenu = {};

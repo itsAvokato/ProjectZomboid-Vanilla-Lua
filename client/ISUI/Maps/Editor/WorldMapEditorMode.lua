@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 WorldMapEditorMode = ISPanel:derive("WorldMapEditorMode")
 
 function WorldMapEditorMode:display()

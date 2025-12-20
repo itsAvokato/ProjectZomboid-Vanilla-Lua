@@ -2,19 +2,10 @@ require "ISBaseObject"
 
 ISTutorialPageInfo = ISBaseObject:derive("ISTutorialPageInfo");
 
---************************************************************************--
---** ISTutorialPageInfo:initialise
---**
---************************************************************************--
-
 function ISTutorialPageInfo:initialise()
 
 end
 
---************************************************************************--
---** ISTutorialPageInfo:new
---**
---************************************************************************--
 function ISTutorialPageInfo:new (title, text, moreTextInfo, nextcondition)
 	local o = {}
 	o.data = {}
@@ -28,11 +19,6 @@ function ISTutorialPageInfo:new (title, text, moreTextInfo, nextcondition)
 end
 
 ISTutorialSetInfo = ISBaseObject:derive("ISTutorialSetInfo");
-
---************************************************************************--
---** ISTutorialPageInfo:initialise
---**
---************************************************************************--
 
 function ISTutorialSetInfo:initialise()
 
@@ -75,10 +61,6 @@ function ISTutorialSetInfo:update(tutorialPanel)
 	end
 end
 
---************************************************************************--
---** ISTutorialPageInfo:new
---**
---************************************************************************--
 function ISTutorialSetInfo:new ()
 	local o = {}
     setmetatable(o, self)

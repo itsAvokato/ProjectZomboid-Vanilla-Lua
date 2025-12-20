@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISInventoryTransferUtil"
 
 ISVehiclePartMenu = {}
@@ -19,7 +15,7 @@ local function predicateEmptyContainer(item)
 end
 
 local function predicateEmptyPetrol(item)
-	return item:getFluidContainer() and item:hasTag("Petrol") and item:getFluidContainer():isEmpty()
+	return item:getFluidContainer() and item:hasTag(ItemTag.PETROL) and item:getFluidContainer():isEmpty()
 end
 
 local function predicatePetrolNotFull(item)
@@ -277,7 +273,7 @@ function ISVehiclePartMenu.onTakeGasoline(playerObj, part)
 	end
 	local typeToItem,tagToItem = VehicleUtils.getItems(playerObj:getPlayerNum())
 	local item = ISVehiclePartMenu.getGasCanNotFull(playerObj, typeToItem)
-	local hose = tagToItem["SiphonGas"] and tagToItem["SiphonGas"][1]
+	local hose = tagToItem[ItemTag.SIPHON_GAS] and tagToItem[ItemTag.SIPHON_GAS][1]
 	if item and hose then
 		ISVehiclePartMenu.toPlayerInventory(playerObj, item)
 		ISTimedActionQueue.add(ISPathFindAction:pathToVehicleArea(playerObj, part:getVehicle(), part:getArea()))
@@ -386,7 +382,7 @@ ISVehiclePartMenu.doSiphonFuelMenu = function(playerObj, part, context)
 	local source = part:getVehicle()
 	local playerNum = playerObj:getPlayerNum()
 	local playerInv = playerObj:getInventory()
-	local hose = playerObj:getInventory():getFirstTagRecurse("SiphonGas")
+	local hose = playerObj:getInventory():getFirstTagRecurse(ItemTag.SIPHON_GAS)
 	local allContainers = {}
 	local allContainerTypes = {}
 	local allContainersOfType = {}

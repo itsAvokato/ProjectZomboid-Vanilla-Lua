@@ -9,8 +9,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
------
-
 ISSurvivalGuideListBox = ISScrollingListBox:derive("ISSurvivalGuideListBox")
 
 function ISSurvivalGuideListBox:doDrawItem(y, item, alt)
@@ -49,8 +47,6 @@ function ISSurvivalGuideListBox:new(x, y, width, height)
 	local o = ISScrollingListBox.new(self, x, y, width, height)
 	return o
 end
-
------
 
 ISSurvivalGuideRichText = ISRichTextPanel:derive("ISSurvivalGuideRichText")
 
@@ -128,8 +124,6 @@ function ISSurvivalGuideRichText:new(x, y, width, height)
 	local o = ISRichTextPanel.new(self, x, y, width, height)
 	return o
 end
-
------
 
 ISSurvivalGuideRightPanel = ISPanelJoypad:derive("ISSurvivalGuideRightPanel")
 
@@ -216,21 +210,10 @@ function ISSurvivalGuideRightPanel:new(x, y, width, height)
 	return o
 end
 
------
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISTutorialPanel:initialise()
 	ISCollapsableWindowJoypad.initialise(self);
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ISTutorialPanel:createChildren()
 	ISCollapsableWindowJoypad.createChildren(self)
 	local scrollBarWidth = 13
@@ -320,10 +303,6 @@ function ISTutorialPanel:reload()
 	self:setPage(self.chapterList.selected)
 end
 
---************************************************************************--
---** ISTutorialPanel:setPage
---**
---************************************************************************--
 function ISTutorialPanel:setPage(pageNum)
     self.tutorialSetInfo.currentPage = pageNum;
 	self.tutorialSetInfo:applyPageToRichTextPanel(self.rightPanelText);
@@ -344,10 +323,6 @@ function ISTutorialPanel:fillChapterList()
 	self.chapterList.selected = math.min(selected, self.chapterList:size())
 end
 
---************************************************************************--
---** ISTutorialPanel:render
---**
---************************************************************************--
 function ISTutorialPanel:prerender()
 	self.backgroundColor.a = 0.5
 	ISCollapsableWindow.prerender(self)
@@ -375,10 +350,6 @@ function ISTutorialPanel:render()
 	end
 end
 
---************************************************************************--
---** ISTutorialPanel:update
---**
---************************************************************************--
 function ISTutorialPanel:update()
 	if self.chapterList then
 		if self.chapterList.selected ~= self.tutorialSetInfo.currentPage then
@@ -422,10 +393,6 @@ function ISTutorialPanel:onToggleVisible()
 	end;
 end
 
---************************************************************************--
---** ISTutorialPanel:new
---**
---************************************************************************--
 function ISTutorialPanel:new(x, y, width, height)
 	local o = ISCollapsableWindowJoypad.new(self, x, y, width, height);
 --	o.borderColor = {r=1, g=1, b=1, a=0.7};

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISUIEmoteConfig = ISCollapsableWindow:derive("ISUIEmoteConfig");
@@ -78,8 +74,6 @@ end
 function ISUIEmoteConfig:selectCategory(combo)
 	self.emoteCB:clear();
 	local selected = combo:getOptionData(combo.selected);
-	print("select cat!", selected)
-	print(ISEmoteRadialMenu.menu[selected]);
 	if ISEmoteRadialMenu.menu[selected] and ISEmoteRadialMenu.menu[selected].subMenu then
 		for anim, name in pairs(ISEmoteRadialMenu.menu[selected].subMenu) do
 			self.emoteCB:addOptionWithData(name, anim);
@@ -109,7 +103,6 @@ function ISUIEmoteConfig:close()
 end
 
 function ISUIEmoteConfig:writeToFile()
-	print("write to file")
 	local file = getFileWriter("emote.ini", true, false);
 	
 	for i,v in pairs(ISEmoteRadialMenu.menu) do
@@ -152,10 +145,6 @@ function ISUIEmoteConfig:readFile()
 	end
 end
 
---************************************************************************--
---** ISUIEmoteConfig:new
---**
---************************************************************************--
 function ISUIEmoteConfig:new(x, y, character)
 	local o = {}
 	local width = 400;

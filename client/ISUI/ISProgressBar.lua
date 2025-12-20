@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISProgressBar = ISUIElement:derive("ISProgressBar");

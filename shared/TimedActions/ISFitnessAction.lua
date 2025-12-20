@@ -1,13 +1,9 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISFitnessAction = ISBaseTimedAction:derive("ISFitnessAction");
 
 function ISFitnessAction:isValidStart()
-	return self.character:getMoodles():getMoodleLevel(MoodleType.Endurance) <= ISFitnessUI.enduranceLevelTreshold
+	return self.character:getMoodles():getMoodleLevel(MoodleType.ENDURANCE) <= ISFitnessUI.enduranceLevelThreshold
 end
 
 function ISFitnessAction:isValid()
@@ -21,6 +17,11 @@ function ISFitnessAction:waitToStart()
 	if self.character:isSneaking() then
 		self.character:setSneaking(false)
 	end
+    if self.character:isSittingOnFurniture() then
+        self.character:setVariable("forceGetUp", true)
+        self.character:setVariable("pressedRunButton", true) -- needed by PlayerGetUpState.enter()
+        self.character:setVariable("getUpQuick", true) -- overridden by PlayerGetUpState.enter()
+    end
 	if not self.character:isCurrentState(IdleState.instance()) then
 		-- Only the player.idle state has a transition to the player.fitness state.
 		return true
@@ -29,13 +30,13 @@ function ISFitnessAction:waitToStart()
 end
 
 function ISFitnessAction:update()
-	if self.character:isClimbing() or self.character:isAiming() then
+	if self.character:isClimbing() or self.character:isAiming() or self.character:isSittingOnFurniture() then
 		self:forceStop();
 	end
 	if self.character:isSneaking() then
 		self.character:setSneaking(false)
 	end
-	if self.character:pressedMovement(true) or self.character:getMoodles():getMoodleLevel(MoodleType.Endurance) > ISFitnessUI.enduranceLevelTreshold then
+	if self.character:pressedMovement(true) or self.character:getMoodles():getMoodleLevel(MoodleType.ENDURANCE) > ISFitnessUI.enduranceLevelThreshold then
 		self.character:setVariable("ExerciseStarted", false);
 		self.character:setVariable("ExerciseEnded", true);
 	end
@@ -77,8 +78,6 @@ function ISFitnessAction:showHandModel()
 end
 
 function ISFitnessAction:stop()
-	self.character:PlayAnim("Idle");
-
 	if not isClient() and not isServer() then
 		self.character:SetVariable("FitnessFinished","true");
 	end
@@ -126,6 +125,8 @@ function ISFitnessAction:serverStart()
 		period = 3000;
 	elseif self.exeDataType == "pushups" then
 		period = 1300;
+    elseif self.exeDataType == "situp" then
+        period = 1300;
 	elseif self.exeDataType == "burpees" then
 		period = 2400;
 	elseif self.exeDataType == "barbellcull" then
@@ -151,11 +152,12 @@ function ISFitnessAction:animEvent(event, parameter)
 			self:forceStop();
 		end
 
-		if event == "ActiveAnimLooped" then
+		-- Check isStarted() to avoid exercise-related things in waitToStart()
+		if event == "ActiveAnimLooped" and (self:isStarted() or isServer()) then
 			self:exeLooped();
 		end
 	else
-		if event == "ActiveAnimLooped" then
+		if event == "ActiveAnimLooped" and self:isStarted() then
 			if self.exeData.prop == "switch" then -- switch hand used every X times
 				self.switchTime = self.switchTime -1;
 				if self.switchTime == 1 then

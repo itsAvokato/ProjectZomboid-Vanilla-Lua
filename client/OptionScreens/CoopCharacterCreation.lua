@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 CoopCharacterCreation = ISPanelJoypad:derive("CoopCharacterCreation")
@@ -22,9 +18,9 @@ function CoopCharacterCreation:accept1()
 	if CoopMapSpawnSelect.instance.selectedRegion then
 		local spawnRegion = CoopMapSpawnSelect.instance.selectedRegion
 		print('using spawn region '..tostring(spawnRegion.name))
-		local spawn = spawnRegion.points[MainScreen.instance.desc:getProfession()]
+		local spawn = spawnRegion.points[MainScreen.instance.desc:getCharacterProfession():getName()]
 		if not spawn then
-			spawn = spawnRegion.points["unemployed"]
+			spawn = spawnRegion.points[CharacterProfession.UNEMPLOYED:getName()]
 		end
 		if not spawn then
 			print("ERROR: there is no spawn point table for the player's profession, don't know where to spawn the player")
@@ -294,7 +290,6 @@ function CoopCharacterCreation.newPlayer(joypadIndex, joypadData)
 end
 
 function CoopCharacterCreation:newPlayerMouse()
-    ProfessionFactory.Reset();
     BaseGameCharacterDetails.DoProfessions();
 	if CoopCharacterCreation.instance then return end
 	if UIManager.getSpeedControls() and not IsoPlayer.allPlayersDead() then

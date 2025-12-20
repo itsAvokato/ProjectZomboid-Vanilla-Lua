@@ -5,11 +5,6 @@ local IMAGE_PAD = 5
 
 ISRichTextPanel.drawMargins = false
 
---************************************************************************--
---** ISRichTextPanel:initialise
---**
---************************************************************************--
-
 function ISRichTextPanel:initialise()
 	ISPanel.initialise(self);
 end
@@ -400,12 +395,7 @@ function ISRichTextPanel:onMouseWheel(del)
 	self:setYScroll(self:getYScroll() - (del*18));
     return true;
 end
---************************************************************************--
---** ISRichTextPanel:paginate
---**
---** Splits multiline text up into seperate lines, and positions images to be
---** rendered
---************************************************************************--
+
 function ISRichTextPanel:paginate()
 	local lines = 1;
 	self.textDirty = false;
@@ -574,10 +564,6 @@ function ISRichTextPanel:setContentTransparency(alpha)
     self.contentTransparency = alpha;
 end
 
---************************************************************************--
---** ISRichTextPanel:render
---**
---************************************************************************--
 function ISRichTextPanel:render()
 
     self.r = 1;
@@ -739,10 +725,6 @@ function ISRichTextPanel:doRightJoystickScrolling(joypadData, dx, dy)
 	end
 end
 
---************************************************************************--
---** ISRichTextPanel:new
---**
---************************************************************************--
 function ISRichTextPanel:new (x, y, width, height)
 	local o = {}
 	--o.data = {}

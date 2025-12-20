@@ -1,19 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local SMALL_FONT_HGT = getTextManager():getFontHeight(UIFont.Small);
 local MEDIUM_FONT_HGT = getTextManager():getFontHeight(UIFont.Medium);
 
 ISCraftInventoryPanel = ISPanel:derive("ISCraftInventoryPanel");
-
---************************************************************************--
---** ISCraftInventoryPanel:initialise
---**
---************************************************************************--
 
 function ISCraftInventoryPanel:initialise()
 	ISPanel.initialise(self);
@@ -741,10 +731,6 @@ function ISCraftInventoryPanel:updateContainers(_containers)
     self:populate();
 end
 
---************************************************************************--
---** ISCraftInventoryPanel:new
---**
---************************************************************************--
 function ISCraftInventoryPanel:new(x, y, width, height, player, logic)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

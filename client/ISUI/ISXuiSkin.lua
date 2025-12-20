@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 local WARNED_STYLES = {};
 
 local _print = print;
@@ -131,10 +127,6 @@ end
 function ISXuiSkin.autoApplyTableKeys(_xuiScript, _o, _autoApplyOverride)
     ISXuiBuilder.autoApplyTableKeys(_xuiScript, _o, nil, nil, _autoApplyOverride or XuiAutoApply.IfSet);
 end
-
---************************************************************************--
---** Custom Constructors
---************************************************************************--
 
 function ISXuiSkin.constructors.ISWindow(_xuiScript, _title, _x, _y, _width, _height)
     local o = ISWindow:new(_title, _x, _y, _width, _height);

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 WeatherChannel = {};
 WeatherChannel.channelUUID = "EMRG-711984"; --required for DynamicRadio
 WeatherChannel.debugTestAll = false;

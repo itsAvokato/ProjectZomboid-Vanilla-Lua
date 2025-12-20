@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "Entity/ISUI/Layouts/ISBaseStockingLayout"
 
 ISVendorStockingLayout = ISBaseStockingLayout:derive("ISVendorStockingLayout");

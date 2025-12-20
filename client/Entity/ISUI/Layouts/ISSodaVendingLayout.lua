@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "Entity/ISUI/Layouts/ISBaseVendingLayout"
 
 ISSodaVendingLayout = ISBaseVendingLayout:derive("ISSodaVendingLayout");

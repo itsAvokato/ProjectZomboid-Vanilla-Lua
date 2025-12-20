@@ -1,7 +1,3 @@
---***********************************************************
---**                Gennadii Potapov                       **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISButton"
 
@@ -233,11 +229,6 @@ function ServerConnectPopup:checkFields()
     return valid;
 end
 
-
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ServerConnectPopup:instantiate()
     self.javaObject = UIElement.new(self);
     self.javaObject:setX(self.x);

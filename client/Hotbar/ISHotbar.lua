@@ -1,19 +1,8 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISHotbar = ISPanelJoypad:derive("ISHotbar");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
-
---************************************************************************--
---** ISHotbar:initialise
---**
---************************************************************************--
 
 function ISHotbar:render()
 	if (self.playerNum > 0) or JoypadState.players[self.playerNum+1] then
@@ -561,6 +550,7 @@ function ISHotbar:activateSlot(slotIndex)
 	end
 	if item:canBeActivated() and not instanceof(item, "HandWeapon") then
 		item:setActivated(not item:isActivated())
+		syncItemActivated(self.chr, item)
 		item:playActivateDeactivateSound()
 		return
 	end
@@ -624,7 +614,12 @@ function ISHotbar:equipItem(item)
 			--	both_hands = false
 			--end
 		end
-		ISTimedActionQueue.add(ISEquipWeaponAction:new(self.chr, item, 20, true, both_hands));
+        local primary = both_hands or item:IsWeapon()
+        if not primary and self.chr:getSecondaryHandItem() and not self.chr:getPrimaryHandItem() then
+            primary = true
+        end
+
+		ISTimedActionQueue.add(ISEquipWeaponAction:new(self.chr, item, 20, primary, both_hands));
 	elseif instanceof(item, "HandWeapon") and item:canBeActivated() then
 		item:setActivated(false)
 	end

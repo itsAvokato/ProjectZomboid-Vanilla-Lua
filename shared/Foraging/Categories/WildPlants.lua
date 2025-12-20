@@ -1,13 +1,3 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- generateWildPlantsDefs
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
-
 require "Foraging/forageDefinitions";
 require "Foraging/forageSystem";
 
@@ -408,6 +398,22 @@ local function generateWildPlantsDefs()
 		},
 		Flax = {
 			type = "Base.Flax",
+			skill = 7,
+			xp = 15,
+			snowChance = -30,
+			categories = { "WildPlants" },
+			zones = {
+				FarmLand    = 5,
+				Vegitation  = 5,
+			},
+			months = { 3, 4, 5, 6, 7, 8, 9, 10, 11 },
+			bonusMonths = { 10 },
+			malusMonths = { 11 },
+			spawnFuncs = { forageSystem.doWildFoodSpawn, forageSystem.doRandomAgeSpawn, forageSystem.doWildCropSpawn },
+			altWorldTexture = forageSystem.worldSprites.wildPlants,
+		},
+		Hops = {
+			type = "Base.Hops",
 			skill = 7,
 			xp = 15,
 			snowChance = -30,

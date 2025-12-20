@@ -1,16 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISCraftRecipePanel = ISPanel:derive("ISCraftRecipePanel");
-
---************************************************************************--
---** ISCraftRecipePanel:initialise
---**
---************************************************************************--
 
 function ISCraftRecipePanel:initialise()
 	ISPanel.initialise(self);
@@ -68,6 +58,7 @@ function ISCraftRecipePanel:createDynamicChildren()
 
     -- inputs
     self.inputs = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetIngredientsInputs, 0, 0, 10, 10, self.player, self.logic); --self.recipeData, self.craftBench);
+    self.inputs.isBuildMenu = self.isBuildMenu;
     self.inputs.interactiveMode = true;
     self.inputs:initialise();
     self.inputs:instantiate();
@@ -77,6 +68,7 @@ function ISCraftRecipePanel:createDynamicChildren()
     
     -- outputs
     self.outputs = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetIngredientsOutputs, 0, 0, 10, 10, self.player, self.logic); --self.recipeData, self.craftBench);
+    self.outputs.isBuildMenu = self.isBuildMenu;
     self.outputs.interactiveMode = true;
     self.outputs:initialise();
     self.outputs:instantiate();
@@ -198,10 +190,6 @@ function ISCraftRecipePanel:onGainJoypadFocus(joypadData)
     updateJoypadFocus(joypadData)
 end
 
---************************************************************************--
---** ISCraftRecipePanel:new
---**
---************************************************************************--
 function ISCraftRecipePanel:new(x, y, width, height, player, logic, recipeData, craftBench, isoObject)
     local o = ISPanel.new(self, x, y, width, height);
 

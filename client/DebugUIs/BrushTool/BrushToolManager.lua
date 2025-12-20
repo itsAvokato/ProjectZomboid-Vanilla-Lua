@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 BrushToolManager = ISCollapsableWindow:derive("BrushToolManager");
 BrushToolManager.cheat = false
 BrushToolManager.instance = nil

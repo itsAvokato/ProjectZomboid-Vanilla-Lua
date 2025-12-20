@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_AddFuelOption = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_AddFuelOption")

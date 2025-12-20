@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISCharacterProtection = ISPanelJoypad:derive("ISCharacterProtection");

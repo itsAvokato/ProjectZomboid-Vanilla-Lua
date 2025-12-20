@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase"
 
 ISMusicThreatStatusPanel = ISDebugSubPanelBase:derive("ISMusicThreatStatusPanel")

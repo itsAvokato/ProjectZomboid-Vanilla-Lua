@@ -1,22 +1,9 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 16/02/2017
--- Time: 11:23
--- To change this template use File | Settings | File Templates.
---
-
 StashDebug = ISPanel:derive("StashDebug");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** StashDebug:initialise
---**
---************************************************************************--
 
 function StashDebug:initialise()
     ISPanel.initialise(self);
@@ -136,10 +123,6 @@ function StashDebug.OnOpenPanel()
     StashDebug.instance:addToUIManager();
 end
 
---************************************************************************--
---** StashDebug:new
---**
---************************************************************************--
 function StashDebug:new(x, y, width, height)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

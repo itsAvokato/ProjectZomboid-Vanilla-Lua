@@ -3,9 +3,6 @@
 AnimalPartsDefinitions = AnimalPartsDefinitions or {};
 AnimalPartsDefinitions.animals = AnimalPartsDefinitions.animals or {};
 
--------------------
------ CHICKEN -----
--------------------
 local henrhodeisland = AnimalPartsDefinitions.animals["henrhodeisland"] or {};
 henrhodeisland.parts = henrhodeisland.parts or {};
 table.insert(henrhodeisland.parts, {item = "Base.ChickenFoot", nb = 2})
@@ -80,10 +77,6 @@ chickleghorn.head = "Base.Chicken_Chick_Head";
 chickleghorn.skull = "Base.Chicken_Chick_Skull";
 chickleghorn.xpPerItem = 3;
 AnimalPartsDefinitions.animals["chickleghorn"] = chickleghorn;
-
--------------------
-------- COWS ------
--------------------
 
 local calfparts = {};
 table.insert(calfparts, {item = "Base.Steak", minNb = 5, maxNb = 9})
@@ -194,10 +187,6 @@ cowcalfholstein.skull = "Base.Calf_Skull";
 cowcalfholstein.xpPerItem = 18;
 AnimalPartsDefinitions.animals["cowcalfholstein"] = cowcalfholstein;
 
--------------------
-------- PIGS ------
--------------------
-
 local pigletparts = {};
 table.insert(pigletparts, {item = "Base.PorkChop", minNb = 3, maxNb = 7})
 table.insert(pigletparts, {item = "Base.Pork", minNb = 3, maxNb = 7})
@@ -278,9 +267,6 @@ pigletlargeblack.skull = "Base.Piglet_Skull";
 pigletlargeblack.xpPerItem = 12;
 AnimalPartsDefinitions.animals["pigletlargeblack"] = pigletlargeblack;
 
--------------------
------ TURKEY ------
--------------------
 local turkeyhenmeleagris = AnimalPartsDefinitions.animals["turkeyhenmeleagris"] or {};
 turkeyhenmeleagris.parts = turkeyhenmeleagris.parts or {};
 --table.insert(turkeyhenmeleagris.parts, {item = "Base.ChickenFoot", nb = 2})
@@ -319,10 +305,6 @@ turkeypoultmeleagris.head = "Base.Turkey_Poult_Head";
 turkeypoultmeleagris.skull = "Base.Turkey_PoultSkull";
 turkeypoultmeleagris.xpPerItem = 3;
 AnimalPartsDefinitions.animals["turkeypoultmeleagris"] = turkeypoultmeleagris;
-
--------------------
------- SHEEP ------
--------------------
 
 local lambparts = {};
 table.insert(lambparts, {item = "Base.MuttonChop", minNb = 4, maxNb = 9})
@@ -440,10 +422,6 @@ lambfriesian.skull = "Base.Lamb_Skull";
 lambfriesian.xpPerItem = 6;
 AnimalPartsDefinitions.animals["lambfriesian"] = lambfriesian;
 
--------------------
-------- DEER ------
--------------------
-
 local deerparts = {};
 table.insert(deerparts, {item = "Base.Venison", minNb = 10, maxNb = 19})
 table.insert(deerparts, {item = "Base.AnimalSinew", minNb = 3, maxNb = 8})
@@ -485,10 +463,6 @@ fawnwhitetailed.skull = "Base.DeerFawn_Skull";
 fawnwhitetailed.xpPerItem = 18;
 AnimalPartsDefinitions.animals["fawnwhitetailed"] = fawnwhitetailed;
 
--------------------
------ RABBITS -----
--------------------
-
 local rabbitspart = {};
 table.insert(rabbitspart, {item = "Base.Rabbitmeat", minNb = 4, maxNb = 7})
 
@@ -520,7 +494,6 @@ rabkittenswamp.skull = "Base.Rabbit_KittenSkull";
 rabkittenswamp.xpPerItem = 3;
 AnimalPartsDefinitions.animals["rabkittenswamp"] = rabkittenswamp;
 
--- APPALACHIAN
 local rabdoeappalachian = AnimalPartsDefinitions.animals["rabdoeappalachian"] or {};
 rabdoeappalachian.parts = rabdoeappalachian.parts or rabbitspart;
 rabdoeappalachian.bones = rabdoeappalachian.bones or {};
@@ -545,7 +518,6 @@ rabkittenappalachian.skull = "Base.Rabbit_KittenSkull";
 rabkittenappalachian.xpPerItem = 3;
 AnimalPartsDefinitions.animals["rabkittenappalachian"] = rabkittenappalachian;
 
--- COTTON TAIL
 local rabdoecottontail = AnimalPartsDefinitions.animals["rabdoecottontail"] or {};
 rabdoecottontail.parts = rabdoecottontail.parts or rabbitspart;
 rabdoecottontail.bones = rabdoecottontail.bones or {};
@@ -570,9 +542,6 @@ rabkittencottontail.skull = "Base.Rabbit_KittenSkull";
 rabkittencottontail.xpPerItem = 3;
 AnimalPartsDefinitions.animals["rabkittencottontail"] = rabkittencottontail;
 
--------------------
------- RATS -------
--------------------
 local ratfemalegrey = AnimalPartsDefinitions.animals["ratfemalegrey"] or {};
 ratfemalegrey.parts = ratfemalegrey.parts or {};
 table.insert(ratfemalegrey.parts, {item = "Base.DeadRatSkinned", nb = 1})
@@ -615,9 +584,6 @@ ratbabywhite.noSkeleton = true;
 ratbabywhite.xpPerItem = 7;
 AnimalPartsDefinitions.animals["ratbabywhite"] = ratbabywhite;
 
--------------------
------- MICE -------
--------------------
 local mousefemalegolden = AnimalPartsDefinitions.animals["mousefemalegolden"] or {};
 mousefemalegolden.parts = mousefemalegolden.parts or {};
 table.insert(mousefemalegolden.parts, {item = "Base.DeadMouseSkinned", nb = 1})
@@ -681,10 +647,6 @@ mousepupswhite.noSkeleton = true;
 mousepupswhite.xpPerItem = 5;
 AnimalPartsDefinitions.animals["mousepupswhite"] = mousepupswhite;
 
--------------------
------ RACCOON -----
--------------------
-
 local raccoonkitparts = {};
 table.insert(raccoonkitparts, {item = "Base.Smallanimalmeat", minNb = 3, maxNb = 5})
 
@@ -724,11 +686,6 @@ raccoonkitgrey.noSkeleton = true;
 raccoonkitgrey.xpPerItem = 10;
 AnimalPartsDefinitions.animals["raccoonkitgrey"] = raccoonkitgrey;
 
-
-
--------------------
------- MEAT -------
--------------------
 ----- This is used to alter the meat given by the animals
 ----- So we can give more or less "prime" meat depending on skills/animal stats
 --- the order has an importance here, the first of the list will be checked first, some maths to explain:

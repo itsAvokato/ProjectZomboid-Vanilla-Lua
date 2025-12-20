@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWashYourself = ISBaseTimedAction:derive("ISWashYourself");
@@ -52,13 +48,13 @@ function ISWashYourself:washPart(visual, part)
 end
 
 function ISWashYourself:removeAllMakeup()
-	local item = self.character:getWornItem("MakeUp_FullFace");
+	local item = self.character:getWornItem(ItemBodyLocation.MAKE_UP_FULL_FACE);
 	self:removeMakeup(item);
-	item = self.character:getWornItem("MakeUp_Eyes");
+	item = self.character:getWornItem(ItemBodyLocation.MAKE_UP_EYES);
 	self:removeMakeup(item);
-	item = self.character:getWornItem("MakeUp_EyesShadow");
+	item = self.character:getWornItem(ItemBodyLocation.MAKE_UP_EYES_SHADOW);
 	self:removeMakeup(item);
-	item = self.character:getWornItem("MakeUp_Lips");
+	item = self.character:getWornItem(ItemBodyLocation.MAKE_UP_LIPS);
 	self:removeMakeup(item);
 end
 
@@ -110,7 +106,7 @@ function ISWashYourself:complete()
 			waterUsed = waterUsed + 1
 			-- using soap provides a modest happiness boost
 			if self.soaps then
-				self.character:getBodyDamage():setUnhappynessLevel(self.character:getBodyDamage():getUnhappynessLevel() - 2);
+				self.character:getStats():remove(CharacterStat.UNHAPPINESS, 2);
 			end
 			if waterUsed >= self.sink:getFluidAmount() then
 				break
@@ -118,12 +114,8 @@ function ISWashYourself:complete()
 		end
 	end
 
-	--triggerEvent("OnClothingUpdated", self.character)
-
-	-- remove makeup
 	self:removeAllMakeup()
 
-	--sendVisual(self.character);
 	sendHumanVisual(self.character);
 
 	if instanceof(self.sink, "IsoWorldInventoryObject") then

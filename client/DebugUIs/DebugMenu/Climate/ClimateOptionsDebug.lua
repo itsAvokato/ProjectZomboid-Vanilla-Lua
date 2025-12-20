@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 ClimateOptionsDebug = ISDebugSubPanelBase:derive("ClimateOptionsDebug");
@@ -117,8 +112,6 @@ function ClimateOptionsDebug:addColorOption(_id,_color,_x,_y,_w)
     local y, obj = ISDebugUtils.addTickBox(self,_id,_x,_y,(_w/2)-30,BUTTON_HGT,_id,tickOptions,ClimateOptionsDebug.onTicked);
     t.tickbox = obj;
 
-    ------------------------------------------------------------------------------
-
     local y2,obj2 = ISDebugUtils.addLabel(self,_id,_x+(_w-300)-20,_y,"0", UIFont.Small, false);
     local y3, obj3 = ISDebugUtils.addSlider(self,_id,_x+(_w-300),_y,300, BUTTON_HGT,ClimateOptionsDebug.onSliderChange);
     obj3.pretext = getText("IGUI_ClimateOptions_ExR");
@@ -177,8 +170,6 @@ function ClimateOptionsDebug:addColorOption(_id,_color,_x,_y,_w)
     y3 = colorbox:getY() + colorbox:getHeight();
 
     t.colorboxAlpha = colorbox;
-
-    ------------------------------------------------------------------------------
 
     _y = y3+UI_BORDER_SPACING;
     local y2,obj2 = ISDebugUtils.addLabel(self,_id,_x+(_w-300)-20,_y,"0", UIFont.Small, false);
@@ -239,8 +230,6 @@ function ClimateOptionsDebug:addColorOption(_id,_color,_x,_y,_w)
     y3 = colorbox:getY() + colorbox:getHeight();
 
     t.colorboxAlpha_int = colorbox;
-
-    ------------------------------------------------------------------------------
 
     self.colors[_id] = t;
     self.allOptions[_id] = self.colors[_id];

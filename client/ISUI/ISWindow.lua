@@ -6,11 +6,6 @@ ISWindow.TitleBarHeight = 19;
 ISWindow.SideMargin = 12;
 ISWindow.BottomMargin = 12;
 
---************************************************************************--
---** ISWindow:initialise
---**
---************************************************************************--
-
 function ISWindow:initialise()
 	ISUIElement.initialise(self);
 
@@ -18,10 +13,6 @@ function ISWindow:initialise()
 	self.toolbars = {};
 end
 
---************************************************************************--
---** ISWindow:onMouseUp
---**
---************************************************************************--
 function ISWindow:onMouseUp(x, y)
 
 	if(self.resizing) then
@@ -31,10 +22,6 @@ function ISWindow:onMouseUp(x, y)
 
 end
 
---************************************************************************--
---** ISWindow:onMouseDown
---**
---************************************************************************--
 function ISWindow:onMouseDown(x, y)
 	if x + ISWindow.SideMargin > self:getWidth() and y + ISWindow.SideMargin > self:getHeight() then
 		self.resizing = true;
@@ -44,10 +31,7 @@ function ISWindow:onMouseDown(x, y)
 	end
 
 end
---************************************************************************--
---** ISWindow:onMouseMove
---**
---************************************************************************--
+
 function ISWindow:onMouseMove(dx, dy)
 	if self.resizing then
 		self:setWidth(self:getWidth()+dx);
@@ -56,10 +40,6 @@ function ISWindow:onMouseMove(dx, dy)
 
 end
 
---************************************************************************--
---** ISWindow:onMouseMoveOutside
---**
---************************************************************************--
 function ISWindow:onMouseMoveOutside(dx, dy)
 	if self.resizing then
 		self:setWidth(self:getWidth()+dx);
@@ -68,50 +48,26 @@ function ISWindow:onMouseMoveOutside(dx, dy)
 
 end
 
---************************************************************************--
---** ISWindow:getClientLeft
---**
---************************************************************************--
 function ISWindow:getClientLeft()
 	return ISWindow.SideMargin;
 end
 
---************************************************************************--
---** ISWindow:getClientRight
---**
---************************************************************************--
 function ISWindow:getClientRight()
 	return self:getWidth() - ISWindow.SideMargin;
 end
 
---************************************************************************--
---** ISWindow:getClientBottom
---**
---************************************************************************--
 function ISWindow:getClientBottom()
 	return self:getHeight() - ISWindow.BottomMargin;
 end
 
---************************************************************************--
---** ISWindow:getClientTop
---**
---************************************************************************--
 function ISWindow:getClientTop()
 	return self:getNClientTop() + self:getTotalToolbarHeight();
 end
 
---************************************************************************--
---** ISWindow:getNClientTop
---**
---************************************************************************--
 function ISWindow:getNClientTop()
 	return ISWindow.TitleBarHeight;
 end
 
---************************************************************************--
---** ISWindow:getTotalToolbarHeight
---**
---************************************************************************--
 function ISWindow:getTotalToolbarHeight()
 	local total = 0;
 	for i, element in ipairs(self.toolbars) do
@@ -121,10 +77,6 @@ function ISWindow:getTotalToolbarHeight()
 	return total;
 end
 
---************************************************************************--
---** ISWindow:addToolbar
---**
---************************************************************************--
 function ISWindow:addToolbar(toolbar, height)
 	toolbar:setX(0);
 	toolbar:setY(self:getClientTop());
@@ -140,43 +92,24 @@ function ISWindow:addToolbar(toolbar, height)
 	self:addChild(toolbar);
 end
 
---************************************************************************--
---** ISWindow:removeToolbar
---**
---************************************************************************--
 function ISWindow:removeToolbar(toolbar)
 	self.toolbars[toolbar.ID] = nil;
 	self:removeChild(toolbar);
 	toolbar.isToolbar = false;
 end
 
---************************************************************************--
---** ISWindow:getClientWidth
---**
---************************************************************************--
 function ISWindow:getClientWidth()
 	return self:getWidth() - (ISWindow.SideMargin*2);
 end
---************************************************************************--
---** ISWindow:getClientHeight
---**
---************************************************************************--
+
 function ISWindow:getClientHeight()
 	return self:getHeight() - (ISWindow.BottomMargin+ISWindow.TitleBarHeight);
 end
 
---************************************************************************--
---** ISWindow:render
---**
---************************************************************************--
 function ISWindow:render()
 	self:drawTextCentre(self.title, self:getCentreX(), 3, 1, 1, 1, 1);
 end
 
---************************************************************************--
---** ISWindow:new
---**
---************************************************************************--
 function ISWindow:new (title, x, y, width, height)
 	local o = {}
 	--o.data = {}

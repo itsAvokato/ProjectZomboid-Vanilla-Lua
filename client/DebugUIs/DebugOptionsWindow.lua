@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 require "ISUI/ISScrollingListBox"
 require "ISUI/ISTickBox"
@@ -11,8 +7,6 @@ DebugOptionsWindow = ISCollapsableWindow:derive("DebugOptionsWindow")
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
------
 
 local TickBox = ISTickBox:derive("DebugOptionsWindow_TickBox")
 
@@ -26,8 +20,6 @@ function TickBox:getTextColor(index, color)
 		ISTickBox.getTextColor(self, index, color)
 	end
 end
-
------
 
 local ListBox = ISScrollingListBox:derive("DebugOptionsWindow_ListBox")
 
@@ -55,8 +47,6 @@ function ListBox:doDrawItem(y, item, alt)
 	y = y + item.height
 	return y
 end
-
------
 
 function DebugOptionsWindow:onTickBox(index, selected, option)
 	option:setValue(selected)

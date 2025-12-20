@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISTeleportDebugUI = ISPanelJoypad:derive("ISTeleportDebugUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -9,11 +5,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.NewLarge)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISTeleportDebugUI:initialise
---**
---************************************************************************--
 
 function ISTeleportDebugUI:onCommandEntered()
 	self.parent:onClick(self.parent.yes);
@@ -222,10 +213,6 @@ function ISTeleportDebugUI:updateButtons()
 	self.refresh:setEnable(self:playerHasMoved());
 end
 
---************************************************************************--
---** ISTeleportDebugUI:render
---**
---************************************************************************--
 function ISTeleportDebugUI:render()
 
 end
@@ -335,10 +322,6 @@ function ISTeleportDebugUI:onMouseUpOutside(x, y)
 	ISMouseDrag.dragView = nil
 end
 
---************************************************************************--
---** ISTeleportDebugUI:new
---**
---************************************************************************--
 function ISTeleportDebugUI:new(x, y, width, height, player, target, onclick)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height);

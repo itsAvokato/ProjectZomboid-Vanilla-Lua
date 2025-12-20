@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISBannedIPViewer = ISPanel:derive("ISBannedIPViewer");
 ISBannedIPViewer.messages = {};
 
@@ -14,11 +10,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 local COL_1_WIDTH = 200
 local COL_2_WIDTH = 150
-
---************************************************************************--
---** ISBannedIPViewer:initialise
---**
---************************************************************************--
 
 function ISBannedIPViewer:initialise()
     ISPanel.initialise(self);
@@ -218,10 +209,6 @@ ISBannedIPViewer.gotBannedIPs = function(bannedIPs)
     end
 end
 
---************************************************************************--
---** ISBannedIPViewer:new
---**
---************************************************************************--
 function ISBannedIPViewer:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

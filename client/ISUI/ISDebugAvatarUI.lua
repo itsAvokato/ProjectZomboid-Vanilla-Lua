@@ -1,21 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 18/10/2022
--- Time: 08:35
--- To change this template use File | Settings | File Templates.
---
-
--- This UI is just here to make easy avatar portrait for animals, they're always tricky 'cause their size varies a lot
-
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 25/01/2022
--- Time: 08:44
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISCollapsableWindow"
 require "ISUI/ISUI3DModel"
 
@@ -269,8 +251,6 @@ function ISDebugAvatarUI:onChangeStuff(button, x, y)
     self.avatarPanel:setZoom(self.zoom * self.animalObj:getData():getSize());
     self.avatarPanel:setXOffset(self.xoffset * self.animalObj:getData():getSize());
     self.avatarPanel:setYOffset(self.yoffset * self.animalObj:getData():getSize());
-
-    print("final values zoom: ", self.zoom * self.animalObj:getData():getSize(), ", X offset: ", self.xoffset * self.animalObj:getData():getSize(), ", Y offset:", self.yoffset * self.animalObj:getData():getSize())
 end
 
 function ISDebugAvatarUI:populateAnimalComboBox()

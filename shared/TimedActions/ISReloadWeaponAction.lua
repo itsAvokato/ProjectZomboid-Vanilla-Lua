@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISReloadWeaponAction = ISBaseTimedAction:derive("ISReloadWeaponAction");
@@ -72,27 +68,27 @@ function ISReloadWeaponAction.setReloadSpeed(character, rack)
 		baseReloadSpeed = baseReloadSpeed + (character:getPerkLevel(Perks.Reloading) * 0.04);
 	else
 		baseReloadSpeed = baseReloadSpeed + (character:getPerkLevel(Perks.Reloading) * 0.10);
-		baseReloadSpeed = baseReloadSpeed - (character:getMoodles():getMoodleLevel(MoodleType.Panic) * 0.05);
+		baseReloadSpeed = baseReloadSpeed - (character:getMoodles():getMoodleLevel(MoodleType.PANIC) * 0.05);
 	end
 
 	-- check for ammo straps
 	local gun = character:getPrimaryHandItem();
-	local strap = character:getWornItem("AmmoStrap");
-	local reloadFast = character:hasEquippedTag("ReloadFastShells") or character:hasEquippedTag("ReloadFastBullets")
+	local strap = character:getWornItem(ItemBodyLocation.AMMO_STRAP);
+	local reloadFast = character:hasEquippedTag(ItemTag.RELOAD_FAST_SHELLS) or character:hasEquippedTag(ItemTag.RELOAD_FAST_BULLETS)
 	local strapFound = false;
 	if gun and (reloadFast or (strap and strap:getClothingItem())) then
 		local shell = false;
 		local magazine = false;
-		if gun:getAmmoType() == "Base.ShotgunShells" then
+		if gun:getAmmoType() == AmmoType.SHOTGUN_SHELLS then
 			shell = true;
 		elseif gun:getMagazineType() then
 			magazine = true;
 		end
-		if magazine and (character:hasEquippedTag("ReloadFastMagazines") or character:hasWornTag("ReloadFastMagazines")) then
+		if magazine and (character:hasEquippedTag(ItemTag.RELOAD_FAST_MAGAZINES) or character:hasWornTag(ItemTag.RELOAD_FAST_MAGAZINES)) then
 			strapFound = true;
-		elseif shell and (character:hasEquippedTag("ReloadFastShells") or character:hasWornTag("ReloadFastShells") or strap:getClothingItemName() == "AmmoStrap_Shells") then
+		elseif shell and (character:hasEquippedTag(ItemTag.RELOAD_FAST_SHELLS) or character:hasWornTag(ItemTag.RELOAD_FAST_SHELLS) or strap:getClothingItemName() == "AmmoStrap_Shells") then
 			strapFound = true;
-		elseif not shell and not magazine and (character:hasEquippedTag("ReloadFastBullets") or character:hasWornTag("ReloadFastBullets") or strap:getClothingItemName() == "AmmoStrap_Bullets") then
+		elseif not shell and not magazine and (character:hasEquippedTag(ItemTag.RELOAD_FAST_BULLETS) or character:hasWornTag(ItemTag.RELOAD_FAST_BULLETS) or strap:getClothingItemName() == "AmmoStrap_Bullets") then
 			strapFound = true;
 		end
 	end
@@ -111,11 +107,12 @@ end
 function ISReloadWeaponAction:initVars()
 	ISReloadWeaponAction.setReloadSpeed(self.character, false)
 	-- Get the best magazine (the one with the most bullets)
-	local ammoType = self.gun:getAmmoType()
+	local ammoType = self.gun:getAmmoType();
 	if ammoType then
-		local ammoCount = self.character:getInventory():getItemCountRecurse(ammoType)
+	    local itemKey = ammoType:getItemKey();
+		local ammoCount = self.character:getInventory():getItemCountRecurse(itemKey)
 		ammoCount = math.min(ammoCount, self.gun:getMaxAmmo() - self.gun:getCurrentAmmoCount())
-		local bullets = self.character:getInventory():getSomeType(self.gun:getAmmoType(), ammoCount);
+		local bullets = self.character:getInventory():getSomeType(itemKey, ammoCount);
 		if bullets and not bullets:isEmpty() then
 			self.bullets = bullets;
 			self.ammoCount = ammoCount;
@@ -294,7 +291,8 @@ local reloadMagazine = function(playerObj, magazine)
 	if not magazine then
 		return 0
 	end
-	local ammoCount = magazine:getCurrentAmmoCount() + ISInventoryPaneContextMenu.transferBullets(playerObj, magazine:getAmmoType(), magazine:getCurrentAmmoCount(), magazine:getMaxAmmo())
+	local itemKey = magazine:getAmmoType():getItemKey();
+	local ammoCount = magazine:getCurrentAmmoCount() + ISInventoryPaneContextMenu.transferBullets(playerObj, itemKey, magazine:getCurrentAmmoCount(), magazine:getMaxAmmo())
 	if ammoCount > 0 then
 		ISTimedActionQueue.add(ISLoadBulletsInMagazine:new(playerObj, magazine, ammoCount))
 	end
@@ -350,7 +348,8 @@ ISReloadWeaponAction.BeginAutomaticReload = function(playerObj, gun)
 		if gun:isJammed() then
 			return
 		end
-		local ammoCount = ISInventoryPaneContextMenu.transferBullets(playerObj, gun:getAmmoType(), gun:getCurrentAmmoCount(), gun:getMaxAmmo())
+		local itemKey =  gun:getAmmoType():getItemKey();
+		local ammoCount = ISInventoryPaneContextMenu.transferBullets(playerObj, itemKey, gun:getCurrentAmmoCount(), gun:getMaxAmmo())
 		if ammoCount == 0 then
 			return
 		end
@@ -397,7 +396,7 @@ end
 
 ISReloadWeaponAction.canShoot = function(player, weapon)
 	if weapon:isSelectFire() and weapon:getFireMode() == "Safe" then return false end
-	if getDebug() and player:isUnlimitedAmmo() then
+	if player:isUnlimitedAmmo() then
 		return true;
 	end
 	if weapon:isJammed() then
@@ -462,15 +461,15 @@ ISReloadWeaponAction.onShoot = function(player, weapon)
 
 	-- for the dedicated server
 	if MoodlesUI.getInstance() then
-		MoodlesUI.getInstance():wiggle(MoodleType.Panic);
-		MoodlesUI.getInstance():wiggle(MoodleType.Stress);
-		MoodlesUI.getInstance():wiggle(MoodleType.Drunk);
-		MoodlesUI.getInstance():wiggle(MoodleType.Tired);
-		MoodlesUI.getInstance():wiggle(MoodleType.Endurance);
+		MoodlesUI.getInstance():wiggle(MoodleType.PANIC);
+		MoodlesUI.getInstance():wiggle(MoodleType.STRESS);
+		MoodlesUI.getInstance():wiggle(MoodleType.DRUNK);
+		MoodlesUI.getInstance():wiggle(MoodleType.TIRED);
+		MoodlesUI.getInstance():wiggle(MoodleType.ENDURANCE);
 		local body = player:getBodyDamage():getBodyParts()
 		for  x = BodyPartType.ToIndex(BodyPartType.Hand_L), BodyPartType.ToIndex(BodyPartType.UpperArm_R), 1 do
 			if body:get(x):getPain() then
-				MoodlesUI.getInstance():wiggle(MoodleType.Pain);
+				MoodlesUI.getInstance():wiggle(MoodleType.PAIN);
 				break
 			end
 		end

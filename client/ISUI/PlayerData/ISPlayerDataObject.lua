@@ -249,10 +249,6 @@ function ISPlayerDataObject:placeInventoryScreens(playerID, totalPlayers, mouse)
 		getSpecificPlayer(playerID):setOffSetXUI(self.x1);
 		getSpecificPlayer(playerID):setOffSetYUI(self.y1);
 	end
-    print(self.x1);
-    print(self.y1);
-    print(self.w1);
-    print(self.h1);
 end
 
 function ISPlayerDataObject:onResolutionChange(oldw, oldh, neww, newh)

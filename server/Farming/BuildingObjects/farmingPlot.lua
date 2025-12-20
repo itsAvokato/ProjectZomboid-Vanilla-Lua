@@ -1,15 +1,7 @@
 require "BuildingObjects/ISBuildingObject"
 
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 farmingPlot = ISBuildingObject:derive("farmingPlot");
 
---************************************************************************--
---** farmingPlot:new
---**
---************************************************************************--
 function farmingPlot:create(x, y, z, north, sprite)
 	-- we set up the choosen square for our plot
 	local sq = getWorld():getCell():getGridSquare(x, y, z);

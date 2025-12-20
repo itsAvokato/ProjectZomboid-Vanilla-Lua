@@ -2,29 +2,16 @@ require "ISUI/ISPanel"
 
 TutorialFocus = ISPanel:derive("TutorialFocus");
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function TutorialFocus:initialise()
     ISPanel.initialise(self);
 end
 
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function TutorialFocus:prerender()
     self:drawRect(0, 0, self.width, self.focusy, 0.7, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
     self:drawRect(0, self.focusy2, self.width, self.height-self.focusy2, 0.7, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
 
     self:drawRect(0, self.focusy, self.focusx, self.focusheight, 0.7, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
     self:drawRect(self.focusx2, self.focusy, self.width-self.focusx2, self.focusheight, 0.7, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
-
-
-
 end
 
 function TutorialFocus:isInside(x, y)
@@ -33,48 +20,26 @@ function TutorialFocus:isInside(x, y)
     return true;
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseUp
---**
---************************************************************************--
 function TutorialFocus:onRightMouseUp(x, y)
     if self:isInside(x, y) then return false; end
     return true;
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseDown
---**
---************************************************************************--
 function TutorialFocus:onRightMouseDown(x, y)
     if self:isInside(x, y)then  return false; end
     return true;
 end
 
-
---************************************************************************--
---** ISUIElement:onRightMouseUp
---**
---************************************************************************--
 function TutorialFocus:onMouseUp(x, y)
     if self:isInside(x, y) then return false; end
     return true;
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseDown
---**
---************************************************************************--
 function TutorialFocus:onMouseDown(x, y)
     if self:isInside(x, y) then  return false; end
     return true;
 end
 
-
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function TutorialFocus:new (focusx, focusy, focuswidth, focusheight)
     local o = {};
     o = ISPanel:new(0, 0, getCore():getScreenWidth(), getCore():getScreenHeight());
@@ -102,7 +67,6 @@ function TutorialFocus:new (focusx, focusy, focuswidth, focusheight)
 end
 
 function TutorialFocus.set(x, y, w, h)
-    print("TutorialFocus");
     local t = TutorialFocus:new(x, y, w, h);
     if TutorialFocus.instance ~= nil then
         TutorialFocus.instance:removeFromUIManager();

@@ -1,7 +1,3 @@
---***********************************************************
---**                LEMMY/ROBERT JOHNSON                   **
---***********************************************************
-
 AdjacentFreeTileFinder = {}
 
 -- returns true if test is not blocked from src by a wall.
@@ -10,21 +6,21 @@ AdjacentFreeTileFinder.privTrySquareForWalls = function(src, test)
     if src == nil or test == nil then return false; end
 
     if src:getX() < test:getX() and src:getY() == test:getY() then
-        if test:Is("DoorWallW") and not test:isDoorBlockedTo(src) then return true; end
-        if test:Is(IsoFlagType.cutW) or test:Is(IsoFlagType.collideW) then return false; end
+        if test:has("DoorWallW") and not test:isDoorBlockedTo(src) then return true; end
+        if test:has(IsoFlagType.cutW) or test:has(IsoFlagType.collideW) then return false; end
     end
     if src:getX() > test:getX() and src:getY() == test:getY()  then
-        if src:Is("DoorWallW") and not src:isDoorBlockedTo(test) then return true; end
-        if src:Is(IsoFlagType.cutW)  or src:Is(IsoFlagType.collideW) then return false; end
+        if src:has("DoorWallW") and not src:isDoorBlockedTo(test) then return true; end
+        if src:has(IsoFlagType.cutW)  or src:has(IsoFlagType.collideW) then return false; end
     end
 
     if src:getY() < test:getY() and src:getX() == test:getX()  then
-        if test:Is("DoorWallN") and not test:isDoorBlockedTo(src) then return true; end
-        if test:Is(IsoFlagType.cutN)  or test:Is(IsoFlagType.collideN)  then return false; end
+        if test:has("DoorWallN") and not test:isDoorBlockedTo(src) then return true; end
+        if test:has(IsoFlagType.cutN)  or test:has(IsoFlagType.collideN)  then return false; end
     end
     if src:getY() > test:getY() and src:getX() == test:getX()  then
-        if src:Is("DoorWallN") and not src:isDoorBlockedTo(test) then return true; end
-        if src:Is(IsoFlagType.cutN)  or src:Is(IsoFlagType.collideN) then return false; end
+        if src:has("DoorWallN") and not src:isDoorBlockedTo(test) then return true; end
+        if src:has(IsoFlagType.cutN)  or src:has(IsoFlagType.collideN) then return false; end
     end
 
     if src:getX() ~= test:getX() and src:getY() ~= test:getY() then
@@ -68,7 +64,7 @@ AdjacentFreeTileFinder.privTrySquare = function(src, test, excludeList)
 
      -- if the test one is solid / not walkable, not adjacent.
     -- if there is no floor on test, not adjacent.
-    if not AdjacentFreeTileFinder.privCanStand(test) then
+    if not test:canStand() then
        return false;
     end
 
@@ -139,7 +135,7 @@ end
 AdjacentFreeTileFinder.Find = function(gridSquare, playerObj, excludeList)
     if not excludeList then
         excludeList = {}
-    end    
+    end
     local choices = {}
     local choicescount = 1;
     -- first try straight lines (N/S/E/W)
@@ -241,14 +237,14 @@ AdjacentFreeTileFinder.FindWindowOrDoor = function(gridSquare, window, playerObj
         if (n ~= nil) and (playerSq:getRoom() == n:getRoom()) and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, n) then
             table.insert(choices, n)
         end
-        if (playerSq:getRoom() == gridSquare:getRoom()) and AdjacentFreeTileFinder.privCanStand(gridSquare) then
+        if (playerSq:getRoom() == gridSquare:getRoom()) and gridSquare:canStand() then
             table.insert(choices, gridSquare)
         end
         if #choices == 0 then
             if (n ~= nil) and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, n) then
                 table.insert(choices, n)
             end
-            if AdjacentFreeTileFinder.privCanStand(gridSquare) then
+            if gridSquare:canStand() then
                 table.insert(choices, gridSquare)
             end
         end
@@ -258,14 +254,14 @@ AdjacentFreeTileFinder.FindWindowOrDoor = function(gridSquare, window, playerObj
         if (w ~= nil) and (playerSq:getRoom() == w:getRoom()) and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, w) then
             table.insert(choices, w)
         end
-        if (playerSq:getRoom() == gridSquare:getRoom()) and AdjacentFreeTileFinder.privCanStand(gridSquare) then
+        if (playerSq:getRoom() == gridSquare:getRoom()) and gridSquare:canStand() then
             table.insert(choices, gridSquare)
         end
         if #choices == 0 then
             if (w ~= nil) and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, w) then
                 table.insert(choices, w)
             end
-            if AdjacentFreeTileFinder.privCanStand(gridSquare) then
+            if gridSquare:canStand() then
                 table.insert(choices, gridSquare)
             end
         end
@@ -292,20 +288,20 @@ end
 
 AdjacentFreeTileFinder.FindWall = function(gridSquare, north, playerObj)
     local choices = {};
-    
+
     if north then
         local n = gridSquare:getAdjacentSquare(IsoDirections.N);
         if n and playerObj:getCurrentSquare():getRoom() == n:getRoom() and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, n) then
             table.insert(choices, n)
         end
-        if playerObj:getCurrentSquare():getRoom() == gridSquare:getRoom() and AdjacentFreeTileFinder.privCanStand(gridSquare) then
+        if playerObj:getCurrentSquare():getRoom() == gridSquare:getRoom() and gridSquare:canStand() then
             table.insert(choices, gridSquare)
         end
         if #choices == 0 then
             if n and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, n) then
                 table.insert(choices, n)
             end
-            if AdjacentFreeTileFinder.privCanStand(gridSquare) then
+            if gridSquare:canStand() then
                 table.insert(choices, gridSquare)
             end
         end
@@ -314,19 +310,19 @@ AdjacentFreeTileFinder.FindWall = function(gridSquare, north, playerObj)
         if w and playerObj:getCurrentSquare():getRoom() == w:getRoom() and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, w) then
             table.insert(choices, w)
         end
-        if playerObj:getCurrentSquare():getRoom() == gridSquare:getRoom() and AdjacentFreeTileFinder.privCanStand(gridSquare) then
+        if playerObj:getCurrentSquare():getRoom() == gridSquare:getRoom() and gridSquare:canStand() then
             table.insert(choices, gridSquare)
         end
         if #choices == 0 then
             if w and AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, w) then
                 table.insert(choices, w)
             end
-            if AdjacentFreeTileFinder.privCanStand(gridSquare) then
+            if gridSquare:canStand() then
                 table.insert(choices, gridSquare)
             end
         end
     end
-    
+
     -- only do diags if no other choices.
     if #choices == 0 then
         -- now do diags.
@@ -334,25 +330,25 @@ AdjacentFreeTileFinder.FindWall = function(gridSquare, north, playerObj)
         local b = gridSquare:getAdjacentSquare(IsoDirections.NE)
         local c = gridSquare:getAdjacentSquare(IsoDirections.SW)
         local d = gridSquare:getAdjacentSquare(IsoDirections.SE)
-        
+
         if AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, a) then table.insert(choices, a) end
         if AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, b) then table.insert(choices, b) end
         if AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, c) then table.insert(choices, c) end
         if AdjacentFreeTileFinder.privTrySquareWindow(gridSquare, d) then table.insert(choices, d) end
-    
+
     end
-    
+
     -- if we have multiple choices, pick the one closest to the player
     return getClosestChoice(choices, playerObj)
 end
 
 function AdjacentFreeTileFinder.FindEdge(gridSquare, dir, playerObj, preferSameSquare)
     local choices = {}
-    if AdjacentFreeTileFinder.privCanStand(gridSquare) then
+    if gridSquare:canStand() then
         if preferSameSquare then return gridSquare end
         table.insert(choices, gridSquare)
     end
-    
+
     local n = gridSquare:getAdjacentSquare(IsoDirections.N)
     local s = gridSquare:getAdjacentSquare(IsoDirections.S)
     local w = gridSquare:getAdjacentSquare(IsoDirections.W)
@@ -392,7 +388,7 @@ AdjacentFreeTileFinder.privTrySquareWindow = function(src, test)
         end
     end
 
-    if not AdjacentFreeTileFinder.privCanStand(test) then
+    if not test:canStand() then
         return false
     end
 
@@ -401,31 +397,9 @@ AdjacentFreeTileFinder.privTrySquareWindow = function(src, test)
 
 end
 
-AdjacentFreeTileFinder.privCanStand = function(test)
-	if not test then return false end
-
-    if test:Is(IsoFlagType.solid) then
-        return false;
-    end
-
-    -- Player can stand on solidtrans squares adjacent to windows.
-    if test:Is(IsoFlagType.solidtrans) then
-        local hasWindowOrFence = test:isAdjacentToWindow() or test:isAdjacentToHoppable()
-        if not hasWindowOrFence then
-            return false
-        end
-    end
-
-    if not test:TreatAsSolidFloor() then
-       return false;
-    end
-
-    return true
-end
-
 AdjacentFreeTileFinder.privGetNorth = function(gridSquare, object)
     if object and object.getNorth then
         return object:getNorth()
     end
-    return (gridSquare ~= nil) and (gridSquare:Is(IsoFlagType.cutN) or gridSquare:Is(IsoFlagType.collideN))
+    return (gridSquare ~= nil) and (gridSquare:has(IsoFlagType.cutN) or gridSquare:has(IsoFlagType.collideN))
 end

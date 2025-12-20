@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDrinkFromBottle = ISBaseTimedAction:derive("ISDrinkFromBottle");
@@ -72,7 +68,6 @@ function ISDrinkFromBottle:perform()
 end
 
 function ISDrinkFromBottle:drink(food, percentage)
-    -- calcul the percentage drank
     if percentage > 0.95 then
         percentage = 1.0;
     end
@@ -82,26 +77,23 @@ function ISDrinkFromBottle:drink(food, percentage)
         if not self.character:getInventory():contains(self.item) then
             break
         end
-        if self.character:getStats():getThirst() > 0 then
-            self.character:getStats():setThirst(self.character:getStats():getThirst() - 0.1);
-            if self.character:getStats():getThirst() < 0 then
-                self.character:getStats():setThirst(0);
-            end
+        if self.character:getStats():isAboveMinimum(CharacterStat.THIRST) then
+            self.character:getStats():remove(CharacterStat.THIRST, 0.1);
             syncPlayerStats(self.character, SyncPlayerStatsPacket.Stat_Thirst);
 
             if self.item:getFluidContainer():contains(Fluid.TaintedWater) then
                 --tainted water shouldn't kill the player but make them sick - dangerous when sick
                 local bodyDamage	= self.character:getBodyDamage();
                 local stats			= self.character:getStats();
-                if bodyDamage:getPoisonLevel() < 20 and stats:getSickness() < 0.3 then
-					local newLevel = 10;
-					if self.character:HasTrait("IronGut") then
-						newLevel = 5;
+                if stats:get(CharacterStat.POISON) < 20 and stats:getSickness() < 0.3 then
+					local basePoison = 10;
+					if self.character:hasTrait(CharacterTrait.IRON_GUT) then
+						basePoison = 5;
 					end
-					if self.character:HasTrait("WeakStomach") then
-						newLevel = 15;
+					if self.character:hasTrait(CharacterTrait.WEAK_STOMACH) then
+						basePoison = 15;
 					end
-                    bodyDamage:setPoisonLevel(math.min(bodyDamage:getPoisonLevel() + newLevel, 20));
+					stats:set(CharacterStat.POISON, math.min(stats:get(CharacterStat.POISON) + basePoison , 20));
                     if isServer() then
                         sendDamage(self.character)
                     end

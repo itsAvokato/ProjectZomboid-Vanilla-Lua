@@ -1,14 +1,5 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISKnob = ISUIElement:derive("ISKnob");
 ISKnob.messages = {};
-
---************************************************************************--
---** ISKnob:initialise
---**
---************************************************************************--
 
 function ISKnob:initialise()
     ISUIElement.initialise(self);
@@ -189,10 +180,6 @@ function ISKnob:playSwitchSound()
 	getSoundManager():playUISound(self.switchSound)
 end
 
---************************************************************************--
---** ISKnob:new
---**
---************************************************************************--
 function ISKnob:new(x, y, tex, valuesBg, title, player)
     local o = {}
     local width;

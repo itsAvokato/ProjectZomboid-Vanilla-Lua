@@ -1,7 +1,3 @@
---***********************************************************
---**                   THE INDIE STONE                     **
---***********************************************************
-
 ContextualActionHandlers = ContextualActionHandlers or {}
 
 function ContextualActionHandlers.ClimbOverFence(action, playerObj, arg1, arg2, arg3, arg4)
@@ -96,8 +92,14 @@ function ContextualActionHandlers.AnimalsInteraction(action, playerObj, animal, 
     if not luautils.walkAdj(playerObj, sq) then return; end
     local item = playerObj:getPrimaryHandItem()
 
-    local milk = item and item:hasTag("BucketEmpty") and animal:readyToBeMilked();
-    local shear = item and item:hasTag("Shear") and animal:readyToBeSheared();
+    local bucketList = playerObj:getInventory():getAvailableFluidContainer(animal:getData():getBreed():getMilkType())
+    local bucket = nil;
+    if bucketList and not bucketList:isEmpty() then
+        bucket = bucketList:get(0);
+    end
+
+    local milk = item and bucket and animal:readyToBeMilked();
+    local shear = item and item:hasTag(ItemTag.SHEAR) and animal:readyToBeSheared();
     local pet = animal:canBePet();
 
     playerObj:setIsAiming(false);

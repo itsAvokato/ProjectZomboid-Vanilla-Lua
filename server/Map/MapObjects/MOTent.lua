@@ -1,7 +1,3 @@
--- --***********************************************************
--- --**                    THE INDIE STONE                    **
--- --***********************************************************
---
 -- if isClient() then return end
 --
 -- local function noise(message) print('MOTent.lua: '..message) end
@@ -22,8 +18,6 @@
 --
 -- MapObjects.OnNewWithSprite("camping_01_0", NewTarp, PRIORITY)
 -- MapObjects.OnNewWithSprite("camping_01_3", NewTarp, PRIORITY)
---
--- -- -- -- -- --
 --
 -- local function LoadObject(isoObject)
 -- 	local square = isoObject:getSquare()

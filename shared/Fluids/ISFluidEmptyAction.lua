@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISFluidEmptyAction = ISBaseTimedAction:derive("ISFluidEmptyAction")
@@ -30,14 +25,39 @@ function ISFluidEmptyAction:update()
 	else
 		self.character:setMetabolicTarget(Metabolics.MediumWork)
 	end
-	
-	-- do partial empty
+
 	if not isClient() then
-		if self.container:getFluidContainer() then
-			local targetFillAmount = self.amount * (1 - self:getJobDelta())
-			self.container:getFluidContainer():adjustAmount(targetFillAmount);
-			self.container:sync();
-		end
+	    self:updateEmpty(self:getJobDelta());
+	end
+end
+
+function ISFluidEmptyAction:serverStart()
+    emulateAnimEvent(self.netAction, 100, "emptyFluid", nil);
+end
+
+function ISFluidEmptyAction:animEvent(event, parameter)
+    if isServer() then
+        if event == "emptyFluid" then
+		    self:updateEmpty(self.netAction:getProgress());
+        end
+    end
+end
+
+function ISFluidEmptyAction:getDuration()
+    local maxTime = self.amount * ISFluidUtil.getTransferActionTimePerLiter();
+    if maxTime < ISFluidUtil.getMinTransferActionTime() then
+        maxTime = ISFluidUtil.getMinTransferActionTime();
+    end
+    if self.character:isTimedActionInstant() then maxTime = 1; end
+    return maxTime;
+end
+
+function ISFluidEmptyAction:updateEmpty(delta)
+	-- do partial empty
+	if self.container:getFluidContainer() then
+        local targetFillAmount = self.amount * (1 - delta)
+		self.container:getFluidContainer():adjustAmount(targetFillAmount);
+		self.container:sync();
 	end
 end
 
@@ -95,10 +115,6 @@ function ISFluidEmptyAction:new(character, containerObject)
 	end
 
     o.amount = o.container:getFluidContainer():getAmount();
-	o.maxTime = o.amount * ISFluidUtil.getTransferActionTimePerLiter();
-    if o.maxTime < ISFluidUtil.getMinTransferActionTime() then
-        o.maxTime = ISFluidUtil.getMinTransferActionTime();
-    end
-	if o.character:isTimedActionInstant() then o.maxTime = 1; end
+	o.maxTime = o:getDuration();
 	return o
 end

@@ -1,11 +1,7 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISRemovePlantCursor = ISBuildingObject:derive("ISRemovePlantCursor")
 
 local function predicateCutPlant(item)
-    return not item:isBroken() and item:hasTag("CutPlant")
+    return not item:isBroken() and item:hasTag(ItemTag.CUT_PLANT)
 end
 
 function ISRemovePlantCursor:create(x, y, z, north, sprite)
@@ -45,11 +41,11 @@ function ISRemovePlantCursor:getRemovableObject(square)
 	for i=1,square:getObjects():size() do
 		local o = square:getObjects():get(i-1)
 		if self.removeType == "bush" then
-			if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():Is(IsoFlagType.canBeCut) then
+			if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():has(IsoFlagType.canBeCut) then
 				return o
 			end
 		elseif self.removeType == "grass" then
-			if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) then
+			if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():has(IsoFlagType.canBeRemoved) then
 				return o
 			end
 		elseif self.removeType == "wallVine" then
@@ -95,5 +91,3 @@ function ISRemovePlantCursor:new(character, removeType)
 	showDebugInfoInChat("Cursor New \'ISRemovePlantCursor\'")
 	return o
 end
-
-

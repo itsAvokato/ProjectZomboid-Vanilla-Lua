@@ -1,8 +1,3 @@
---************************************************************************************
---**                        ROBERT JOHNSON  &  FOX CHAOTICA                         **
---**       Contextual menu for building when clicking somewhere on the ground       **
---************************************************************************************
-
 ISBuildMenu = {};
 ISBuildMenu.cheat = false or getDebug();
 ISBuildMenu.woodWorkXp = 0;
@@ -16,7 +11,7 @@ end
 local function predicateSledgehammer(item)
 	if item:isBroken() then return false end
 	local type = item:getType()
-	return item:hasTag("Sledgehammer") or type == "Sledgehammer" or type == "Sledgehammer2"
+	return item:hasTag(ItemTag.SLEDGEHAMMER) or type == "Sledgehammer" or type == "Sledgehammer2"
 end
 
 ISBuildMenu.doBuildMenu = function(player, context, worldobjects, test)
@@ -33,18 +28,7 @@ ISBuildMenu.doBuildMenu = function(player, context, worldobjects, test)
 	if playerObj:getVehicle() then return; end
 
 	ISBuildMenu.woodWorkXp = playerObj:getPerkLevel(Perks.Woodwork);
-	local thump = nil;
 
-	local square = nil;
-
-	if isDebugEnabled() then
-		if test then return ISWorldObjectContextMenu.setTest() end
-		local rampsOption = context:addDebugOption("Ramps", nil, nil)
-		local subMenuRamps = context:getNew(context)
-		context:addSubMenu(rampsOption, subMenuRamps)
-		ISBuildMenu.buildRampsMenu(subMenuRamps, rampsOption, player)
-	end
-			
 	-- dismantle stuff
     -- TODO: RJ: removed it for now need to see exactly how it works as now we have a proper right click to dismantle items...
 	if playerInv:contains("Saw") and playerInv:contains("Screwdriver") and isDebugEnabled() then
@@ -57,14 +41,11 @@ ISBuildMenu.doBuildMenu = function(player, context, worldobjects, test)
         local sledgehammer = playerInv:getFirstEvalRecurse(predicateSledgehammer)
         if sledgehammer and not sledgehammer:isBroken() or ISBuildMenu.cheat then
             if test then return ISWorldObjectContextMenu.setTest() end
-            context:addOption(getText("ContextMenu_Destroy"), worldobjects, ISWorldObjectContextMenu.onDestroy, playerObj, sledgehammer)
+            local option = context:addOption(getText("ContextMenu_Destroy"), worldobjects, ISWorldObjectContextMenu.onDestroy, playerObj, sledgehammer)
+            option.iconTexture = getTexture("Item_Sledgehamer");
         end
     end
 end
-
--- **********************************************
--- **                DISMANTLE                 **
--- **********************************************
 
 ISBuildMenu.onDismantle = function(worldobjects, player)
 	local bo = ISDestroyCursor:new(player, true)

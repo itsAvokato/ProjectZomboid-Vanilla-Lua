@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDryMyself = ISBaseTimedAction:derive("ISDryMyself");
@@ -9,12 +5,12 @@ ISDryMyself = ISBaseTimedAction:derive("ISDryMyself");
 function ISDryMyself:isValid()
 	if isClient() then
 		if self.started then
-			return self.character:getBodyDamage():getWetness() > 0;
+			return self.character:getStats():get(CharacterStat.WETNESS) > 0;
 		elseif self.item then
-			return self.character:getInventory():containsID(self.item:getID()) and self.character:getBodyDamage():getWetness() > 0 and self.item:getCurrentUsesFloat() > 0
+			return self.character:getInventory():containsID(self.item:getID()) and self.character:getStats():get(CharacterStat.WETNESS) > 0 and self.item:getCurrentUsesFloat() > 0
 		end
     else
-        return self.character:getInventory():contains(self.item) and self.character:getBodyDamage():getWetness() > 0 and self.item:getCurrentUsesFloat() > 0;
+        return self.character:getInventory():contains(self.item) and self.character:getStats():get(CharacterStat.WETNESS) > 0 and self.item:getCurrentUsesFloat() > 0;
     end
 end
 
@@ -22,8 +18,7 @@ function ISDryMyself:update()
 	self.tick = self.tick + 1;
 	if self.tick >= self.timer then
 		self.tick = 0;
-		--self.character:getBodyDamage():setWetness(self.character:getBodyDamage():getWetness() - (self.character:getBodyDamage():getWetness() / 20));
-		self.character:getBodyDamage():decreaseBodyWetness( self.character:getBodyDamage():getWetness() / 20 );
+		self.character:getBodyDamage():decreaseBodyWetness( self.character:getStats():get(CharacterStat.WETNESS) / 20 );
 
 		if isClient() then
 			if self.item then
@@ -67,7 +62,7 @@ function ISDryMyself:complete()
 		self.item:UseAndSync();
 	end
 
-	self.character:getBodyDamage():decreaseBodyWetness( self.character:getBodyDamage():getWetness() );
+	self.character:getBodyDamage():decreaseBodyWetness( self.character:getStats():get(CharacterStat.WETNESS) );
 	sendDamage(self.character)
 	return true
 end
@@ -78,7 +73,7 @@ end
 
 function ISDryMyself:serverStop()
 	self:syncItemUses();
-	self.character:getBodyDamage():decreaseBodyWetness( self.character:getBodyDamage():getWetness() * self.netAction:getProgress() );
+	self.character:getBodyDamage():decreaseBodyWetness( self.character:getStats():get(CharacterStat.WETNESS) * self.netAction:getProgress() );
 	sendDamage(self.character)
 end
 

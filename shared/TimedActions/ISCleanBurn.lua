@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISCleanBurn = ISBaseTimedAction:derive("ISCleanBurn");
@@ -61,8 +57,8 @@ function ISCleanBurn:perform()
 end
 
 function ISCleanBurn:complete()
-    if self.character:HasTrait("Hemophobic") then
-        self.character:getStats():setPanic(self.character:getStats():getPanic() + 50);
+    if self.character:hasTrait(CharacterTrait.HEMOPHOBIC) then
+        self.character:getStats():add(CharacterStat.PANIC, 50);
         --Stat_Panic
         syncPlayerStats(self.character, 0x00000100);
     end

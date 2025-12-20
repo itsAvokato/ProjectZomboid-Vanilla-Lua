@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISPlayerStatsUserlogUI = ISPanel:derive("ISPlayerStatsUserlogUI");
@@ -29,11 +17,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 local x_IssuedBy =  15  *(getCore():getOptionFontSizeReal()+10)
 local x_Amount =    27  *(getCore():getOptionFontSizeReal()+10)
 local x_Reason =    35  *(getCore():getOptionFontSizeReal()+10)
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsUserlogUI:initialise()
     ISPanel.initialise(self);

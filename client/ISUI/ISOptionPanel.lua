@@ -2,20 +2,10 @@ require "ISUI/ISPanel"
 
 ISOptionPanel = ISPanel:derive("ISOptionPanel");
 
---************************************************************************--
---** ISOptionPanel:initialise
---**
---************************************************************************--
-
 function ISOptionPanel:initialise()
 	ISPanel.initialise(self);
 end
 
-
---************************************************************************--
---** ISOptionPanel:render
---**
---************************************************************************--
 function ISOptionPanel:prerender()
 
 	self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
@@ -44,11 +34,6 @@ function ISOptionPanel:addCombo(name, options, selected, target, onchange)
 	self:addChild(panel2);
 	self.addY = self.addY + 18;
 end
-
---************************************************************************--
---** ISOptionPanel:onMouseUp
---**
---************************************************************************--
 
 function ISOptionPanel:new (x, y, width, height)
 	local o = {}

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISUIVehicleModel = ISUIElement:derive("ISUIVehicleModel")

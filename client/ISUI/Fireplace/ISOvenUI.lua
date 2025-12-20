@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISOvenUI = ISPanelJoypad:derive("ISOvenUI");
@@ -9,11 +5,6 @@ ISOvenUI.instance = {};
 ISOvenUI.messages = {};
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---************************************************************************--
---** ISOvenUI:initialise
---**
---************************************************************************--
 
 function ISOvenUI:initialise()
     ISPanel.initialise(self);
@@ -207,10 +198,6 @@ function ISOvenUI:onJoypadDown(button)
     end
 end
 
---************************************************************************--
---** ISOvenUI:new
---**
---************************************************************************--
 function ISOvenUI:new(x, y, width, height, oven, character)
     local o = {}
     o = ISPanelJoypad:new(x, y, width, height);

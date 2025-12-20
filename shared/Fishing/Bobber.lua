@@ -12,22 +12,29 @@ function Bobber:new(player, fishingRod, x, y)
 
     o.player = player
     o.fishingRod = fishingRod
+    o.catchFishStarted = false
 
     o.sq = getCell():getGridSquare(x, y, 0)
-    o.dx = x - o.sq:getX()
-    o.dy = y - o.sq:getY()
+
+    o.x = x
+    o.y = y
     o.z = 0
+
     ---
     if not isClient() then
-        o.item = o.sq:AddWorldInventoryItem("Base.Bobber", o.dx, o.dy, o.z)
-        print("Bobber:new at " .. x .. " " .. y);
-        o.item:setWorldZRotation(0)
         if isServer() then
             Fishing.ServerBobberManager[o.player:getOnlineID()] = o;
         end
     else
         o.id = startFishingAction(o.player, o.fishingRod.rodItem, o.sq, o)
-        print("Bobber:new")
+    end
+
+    if not isServer() then
+        local bobberItem = instanceItem(ItemKey.Normal.BOBBER)
+        o.renderFunc = function()
+            Render3DItem(bobberItem, o.sq, o:getX(), o:getY(), 0, 0)
+        end
+        Events.RenderOpaqueObjectsInWorld.Add(o.renderFunc);
     end
 
     o.player:playSound("LureHitWater");
@@ -45,11 +52,11 @@ function Bobber:new(player, fishingRod, x, y)
 end
 
 function Bobber:getX()
-    return self.sq:getX() + self.dx
+    return self.x
 end
 
 function Bobber:getY()
-    return self.sq:getY() + self.dy
+    return self.y
 end
 
 function Bobber:getZ()
@@ -111,9 +118,6 @@ function Bobber:getNibbleTime()
 end
 
 function Bobber:update()
-    if isClient() and self.item == nil then
-        return;
-    end
     local playerX = self.player:getX()
     local playerY = self.player:getY()
     local bobberX = self:getX()
@@ -125,7 +129,7 @@ function Bobber:update()
             self.attractTimer = self.attractTimer - getGameTime():getMultiplier()
             if self.attractTimer <= 0 then
                 if self:attractFish() then
-                    self.fish = Fishing.Fish:new(self.player, self.lure, self.fishingRod, self:getX(), self:getY())
+                    self.fish = Fishing.Fish:new(self.player, self.lure, self.fishingRod:getTension() >= 0.1, self:getX(), self:getY())
                     self.nibbleTimer = 360
                 end
                 self.attractTimer = self:getNibbleTime() * 0.8
@@ -155,7 +159,7 @@ function Bobber:update()
             end
         end
     end
-    ---------------
+
     local tension = self.fishingRod:getTension()
     local rodEndX, rodEndY = self.fishingRod:getRodEndXY()
 
@@ -212,24 +216,8 @@ function Bobber:getFreeWaterDirection()
 end
 
 function Bobber:move(dx, dy)
-    self.dx = self.dx + dx * getGameTime():getMultiplier()
-    self.dy = self.dy + dy * getGameTime():getMultiplier()
-
-    if self.item then
-        local selfX = self:getX()
-        local selfY = self:getY()
-        local squareX = fastfloor(selfX)
-        local squareY = fastfloor(selfY)
-        if (squareX ~= self.sq:getX()) or (squareY ~= self.sq:getY()) then
-            self.sq:RemoveTileObject(self.item:getWorldItem())
-            self.sq = getCell():getGridSquare(squareX, squareY, self.z)
-            self.dx = selfX - squareX
-            self.dy = selfY - squareY
-            self.sq:AddWorldInventoryItem(self.item, self.dx, self.dy, 0, false)
-        else
-            self.item:getWorldItem():setOffset(self.dx, self.dy, self.z)
-        end
-    end
+    self.x = self.x + dx * getGameTime():getMultiplier()
+    self.y = self.y + dy * getGameTime():getMultiplier()
 end
 
 function Bobber:attractFish()
@@ -260,41 +248,12 @@ end
 
 function Bobber:destroy()
     if not isClient() then
-        if isServer() then
-            if self.fish then
-                -- TODO check if PickupFish action was cancelled on client
-                if true then
-                    log(DebugType.Action, '[Bobber:destroy] '..tostring(self.player)..' add inventory item '..tostring(self.fish.fishItem))
-
-                    self.player:getInventory():AddItem(self.fish.fishItem)
-                    sendAddItemToContainer(self.player:getInventory(), self.fish.fishItem);
-                    self.player:getModData()["fishing_CatchDone_" .. self.fish.fishItem:getFullType()] = true
-                    local fishSize = self.fish.fishItem:getModData().fishing_FishSize
-                    local xpToGain = 1;
-                    if fishSize then
-                        xpToGain = 2 * fishSize
-                    end
-                    addXp(self.player, Perks.Fishing, xpToGain);
-                    self.player:getModData().Fishing_IsFirstFishing = true
-
-                    Fishing.ServerBobberManager[self.player:getOnlineID()] = nil;
-                else
-                    log(DebugType.Action, '[Bobber:destroy] '..tostring(self.player)..' add world inventory item '..tostring(self.fish.fishItem))
-
-                    local square = self.player:getCurrentSquare()
-                    local dropX,dropY,dropZ = ISTransferAction.GetDropItemOffset(self.player, square, self.fish.fishItem)
-                    self.player:getCurrentSquare():AddWorldInventoryItem(self.fish.fishItem, dropX, dropY, dropZ);
-                    self.player:getModData().Fishing_IsFirstFishing = true
-                end
-            end
-        end
-
-        self.item:getWorldItem():getSquare():transmitRemoveItemFromSquare(self.item:getWorldItem());
-        self.item:getWorldItem():removeFromWorld()
-        self.item:getWorldItem():removeFromSquare()
-        self.item:getWorldItem():setSquare(nil)
+        Fishing.ServerBobberManager[self.player:getOnlineID()] = nil;
     else
         removeAction(self.id, true)
+    end
+    if not isServer() then
+        Events.RenderOpaqueObjectsInWorld.Remove(self.renderFunc);
     end
 end
 
@@ -303,7 +262,8 @@ Bobber.onFishingActionMPUpdate = function(data)
     if isServer() then
         bobber = Fishing.ServerBobberManager[data.player:getOnlineID()];
     else
-        local manager = Fishing.ManagerInstances[data.player:getPlayerNum()]
+        local manager = Fishing.ManagerInstances[data.player:getUsername()]
+        if manager == nil then return end
         bobber = manager.fishingRod.bobber
     end
     if data.UpdateFish then
@@ -321,36 +281,12 @@ Bobber.onFishingActionMPUpdate = function(data)
             bobber.fish = nil
         end
     end
-    if data.CreateBobber then
-        bobber.item = data.bobberItem
-        bobber.sq = bobber.item:getWorldItem():getSquare()
-    end
     if isServer() and data.UpdateBobberParameters then
         if not bobber then
             print("Can't find bobber")
             return
         end
-        -- Offset will sync in syncIsoObject, just replace the square and send it to clients
-        local _bobberX = tonumber(data.bobberX)
-        local _bobberY = tonumber(data.bobberY)
-
-        local args = { oldSqX = bobber.sq:getX(), oldSqY = bobber.sq:getY(),
-                       bobberX = _bobberX, bobberY = _bobberY,
-                       bobberID = bobber.item:getID(),
-                       rodID = bobber.fishingRod.rodItem:getID() }
-        sendServerCommand('fishing', 'changeBobberSquare', args);
-
-        local squareX = fastfloor(_bobberX)
-        local squareY = fastfloor(_bobberY)
-
-        bobber.sq:RemoveTileObject(bobber.item:getWorldItem())
-        bobber.sq = getCell():getGridSquare(squareX, squareY, bobber.z)
-        bobber.sq:AddWorldInventoryItem(bobber.item, _bobberX, _bobberY, 0, false)
-    end
-    if data.DestroyBobber and bobber.item then
-        bobber.item:getWorldItem():removeFromWorld()
-        bobber.item:getWorldItem():removeFromSquare()
-        bobber.item:getWorldItem():setSquare(nil)
+        bobber.catchFishStarted = data.CatchFishStarted;
     end
 end
 

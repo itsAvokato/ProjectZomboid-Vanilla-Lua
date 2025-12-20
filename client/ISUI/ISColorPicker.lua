@@ -201,7 +201,7 @@ function ISColorPicker:new(x, y, HSBFactor)
 	local i = 0
 	local newColor = Color.new(1.0, 1.0, 1.0, 1.0);
 
-	---NEW COLOUR PICKER WITH 84 colours
+	--NEW COLOUR PICKER WITH 84 colours
 	local encodedColors = {555, 303, 304, 403, 503, 314, 315, 505, 414, 523, 524, 525, 535, 545,
 						   444, 300, 400, 310, 500, 311, 501, 510, 422, 521, 433, 532, 533, 544,
 						   333, 420, 330, 430, 431, 530, 341, 442, 443, 543, 451, 550, 553, 554,
@@ -231,25 +231,5 @@ function ISColorPicker:new(x, y, HSBFactor)
 			i = i + 1
 		end
 	end
-
-	---OLD COLOUR PICKER WITH 216 COLOURS - left commented just in case
-	--for red = 0,255,51 do
-	--	for green = 0,255,51 do
-	--		for blue = 0,255,51 do
-	--			local col = i % columns
-	--			local row = math.floor(i / columns)
-	--			if row % 2 == 0 then row = row / 2 else row = math.floor(row / 2) + 6 end
-	--			newColor:set(red / 255, green / 255, blue / 255, 1.0)
-	--			if col == columns-1 and row == rows-1 then
-	--				newColor:set(1.0, 1.0, 1.0, 1.0)
-	--			elseif HSBFactor then
-	--				newColor:changeHSBValue(HSBFactor.h, HSBFactor.s, HSBFactor.b);
-	--			end
-	--			o.colors[col + row * columns + 1] = { r = newColor:getRedFloat(), g = newColor:getGreenFloat(), b = newColor:getBlueFloat() }
-	--			i = i + 1
-	--		end
-	--	end
-	--end
-
 	return o
 end

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugPanelBase";
 
 ISAdminWeather = ISDebugPanelBase:derive("ISAdminWeather");
@@ -26,6 +21,3 @@ function ISAdminWeather:initialise()
     self:registerPanel(getText("IGUI_Adm_Weather_Climate"),ISAdmPanelClimate);
     self:registerPanel(getText("IGUI_Adm_Weather_Weather"),ISAdmPanelWeather);
 end
-
-
-

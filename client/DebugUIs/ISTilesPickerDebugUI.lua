@@ -5,8 +5,6 @@ ISTilesPickerDebugUI = ISCollapsableWindow:derive("ISTilesPickerDebugUI");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 
------
-
 ISTilesPickerTilesList = ISPanel:derive("ISTilesPickerTilesList")
 
 function ISTilesPickerTilesList:render()
@@ -75,8 +73,6 @@ function ISTilesPickerTilesList:new(x, y, w, h)
 	o.tileset = nil
 	return o
 end
-
------
 
 function ISTilesPickerDebugUI:createChildren()
 	local btnWid = 100
@@ -205,10 +201,6 @@ function ISTilesPickerDebugUI:close()
 	self:removeFromUIManager();
 end
 
---************************************************************************--
---** ISTilesPickerDebugUI:new
---**
---************************************************************************--
 function ISTilesPickerDebugUI:new(x, y, character, square)
 	local o = {}
 	local width = 1123;

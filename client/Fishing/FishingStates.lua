@@ -17,7 +17,7 @@ end
 
 function Fishing.States.None:update()
     local primaryHandItem = self.manager.player:getPrimaryHandItem()
-    if not (primaryHandItem ~= nil and primaryHandItem:hasTag("FishingRod")) then
+    if not (primaryHandItem ~= nil and primaryHandItem:hasTag(ItemTag.FISHING_ROD)) then
         self.manager:disable()
     end
 
@@ -44,7 +44,7 @@ end
 
 function Fishing.States.Idle:start()
     local primaryHandItem = self.manager.player:getPrimaryHandItem()
-    if not (primaryHandItem ~= nil and primaryHandItem:hasTag("FishingRod")) then
+    if not (primaryHandItem ~= nil and primaryHandItem:hasTag(ItemTag.FISHING_ROD)) then
         self.manager:changeState("None")
         return
     end
@@ -135,11 +135,9 @@ function Fishing.States.Wait:update()
     self.manager:updateTensionUI()
 
     if self.manager.fishingRod.bobber.fish ~= nil and not self.reelSoundStarted then
-        print("SOUND STARTED")
         self.sound = self.manager.player:playSound("ReelFishingLineSlow")
         self.reelSoundStarted = true
     elseif self.manager.fishingRod.bobber.fish == nil and self.reelSoundStarted then
-        print("SOUND STOPPED")
         self.manager.player:stopOrTriggerSound(self.sound)
         self.reelSoundStarted = false
     end
@@ -302,8 +300,6 @@ function Fishing.States.PickupFish:start()
     local fishItem = self.manager.fishingRod.bobber:grabFish()
     if fishItem ~= nil then
         self.manager.fishingRod:consumeLure(self.manager.fishingRod.bobber.fish.isTrash)
-        self.manager.fishingRod.bobber:destroy()
-        self.manager.fishingRod.bobber = nil
 
         self.action = ISPickupFishAction:new(self.manager.player, self.manager.fishingRod.rodItem, fishItem)
         ISTimedActionQueue.add(self.action)

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "RadioCom/RadioWindowModules/RWMPanel"
 
 RWMGeneral = RWMPanel:derive("RWMGeneral");
@@ -58,6 +53,17 @@ function RWMGeneral:readFromObject( _player, _deviceObject, _deviceData, _device
     if self.deviceType == "InventoryItem" and self.device.getTexture then
         self.itemTexture = self.device:getTexture();
         self.isoTexture = false;
+    elseif self.deviceType == "IsoObject" and _deviceObject:hasModData() and type(_deviceObject:getModData().RadioItemID) == 'number' then
+        -- See ISDropWorldItemAction creating invisible IsoRadio objects for dropped Radio items.
+        local objs = _deviceObject:getSquare():getWorldObjects()
+        for i=1,objs:size() do
+            local obj = objs:get(i-1)
+            if obj ~= nil and obj:getItem() ~= nil and obj:getItem():getID() == _deviceObject:getModData().RadioItemID then
+                self.itemTexture = obj:getItem():getTex()
+                self.isoTexture = false;
+                break
+            end
+        end
     elseif self.deviceType == "IsoObject" and self.device.getSprite and self.device:getSprite() and self.device:getSprite():getName() then
         self.itemTexture = getTexture(self.device:getSprite():getName());
         self.isoTexture = true;

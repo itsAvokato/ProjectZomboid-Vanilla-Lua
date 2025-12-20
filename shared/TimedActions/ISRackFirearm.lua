@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRackFirearm = ISBaseTimedAction:derive("ISRackFirearm")
@@ -80,7 +76,8 @@ function ISRackFirearm:rackBullet()
 end
 
 function ISRackFirearm:removeBullet()
-	local newBullet = instanceItem(self.gun:getAmmoType())
+    local itemKey = self.gun:getAmmoType():getItemKey();
+	local newBullet = instanceItem(itemKey)
 	self.character:getInventory():AddItem(newBullet)
 	sendAddItemToContainer(self.character:getInventory(), newBullet)
 end
@@ -207,4 +204,4 @@ function ISRackFirearm:new(character, gun)
 	o.useProgressBar = false
 	o.gun = gun
 	return o
-end	
+end

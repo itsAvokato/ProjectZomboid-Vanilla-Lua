@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**            Author: turbotutone / spurcival            **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -62,6 +58,7 @@ function ISWidgetIngredientsOutputs:addInput(_inputScript)
     if _inputScript:getCreateToItemScript() then
         local output = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetInput, 0, 0, 10, 10, self.player, self.logic, _inputScript);
         output.interactiveMode = self.interactiveMode;
+        output.isBuildMenu = self.isBuildMenu;
         output.displayAsOutput = true;
         output:initialise();
         output:instantiate();
@@ -86,6 +83,7 @@ function ISWidgetIngredientsOutputs:addKeeps(_inputScript)
     if _inputScript:getCreateToItemScript() then
         local output = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetInput, 0, 0, 10, 10, self.player, self.logic, _inputScript);
         output.interactiveMode = self.interactiveMode;
+        output.isBuildMenu = self.isBuildMenu;
         output.displayAsOutput = true;
         output:initialise();
         output:instantiate();
@@ -101,6 +99,7 @@ function ISWidgetIngredientsOutputs:addKeeps(_inputScript)
     else
         local output = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetInput, 0, 0, 10, 10, self.player, self.logic, _inputScript);
         output.interactiveMode = self.interactiveMode;
+        output.isBuildMenu = self.isBuildMenu;
         output.displayAsOutput = true;
         output:initialise();
         output:instantiate();
@@ -112,6 +111,7 @@ end
 function ISWidgetIngredientsOutputs:addOutput(_outputScript)
     local output = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetOutput, 0, 0, 10, 10, self.player, self.logic, _outputScript);
     output.interactiveMode = self.interactiveMode;
+    output.isBuildMenu = self.isBuildMenu;
     output:initialise();
     output:instantiate();
     self:addChild(output);
@@ -203,10 +203,6 @@ function ISWidgetIngredientsOutputs:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISWidgetIngredientsOutputs:new
---**
---************************************************************************--
 function ISWidgetIngredientsOutputs:new (x, y, width, height, player, logic) -- recipeData, craftBench)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

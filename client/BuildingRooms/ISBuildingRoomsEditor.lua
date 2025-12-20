@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingRooms/ISBuildingRoomsEditor_BuildingPanel"
 require "BuildingRooms/ISBuildingRoomsEditor_RoomPanel"
 --require "BuildingRooms/ISBuildingRoomsEditor_ToolAddBuilding"

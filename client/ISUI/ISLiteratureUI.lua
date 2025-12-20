@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISCollapsableWindowJoypad"
 require "ISUI/ISScrollingListBox"
 require "ISUI/ISTabPanel"
@@ -91,8 +87,6 @@ ISLiteratureUI.SetItemHidden('Base.WildGarlicBagSeed_Empty', true)
 ISLiteratureUI.SetItemHidden('Base.ZucchiniBagSeed_Empty', true)
 
 
------
-
 function ISLiteratureList:doDrawItem(y, item, alt)
 --[[
 	if self.selected == item.index then
@@ -123,7 +117,7 @@ function ISLiteratureList:doDrawItem(y, item, alt)
 			if self.character:getAlreadyReadBook():contains(item.item:getFullName()) then
 				r,g,b = 1.0,1.0,1.0
 				known = true
-			elseif (item.item:getTeachedRecipes() ~= nil) and self.character:getKnownRecipes():containsAll(item.item:getTeachedRecipes()) then
+			elseif (item.item:getLearnedRecipes() ~= nil) and self.character:getKnownRecipes():containsAll(item.item:getLearnedRecipes()) then
 				r,g,b = 1.0,1.0,1.0
 				known = true
 			end
@@ -182,8 +176,6 @@ function ISLiteratureList:new(x, y, width, height, character)
 	return o
 end
 
------
-
 function ISLiteratureMediaList:doDrawItem(y, item, alt)
 	local metaKnowledge = getSandboxOptions():getOptionByName("MetaKnowledge"):getValue()
 	if not getZomboidRadio():getRecordedMedia():hasListenedToAll(self.character, item.item) and metaKnowledge == 3 then
@@ -232,8 +224,6 @@ function ISLiteratureMediaList:new(x, y, width, height, character)
 	return o
 end
 
------
-
 function ISLiteratureGrowingList:doDrawItem(y, item, alt)
 	local itemPadY = (item.height - self.fontHgt) / 2
 --     local typeOfSeed = item.text
@@ -241,48 +231,20 @@ function ISLiteratureGrowingList:doDrawItem(y, item, alt)
     if not prop then return y end
     if not prop.seasonRecipe then return y end
     if not self.character:isRecipeActuallyKnown(prop.seasonRecipe) then return y end
+    local texture = getTexture(prop.icon)
+    if texture then
+        local texWidth = texture:getWidthOrig()
+        local texHeight = texture:getHeightOrig()
+        local a = 1
+        if texWidth <= 32 and texHeight <= 32 then
+            self:drawTexture(texture,6+(32-texWidth)/2,y+(item.height-texHeight)/2,a,1,1,1)
+        else
+            self:drawTextureScaledAspect(texture,6,y+(item.height-texHeight)/2,32,32,a,1,1,1)
+        end
+    end
 
     local text = (getText("Farming_" .. item.text));
     text = text .. "<LINE>" .. ISFarmingMenu.plantInfo(prop)
-
---     text = text .. "<LINE>" ..  getText("Farming_Tooltip_MinWater") .. farming_vegetableconf.props[typeOfSeed].waterLvl .. "";
---     if farming_vegetableconf.props[typeOfSeed].waterLvlMax then
---         text = text .. "<LINE>" .. getText("Farming_Tooltip_MaxWater") ..  farming_vegetableconf.props[typeOfSeed].waterLvlMax;
---     end
---     text = text .. "<LINE>"  .. getText("Farming_Tooltip_TimeOfGrow") .. math.floor((farming_vegetableconf.props[typeOfSeed].timeToGrow * farming_vegetableconf.props[typeOfSeed].harvestLevel) / 24 * calcNextTimeFactor()) .. " " .. getText("IGUI_Gametime_days");
---     --         local waterPlus = "";
---     if farming_vegetableconf.props[typeOfSeed].waterLvlMax then
---        local waterPlus = "-" .. farming_vegetableconf.props[typeOfSeed].waterLvlMax;
---          text = text .. "<LINE>" .. getText("Farming_Tooltip_AverageWater") .. farming_vegetableconf.props[typeOfSeed].waterLvl .. waterPlus;
---     end
---     --              text = text .. " <LINE> " .. getText("Farming_Tooltip_AverageWater") .. farming_vegetableconf.props[typeOfSeed].waterLvl .. waterPlus;
---     if getSandboxOptions():getOptionByName("PlantGrowingSeasons"):getValue() == true and prop.sowMonth then
---         text = text .. "<LINE>" .. getText("Farming_Tooltip_InSeason") .. ": " -- .. "<LINE>";
---         local comma = false
---         for i = 1, #prop.sowMonth do
---             if comma then  text = text .. ", " end
---             text = text .. getText("Farming_Month_" .. prop.sowMonth[i])
---             comma = true
---         end
---         if prop.bestMonth then
---              text = text .. "<LINE>" .. getText("Farming_Tooltip_BestMonth2") .. ": ";
---             local comma = false
---             for i = 1, #prop.bestMonth do
---                 if comma then  text = text .. ", " end
---                 text = text .. getText("Farming_Month_" .. prop.bestMonth[i])
---                 comma = true
---             end
---         end
---         if prop.riskMonth then
---             text = text .. "<LINE>" .. getText("Farming_Tooltip_RiskMonth2") .. ": ";
---             local comma = false
---             for i = 1, #prop.riskMonth do
---                 if comma then  text = text .. ", " end
---                 text = text .. getText("Farming_Month_" .. prop.riskMonth[i])
---                 comma = true
---             end
---         end
---     end
 
     local lines = nil
     if #text:split("<LINE>")>1 then
@@ -313,8 +275,6 @@ function ISLiteratureGrowingList:new(x, y, width, height, character)
 	o.character = character
 	return o
 end
-
------
 
 function ISLiteratureUI:createChildren()
 	ISCollapsableWindowJoypad.createChildren(self)
@@ -404,14 +364,14 @@ function ISLiteratureUI:setLists()
 	local allItems = getScriptManager():getAllItems()
 	for i=1,allItems:size() do
 		local item = allItems:get(i-1)
-		if item:getType() == Type.Literature then
+		if item:isItemType(ItemType.LITERATURE) then
 			if not LITERATURE_HIDDEN[item:getFullName()] then
 				if SkillBook[item:getSkillTrained()] then
 					table.insert(skillBooks, item)
-				elseif item:getTeachedRecipes() ~= nil then
+				elseif item:getLearnedRecipes() ~= nil then
 					table.insert(other, item)
-					for j=1, item:getTeachedRecipes():size() do
-						local recipe = item:getTeachedRecipes():get(j-1)
+					for j=1, item:getLearnedRecipes():size() do
+						local recipe = item:getLearnedRecipes():get(j-1)
 						table.insert(recipes, recipe)
 					end
 				end

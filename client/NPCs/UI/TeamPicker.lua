@@ -31,10 +31,6 @@ function TeamPicker:onOptionMouseDown(button, x, y)
 
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function TeamPicker:createChildren()
 
 

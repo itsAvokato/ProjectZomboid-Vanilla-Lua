@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 buildUtil = {};
 buildUtil.cheat = false or getDebug(); -- we need this? we already have "ISBuildMenu.cheat"
 
@@ -21,8 +17,8 @@ buildUtil.canBePlace = function(ISItem, square)
     end
 	for i = 0, square:getObjects():size() - 1 do
 		local item = square:getObjects():get(i);
-		if (item:getSprite() and ((item:getSprite():getProperties():Is(IsoFlagType.collideN) and ISItem.north) or
-				(item:getSprite():getProperties():Is(IsoFlagType.collideW) and not ISItem.north))) or
+		if (item:getSprite() and ((item:getSprite():getProperties():has(IsoFlagType.collideN) and ISItem.north) or
+				(item:getSprite():getProperties():has(IsoFlagType.collideW) and not ISItem.north))) or
 				((instanceof(item, "IsoThumpable") and (item:getNorth() == ISItem.north or ISItem.ignoreNorth)) and not item:isCorner() and not item:isFloor()) or
 				(instanceof(item, "IsoWindow") and item:getNorth() == ISItem.north) or
 				(instanceof(item, "IsoDoor") and item:getNorth() == ISItem.north) then
@@ -49,7 +45,7 @@ buildUtil.getWoodHealth = function(ISItem)
         playerObj = getSpecificPlayer(ISItem.player)
     end
 	local health = (playerObj:getPerkLevel(Perks.Woodwork) * 50);
-	if playerObj:HasTrait("Handy") then
+	if playerObj:hasTrait(CharacterTrait.HANDY) then
 		health = health + 100;
 	end
 	return health;
@@ -429,7 +425,7 @@ local function hasStairElements( x, y, z, checkTypes)
     local square = getCell():getGridSquare(x, y, z)
     if square and square:getFloor() then
         for _,objType in pairs(checkTypes) do
-            if square:Has(objType) then
+            if square:has(objType) then
                 return true;
             end
         end
@@ -486,11 +482,11 @@ end
 local function countAdjacentStairs(x, y, z)
 	local count = 0
 	local square = getCell():getGridSquare(x + 1, y, z)
-	if square and square:Has(IsoObjectType.stairsTW) then
+	if square and square:has(IsoObjectType.stairsTW) then
 		count = count + 1
 	end
 	square = getCell():getGridSquare(x, y + 1, z)
-	if square and square:Has(IsoObjectType.stairsTN) then
+	if square and square:has(IsoObjectType.stairsTN) then
 		count = count + 1
 	end
 	return count

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_RemoveCampfire = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_RemoveCampfire")

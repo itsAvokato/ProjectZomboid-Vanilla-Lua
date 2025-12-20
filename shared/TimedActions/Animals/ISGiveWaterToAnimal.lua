@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISGiveWaterToAnimal = ISBaseTimedAction:derive("ISGiveWaterToAnimal");
@@ -34,13 +30,12 @@ function ISGiveWaterToAnimal:update()
 		--	print(math.floor(self.timer / 20))
 		if math.floor(self.timer / self.timePerUse) > self.lastTimer then
 			self.lastTimer = math.floor(self.timer / self.timePerUse);
-			self.animal:getStats():setThirst(self.animal:getStats():getThirst() - (0.05 * self.animal:getThirstBoost()));
+			self.animal:getStats():remove(CharacterStat.THIRST, 0.05 * self.animal:getThirstBoost());
 			self.item:getFluidContainer():removeFluid(0.05, false);
 
 			addXp(self.character, Perks.Husbandry, 2);
 
-			if self.animal:getStats():getThirst() <= 0 or self.item:getFluidContainer():isEmpty() then
-				self.animal:getStats():setThirst(0);
+			if self.animal:getStats():get(CharacterStat.THIRST) <= 0 or self.item:getFluidContainer():isEmpty() then
 				self:forceStop();
 			end
 		end
@@ -89,13 +84,12 @@ end
 function ISGiveWaterToAnimal:animEvent(event, parameter)
 	if isServer() then
 		if event == "update" then
-			self.animal:getStats():setThirst(self.animal:getStats():getThirst() - (0.05 * self.animal:getThirstBoost()));
+			self.animal:getStats():remove(CharacterStat.THIRST, 0.05 * self.animal:getThirstBoost());
 			self.item:getFluidContainer():removeFluid(0.05, false);
 			self.item:sendSyncEntity(nil)
             addXp(self.character, Perks.Husbandry, 2);
 
-			if self.animal:getStats():getThirst() <= 0 or self.item:getFluidContainer():isEmpty() then
-				self.animal:getStats():setThirst(0);
+			if self.animal:getStats():get(CharacterStat.THIRST) <= 0 or self.item:getFluidContainer():isEmpty() then
 				self.netAction:forceComplete();
 			end
 		end
@@ -114,8 +108,7 @@ function ISGiveWaterToAnimal:getDuration()
 	--if self.character:isTimedActionInstant() then
 	--	return 1
 	--end
-	local maxWater = self.animal:getStats():getThirst() * 20;
--- 	local maxUse = item:getCurrentUsesFloat() / item:getUseDelta();
+	local maxWater = self.animal:getStats():get(CharacterStat.THIRST) * 20;
 	local maxUse = self.item:getFluidContainer():getCapacity() / 0.05;
 	local maxTime = (maxWater * self.timePerUse) + 5;
 	if maxWater > maxUse then

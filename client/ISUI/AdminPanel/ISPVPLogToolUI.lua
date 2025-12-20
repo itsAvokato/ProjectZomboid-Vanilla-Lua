@@ -103,14 +103,16 @@ function ISPVPLogToolUI:prerender()
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
     self:drawText(getText("IGUI_AdminPanel_PVPLogTool"), self.width/2 - (getTextManager():MeasureStringX(UIFont.Medium, getText("IGUI_AdminPanel_PVPLogTool")) / 2), UI_BORDER_SPACING + 1, 1, 1, 1, 1, UIFont.Medium);
     self:drawRect(UI_BORDER_SPACING * 2, UI_BORDER_SPACING * 2 + FONT_HGT_SMALL, self.width - UI_BORDER_SPACING * 4, 1, 0.5, 1, 1, 1);
-    if getPlayer():getRole():hasCapability(Capability.TeleportToPlayer) then
+    if getPlayer():getRole():hasCapability(Capability.TeleportToCoordinates) then
         self.teleport:setVisible(ISPVPLogToolUI.instance.selectedItem ~= nil)
     end
 end
 
 function ISPVPLogToolUI:onClick(button)
     if button.internal == "CLOSE" then
-        SendCommandToServer("/reloadoptions")
+        if getPlayer():getRole():hasCapability(Capability.ChangeAndReloadServerOptions) then
+            SendCommandToServer("/reloadoptions")
+        end
         ISPVPLogToolUI.instance:closeModal()
         return
     end

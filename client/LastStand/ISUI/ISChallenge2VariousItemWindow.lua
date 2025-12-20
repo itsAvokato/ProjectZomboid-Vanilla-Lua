@@ -1,17 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**              Panel wich display all our skills        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISChallenge2VariousItemWindow = ISPanelJoypad:derive("ISChallenge2VariousItemWindow");
-
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISChallenge2VariousItemWindow:initialise()
 	ISPanelJoypad.initialise(self);

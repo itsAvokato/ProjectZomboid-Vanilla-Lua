@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**              Panel wich display all our skills        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISUI3DModel"
 
@@ -16,23 +11,21 @@ local AVATAR_BORDER = 2 -- the thin border around the avatar image is 2 pixels t
 
 local function predicateRazor(item)
 	if item:isBroken() then return false end
-	return item:hasTag("Razor") or item:getType() == "Razor"
+	return item:hasTag(ItemTag.RAZOR) or item:getType() == "Razor"
 end
 
 local function predicateScissors(item)
 	if item:isBroken() then return false end
-	return item:hasTag("Scissors") or item:getType() == "Scissors"
+	return item:hasTag(ItemTag.SCISSORS) or item:getType() == "Scissors"
 end
 
 local function predicateDoHairdo(item)
-	return item:hasTag("DoHairdo") or item:getType() == "Hairgel" or item:getType() == "Hairspray2"
+	return item:hasTag(ItemTag.DO_HAIRDO) or item:getType() == "Hairgel" or item:getType() == "Hairspray2"
 end
 
 local function predicateSlickHair(item)
-	return item:hasTag("SlickHair") or item:getType() == "Hairgel"
+	return item:getType() == "Hairgel"
 end
-
------
 
 ISCharacterScreenAvatar = ISUI3DModel:derive("ISCharacterScreenAvatar")
 
@@ -45,13 +38,6 @@ function ISCharacterScreenAvatar:new(x, y, width, height)
 	return o
 end
 
------
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 local function predicateNotBroken(item)
 	return not item:isBroken()
 end
@@ -61,9 +47,7 @@ function ISCharacterScreen:initialise()
 	self:create();
 end
 
-
 function ISCharacterScreen:setVisible(visible, joypadData)
---    self.parent:setVisible(visible);
 	if visible then
 		self:loadTraits();
 		self:loadProfession();
@@ -88,20 +72,12 @@ function ISCharacterScreen:prerender()
 end
 
 function ISCharacterScreen:render()
-
---	if self.Strength ~= self.char:getPerkLevel(Perks.Strength) or
---			self.Fitness ~= self.char:getPerkLevel(Perks.Fitness) then
 	if self:traitsChanged() then
 		self:loadTraits();
     end
     self:loadProfession();
 	self:loadBeardAndHairStyle();
---	end
-	
---~ 	ISCharacterScreen.loadTraits(self);
-
 	ISCharacterScreen.loadFavouriteWeapon(self);
-
 
 	local z = UI_BORDER_SPACING
 
@@ -446,7 +422,7 @@ function ISCharacterScreen:hairMenu(button)
 					if not player:getInventory():containsTypeRecurse("Hairspray2") then
 						self:addTooltip(option, getText("Tooltip_requireHairSpray"));
 					end	
-				elseif not player:getInventory():containsTagEvalRecurse("Scissors", predicateNotBroken) then
+				elseif not player:getInventory():containsTagEvalRecurse(ItemTag.SCISSORS, predicateNotBroken) then
 					self:addTooltip(option, getText("Tooltip_RequireScissors"));
 				end
 			end
@@ -598,11 +574,11 @@ end
 
 ISCharacterScreen.setDisplayedTraits = function(self)
 	table.wipe(self.displayedTraits)
-	local traits = self.char:getTraits()
+	local traits = self.char:getCharacterTraits():getKnownTraits()
 	for i=1,traits:size() do
-		local trait = TraitFactory.getTrait(traits:get(i-1))
-		if trait and trait:getTexture() then
-			table.insert(self.displayedTraits, trait)
+		local characterTraitDefinition = CharacterTraitDefinition.getCharacterTraitDefinition(traits:get(i-1))
+		if characterTraitDefinition and characterTraitDefinition:getTexture() then
+			table.insert(self.displayedTraits, characterTraitDefinition)
 		end
 	end
 end
@@ -629,7 +605,7 @@ ISCharacterScreen.loadTraits = function(self)
 	for _,trait in ipairs(self.displayedTraits) do
 		local textImage = ISImage:new(0, 0, trait:getTexture():getWidthOrig(), trait:getTexture():getHeightOrig(), trait:getTexture());
 		textImage:initialise();
-		textImage:setMouseOverText(trait:getLabel());
+		textImage:setMouseOverText(trait:getLabel().."\n"..trait:getDescription());
 		textImage:setVisible(false);
 		textImage.trait = trait;
 		self:addChild(textImage);
@@ -660,15 +636,15 @@ ISCharacterScreen.loadBeardAndHairStyle = function(self)
 end
 
 ISCharacterScreen.loadProfession = function(self)
-	self.professionTexture = nil;
-	self.profession = nil;
-	if self.char:getDescriptor() and self.char:getDescriptor():getProfession() then
-		local prof = ProfessionFactory.getProfession(self.char:getDescriptor():getProfession());
-		if prof then
-			self.profession = prof:getName();
-			self.professionTexture = prof:getTexture();
-		end
-	end
+    self.professionTexture = nil;
+    self.profession = nil;
+    if self.char:getDescriptor() and self.char:getDescriptor():getCharacterProfession() then
+        local characterProfessionDefinition = CharacterProfessionDefinition.getCharacterProfessionDefinition(self.char:getDescriptor():getCharacterProfession());
+        if characterProfessionDefinition then
+        self.profession = characterProfessionDefinition:getUIName();
+        self.professionTexture = characterProfessionDefinition:getTexture();
+        end
+    end
 end
 
 ISCharacterScreen.loadFavouriteWeapon = function(self)

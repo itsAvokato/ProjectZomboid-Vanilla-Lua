@@ -1,8 +1,3 @@
----
---- Created by Iurii.
---- DateTime: 3/6/2024 3:46 AM
----
-
 ISWarManagerUI = ISPanel:derive("ISWarManagerUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -10,12 +5,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local prevWarNum = 0
-
-
---************************************************************************--
---** ISWarManagerUI:initialise
---**
---************************************************************************--
 
 function ISWarManagerUI:initialise()
     ISPanel.initialise(self);
@@ -103,6 +92,13 @@ function ISWarManagerUI:populateList()
     end
 end
 
+function ISWarManagerUI:drawTextRecordWidth(text, x, y, r, g, b, a, font)
+    local textWid = getTextManager():MeasureStringX(font, text)
+    local textPadX = 8
+    self.parent.minListWidth = math.max(self.parent.minListWidth, x + textWid + textPadX)
+    self:drawText(text, x, y, r, g, b, a, font)
+end
+
 function ISWarManagerUI:drawDatas(y, item, alt)
     if ISWarManagerUI.instance then
         local a = 0.9;
@@ -113,26 +109,41 @@ function ISWarManagerUI:drawDatas(y, item, alt)
             self:drawRect(0, (y), self:getWidth(), self.itemheight, 0.3, 0.7, 0.35, 0.15);
         end
 
+        local text1 = getText("IGUI_WarManager_Attacker")
+        local text2 = getText("IGUI_WarManager_Defender")
+        local state = item.text:getState():name()
+
+        local textWid1 = getTextManager():MeasureStringX(UIFont.Small, text1)
+        local textWid2 = getTextManager():MeasureStringX(UIFont.Small, text2)
+        local textWid3 = getTextManager():MeasureStringX(UIFont.Small, state)
+        local textWid = math.max(textWid1, textWid2, textWid3)
+
+        local labelR,labelG,labelB = 0.66,0.66,0.66
+        self.drawTextRecordWidth = self.parent.drawTextRecordWidth
+
         local attacker = item.text:getAttacker()
-        self:drawText(getText("IGUI_WarManager_Attacker"), UI_BORDER_SPACING, y + UI_BORDER_SPACING/2, 1, 1, 1, 1, UIFont.Small);
+        local textX = 8
+        local textY = y + (item.height - FONT_HGT_SMALL * 3) / 2
+        local textGap = 8
+        self:drawText(text1, textX, textY, labelR, labelG, labelB, 1, UIFont.Small);
         if ISWarManagerUI.instance.player:getUsername() == attacker then
-            self:drawText(getText("IGUI_WarManager_You"), UI_BORDER_SPACING, y + FONT_HGT_SMALL + UI_BORDER_SPACING/2, 0, 1, 0, 1, UIFont.Medium);
+            self:drawTextRecordWidth(getText("IGUI_WarManager_You"), textX + textWid + textGap, textY, 0, 1, 0, 1, UIFont.Small);
         else
-            self:drawText(attacker, UI_BORDER_SPACING, y + FONT_HGT_SMALL + UI_BORDER_SPACING/2, 1, 0, 0, 1, UIFont.Medium);
+            self:drawTextRecordWidth(attacker, textX + textWid + textGap, textY, 1, 0, 0, 1, UIFont.Small);
         end
+        textY = textY + FONT_HGT_SMALL
 
         local defender = item.text:getDefender()
-        self:drawText(getText("IGUI_WarManager_Defender"), self.width - (getTextManager():MeasureStringX(UIFont.Small, getText("IGUI_WarManager_Defender"))) - ISWarManagerUI.instance.scrollBarSpacing, y + UI_BORDER_SPACING/2, 1, 1, 1, 1, UIFont.Small);
+        self:drawText(text2, textX, textY, labelR, labelG, labelB, 1, UIFont.Small);
         if ISWarManagerUI.instance.player:getUsername() == defender then
-            self:drawText(getText("IGUI_WarManager_You"), self.width - (getTextManager():MeasureStringX(UIFont.Medium, getText("IGUI_WarManager_You"))) - ISWarManagerUI.instance.scrollBarSpacing, y + FONT_HGT_SMALL + UI_BORDER_SPACING/2, 0, 1, 0, 1, UIFont.Medium);
+            self:drawTextRecordWidth(getText("IGUI_WarManager_You"), textX + textWid2 + textGap, textY, 0, 1, 0, 1, UIFont.Small);
         else
-            self:drawText(defender, self.width - (getTextManager():MeasureStringX(UIFont.Medium, defender)) - ISWarManagerUI.instance.scrollBarSpacing, y + FONT_HGT_SMALL  + UI_BORDER_SPACING/2, 1, 0, 0, 1, UIFont.Medium);
+            self:drawTextRecordWidth(defender, textX + textWid + textGap, textY, 1, 0, 0, 1, UIFont.Small);
         end
+        textY = textY + FONT_HGT_SMALL
 
-        local state = item.text:getState():name()
-        self:drawText(state, self.width/2 - (getTextManager():MeasureStringX(UIFont.Medium, state) / 2), y + UI_BORDER_SPACING/2, 1, 1, 1, 1, UIFont.Medium);
+        self:drawText(state, textX, textY, labelR, labelG, labelB, 1, UIFont.SMALL);
         local time = ""
-
         if state == 'Claimed' then
             time = getText("IGUI_WarManager_TimeToAccept", item.text:getTime())
         elseif state == 'Accepted' then
@@ -140,8 +151,7 @@ function ISWarManagerUI:drawDatas(y, item, alt)
         elseif state == 'Refused' or state == 'Canceled' or state == 'Started' or state == 'Blocked' then
             time = getText("IGUI_WarManager_TimeToEnd", item.text:getTime())
         end
-
-        self:drawText(time, self.width/2 - (getTextManager():MeasureStringX(UIFont.Small, time) / 2), y + FONT_HGT_MEDIUM + UI_BORDER_SPACING / 2, 1, 1, 1, 1, UIFont.Small);
+        self:drawTextRecordWidth(time, textX + textWid + textGap, textY, 1, 1, 1, 1, UIFont.Small);
     end
     return y + self.itemheight;
 end
@@ -188,6 +198,19 @@ function ISWarManagerUI:prerender()
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
     self:drawText(getText("IGUI_AdminPanel_SeeWars"), self.width/2 - (getTextManager():MeasureStringX(UIFont.Medium, getText("IGUI_AdminPanel_SeeWars")) / 2), UI_BORDER_SPACING+1, 1,1,1,1, UIFont.Medium);
+    self.minListWidth = 0 -- window expands to contents
+end
+
+function ISWarManagerUI:update()
+    ISPanel.update(self)
+    local minListWidth = self.minListWidth or 0
+    if self.datas:isVScrollBarVisible() then
+        minListWidth = minListWidth + self.datas.vscroll.width
+    end
+    if minListWidth > self.datas.width then
+        self.datas:setWidth(minListWidth)
+        self:shrinkWrap(UI_BORDER_SPACING, UI_BORDER_SPACING, nil)
+    end
 end
 
 function ISWarManagerUI:onClick(button)
@@ -219,19 +242,12 @@ function ISWarManagerUI:closeModal()
     ISWarManagerUI.instance = nil
 end
 
---************************************************************************--
---** ISWarManagerUI:new
---**
---************************************************************************--
 function ISWarManagerUI:new(x, y, width, height, player)
-    local o = {}
-    local itemheight = FONT_HGT_SMALL + UI_BORDER_SPACING + FONT_HGT_MEDIUM
+    local itemheight = FONT_HGT_SMALL * 3
     height = UI_BORDER_SPACING * 5 + FONT_HGT_MEDIUM + itemheight * 3 + BUTTON_HGT * 2
     x = getCore():getScreenWidth() / 2 - (width / 2);
     y = getCore():getScreenHeight() / 2 - (height / 2);
-    o = ISPanel:new(x, y, width, height);
-    setmetatable(o, self)
-    self.__index = self
+    local o = ISPanel.new(self, x, y, width, height);
     o.borderColor = {r=0.4, g=0.4, b=0.4, a=8};
     o.backgroundColor = {r=0, g=0, b=0, a=0.8};
     o.width = width;

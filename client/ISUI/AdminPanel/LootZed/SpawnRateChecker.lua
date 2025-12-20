@@ -133,30 +133,14 @@ function LootZedTool.rollProceduralItem_CalcChances(proceduralItems, container, 
 end
 
 function LootZedTool.doRollItem_CalcChances(containerDist, _, _, character, _, isJunk, _)
-    local lucky = false
-    local unlucky = false
     local itemName = ""
-
-    if character ~= nil then
-        lucky = character:getTraits():contains("Lucky")
-        unlucky = character:getTraits():contains("Unlucky")
-    end
-
     local n = containerDist.rolls
-
     for i=1, #containerDist.items, 2 do
         itemName = containerDist.items[i]
         local itemNumber = containerDist.items[i+1]
 
-        if lucky then
-            itemNumber = itemNumber * 1.1
-        end
-        if unlucky then
-            itemNumber = itemNumber * 0.9
-        end
 
         local lootModifier = ItemPickerJava.getLootModifier(itemName)
-
         if isJunk then
             lootModifier = 1.0
             itemNumber = itemNumber * 1.4
@@ -231,8 +215,6 @@ function LootZedTool.fillContainer_CalcChances(container, player)
     LootZedTool.SpawnItemChecker.forceForZones = ""
     LootZedTool.SpawnItemChecker.forceForTiles = ""
     LootZedTool.SpawnItemChecker.forceForRooms = ""
-
-    --- --- ---
 
     if instanceof(container:getParent(), "BaseVehicle") then
         local vehicle = container:getParent()

@@ -1,9 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISFactionUI = ISPanel:derive("ISFactionUI");
 ISFactionUI.messages = {};
 ISFactionUI.inviteDialogs = {}
@@ -13,11 +7,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISFactionUI:initialise
---**
---************************************************************************--
 
 function ISFactionUI:initialise()
     ISPanel.initialise(self);
@@ -405,10 +394,6 @@ function ISFactionUI:onRemovePlayerFromFaction(button, player)
     end
 end
 
---************************************************************************--
---** ISFactionUI:new
---**
---************************************************************************--
 function ISFactionUI:new(x, y, width, height, faction, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);
@@ -482,4 +467,3 @@ end
 Events.SyncFaction.Add(ISFactionUI.SyncFaction);
 Events.ReceiveFactionInvite.Add(ISFactionUI.ReceiveFactionInvite);
 Events.AcceptedFactionInvite.Add(ISFactionUI.AcceptedFactionInvite);
-

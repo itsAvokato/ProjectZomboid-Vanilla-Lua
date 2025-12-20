@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISTakeWaterAction = ISBaseTimedAction:derive("ISTakeWaterAction");
@@ -42,7 +38,7 @@ function ISTakeWaterAction:updateUse(targetDelta)
                 currentUsedAmount = self.item:getFluidContainer():getAmount();
             end
         else
-            currentUsedAmount = self.startThirst - (self.character:getStats():getThirst() * 2);
+            currentUsedAmount = self.startThirst - (self.character:getStats():get(CharacterStat.THIRST) * 2);
         end
         local usedSoFar = currentUsedAmount - self.startUsedAmount;
 
@@ -53,21 +49,22 @@ end
 
 function ISTakeWaterAction:start()
     local props = self.waterObject:getProperties()
-    local hasWaterFlag = (props ~= nil) and props:Is(IsoFlagType.water)
-    local isLakeOrRiver = not instanceof(self.waterObject, "IsoWorldInventoryObject") and (props ~= nil) and luautils.stringStarts(self.waterObject:getSprite():getName(), 'blends_natural_02')
-    local isPuddle = not hasWaterFlag and not isLakeOrRiver and (props ~= nil) and props:Is(IsoFlagType.solidfloor)
+    local hasWaterFlag = (props ~= nil) and props:has(IsoFlagType.water)
+    local isInventoryItem = instanceof(self.waterObject, "IsoWorldInventoryObject")
+    local isLakeOrRiver = not isInventoryItem and (props ~= nil) and luautils.stringStarts(self.waterObject:getSprite():getName(), 'blends_natural_02')
+    local isPuddle = not hasWaterFlag and not isLakeOrRiver and (props ~= nil) and props:has(IsoFlagType.solidfloor)
     
     if self.item ~= nil then
 		self.item:setBeingFilled(true)
 	    self.item:setJobType(getText("ContextMenu_Fill") .. self.item:getName());
 	    self.item:setJobDelta(0.0);
-        if (props ~= nil) and (props:Val("CustomName") == "Dispenser") then
+        if (props ~= nil) and (props:get("CustomName") == "Dispenser") then
             self.sound = self.character:playSound(self.item:getFillFromDispenserSound() or "GetWaterFromDispenser");
-        elseif (props ~= nil) and (props:Val("CustomName") == "Toilet") then
+        elseif (props ~= nil) and (props:get("CustomName") == "Toilet") then
             self.sound = self.character:playSound(self.item:getFillFromToiletSound() or "GetWaterFromToilet");
         elseif instanceof(self.waterObject, "IsoThumpable") or hasWaterFlag or isLakeOrRiver or isPuddle then -- play the drink sound for rain barrel
             self.sound = self.character:playSound("GetWaterFromLake");
-        elseif isLakeOrRiver then
+        elseif isLakeOrRiver or isInventoryItem then
             self.sound = self.character:playSound(self.item:getFillFromLakeSound() or "GetWaterFromLake");
         else
             self.sound = self.character:playSound(self.item:getFillFromTapSound() or "GetWaterFromTap");
@@ -81,9 +78,9 @@ function ISTakeWaterAction:start()
             self:setOverrideHandModels(self.item:getStaticModel(), nil)
         end
     else
-        if (props ~= nil) and (props:Val("CustomName") == "Dispenser") then
+        if (props ~= nil) and (props:get("CustomName") == "Dispenser") then
             self.sound = self.character:playSound("GetWaterFromDispenser");
-        elseif (props ~= nil) and (props:Val("CustomName") == "Toilet") then
+        elseif (props ~= nil) and (props:get("CustomName") == "Toilet") then
             self.sound = self.character:playSound("DrinkingFromToilet");
         elseif isLakeOrRiver or isPuddle then
             self.sound = self.character:playSound("DrinkingFromRiver");
@@ -151,8 +148,16 @@ function ISTakeWaterAction:transferFluid(_amount)
     end
 end
 
-function ISTakeWaterAction:serverStop()
-    self:updateUse(1);
+function ISTakeWaterAction:serverStart()
+    emulateAnimEvent(self.netAction, 100, "takeFluid", nil);
+end
+
+function ISTakeWaterAction:animEvent(event, parameter)
+    if isServer() then
+        if event == "takeFluid" then
+		    self:updateUse(self.netAction:getProgress());
+        end
+    end
 end
 
 function ISTakeWaterAction:getDuration()
@@ -181,7 +186,7 @@ function ISTakeWaterAction:new (character, item, waterObject, waterTaintedCL)
 		    o.waterUnit = math.min(o.endUsedAmount - o.startUsedAmount, waterAvailable)
         end
     else
-        local thirst = o.character:getStats():getThirst() * 2
+        local thirst = o.character:getStats():get(CharacterStat.THIRST) * 2
         local waterNeeded = math.min(thirst, waterAvailable)
         o.waterUnit = waterNeeded
         o.startUsedAmount = 0.0

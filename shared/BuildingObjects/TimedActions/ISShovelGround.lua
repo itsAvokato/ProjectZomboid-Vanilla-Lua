@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISShovelGround = ISBaseTimedAction:derive("ISShovelGround");
@@ -15,11 +11,11 @@ function ISShovelGround:isValid()
 	if isClient() and self.emptyBag then
         return self.character:getInventory():containsID(self.emptyBag:getID()) and
             self.sandTile and self.sandTile:getSprite() and
-            (self.emptyBag:hasTag("HoldDirt") or self.emptyBag:getCurrentUsesFloat() < 1)
+            (self.emptyBag:hasTag(ItemTag.HOLD_DIRT) or self.emptyBag:getCurrentUsesFloat() < 1)
     else
         return self.character:getInventory():contains(self.emptyBag) and
             self.sandTile and self.sandTile:getSprite() and
-            (self.emptyBag:hasTag("HoldDirt") or self.emptyBag:getCurrentUsesFloat() < 1)
+            (self.emptyBag:hasTag(ItemTag.HOLD_DIRT) or self.emptyBag:getCurrentUsesFloat() < 1)
     end
 end
 
@@ -91,14 +87,14 @@ function ISShovelGround:shovelGround(sq)
 			o = sq:getObjects():get(i-1)
 			-- FIXME: blends_grassoverlays tiles should have 'vegitation' flag
 			if o:getSprite() and (
-					o:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) or
-							(o:getSprite():getProperties():Is(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
+					o:getSprite():getProperties():has(IsoFlagType.canBeRemoved) or
+							(o:getSprite():getProperties():has(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
 							(o:getSprite():getName() and luautils.stringStarts(o:getSprite():getName(), "blends_grassoverlays"))) then
 				sq:transmitRemoveItemFromSquare(o)
 			end
 		end
 
-		if self.emptyBag:hasTag("HoldDirt") and (self.newBag == "Base.Dirtbag" or
+		if self.emptyBag:hasTag(ItemTag.HOLD_DIRT) and (self.newBag == "Base.Dirtbag" or
 				self.newBag == "Base.Gravelbag" or self.newBag == "Base.Sandbag" or self.newBag == "Base.Claybag") then
 			local isPrimary = self.character:isPrimaryHandItem(self.emptyBag)
 			local isSecondary = self.character:isSecondaryHandItem(self.emptyBag)

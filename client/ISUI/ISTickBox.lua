@@ -2,21 +2,11 @@ require "ISUI/ISPanel"
 
 ISTickBox = ISPanel:derive("ISTickBox");
 local UI_BORDER_SPACING = 10
---************************************************************************--
---** ISRadioOption:initialise
---**
---************************************************************************--
 
 function ISTickBox:initialise()
 	ISPanel.initialise(self);
 end
 
-
-
---************************************************************************--
---** ISRadioOption:render
---**
---************************************************************************--
 function ISTickBox:prerender()
 	if self.background then
 		self:drawRectStatic(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
@@ -70,10 +60,6 @@ function ISTickBox:isSelected(index)
 	return self.selected[index] == true
 end
 
---************************************************************************--
---** ISRadioOption:render
---**
---************************************************************************--
 function ISTickBox:render()
 	local y = 0;
 	local c = 1;
@@ -169,10 +155,6 @@ function ISTickBox:getTextColor(index, color)
 	end
 end
 
---************************************************************************--
---** ISTickBox:onMouseUp
---**
---************************************************************************--
 function ISTickBox:onMouseUp(x, y)
 	local clickedOption = self.clickedOption
 	self.clickedOption = nil
@@ -210,10 +192,6 @@ function ISTickBox:onMouseDown(x, y)
 	return false;
 end
 
---************************************************************************--
---** ISTickBox:onMouseMove
---**
---************************************************************************--
 function ISTickBox:onMouseMove(dx, dy)
 	local x = self:getMouseX();
 	local y = self:getMouseY();
@@ -230,14 +208,8 @@ function ISTickBox:onMouseMove(dx, dy)
 	else
 		self.mouseOverOption = 0;
     end
-
-
 end
 
---************************************************************************--
---** ISRadioOption:onMouseMoveOutside
---**
---************************************************************************--
 function ISTickBox:onMouseMoveOutside(dx, dy)
 	self.mouseOverOption = 0;
 end

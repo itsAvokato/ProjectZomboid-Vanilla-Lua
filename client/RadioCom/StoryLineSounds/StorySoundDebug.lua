@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISStorySoundsDebug = ISCollapsableWindow:derive("ISStorySoundsDebug");
@@ -48,7 +43,6 @@ end
 
 function ISStorySoundsDebug:onResize()
     ISUIElement.onResize(self);
-    print("resizing");
     local height = self:titleBarHeight();
     local widget = self:resizeWidgetHeight();
     self.tabpanel:setWidth(self.width);

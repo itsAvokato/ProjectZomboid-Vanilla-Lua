@@ -6,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
---************************************************************************--
---** ISAlarmClockDialog:initialise
---**
---************************************************************************--
-
 function ISAlarmClockDialog:initialise()
     ISPanelJoypad.initialise(self);
     local btnWid = BUTTON_HGT --the buttons don't need that much space if they're only displaying 2 digits at most
@@ -169,10 +164,6 @@ function ISAlarmClockDialog:prerender()
     self:drawTextCentre(getText("IGUI_SetAlarm"), self:getWidth()/2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Small);
 end
 
---************************************************************************--
---** ISAlarmClockDialog:render
---**
---************************************************************************--
 function ISAlarmClockDialog:render()
 
 end
@@ -212,10 +203,6 @@ function ISAlarmClockDialog:getCode()
     return n1 + n2 + n3
 end
 
---************************************************************************--
---** ISAlarmClockDialog:new
---**
---************************************************************************--
 function ISAlarmClockDialog:new(x, y, width, height, player, alarm)
     local o = {}
     o = ISPanelJoypad:new(x, y, width, height);

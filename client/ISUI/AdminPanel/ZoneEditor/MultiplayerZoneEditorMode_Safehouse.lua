@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/AdminPanel/ZoneEditor/MultiplayerZoneEditorMode"
 require('ISUI/Maps/Editor/WorldMapEditorResizer')
 
@@ -14,8 +10,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 local function DXY() return 0 end
 
 MultiplayerZoneEditorMode_Safehouse = MultiplayerZoneEditorMode:derive("MultiplayerZoneEditorMode_Safehouse")
-
------
 
 MultiplayerZoneEditorMode_Safehouse_Confirm = ISPanelJoypad:derive("SafehouseConfirm")
 local SafehouseConfirm = MultiplayerZoneEditorMode_Safehouse_Confirm
@@ -218,8 +212,6 @@ function SafehouseConfirm:new(x, y, width, height, target, onclick, player)
 	return o
 end
 
-
------
 
 MultiplayerZoneEditorMode_Safehouse_Details = ISPanel:derive("MultiplayerZoneEditorMode_Safehouse_Details")
 DetailsPanel = MultiplayerZoneEditorMode_Safehouse_Details
@@ -595,8 +587,6 @@ function DetailsPanel.OnSafehousesChanged()
 end
 
 Events.OnSafehousesChanged.Add(DetailsPanel.OnSafehousesChanged)
-
------
 
 function MultiplayerZoneEditorMode_Safehouse:createChildren()
 	local ROWS = 6

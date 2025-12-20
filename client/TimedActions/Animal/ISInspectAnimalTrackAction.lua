@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 22/06/2023
--- Time: 09:18
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISInspectAnimalTrackAction = ISBaseTimedAction:derive("ISInspectAnimalTrackAction");

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISResearchRecipe = ISBaseTimedAction:derive("ISResearchRecipe");
@@ -130,22 +126,22 @@ function ISResearchRecipe:getDuration()
         time = otherTime
     end
 
-    if(self.character:HasTrait("FastLearner")) then
+    if(self.character:hasTrait(CharacterTrait.FAST_LEARNER)) then
         time = time * 0.7;
     end
-    if(self.character:HasTrait("SlowLearner")) then
+    if(self.character:hasTrait(CharacterTrait.SLOW_LEARNER)) then
         time = time * 1.3;
     end
 
     time = time / 2
 
     --reading glasses are a little faster
-    local eyeItem = self.character:getWornItems():getItem("Eyes");
+    local eyeItem = self.character:getWornItems():getItem(ItemBodyLocation.EYES);
     if(eyeItem and eyeItem:getType() == "Glasses_Reading") then
         time = time * 0.9;
     end
     -- using a loupe or magnifying glass also makes it a little faster
-    local magnifier = (self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag("Magnifier")) or (self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag("Magnifier"));
+    local magnifier = (self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag(ItemTag.MAGNIFIER)) or (self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag(ItemTag.MAGNIFIER));
     if magnifier then
         time = time * 0.9;
     end

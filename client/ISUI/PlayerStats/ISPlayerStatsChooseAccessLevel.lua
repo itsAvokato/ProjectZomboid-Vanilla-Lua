@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISPlayerStatsChooseAccessLevelUI = ISPanel:derive("ISPlayerStatsChooseAccessLevelUI");
@@ -18,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsChooseAccessLevelUI:initialise()
     ISPanel.initialise(self);
@@ -40,13 +23,6 @@ function ISPlayerStatsChooseAccessLevelUI:render()
 end
 
 function ISPlayerStatsChooseAccessLevelUI:create()
---    for i=0,ProfessionFactory.getProfessions():size()-1 do
---        local prof = ProfessionFactory.getProfessions():get(i);
---        if self.chr:getDescriptor():getProfession() and prof:getType() ~= self.chr:getDescriptor():getProfession() then
---            table.insert(self.comboList, prof);
---        end
---    end
-
     if self.admin:getRole():hasCapability(Capability.ManipulateWhitelist) then
         local roles = getRoles()
         for i=0,roles:size()-1 do

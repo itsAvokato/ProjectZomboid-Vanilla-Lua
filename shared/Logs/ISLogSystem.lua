@@ -1,13 +1,3 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- ISLogSystem
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
-
 local function inBrackets(_string) return "["..tostring(_string).."]"; end;
 
 local function findCharacter(_action)
@@ -17,11 +7,7 @@ local function findCharacter(_action)
     return getSpecificPlayer(0);
 end;
 
---[[--========  ========--]]--
-
 ISLogSystem = {};
-
---[[--======== getGenericLogText ========--]]--
 
 function ISLogSystem.getGenericLogText(_character, _actionType)
     local logText = "";
@@ -42,8 +28,6 @@ function ISLogSystem.getGenericLogText(_character, _actionType)
     return logText;
 end
 
---[[--======== getObjectPosition ========--]]--
-
 function ISLogSystem.getObjectPosition(_object)
     if instanceof(_object, "IsoObject") then
         return math.floor(_object:getX()) ..","..math.floor(_object:getY())..","..math.floor(_object:getZ());
@@ -51,16 +35,6 @@ function ISLogSystem.getObjectPosition(_object)
         return "invalid object";
     end;
 end
-
---[[--======== logAction ========--
-    @param _action - any table object
-
-    Requires _action.Type string - this is the identifier for ClientActionLogs server option.
-
-    All objects derived from ISBaseObject should have a Type identifier.
-
-    This may only be called from a client.
-]]--
 
 function ISLogSystem.logAction(_action)
     if isClient() then
@@ -98,34 +72,15 @@ function ISLogSystem.logAction(_action)
     end;
 end
 
---[[--======== writeLog ========--
-    @oaram _character   - unused
-    @param _packet      - table containing loggerName and logText keys
-
-    Handles writing the log data. Can be called from client or server.
-]]--
-
 function ISLogSystem.writeLog(_character, _packet)
     writeLog(_packet.loggerName, _packet.logText);
 end
-
---[[--======== sendLog ========--
-    @oaram _character   - IsoPlayer
-    @oaram _loggerName  - log to write to - e.g. "ClientActionLog"
-    @param _logText     - string to write in the log
-
-    Wraps the log data in a table and sends it to the server to be logged.
-
-    This may only be called from a client.
-]]--
 
 function ISLogSystem.sendLog(_character, _loggerName, _logText)
     if isClient() and _loggerName and _logText then
         sendClientCommand(_character, 'ISLogSystem', 'writeLog', {loggerName = _loggerName, logText = _logText});
     end;
 end
-
---[[--======== receiveLog ========--]]--
 
 function ISLogSystem.OnClientCommand(_module, _command, _plObj, _packet)
     if _module ~= "ISLogSystem" then return; end;
@@ -137,8 +92,6 @@ function ISLogSystem.OnClientCommand(_module, _command, _plObj, _packet)
 end
 
 if isServer() then Events.OnClientCommand.Add(ISLogSystem.OnClientCommand); end;
-
---[[--======== init ========--]]--
 
 function ISLogSystem.init()
     ISLogSystem.steamID = getCurrentUserSteamID();

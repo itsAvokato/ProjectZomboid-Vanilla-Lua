@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISWalkToCursor = ISBuildingObject:derive("ISWalkToCursor")
 
 local blockedPathfindingStates = {
@@ -12,28 +8,62 @@ local blockedPathfindingStates = {
     [ClimbThroughWindowState.instance()] = true,
 };
 
+function ISWalkToCursor:tryBuild(x, y, z)
+    self:create(x, y, z, self.north, self:getSprite());
+end
+
 function ISWalkToCursor:create(x, y, z, north, sprite)
+    local targetSquare = self:locateTargetSquare(getWorld():getCell():getGridSquare(x, y, z));
+    if not targetSquare then return; end;
     -- prevents clicking walk-to during certain event states.
     if (blockedPathfindingStates[self.character:getCurrentState()]) then
-        showDebugInfoInChat("Cursor Create \'ISWalkToCursor\' blocked by state " .. tostring(self.character:getCurrentState()));
+        log(DebugType.Action, "Cursor Create \'ISWalkToCursor\' blocked by state " .. tostring(self.character:getCurrentState()));
         return false;
     end;
-    showDebugInfoInChat("Cursor Create \'ISWalkToCursor\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
-	local square = getWorld():getCell():getGridSquare(x, y, z)
+    log(DebugType.Action, "Cursor Create \'ISWalkToCursor\' "..tostring(targetSquare:getX())..", "..tostring(targetSquare:getY())..", "..tostring(targetSquare:getZ())..", "..tostring(north)..", "..tostring(sprite));
 	ISTimedActionQueue.clear(self.character)
-	ISTimedActionQueue.add(ISWalkToTimedAction:new(self.character, square))
+	ISTimedActionQueue.add(ISWalkToTimedAction:new(self.character, targetSquare))
+end
+
+function ISWalkToCursor:locateTargetSquare(square)
+    local testSquare = square;
+    local validSquare = false;
+    local z = square:getZ();
+    local x = square:getX();
+    local y = square:getY();
+
+    if testSquare and not testSquare:TreatAsSolidFloor() then
+        repeat
+            z = z - 1;
+            testSquare = getWorld():getCell():getGridSquare(x, y, z);
+            if testSquare and testSquare:TreatAsSolidFloor()  then
+                validSquare = true;
+                break;
+            end;
+        until
+            validSquare
+            or IsoChunkMap.isGridSquareOutOfRangeZ(z)
+    end;
+
+    return testSquare;
 end
 
 function ISWalkToCursor:isValid(square)
-	return square:TreatAsSolidFloor()
+    local targetSquare = self:locateTargetSquare(getWorld():getCell():getGridSquare(square:getX(), square:getY(), square:getZ()));
+	return targetSquare and targetSquare:TreatAsSolidFloor()
 end
 
 function ISWalkToCursor:render(x, y, z, square)
 	local hc = getCore():getGoodHighlitedColor()
-	if not self:isValid(square) then
+    local targetSquare = self:locateTargetSquare(square);
+	if not self:isValid(targetSquare) then
 		hc = getCore():getBadHighlitedColor()
 	end
-	self:getFloorCursorSprite():RenderGhostTileColor(x, y, z, hc:getR(), hc:getG(), hc:getB(), 0.8)
+	self:getFloorCursorSprite():RenderGhostTileColor(targetSquare:getX(), targetSquare:getY(), targetSquare:getZ(), hc:getR(), hc:getG(), hc:getB(), 0.8)
+    if square ~= targetSquare then
+        hc = getCore():getBadHighlitedColor();
+        self:getFloorCursorSprite():RenderGhostTileColor(square:getX(), square:getY(), square:getZ(), hc:getR(), hc:getG(), hc:getB(), 0.8)
+    end
 end
 
 function ISWalkToCursor:new(sprite, northSprite, character)
@@ -47,6 +77,6 @@ function ISWalkToCursor:new(sprite, northSprite, character)
 	o.player = character:getPlayerNum()
 	o.noNeedHammer = true
 	o.skipBuildAction = true
-	showDebugInfoInChat("Cursor New \'ISWalkToCursor\'")
+    log(DebugType.Action, "Cursor New \'ISWalkToCursor\'")
 	return o
 end

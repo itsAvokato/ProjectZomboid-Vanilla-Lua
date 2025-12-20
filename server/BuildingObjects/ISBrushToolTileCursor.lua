@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 ISBrushToolTileCursor = ISBuildingObject:derive("ISBrushToolTileCursor")
 
 function ISBrushToolTileCursor:create(x, y, z, north, sprite)

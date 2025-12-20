@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 -- this class extend ISBuildingObject, it's a class to help you drag around/place an item in the world
@@ -87,4 +83,3 @@ end
 function RainCollectorBarrel:render(x, y, z, square)
 	ISBuildingObject.render(self, x, y, z, square)
 end
-

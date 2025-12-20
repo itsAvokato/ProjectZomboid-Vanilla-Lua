@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISSleepDialog = ISPanelJoypad:derive("ISSleepDialog")
@@ -17,7 +13,7 @@ function ISSleepDialog:initialise()
 	spinBox:initialise()
 	self:addChild(spinBox)
 
-	local fatigue = self.player:getStats():getFatigue()
+	local fatigue = self.player:getStats():get(CharacterStat.FATIGUE)
 	local hours = 7
 	if fatigue > 0.3 then
 		hours = hours + (12 - 7) * ((fatigue - 0.3) / 0.7)

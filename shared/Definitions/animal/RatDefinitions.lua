@@ -1,15 +1,5 @@
-
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 25/01/2022
--- Time: 10:08
--- To change this template use File | Settings | File Templates.
---
-
 AnimalDefinitions = AnimalDefinitions or {};
 
--- stages
 AnimalDefinitions.stages = AnimalDefinitions.stages or {};
 AnimalDefinitions.stages["rat"] = {};
 AnimalDefinitions.stages["rat"].stages = {};
@@ -22,7 +12,6 @@ AnimalDefinitions.stages["rat"].stages["rat"].ageToGrow = 2 * 30;
 AnimalDefinitions.stages["rat"].stages["ratfemale"] = {};
 AnimalDefinitions.stages["rat"].stages["ratfemale"].ageToGrow = 2 * 30;
 
--- breeds
 AnimalDefinitions.breeds = AnimalDefinitions.breeds or {};
 AnimalDefinitions.breeds["rat"] = {};
 AnimalDefinitions.breeds["rat"].breeds = {};

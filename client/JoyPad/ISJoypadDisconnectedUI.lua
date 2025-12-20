@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISJoypadDisconnectedUI = ISUIElement:derive("ISJoypadDisconnectedUI");
 
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
@@ -58,6 +54,10 @@ end
 
 function ISJoypadDisconnectedUI:useKeyboardMouse()
 	self:removeFromUIManager()
+    ISJoypadDisconnectedUI.setKeyboardMouseActivated()
+end
+
+function ISJoypadDisconnectedUI.setKeyboardMouseActivated()
 	JoypadState.useKeyboardMouse()
 	local playerData = getPlayerData(0)
 	if playerData then

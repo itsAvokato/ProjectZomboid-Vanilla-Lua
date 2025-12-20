@@ -1,14 +1,10 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveBurntVehicle = ISBaseTimedAction:derive("ISRemoveBurntVehicle")
 
 local function predicateBlowTorch(item)
 	return (item ~= nil) and
-		(item:hasTag("BlowTorch") or item:getType() == "BlowTorch") and
+		(item:hasTag(ItemTag.BLOW_TORCH) or item:getType() == "BlowTorch") and
 		(item:getCurrentUses() >= 10)
 end
 
@@ -195,4 +191,3 @@ function ISRemoveBurntVehicle:new(character, vehicle)
 	o.maxTime = o:getDuration()
 	return o
 end
-

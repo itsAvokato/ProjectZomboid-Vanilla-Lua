@@ -323,7 +323,7 @@ end
 function ISSpawnHordeUI:onRemoveBodies()
 	local radius = self:getRadius() + 1;
 	if isClient() then
-		SendCommandToServer(string.format("/removezombies -x %d -y %d -z %d -radius %d -clear true", self.selectX, self.selectY, self.selectZ, radius))
+		SendCommandToServer(string.format("/remove corpses"))
 	else
 		local cell = getCell()
 		for x = self.selectX - radius, self.selectX + radius+1 do
@@ -405,10 +405,6 @@ function ISSpawnHordeUI:close()
 	self:removeFromUIManager();
 end
 
---************************************************************************--
---** ISSpawnHordeUI:new
---**
---************************************************************************--
 function ISSpawnHordeUI:new(x, y, character, square)
 	local width = 1000;
 	local height = 1000;

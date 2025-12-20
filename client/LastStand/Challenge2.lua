@@ -1,5 +1,3 @@
-
-
 Challenge2 = {}
 Challenge2.zombiesSpawned = 0;
 Challenge2.startedWaveCalendar = nil;
@@ -59,7 +57,7 @@ function Challenge2.RemovePlayer(playerObj)
 	end
 	setAggroTarget(playerNum, -1, -1)
 	if Challenge2.radarPanel[playerNum] then
-		UIManager.RemoveUI(Challenge2.radarPanel[playerNum])
+		UIManager.RemoveElement(Challenge2.radarPanel[playerNum])
 		Challenge2.radarPanel[playerNum] = nil
 	end
 end
@@ -239,9 +237,9 @@ Challenge2.Tick = function()
 		local playerObj = getSpecificPlayer(i-1)
 		if playerObj and not playerObj:isDead() then
 			setAggroTarget(i-1, playerObj:getX(), playerObj:getY())
-			playerObj:getStats():setHunger(0.0)
-			playerObj:getStats():setThirst(0.0)
-			playerObj:getStats():setFatigue(0.0)
+			playerObj:getStats():reset(CharacterStat.HUNGER)
+			playerObj:getStats():reset(CharacterStat.THIRST)
+			playerObj:getStats():reset(CharacterStat.FATIGUE)
 		end
 	end
 end

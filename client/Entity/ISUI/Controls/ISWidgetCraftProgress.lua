@@ -1,7 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
+
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -87,10 +84,6 @@ function ISWidgetCraftProgress:onGetProgress()
     return 0;
 end
 
---************************************************************************--
---** ISWidgetCraftProgress:new
---**
---************************************************************************--
 function ISWidgetCraftProgress:new (x, y, width, height, player, entity, callbackTarget, _styleBar)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

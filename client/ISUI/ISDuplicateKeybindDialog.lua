@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISDuplicateKeybindDialog = ISPanel:derive("ISDuplicateKeybindDialog")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

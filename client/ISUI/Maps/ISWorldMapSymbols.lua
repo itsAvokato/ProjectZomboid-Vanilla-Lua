@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/Maps/ISMap"
 
@@ -11,8 +7,6 @@ local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 ISWorldMapSymbols = ISPanelJoypad:derive("ISWorldMapSymbols")
-
------
 
 ISWorldMapSymbolTool = ISBaseObject:derive("ISWorldMapSymbolTool")
 
@@ -93,8 +87,6 @@ function ISWorldMapSymbolTool:new(symbolsUI)
 	return o
 end
 
------
-
 ISWorldMapSymbolTool_AddSymbol = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_AddSymbol")
 
 function ISWorldMapSymbolTool_AddSymbol:activate()
@@ -157,8 +149,6 @@ function ISWorldMapSymbolTool_AddSymbol:new(symbolsUI)
 	local o = ISWorldMapSymbolTool.new(self, symbolsUI)
 	return o
 end
-
------
 
 ISWorldMapSymbolTool_AddNote = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_AddNote")
 
@@ -323,8 +313,6 @@ function ISWorldMapSymbolTool_AddNote:new(symbolsUI)
 	local o = ISWorldMapSymbolTool.new(self, symbolsUI)
 	return o
 end
-
------
 
 ISWorldMapSymbolTool_EditAnnotation = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_EditAnnotation")
 
@@ -561,8 +549,6 @@ function ISWorldMapSymbolTool_EditAnnotation:new(symbolsUI)
 	return o
 end
 
------
-
 ISWorldMapSymbolTool_MoveAnnotation = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_MoveAnnotation")
 
 function ISWorldMapSymbolTool_MoveAnnotation:activate()
@@ -706,8 +692,6 @@ function ISWorldMapSymbolTool_MoveAnnotation:new(symbolsUI)
 	local o = ISWorldMapSymbolTool.new(self, symbolsUI)
 	return o
 end
-
------
 
 ISWorldMapSymbolTool_RotateAnnotation = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_RotateAnnotation")
 
@@ -880,8 +864,6 @@ function ISWorldMapSymbolTool_RotateAnnotation:new(symbolsUI)
 	return o
 end
 
------
-
 ISWorldMapSymbolTool_RemoveAnnotation = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_RemoveAnnotation")
 
 function ISWorldMapSymbolTool_RemoveAnnotation:activate()
@@ -981,8 +963,6 @@ function ISWorldMapSymbolTool_RemoveAnnotation:new(symbolsUI)
 	return o
 end
 
------
-
 ISWorldMapSymbolTool_Sharing = ISWorldMapSymbolTool:derive("ISWorldMapSymbolTool_Sharing")
 
 function ISWorldMapSymbolTool_Sharing:activate()
@@ -1063,8 +1043,6 @@ function ISWorldMapSymbolTool_Sharing:new(symbolsUI)
 	return o
 end
 
------
-
 ISWorldMapSymbolsTabPanel = ISTabPanel:derive("ISWorldMapSymbolsTabPanel")
 
 function ISWorldMapSymbolsTabPanel:render()
@@ -1117,8 +1095,6 @@ function ISWorldMapSymbolsTabPanel:new(x, y, width, height, symbolsUI)
 	o.symbolsUI = symbolsUI
 	return o
 end
-
------
 
 function ISWorldMapSymbols:createChildren()
 	local btnWid = self.width - UI_BORDER_SPACING*2-2
@@ -1349,9 +1325,9 @@ function ISWorldMapSymbols:checkInventory()
 	local inv = self.character and self.character:getInventory() or nil
 	local currentEnabled = nil
 	local firstEnabled = nil
-	local illiterate =  self.character and  self.character:getTraits():isIlliterate()
+	local illiterate =  self.character and  self.character:hasTrait(CharacterTrait.ILLITERATE)
 	for _,colorBtn in ipairs(self.colorButtons) do
-		colorBtn.enable = (inv == nil) or inv:containsTagRecurse(colorBtn.buttonInfo.item) or inv:containsTypeRecurse(colorBtn.buttonInfo.item)
+		colorBtn.enable = (inv == nil) or inv:containsTagRecurse(ItemTag.get(ResourceLocation.of(colorBtn.buttonInfo.item))) or inv:containsTypeRecurse(colorBtn.buttonInfo.item)
 		colorBtn.borderColor.a = 0.4 -- not selected
 		if colorBtn.enable then
 			firstEnabled = firstEnabled or colorBtn
@@ -1442,7 +1418,7 @@ function ISWorldMapSymbols:canWrite()
 	if not self.character then return true end
 	local inv = self.character:getInventory()
 	for _,info in ipairs(self.colorButtonInfo) do
-		if inv:containsTagRecurse(info.item) or inv:containsTypeRecurse(info.item) then
+		if inv:containsTagRecurse(ItemTag.get(ResourceLocation.of(info.item))) or inv:containsTypeRecurse(info.item) then
 			return true
 		end
 	end
@@ -1452,7 +1428,7 @@ end
 function ISWorldMapSymbols:canErase()
 	if not self.character then return true end
 	local inv = self.character:getInventory()
-	return (inv == nil) or inv:containsTypeRecurse("Base.Eraser") or inv:containsTagRecurse("Eraser")
+	return (inv == nil) or inv:containsTypeRecurse("Base.Eraser") or inv:containsTagRecurse(ItemTag.ERASER)
 end
 
 function ISWorldMapSymbols:initTools()
@@ -1963,4 +1939,3 @@ end
 function ISWorldMapSymbols.RequiredWidth()
 	return BUTTON_HGT*8+UI_BORDER_SPACING*11+2
 end
-

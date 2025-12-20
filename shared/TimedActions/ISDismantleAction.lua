@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDismantleAction = ISBaseTimedAction:derive("ISDismantleAction");
@@ -14,8 +10,8 @@ function ISDismantleAction:isValid()
 	--ensure the player hasn't moved too far away while the action was in queue
 	local diffX = math.abs(self.thumpable:getSquare():getX() + 0.5 - self.character:getX());
 	local diffY = math.abs(self.thumpable:getSquare():getY() + 0.5 - self.character:getY());
-	return self.character:getInventory():containsTagEval("Saw", predicateNotBroken) and
-			self.character:getInventory():containsTagEval("Screwdriver", predicateNotBroken) and
+	return self.character:getInventory():containsTagEval(ItemTag.SAW, predicateNotBroken) and
+			self.character:getInventory():containsTagEval(ItemTag.SCREWDRIVER, predicateNotBroken) and
 			self.thumpable:getObjectIndex() ~= -1 and
 			(diffX <= 1.6 and diffY <= 1.6)
 end
@@ -86,7 +82,7 @@ function ISDismantleAction:complete()
 		for i=1,#stairObjects do
 			stairObjects[i]:getSquare():transmitRemoveItemFromSquare(stairObjects[i])
 		end
-	elseif (self.thumpable:getSquare():getZ() <= 0) and (self.thumpable:isFloor() or (self.thumpable:getSprite() and self.thumpable:getSprite():getProperties():Is(IsoFlagType.solidfloor))) then
+	elseif (self.thumpable:getSquare():getZ() <= 0) and (self.thumpable:isFloor() or (self.thumpable:getSprite() and self.thumpable:getSprite():getProperties():has(IsoFlagType.solidfloor))) then
 		local floor = self.thumpable:getSquare():getFloor();
 		if floor then
 			floor:setSpriteFromName("blends_natural_01_64");
@@ -105,9 +101,6 @@ end
 function ISDismantleAction:getDuration()
 	if self.character:isTimedActionInstant() then
 		return 1
-	end
-	if self.character:HasTrait("Dismantler") then
-		return 100 - (self.character:getPerkLevel(Perks.Strength) * 5);
 	end
 	return 200 - (self.character:getPerkLevel(Perks.Strength) * 10);
 end

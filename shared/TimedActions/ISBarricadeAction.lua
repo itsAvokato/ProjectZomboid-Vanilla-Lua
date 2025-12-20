@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBarricadeAction = ISBaseTimedAction:derive("ISBarricadeAction");
@@ -32,7 +28,7 @@ function ISBarricadeAction:isValid()
 		if barricade and not barricade:canAddPlank() then
 			return false
 		end
-		if not self.character:hasEquippedTag("Hammer") then
+		if not self.character:hasEquippedTag(ItemType.HAMMER) then
 			return false
 		end
 		if not self.character:hasEquipped("Plank") then
@@ -184,7 +180,7 @@ function ISBarricadeAction:getDuration()
 	if self.isMetal or self.isMetalBar then
 		mtime = 170 - (self.character:getPerkLevel(Perks.MetalWelding) * 5)
 	end
-	if self.character:HasTrait("Handy") then
+	if self.character:hasTrait(CharacterTrait.HANDY) then
 		return mtime - 20
 	else
 		return mtime
@@ -194,7 +190,6 @@ end
 
 function ISBarricadeAction:new(character, item, isMetal, isMetalBar)
 	local o = ISBaseTimedAction.new(self, character)
-	print("BARRICADE!")
 	o.item = item;
 	o.maxTime = o:getDuration();
 	o.isMetal = isMetal;

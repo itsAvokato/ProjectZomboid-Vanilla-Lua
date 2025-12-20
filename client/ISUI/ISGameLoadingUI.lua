@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISGameLoadingUI = ISPanelJoypad:derive("ISGameLoadingUI")
 
 function ISGameLoadingUI:createChildren()

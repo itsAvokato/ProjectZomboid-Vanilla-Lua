@@ -83,7 +83,7 @@ Tutorial1.createInventoryContextMenu = function(player, isInPlayerInventory, ite
         if Tutorial1.contextMenuEquip2Hand and instanceof(testItem, "HandWeapon") then
             context:addOption(getText("ContextMenu_Equip_Two_Hands"), {testItem}, ISInventoryPaneContextMenu.OnTwoHandsEquip, player);
         end
-        if Tutorial1.contextMenuEquipBag and instanceof(testItem, "InventoryContainer") and testItem:canBeEquipped() == "Back" and not getPlayer():isEquipped(testItem) then
+        if Tutorial1.contextMenuEquipBag and instanceof(testItem, "InventoryContainer") and testItem:canBeEquipped() == ItemBodyLocation.BACK and not getPlayer():isEquipped(testItem) then
             context:addOption(getText("ContextMenu_Equip_on_your_Back"), {testItem}, ISInventoryPaneContextMenu.onWearItems, player);
         end
         if Tutorial1.contextMenuWear then

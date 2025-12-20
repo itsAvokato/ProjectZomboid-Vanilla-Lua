@@ -1,14 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenDoorFrame = ISBuildingObject:derive("ISWoodenDoorFrame");
 
---************************************************************************--
---** ISWoodenDoorFrame:create
---** Called when you clicked on the ground to place the item
---**
---************************************************************************--
 function ISWoodenDoorFrame:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenDoorFrame\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();

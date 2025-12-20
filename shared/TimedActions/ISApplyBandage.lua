@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISApplyBandage = ISBaseTimedAction:derive("ISApplyBandage");
@@ -64,7 +60,7 @@ function ISApplyBandage:start()
     end
     self.sound = self.character:playSound("FirstAidApplyBandage")
     if self.doIt or self.bodyPart:HasInjury() then
-        self.sound2 = self.character:playerVoiceSound("ApplyBandage")
+        self.sound2 = self.otherPlayer:playerVoiceSound("ApplyBandage")
     end
 end
 
@@ -89,8 +85,8 @@ function ISApplyBandage:perform()
 end
 
 function ISApplyBandage:complete()
-    if self.character:HasTrait("Hemophobic") and self.bodyPart:getBleedingTime() > 0 then
-        self.character:getStats():setPanic(self.character:getStats():getPanic() + 50);
+    if self.character:hasTrait(CharacterTrait.HEMOPHOBIC) and self.bodyPart:getBleedingTime() > 0 then
+        self.character:getStats():add(CharacterStat.PANIC, 50);
         --Stat_Panic
         syncPlayerStats(self.character, 0x00000100);
     end
@@ -148,8 +144,8 @@ function ISApplyBandage:stopSound()
 	if self.sound and self.character:getEmitter():isPlaying(self.sound) then
 		self.character:stopOrTriggerSound(self.sound);
 	end
-    if self.sound2 and self.character:getEmitter():isPlaying(self.sound2) then
-        self.character:stopOrTriggerSound(self.sound2);
+    if self.sound2 and self.otherPlayer:getEmitter():isPlaying(self.sound2) then
+        self.otherPlayer:stopOrTriggerSound(self.sound2);
     end
 end
 

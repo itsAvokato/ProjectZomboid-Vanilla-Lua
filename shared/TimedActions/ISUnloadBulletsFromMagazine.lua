@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISUnloadBulletsFromMagazine = ISBaseTimedAction:derive("ISUnloadBulletsFromMagazine")
@@ -75,7 +71,8 @@ function ISUnloadBulletsFromMagazine:animEvent(event, parameter)
 			return
 		end
 		if not isClient() then
-			local newBullet = instanceItem(self.magazine:getAmmoType())
+		    local itemKey = self.magazine:getAmmoType():getItemKey();
+			local newBullet = instanceItem(itemKey);
 			self.character:getInventory():AddItem(newBullet)
 			self.magazine:setCurrentAmmoCount(self.magazine:getCurrentAmmoCount() - 1)
 			sendAddItemToContainer(self.character:getInventory(), newBullet)

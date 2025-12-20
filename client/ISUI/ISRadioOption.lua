@@ -2,29 +2,14 @@ require "ISUI/ISPanel"
 
 ISRadioOption = ISPanel:derive("ISRadioOption");
 
---************************************************************************--
---** ISRadioOption:initialise
---**
---************************************************************************--
-
 function ISRadioOption:initialise()
 	ISPanel.initialise(self);
 end
 
-
-
---************************************************************************--
---** ISRadioOption:render
---**
---************************************************************************--
 function ISRadioOption:prerender()
 
 end
 
---************************************************************************--
---** ISRadioOption:render
---**
---************************************************************************--
 function ISRadioOption:render()
 	local y = 20;
 	self:drawText(self.name, 15, 0, 0.9, 0.9, 0.9, 1.0);
@@ -42,10 +27,6 @@ function ISRadioOption:render()
 	end
 end
 
---************************************************************************--
---** ISRadioOption:onMouseUp
---**
---************************************************************************--
 function ISRadioOption:onMouseUp(x, y)
 	if self.changeOptionMethod ~= nil and self.mouseOverOption ~= nil and self.mouseOverOption > 0 and self.mouseOverOption < self.optionCount then
 		self.selected = self.mouseOverOption;
@@ -59,10 +40,6 @@ function ISRadioOption:onMouseDown(x, y)
 	return false;
 end
 
---************************************************************************--
---** ISRadioOption:onMouseMove
---**
---************************************************************************--
 function ISRadioOption:onMouseMove(dx, dy)
 	local x = self:getMouseX();
 	local y = self:getMouseY();
@@ -77,14 +54,9 @@ function ISRadioOption:onMouseMove(dx, dy)
 
 end
 
---************************************************************************--
---** ISRadioOption:onMouseMoveOutside
---**
---************************************************************************--
 function ISRadioOption:onMouseMoveOutside(dx, dy)
 	self.mouseOverOption = 0;
 end
-
 
 function ISRadioOption:addOption(name)
 

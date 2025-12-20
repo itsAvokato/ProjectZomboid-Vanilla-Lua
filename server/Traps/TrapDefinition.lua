@@ -1,12 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 06/02/14
--- Time: 10:22
--- To change this template use File | Settings | File Templates.
---
-
--- Traps definition
 Traps = {};
 local crateTrap = {};
 crateTrap.type = "Base.TrapCrate";

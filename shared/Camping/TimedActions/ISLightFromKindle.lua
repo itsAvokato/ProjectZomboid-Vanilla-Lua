@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLightFromKindle = ISBaseTimedAction:derive("ISLightFromKindle");
@@ -31,8 +27,7 @@ end
 
 function ISLightFromKindle:updateKindling()
 	-- every tick we lower the endurance of the player, he also have a chance to light the fire or broke the kindle
-	local endurance = self.character:getStats():getEndurance() - 0.0001 * getGameTime():getMultiplier()
-	self.character:getStats():setEndurance(endurance);
+	self.character:getStats():remove(CharacterStat.ENDURANCE, 0.0001 * getGameTime():getMultiplier());
 	if not isServer() then
 	    if self:getJobDelta() < 0.2 then return end
 	else
@@ -138,6 +133,10 @@ function ISLightFromKindle:animEvent(event, parameter)
 		if event == 'KindlingUpdate' then
 			self:updateKindling()
 		end
+    else
+        if event == 'PlayNotchedPlankSound' then
+            self.character:playSound(parameter or "MakeFireNotchedPlank")
+        end
 	end
 end
 
@@ -167,7 +166,7 @@ function ISLightFromKindle:new(character, plank, item, campfire)
 	o.stopOnRun = true;
 	o.campfire = campfire;
 	-- if you are a outdoorsman (ranger) you can light the fire faster
-	o.isOutdoorsMan = character:HasTrait("Outdoorsman");
+	o.isOutdoorsMan = character:hasTrait(CharacterTrait.OUTDOORSMAN);
 	o.maxTime = o:getDuration();
     o.caloriesModifier = 8;
 	return o;

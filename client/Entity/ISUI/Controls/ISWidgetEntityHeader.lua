@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISWidgetEntityHeader = ISPanel:derive("ISWidgetEntityHeader");
@@ -47,7 +43,6 @@ function ISWidgetEntityHeader:createChildren()
     if self.enableInfoButton and self.entityStyle and self.entityStyle:getDescription() then
         local style = self.styleButton or "S_Button_EntityHeaderInfo"
         self.buttonInfo = ISXuiSkin.build(self.xuiSkin, style, ISButton, 0, 0, 24, 24, "");
-        --self.buttonInfo.image = self.iconInfo;
         self.buttonInfo.target = self;
         self.buttonInfo.onclick = ISWidgetEntityHeader.onButtonClick;
         self.buttonInfo.enable = true;
@@ -110,7 +105,6 @@ end
 function ISWidgetEntityHeader:onButtonClick(_button)
     if _button==self.buttonInfo then
         --todo open info panel
-        print("Clickety click")
     end
 end
 
@@ -135,10 +129,6 @@ function ISWidgetEntityHeader:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISWidgetEntityHeader:new
---**
---************************************************************************--
 function ISWidgetEntityHeader:new(x, y, width, height, player, entity, entityStyle, _styleIcon, _styleLabel, _styleButton)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

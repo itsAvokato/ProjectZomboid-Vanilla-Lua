@@ -8,6 +8,10 @@ ClothingSelectionDefinitions.default = {
 	-- if there's no difference between male/female outfit, just create the female one, here we can have skirt
 	Female = {
 		-- this is the bodyLocation (defined in BodyLocations.lua)
+		Belt = {
+			items = {"Base.Belt2",},
+		},
+
 		Hat = {
 			chance = 10,
 			items = {"Base.Hat_BaseballCap", "Base.Hat_BaseballCapTINT", "Base.Hat_BucketHat", "Base.Hat_GolfHat", "Base.Hat_Fedora", "Base.Hat_Visor_WhiteTINT", },
@@ -73,6 +77,10 @@ ClothingSelectionDefinitions.default = {
 	},
 	
 	Male = {
+		Belt = {
+			items = {"Base.Belt2",},
+		},
+
 		Hat = {
 			chance = 10,
 			items = {"Base.Hat_BaseballCap", "Base.Hat_BaseballCapTINT", "Base.Hat_BucketHat", "Base.Hat_GolfHat", "Base.Hat_Fedora", "Base.Hat_Visor_WhiteTINT", },

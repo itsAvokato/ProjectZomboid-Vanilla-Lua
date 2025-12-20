@@ -1,15 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Generic icon list box that takes a backing List<T> as data provider.
-    Callbacks for events such as render must be provided to display the tiles properly depending on the Object type.
-
-    (Also see TiledIconPanel which embeds this ui element but adds search box and page navigation widgets.)
---]]
-
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -307,10 +295,6 @@ function ISTiledIconListBox:onJoypadDirDown(joypadData)
     end
 end
 
---************************************************************************--
---** ISTiledIconListBox:new
---**
---************************************************************************--
 function ISTiledIconListBox:new (x, y, width, height, dataList)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

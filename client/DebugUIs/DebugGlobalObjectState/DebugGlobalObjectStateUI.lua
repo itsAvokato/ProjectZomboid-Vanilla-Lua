@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "RadioCom/ISUIRadio/ISSliderPanel"
 require "DebugUIs/DebugChunkState/ISSectionedPanel"
@@ -14,8 +10,6 @@ local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 DebugGlobalObjectStateUI = ISPanel:derive("DebugGlobalObjectStateUI")
-
------
 
 function DebugGlobalObjectStateUI:SystemList_doDrawItem(y, item, alt)
 	local system = item.item
@@ -36,8 +30,6 @@ function DebugGlobalObjectStateUI:SystemList_doDrawItem(y, item, alt)
 
 	return y
 end
-
------
 
 function DebugGlobalObjectStateUI:ObjectList_doDrawItem(y, item, alt)
 	local x = 4
@@ -74,8 +66,6 @@ function DebugGlobalObjectStateUI:ObjectList_OnMouseDoubleClick(item)
 	end
 	self.zLevelSlider:setCurrentValue(z)
 end
-
------
 
 function DebugGlobalObjectStateUI:createChildren()
 	local panelWidth = 200+(getCore():getOptionFontSizeReal()*50);

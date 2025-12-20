@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require('ISUI/ISScrollingListBox')
 require('Vehicles/ISUI/ISUI3DScene')
 
@@ -19,8 +15,6 @@ local SCALE = 1.0
 local ONE_POINT_FIVE = 1.0
 
 SpriteModelEditor = ISPanel:derive("SpriteModelEditor")
-
------
 
 SpriteModelEditor_ListBox = ISScrollingListBox:derive("SpriteModelEditor_ListBox")
 local ListBox = SpriteModelEditor_ListBox
@@ -72,8 +66,6 @@ function ListBox:new(x, y, width, height)
 	return o
 end
 
------
-
 SpriteModelEditor_OptionsPanel = ISPanel:derive("SpriteModelEditor_OptionsPanel")
 local OptionsPanel = SpriteModelEditor_OptionsPanel
 
@@ -111,8 +103,6 @@ function OptionsPanel:new(x, y, width, height)
 	o.backgroundColor.a = 0.8
 	return o
 end
-
------
 
 SpriteModelEditor_Scene = ISUI3DScene:derive("SpriteModelEditor_Scene")
 local Scene = SpriteModelEditor_Scene
@@ -435,8 +425,6 @@ function Scene:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 SpriteModelEditor_TileList = ISPanel:derive("SpriteModelEditor_TileList")
 local TileList = SpriteModelEditor_TileList
 local ROWS = 64
@@ -554,8 +542,6 @@ function TileList:new(x, y, width, height, picker)
 	return o
 end
 
------
-
 SpriteModelEditor_TilePicker = ISPanel:derive("SpriteModelEditor_TilePicker")
 local TilePicker = SpriteModelEditor_TilePicker
 
@@ -574,7 +560,7 @@ function TilePicker:createChildren()
 		local hasBed = false
 		for j=1,tileNames:size() do
 			local sprite = getSprite(tileNames:get(j-1))
-			if sprite and sprite:getProperties():Is(IsoFlagType.bed) then
+			if sprite and sprite:getProperties():has(IsoFlagType.bed) then
 				hasBed = true
 				break
 			end
@@ -609,8 +595,6 @@ function TilePicker:new(x, y, width, height, editor)
 	o.editor = editor
 	return o
 end
-
------
 
 function SpriteModelEditor:createChildren()
 	local gameState = getSpriteModelEditorState()
@@ -660,8 +644,6 @@ function SpriteModelEditor:createChildren()
 	self.belowList:addChild(button1)
 	self.button1 = button1
 
-	-----
-
 	local combo = ISComboBox:new(UI_BORDER_SPACING+1, self.belowList:getBottom() + UI_BORDER_SPACING, self.listBox.width, BUTTON_HGT, self, self.onComboChooseModel)
 	combo.noSelectionText = "CHOOSE MODEL"
 	combo:setEditable(true)
@@ -680,8 +662,6 @@ function SpriteModelEditor:createChildren()
 	end
 	combo.selected = 0 -- CHOOSE MODEL
 
-	-----
-
 	combo = ISComboBox:new(UI_BORDER_SPACING+1, self.comboChooseModel:getBottom() + UI_BORDER_SPACING, self.listBox.width, BUTTON_HGT, self, self.onComboChooseAnimation)
 	combo.noSelectionText = "NO ANIMATIONS"
 	combo:setEditable(false)
@@ -690,21 +670,15 @@ function SpriteModelEditor:createChildren()
 	combo.selected = 0 -- CHOOSE MODEL
 	combo:setEnabled(false)
 
-	-----
-
 	self.sliderAnimationTime = ISSliderPanel:new(UI_BORDER_SPACING+1, self.comboChooseAnimation:getBottom() + UI_BORDER_SPACING, self.listBox.width, BUTTON_HGT, self, self.onAnimationTimeChanged)
 	self.sliderAnimationTime:setValues(0.0, 1.0, 0.01, 0.1)
 	self.sliderAnimationTime:setCurrentValue(0.0, true)
 	self:addChild(self.sliderAnimationTime)
 
-	-----
-
 	self.runtimeEntry = ISTextEntryBox:new("", UI_BORDER_SPACING+1, self.sliderAnimationTime:getBottom() + UI_BORDER_SPACING, self.listBox.width, BUTTON_HGT)
 	self.runtimeEntry.font = UIFont.Medium
 	self.runtimeEntry.onCommandEntered = function(self) self.parent:onRuntimeEntered() end
 	self:addChild(self.runtimeEntry)
-
-	-----
 
 	local scrollbarWidth = 13
 	local tilePickerWidth = 8 * 32 + scrollbarWidth

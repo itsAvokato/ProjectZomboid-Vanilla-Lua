@@ -29,12 +29,12 @@ local SandboxPresetPanel = MultiColumnPanelJoypad:derive("SandboxPresetPanel")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local LABEL_HGT = FONT_HGT_MEDIUM + 6
 local JOYPAD_TEX_SIZE = 32
-local TITLE_PADDING = UI_BORDER_SPACING*2 + FONT_HGT_TITLE + 1
+local TITLE_PADDING = UI_BORDER_SPACING*2 + FONT_HGT_LARGE + 1
 local PADDING_X = UI_BORDER_SPACING + 1
 local BUTTON_PADDING = JOYPAD_TEX_SIZE + UI_BORDER_SPACING*2
 local CONTROL_WIDTH = 200+((getCore():getOptionFontSizeReal()-1)*50)
@@ -48,9 +48,6 @@ local function getTooltipText(name)
 	return tooltip
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function BaseServerSettingsPanel:onLoseJoypadFocus(joypadData)
 	ISPanelJoypad.onLoseJoypadFocus(self, joypadData)
@@ -92,9 +89,6 @@ function BaseServerSettingsPanel:onJoypadDirDown(joypadData)
 	ISPanelJoypad.onJoypadDirDown(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function MultiColumnPanelJoypad:render()
 	ISPanelJoypad.render(self)
@@ -137,9 +131,6 @@ function MultiColumnPanelJoypad:new(x, y, width, height)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenPanel:prerender()
 	self:doRightJoystickScrolling(20, 20)
@@ -275,9 +266,6 @@ function ServerSettingsScreenPanel:onJoypadDirLeft(joypadData)
 	ISPanelJoypad.onJoypadDirLeft(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenGroupBox:new(x, y, width, height, tickBoxLabel, category)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -412,9 +400,6 @@ function ServerSettingsScreenGroupBox:ensureVisible()
     end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 SpawnRegionsNameFilePanel = ISPanelJoypad:derive("SpawnRegionsNameFilePanel")
 
@@ -528,9 +513,6 @@ function SpawnRegionsNameFilePanel:new(x, y, width)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SpawnRegionsPanel:createChildren()
 	local buttonWid = UI_BORDER_SPACING*2 + math.max(
@@ -773,9 +755,6 @@ function SpawnRegionsPanel:onResolutionChange()
 	self.listbox:setWidth(self.buttonAdd.x - UI_BORDER_SPACING*2 - 1)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 -- Like ISScrollingListBox:setJoypadFocused, but doesn't set joypadData.focus=self
 function ServerSettingsScreenBaseListBox:setJoypadFocused(focused, joypadData)
@@ -823,9 +802,6 @@ function ServerSettingsScreenBaseListBox:onJoypadDownInParent(button, joypadData
 	return false
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenModsPanel:createChildren()
 	local fontHgt = getTextManager():getFontFromEnum(UIFont.Medium):getLineHeight()
@@ -1006,9 +982,6 @@ function ServerSettingsScreenModsPanel:onResolutionChange()
 	self.button:setX(self.listbox:getRight() + UI_BORDER_SPACING)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenModsListBox:prerender()
 	self.mouseOverButtonIndex = nil
@@ -1044,9 +1017,6 @@ function ServerSettingsScreenModsListBox:onMouseDown(x, y)
 	ISScrollingListBox.onMouseDown(self, x, y)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenMapsPanel:createChildren()
 	local fontHgt = getTextManager():getFontFromEnum(UIFont.Medium):getLineHeight()
@@ -1369,9 +1339,6 @@ function ServerSettingsScreenMapsPanel:onResolutionChange()
 	end
 
 end
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenMapsListBox:prerender()
 	self.mouseOverButtonIndex = nil
@@ -1432,9 +1399,6 @@ function ServerSettingsScreenMapsListBox:onRemoveItem(index)
 	self.parent.pageEdit:notify("removedMap", mapFolder)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenWorkshopPanel:createChildren()
 	local fontHgt = getTextManager():getFontFromEnum(UIFont.Medium):getLineHeight()
@@ -1667,9 +1631,6 @@ function ServerSettingsScreenWorkshopPanel:onResolutionChange()
 	--todo add code to reposition items in this panel on resizing the game window
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreenWorkshopListBox:prerender()
 	self.mouseOverButtonIndex = nil
@@ -1727,9 +1688,6 @@ function ServerSettingsScreenWorkshopListBox:onMouseDown(x, y)
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SpawnRegionsListBox:createChildren()
 	self.entryName = ISTextEntryBox:new('', 0, 0, 100, 20)
@@ -1836,9 +1794,6 @@ function SpawnRegionsListBox:positionEntries()
 	self.entryFile:setVisible(true)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function SandboxPresetPanel:createChildren()
 	local fontHgt = getTextManager():getFontFromEnum(UIFont.Medium):getLineHeight()
@@ -1989,9 +1944,6 @@ function SandboxPresetPanel:onResolutionChange()
 	self.buttonApplyPreset:setX(self.listbox:getRight() + UI_BORDER_SPACING)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page1:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -2115,7 +2067,7 @@ end
 
 function Page1:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title1"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title1"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page1", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 end
@@ -2255,9 +2207,6 @@ function Page1:onResolutionChange()
 	self.buttonDelete:setX(self.listbox:getRight() + UI_BORDER_SPACING)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page2:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -2342,7 +2291,7 @@ end
 
 function Page2:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title2"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title2"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page2", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	local prefix = getServerSettingsManager():getNameInSettingsFolder(self.entry:getText())
@@ -2476,9 +2425,6 @@ function Page2:onResolutionChange()
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page3:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -2849,7 +2795,6 @@ function Page3:onPanelChange()
 end
 
 function Page3:onComboBoxSelected(combo, categoryName, optionName)
-	print(categoryName, optionName)
     if optionName == "Zombies" then
         local Zombies = combo.selected
         local popMult = ZombiePopulationMultiplierTable
@@ -2867,7 +2812,6 @@ function Page3:onComboBoxSelected(combo, categoryName, optionName)
 end
 
 function Page3:onTickBoxSelected(_, value, categoryName, optionName)
-	print(categoryName, optionName)
 	if optionName == "ZombieMigrate" then
 		if value then
 			self.controls[categoryName]["ZombieConfig.RedistributeHours"]:setText("12.0")
@@ -2949,7 +2893,7 @@ end
 
 function Page3:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title3", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title3", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page3", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 end
@@ -3103,8 +3047,6 @@ function Page3:onJoypadDirRight_ListBox(joypadData)
 	joypadData.focus = self.parent.currentPanel.isGroupBoxContentPanel and self.parent.currentPanel.parent or self.parent.currentPanel
 end
 
--- -- -- -- --
-
 Page3.ChooseModsWindow = ISPanelJoypad:derive("Page3.ChooseModsWindow")
 
 function Page3.ChooseModsWindow:new(x, y, width, height)
@@ -3118,7 +3060,7 @@ end
 
 function Page3.ChooseModsWindow:create()
 
-	self.listbox = ServerSettingsScreenModsListBox:new(self.width/4, FONT_HGT_TITLE+UI_BORDER_SPACING*2+1, self.width/2, self.height - FONT_HGT_TITLE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2)
+	self.listbox = ServerSettingsScreenModsListBox:new(self.width/4, FONT_HGT_LARGE+UI_BORDER_SPACING*2+1, self.width/2, self.height - FONT_HGT_LARGE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2)
 	self.listbox:initialise()
 	self.listbox:instantiate()
 	self.listbox:setAnchorLeft(true)
@@ -3271,13 +3213,8 @@ end
 
 function Page3.ChooseModsWindow:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_ListOfMods"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_ListOfMods"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 end
-
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
-
 
 function Page4:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -3360,7 +3297,7 @@ end
 
 function Page4:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title4", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title4", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page4", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	local oldName = self.settings:getName()
@@ -3444,9 +3381,6 @@ function Page4:onResolutionChange()
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page5:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -3529,7 +3463,7 @@ end
 
 function Page5:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title5", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title5", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page5", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	local oldName = self.settings:getName()
@@ -3605,9 +3539,6 @@ function Page5:onResolutionChange()
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page6:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -3650,7 +3581,7 @@ end
 
 function Page6:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title6", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title6", self.settings:getName()), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page6", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	local prefix = getServerSettingsManager():getNameInSettingsFolder(self.settings:getName())
@@ -3725,9 +3656,6 @@ function Page6:onResolutionChange()
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page7:new(x, y, width, height)
 	local o = MultiColumnPanelJoypad.new(self, x, y, width, height)
@@ -3867,7 +3795,7 @@ end
 
 function Page7:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerSettings_Title7", self.region.file), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerSettings_Title7", self.region.file), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawText("DEBUG: Page7", UI_BORDER_SPACING+1, UI_BORDER_SPACING+1, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 end
@@ -3889,7 +3817,7 @@ function Page7:fillProfessionList()
 end
 
 function Page7:addProfessionToList(professionType, pointsTable, select)
-	local profession = ProfessionFactory.getProfession(professionType)
+	local profession = CharacterProfessionDefinition.getCharacterProfessionDefinition(professionType)
 	local data = {}
 	data.professionType = professionType
 	data.points = pointsTable
@@ -3913,7 +3841,7 @@ end
 
 function Page7:fillProfessionCombo()
 	self.profComboBox:clear()
-	local professions = ProfessionFactory.getProfessions()
+	local professions = CharacterProfessionDefinition.getProfessions()
 	local sorted = {}
 	for i=1,professions:size() do
 		local profession = professions:get(i-1)
@@ -4093,9 +4021,6 @@ function Page7:onResolutionChange()
 
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function ServerSettingsScreen:create()
 	self.pageStart = Page1:new(0, 0, self.width, self.height)
@@ -4266,9 +4191,6 @@ function ServerSettingsScreen:onResetLua(reason)
 end
 
 Events.OnResetLua.Add(function(reason) ServerSettingsScreen.instance:onResetLua(reason) end)
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 -- declared 'local' above
 SettingsTable = {
@@ -4656,7 +4578,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4670,7 +4592,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4684,7 +4606,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4698,7 +4620,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4712,7 +4634,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4726,7 +4648,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4740,7 +4662,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4754,7 +4676,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4768,7 +4690,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4782,7 +4704,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4796,7 +4718,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4810,7 +4732,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4824,7 +4746,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4838,7 +4760,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4852,7 +4774,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4866,7 +4788,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4880,7 +4802,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4894,7 +4816,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -4908,7 +4830,7 @@ SettingsTable = {
                             { name = "Sandbox_Insane", text = "0.05" },
                             { name = "Sandbox_ExtremelyRare", text = "0.2" },
                             { name = "Sandbox_Rare", text = "0.4" },
-                            { name = "Sandbox_Normal", text = "1" },
+                            { name = "Sandbox_Normal", text = "0.6" },
                             { name = "Sandbox_Common", text = "2" },
                             { name = "Sandbox_Abundant", text = "3" },
                         }
@@ -5177,6 +5099,8 @@ SettingsTable = {
 					{ name = "AnimalMetaPredator" },
 					{ name = "AnimalMatingSeason" },
 					{ name = "AnimalSoundAttractZombies" },
+                    { name = "AnimalTrackChance" },
+                    { name = "AnimalPathChance" },
 				},
 			},
 --			{

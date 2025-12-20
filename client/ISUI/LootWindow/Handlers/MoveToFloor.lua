@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/LootWindow/ISLootWindowObjectControlHandler"
 
 ISLootWindowObjectControlHandler_MoveToFloor = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_MoveToFloor")

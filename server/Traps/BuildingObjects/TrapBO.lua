@@ -1,14 +1,9 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 06/02/14
--- Time: 10:22
--- To change this template use File | Settings | File Templates.
---
-
 TrapBO = ISBuildingObject:derive("TrapBO");
 
 function TrapBO:create(x, y, z, north, sprite)
+    if not self.character:getInventory():contains(self.trap) then
+        return false
+    end
     local cell = getWorld():getCell();
     self.sq = cell:getGridSquare(x, y, z);
     self.javaObject = IsoThumpable.new(cell, self.sq, sprite, north, self);
@@ -17,7 +12,7 @@ function TrapBO:create(x, y, z, north, sprite)
     self.javaObject:setMaxHealth(50);
     self.javaObject:setHealth(self.javaObject:getMaxHealth());
 
-    if sprite == "constructedobjects_01_16" then
+    if sprite == "constructedobjects_01_16" or sprite == "constructedobjects_01_18" then
         --snare traps
         self.javaObject:setCanPassThrough(true)
         self.javaObject:setBlockAllTheSquare(false)
@@ -62,6 +57,11 @@ function TrapBO:create(x, y, z, north, sprite)
 end
 
 function TrapBO:onTimedActionStart(action)
+    getCell():setDrag(nil, self.player)
+    if not self.character:getInventory():contains(self.trap) then
+        ISTimedActionQueue.getTimedActionQueue(self.character):resetQueue();
+        return false
+    end
     ISBuildingObject.onTimedActionStart(self, action)
     action.character:SetVariable("LootPosition", "Low")
     action:setOverrideHandModels(nil, nil)
@@ -70,6 +70,9 @@ end
 function TrapBO:new(player, trap)
     if not trap then
         return nil;
+    end
+    if not player:getInventory():contains(trap) then
+        return nil
     end
     local o = {};
     setmetatable(o, self);
@@ -106,11 +109,11 @@ function TrapBO:isValid(square, north)
     if square:getMovingObjects():size() > 0 then return false end
     if not self.character:getInventory():contains(self.trap) then return false end
     if CTrapSystem.instance:getLuaObjectAt(square:getX(), square:getY(), square:getZ()) then return false end
-    if square:Has(IsoObjectType.tree) then return false end
+    if square:has(IsoObjectType.tree) then return false end
     if CTrapGlobalObject.checkForWallExploit(nil, square) then
         return false;
     end
-    return not square:Is(IsoFlagType.solid) and not square:Is(IsoFlagType.solidtrans) and square:Is(IsoFlagType.solidfloor)
+    return not square:has(IsoFlagType.solid) and not square:has(IsoFlagType.solidtrans) and square:has(IsoFlagType.solidfloor)
 end
 
 function TrapBO:getAPrompt()

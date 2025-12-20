@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ModInfoPanel = ISPanelJoypad:derive("ModInfoPanel")
@@ -104,8 +100,6 @@ function ModInfoPanel:createChildren()
     self.incompatiblePanel:instantiate()
     self:addChild(self.incompatiblePanel)
 end
-
------------------
 
 function ModInfoPanel:setJoypadFocused(val, joypadData)
     self.joypadFocused = val

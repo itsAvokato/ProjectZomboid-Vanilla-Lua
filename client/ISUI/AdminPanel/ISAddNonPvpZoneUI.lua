@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISAddNonPvpZoneUI = ISPanel:derive("ISAddNonPvpZoneUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -9,11 +5,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAddNonPvpZoneUI:initialise
---**
---************************************************************************--
 
 function ISAddNonPvpZoneUI:initialise()
     ISPanel.initialise(self);
@@ -174,10 +165,6 @@ function ISAddNonPvpZoneUI:onClick(button)
     self.player:setSeeNonPvpZone(false);
 end
 
---************************************************************************--
---** ISAddNonPvpZoneUI:new
---**
---************************************************************************--
 function ISAddNonPvpZoneUI:new(x, y, width, height, player)
     local o = {}
     o = ISPanel:new(x, y, width, height);

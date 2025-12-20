@@ -2,18 +2,10 @@ ISBaseObject = {};
 
 ISBaseObject.Type = "ISBaseObject";
 
---************************************************************************--
---** ISBaseObject:initialise
---**
---************************************************************************--
 function ISBaseObject:initialise()
 
 end
 
---************************************************************************--
---** ISBaseObject:derive
---**
---************************************************************************--
 function ISBaseObject:derive (type)
     local o = {}
     setmetatable(o, self)

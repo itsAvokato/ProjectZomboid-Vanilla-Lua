@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISClothingInsPanel = ISPanelJoypad:derive("ISClothingInsPanel");
@@ -19,16 +14,6 @@ local function round(num, numDecimalPlaces)
     local mult = 10^(numDecimalPlaces or 0)
     return math.floor(num * mult + 0.5) / mult
 end
-
---************************************************************************--
---** ISPanel:initialise
---**
---private static Color col_0 = new Color(29,34,237); //blue
---private static Color col_25 = new Color(0,255,234); //cyan
---private static Color col_50 = new Color(84,255,55); //green
---private static Color col_75 = new Color(255,246,0); //yellow
---private static Color col_100 = new Color(255,0,0); //red
---************************************************************************--
 
 function ISClothingInsPanel:initialise()
     ISPanelJoypad.initialise(self);

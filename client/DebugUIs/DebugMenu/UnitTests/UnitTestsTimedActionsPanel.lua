@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: yuri				   **
---***********************************************************
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

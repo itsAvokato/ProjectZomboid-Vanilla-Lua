@@ -1,11 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: spurcival 				   **
---***********************************************************
-
---[[
-    Input and Control widget for CraftLogic based entities
---]]
 require "ISUI/ISPanel"
 
 ISWidgetCraftLogicInputControl = ISPanel:derive("ISWidgetCraftLogicInputControl");
@@ -31,6 +23,7 @@ function ISWidgetCraftLogicInputControl:createDynamicChildren()
         self.inputItems.renderRequiredItemCount = true;
         self.inputItems.onSelectInputsButtonClicked = ISWidgetCraftLogicInputControl.onSelectInputsButtonClicked;
         self.inputItems.onItemSlotContentsChanged = ISWidgetCraftLogicInputControl.onItemSlotContentsChanged;
+        self.inputItems.actionAnim = self.craftLogicComponent:getActionAnimOverride();
         self.inputItems:initialise();
         self.inputItems:instantiate()
         self:addChild(self.inputItems);
@@ -56,6 +49,7 @@ function ISWidgetCraftLogicInputControl:createDynamicChildren()
         self.inputTools = ISXuiSkin.build(self.xuiSkin, "S_ItemSlotPanel_ToolsCraftLogic", ISItemSlotPanel, 0, 0, 10, 10, self.player, self.entity, self.logic, nil, nil);
         self.inputTools.resourceType = ResourceType.Item;
         self.inputTools.interactiveMode = true;
+        self.inputTools.actionAnim = self.craftLogicComponent:getActionAnimOverride();
         self.inputTools:initialise();
         self.inputTools:instantiate()
         self:addChild(self.inputTools);
@@ -308,10 +302,6 @@ function ISWidgetCraftLogicInputControl:onRecipeChanged()
     end
 end
 
---************************************************************************--
---** ISWidgetCraftLogicInputControl:new
---**
---************************************************************************--
 function ISWidgetCraftLogicInputControl:new(x, y, width, height, player, logic)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

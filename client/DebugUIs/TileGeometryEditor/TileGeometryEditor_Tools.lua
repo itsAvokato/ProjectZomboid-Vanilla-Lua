@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISBaseObject"
 require "DebugUIs/TileGeometryEditor/TileGeometryEditor_SceneTiles"
 
@@ -77,8 +73,6 @@ function Tool:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_GizmoTool = Tool:derive("TileGeometryEditor_GizmoTool")
 local GizmoTool = TileGeometryEditor_GizmoTool
 
@@ -139,8 +133,6 @@ function GizmoTool:new(editor)
 	local o = Tool.new(self, editor)
 	return o
 end
-
------
 
 TileGeometryEditor_GizmoTool_Translate = GizmoTool:derive("TileGeometryEditor_GizmoTool_Translate")
 local GizmoToolTranslate = TileGeometryEditor_GizmoTool_Translate
@@ -208,8 +200,6 @@ function GizmoToolTranslate:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_GizmoTool_Rotate = GizmoTool:derive("TileGeometryEditor_GizmoTool_Rotate")
 local GizmoToolRotate = TileGeometryEditor_GizmoTool_Rotate
 
@@ -261,8 +251,6 @@ function GizmoToolRotate:new(editor)
 	local o = GizmoTool.new(self, editor)
 	return o
 end
-
------
 
 TileGeometryEditor_GizmoTool_Scale = GizmoTool:derive("TileGeometryEditor_GizmoTool_Scale")
 local GizmoToolScale = TileGeometryEditor_GizmoTool_Scale
@@ -332,8 +320,6 @@ function GizmoToolScale:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_GizmoTool_ResizeBox = GizmoTool:derive("TileGeometryEditor_GizmoTool_ResizeBox")
 local GizmoToolResizeBox = TileGeometryEditor_GizmoTool_ResizeBox
 
@@ -398,8 +384,6 @@ function GizmoToolResizeBox:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_GizmoTool_ResizeCylinder = GizmoTool:derive("TileGeometryEditor_GizmoTool_ResizeCylinder")
 local GizmoToolResizeCylinder = TileGeometryEditor_GizmoTool_ResizeCylinder
 
@@ -443,8 +427,6 @@ function GizmoToolResizeCylinder:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_GizmoTool_SetSurface = GizmoTool:derive("TileGeometryEditor_GizmoTool_SetSurface")
 local GizmoToolSetSurface = TileGeometryEditor_GizmoTool_SetSurface
 
@@ -471,7 +453,7 @@ function GizmoToolSetSurface:onGizmoChanged(delta)
 	newValue = math.max(newValue, 0)
 	newValue = math.min(newValue, 96)
 	for _,e in ipairs(self.selection) do
-		e.props:Set(propertyName, tostring(newValue), false)
+		e.props:set(propertyName, tostring(newValue), false)
 	end
 end
 
@@ -489,7 +471,7 @@ end
 function GizmoToolSetSurface:onGizmoCancel()
 	local propertyName = self.movingFace
 	for _,e in ipairs(self.selection) do
-		e.props:Set(propertyName, tostring(e.originalValue), false)
+		e.props:set(propertyName, tostring(e.originalValue), false)
 	end
 	self.editor.editMode.geometry.propertiesPanel:toUI()
 end
@@ -498,8 +480,6 @@ function GizmoToolSetSurface:new(editor)
 	local o = GizmoTool.new(self, editor)
 	return o
 end
-
------
 
 TileGeometryEditor_EditPolygonTool = Tool:derive("TileGeometryEditor_EditPolygonTool")
 local EditPolygonTool = TileGeometryEditor_EditPolygonTool
@@ -570,8 +550,6 @@ function EditPolygonTool:new(editor)
 	local o = Tool.new(self, editor)
 	return o
 end
-
------
 
 TileGeometryEditor_DepthRectTool = Tool:derive("TileGeometryEditor_DepthRectTool")
 local DepthRectTool = TileGeometryEditor_DepthRectTool
@@ -701,8 +679,6 @@ function DepthRectTool:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_AddTileTool = Tool:derive("TileGeometryEditor_AddTileTool")
 local AddTileTool = TileGeometryEditor_AddTileTool
 
@@ -805,8 +781,6 @@ function AddTileTool:new(editor)
 	o.vector3f_1 = Vector3f.new()
 	return o
 end
-
------
 
 TileGeometryEditor_MoveTileTool = Tool:derive("TileGeometryEditor_MoveTileTool")
 local MoveTileTool = TileGeometryEditor_MoveTileTool

@@ -1,9 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISAttachedItemsUI = ISCollapsableWindow:derive("ISAttachedItemsUI");
@@ -13,11 +7,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.NewLarge)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAttachedItemsUI:initialise
---**
---************************************************************************--
 
 function ISAttachedItemsUI:createChildren()
 	local padBottom = 20
@@ -246,10 +235,6 @@ function ISAttachedItemsUI:close()
 	self:removeFromUIManager();
 end
 
---************************************************************************--
---** ISAttachedItemsUI:new
---**
---************************************************************************--
 function ISAttachedItemsUI:new(x, y, character)
 	local o = {}
 	local width = 400;

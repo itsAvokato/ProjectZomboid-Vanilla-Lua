@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 -- TODO NOTE: disabled this class during climate/weather update, moved some functionallity from here over to server/Climate/ClimateMain.lua ~turbo
 
 season = {};

@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISMap = ISPanelJoypad:derive("ISMap");
@@ -235,12 +231,12 @@ end
 
 function ISMap:canWrite()
     local inv = self.character:getInventory();
-    return inv:containsTagRecurse("Write")
+    return inv:containsTagRecurse(ItemTag.WRITE)
 end
 
 function ISMap:canErase()
     local inv = self.character:getInventory()
-    return inv:containsTypeRecurse("Base.Eraser") or inv:containsTagRecurse("Eraser")
+    return inv:containsTypeRecurse("Base.Eraser") or inv:containsTagRecurse(ItemTag.ERASER)
 end
 
 function ISMap:onConfirmRemove(button, note)
@@ -588,10 +584,6 @@ function ISMap:revealOnWorldMap()
     ISTimedActionQueue.add(ISReadWorldMap:new(playerObj, centerX, centerY, self.mapAPI:getZoomF()))
 end
 
---************************************************************************--
---** ISMap:new
---**
---************************************************************************--
 function ISMap:new(x, y, width, height, map, player)
 	local o = ISPanelJoypad.new(self, x, y, width, height);
     o.character = getSpecificPlayer(player);
@@ -611,4 +603,3 @@ function ISMap:new(x, y, width, height, map, player)
 	o.getJoypadFocus = false
     return o;
 end
-

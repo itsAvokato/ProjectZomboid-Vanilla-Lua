@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    UI System for GameEntity->Components
---]]
-
 --local _print = print;
 --local function log(DebugType.CraftLogic, _s)
 --    _log(DebugType.CraftLogic, "ISEntityUI -> "..tostring(_s));
@@ -37,7 +28,7 @@ end
 
 function ISEntityUI.ItemSlotRemoveSingleItem( _player, _entity, _itemSlot, _item )
     if ISEntityUI.WalkToEntity( _player, _entity) then
-        local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot.resource, _item)
+        local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot, _item)
         action.itemSlot = _itemSlot
         ISTimedActionQueue.add(action);
     end
@@ -47,13 +38,13 @@ function ISEntityUI.ItemSlotRemoveItems( _player, _entity, _itemSlot, _items )
     if ISEntityUI.WalkToEntity( _player, _entity) then
         if _items then
             for i=0, _items:size()-1 do
-                local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot.resource, _items:get(i))
+                local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot, _items:get(i))
                 action.itemSlot = _itemSlot
                 ISTimedActionQueue.add(action);
             end
         else
             for i=0,_itemSlot.resource:getItemAmount()-1 do
-                local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot.resource)
+                local action = ISItemSlotRemoveAction:new(_player, _entity, _itemSlot)
                 action.itemSlot = _itemSlot
                 ISTimedActionQueue.add(action);
             end
@@ -65,7 +56,7 @@ function ISEntityUI.ItemSlotAddItems( _player, _entity, _itemSlot, _itemList )
     if #_itemList>0 and ISEntityUI.WalkToEntity( _player, _entity) then
         for index,item in ipairs(_itemList) do --todo remove For loop and handle list of items in Action
             if index<=_itemSlot.resource:getFreeItemCapacity() then
-                local action = ISItemSlotAddAction:new(_player, _entity, item, _itemSlot.resource)
+                local action = ISItemSlotAddAction:new(_player, _entity, item, _itemSlot)
                 action.itemSlot = _itemSlot
                 ISTimedActionQueue.add(action);
             end
@@ -388,7 +379,7 @@ local function createWindow(_player, _windowInstance, _isoObject)
     local width = 0;
     local height = 0;
     
-    local locked = false;
+    local locked = true;
     
     local windowKey = _windowInstance.xuiStyleName or (_windowInstance.entity and _windowInstance.entity:getName()) or "Default";
     
@@ -410,9 +401,7 @@ local function createWindow(_player, _windowInstance, _isoObject)
             width = ISEntityUI.players[playerNum].windows[windowKey].width;
             height = ISEntityUI.players[playerNum].windows[windowKey].height;
         end
-        if ISEntityUI.players[playerNum].windows[windowKey].locked then
-            locked = true;
-        end
+        locked = ISEntityUI.players[playerNum].windows[windowKey].locked;
     else
         ISEntityUI.players[playerNum] = ISEntityUI.players[playerNum] or {};
         ISEntityUI.players[playerNum].windows = ISEntityUI.players[playerNum].windows or {};
@@ -424,7 +413,10 @@ local function createWindow(_player, _windowInstance, _isoObject)
     _windowInstance:setX(x);
     _windowInstance:setY(y);
     _windowInstance:setVisible(true);
-    if locked then _windowInstance:toggleLock() end
+    local _windowInstanceType = getmetatable(_windowInstance).Type
+    if _windowInstanceType == "ISBuildWindow" or _windowInstanceType == "ISHandcraftWindow"  then
+        if locked then _windowInstance:toggleLock() end
+    end
     if _windowInstance.calculateLayout then
         _windowInstance:calculateLayout(width,height);
     end
@@ -453,9 +445,6 @@ local function createWindow(_player, _windowInstance, _isoObject)
     end
 end
 
---****************************************************
--- Main entry for opening entity UI windows
---****************************************************
 function ISEntityUI.OpenWindow(_player, _entity)
 
     if not ISEntityUI.CanOpenWindowFor(_player, _entity) then
@@ -579,16 +568,13 @@ function ISEntityUI.OpenBuildWindow(_player, _isoObject, _queryOverride, _ignore
         windowInstance.BuildPanel._filterMode = "InputName";
         windowInstance.BuildPanel:filterRecipeList();
         windowInstance.BuildPanel.recipesPanel.recipeFilterPanel.filterTypeCombo:setSelected(2)
-        windowInstance.BuildPanel.recipesPanel.recipeFilterPanel.entryBox:setText(itemString)
-        if windowInstance.BuildPanel.logic:getRecipeList() and windowInstance.BuildPanel.logic:getRecipeList():get(0) then
-            windowInstance.BuildPanel.logic:setRecipe(windowInstance.BuildPanel.logic:getRecipeList():get(0))
+        windowInstance.BuildPanel.recipesPanel.recipeFilterPanel.searchEntryBox:setText(itemString)
+        if windowInstance.BuildPanel.logic:getRecipeList() and windowInstance.BuildPanel.logic:getRecipeList():getFirstRecipe() then
+            windowInstance.BuildPanel.logic:setRecipe(windowInstance.BuildPanel.logic:getRecipeList():getFirstRecipe())
         end
     end
 end
 
---****************************************************
--- Main entry for opening non-entity Craft windows
---****************************************************
 function ISEntityUI.OpenHandcraftWindow(_player, _isoObject, _queryOverride, _ignoreFindSurface, recipe, itemString)
     if (not _isoObject) and (not _ignoreFindSurface) then
     -- reduced the radius because only adjacent squares will pass as valid for ISOGridSquare canReachTo tests.
@@ -610,9 +596,9 @@ function ISEntityUI.OpenHandcraftWindow(_player, _isoObject, _queryOverride, _ig
         windowInstance.handCraftPanel._filterMode = "InputName";
         windowInstance.handCraftPanel:filterRecipeList();
         windowInstance.handCraftPanel.recipesPanel.recipeFilterPanel.filterTypeCombo:setSelected(2)
-        windowInstance.handCraftPanel.recipesPanel.recipeFilterPanel.entryBox:setText(itemString)
-        if windowInstance.handCraftPanel.logic:getRecipeList() and windowInstance.handCraftPanel.logic:getRecipeList():get(0) then
-            windowInstance.handCraftPanel.logic:setRecipe(windowInstance.handCraftPanel.logic:getRecipeList():get(0))
+        windowInstance.handCraftPanel.recipesPanel.recipeFilterPanel.searchEntryBox:setText(itemString)
+        if windowInstance.handCraftPanel.logic:getRecipeList() and windowInstance.handCraftPanel.logic:getRecipeList():getFirstRecipe() then
+            windowInstance.handCraftPanel.logic:setRecipe(windowInstance.handCraftPanel.logic:getRecipeList():getFirstRecipe())
         end
     end
 

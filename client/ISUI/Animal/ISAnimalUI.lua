@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 25/01/2022
--- Time: 08:44
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISCollapsableWindowJoypad"
 require "ISUI/ISUI3DModel"
 
@@ -527,9 +519,17 @@ end
 
 function ISAnimalUI:onRenameAnimalClick(button, animal)
     if button.internal == "OK" then
-        if button.parent.entry:getText() and button.parent.entry:getText() ~= "" then
-            self.animal:setCustomName(button.parent.entry:getText());
-            self.animalName = button.parent.entry:getText();
+        if button.parent.entry:getText() and button.parent.entry:getText() ~= "" and
+            self.animal:getCustomName() ~= button.parent.entry:getText() then
+            if isClient() then
+                sendClientCommandV(playerObj, "animal", "rename",
+                    "id", self.animal:getOnlineID(),
+                    "text", button.parent.entry:getText());
+                self.animalName = button.parent.entry:getText();
+            else
+                self.animal:setCustomName(button.parent.entry:getText());
+                self.animalName = button.parent.entry:getText();
+            end
         end
     end
 end

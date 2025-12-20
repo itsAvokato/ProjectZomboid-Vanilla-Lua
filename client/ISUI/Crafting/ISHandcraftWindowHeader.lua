@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISHandcraftWindowHeader = ISPanel:derive("ISHandcraftWindowHeader");
@@ -14,12 +10,8 @@ function ISHandcraftWindowHeader:createChildren()
     ISPanel.createChildren(self);
 
     if self.enableIcon then
-        --local iconTex = self.entityStyle and self.entityStyle:getIcon();
         local style = self.styleIcon or "S_Image_HandcraftWindowHeaderIcon";
         self.icon = ISXuiSkin.build(self.xuiSkin, style, ISImage, 0, 0, 32, 32, iconTex);
-        --self.icon.scaledWidth = self.iconSize;
-        --self.icon.scaledHeight = self.iconSize;
-        --self.icon.texture = self.entityStyle:getIcon();
         self.icon:initialise();
         self.icon:instantiate();
         self:addChild(self.icon);
@@ -42,10 +34,9 @@ function ISHandcraftWindowHeader:createChildren()
     self.title:instantiate();
     self:addChild(self.title);
 
-    if self.enableInfoButton then --todo: and self.entityStyle and self.entityStyle:getDescription() then
+    if self.enableInfoButton then
         local style = self.styleButton or "S_Button_EntityHeaderInfo"
         self.buttonInfo = ISXuiSkin.build(self.xuiSkin, style, ISButton, 0, 0, 24, 24, "");
-        --self.buttonInfo.image = self.iconInfo;
         self.buttonInfo.target = self;
         self.buttonInfo.onclick = ISHandcraftWindowHeader.onButtonClick;
         self.buttonInfo.enable = true;
@@ -108,7 +99,6 @@ end
 function ISHandcraftWindowHeader:onButtonClick(_button)
     if _button==self.buttonInfo then
         --todo open info panel
-        print("Clickety click")
     end
 end
 
@@ -133,10 +123,6 @@ function ISHandcraftWindowHeader:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISHandcraftWindowHeader:new
---**
---************************************************************************--
 function ISHandcraftWindowHeader:new(x, y, width, height, player, _styleIcon, _styleLabel, _styleButton)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

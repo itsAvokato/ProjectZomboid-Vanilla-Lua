@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISScrollingListBox"
 
@@ -81,10 +77,6 @@ function WorkshopItemList:new(x, y, width, height)
 	return o
 end
 
------
------
------
-
 function ServerWorkshopItemScreen:create()
 	local textWid1 = getTextManager():MeasureStringX(UIFont.Small, getText("UI_btn_install"))
 	local textWid2 = getTextManager():MeasureStringX(UIFont.Small, getText("UI_btn_disconnect"))
@@ -142,7 +134,7 @@ end
 
 function ServerWorkshopItemScreen:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ServerWorkshopItemScreen_Title"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_ServerWorkshopItemScreen_Title"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	ServerWorkshopItemScreen.instance = self
 	self.listbox.doDrawItem = WorkshopItemList.doDrawItem
 	self.disconnectButton.onclick = self.onButtonDisconnect

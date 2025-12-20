@@ -1,12 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
-
---[[
-    Add a canStart test debug button for craft grid components
---]]
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
 
@@ -105,10 +97,6 @@ function ISWidgetEntityDebug:onButtonClick(_button)
     end
 end
 
---************************************************************************--
---** ISWidgetEntityDebug:new
---**
---************************************************************************--
 function ISWidgetEntityDebug:new (x, y, width, height, player, entity, _styleButton)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

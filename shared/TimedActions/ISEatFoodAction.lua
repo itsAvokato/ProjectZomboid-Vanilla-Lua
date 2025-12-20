@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISEatFoodAction = ISBaseTimedAction:derive("ISEatFoodAction");
@@ -15,7 +11,7 @@ local function predicateNotBroken(item)
 end
 
 function ISEatFoodAction:isValidStart()
-	return self.character:getMoodles():getMoodleLevel(MoodleType.FoodEaten) < 3 -- or self.character:getNutrition():getCalories() < 1000
+	return self.character:getMoodles():getMoodleLevel(MoodleType.FOOD_EATEN) < 3 -- or self.character:getNutrition():getCalories() < 1000
 end
 
 function ISEatFoodAction:waitToStart()
@@ -162,7 +158,7 @@ function ISEatFoodAction:perform()
         -- This is now a looping sound, don't play it here
 --        self.character:getEmitter():playSound("Swallowing");
     end
-    self.item:getContainer():setDrawDirty(true);
+    self.container:setDrawDirty(true);
     self.item:setJobDelta(0.0);
 --     self.character:Eat(self.item, self.percentage);
     -- needed to remove from queue / start next.
@@ -294,18 +290,21 @@ function ISEatFoodAction:new (character, item, percentage)
 	local o = ISBaseTimedAction.new(self, character);
 	o.character = character;
 	o.item = item;
+	o.container = item:getContainer() or character:getInventory();
 	o.stopOnWalk = false;
 	o.stopOnRun = true;
 	o.stopOnAim = false;
     o.percentage = percentage;
-    o.carLighter = item:hasTag("Smokable") and character:getVehicle() and character:getVehicle():canLightSmoke(character)
+    o.carLighter = item:hasTag(ItemTag.SMOKABLE) and character:getVehicle() and character:getVehicle():canLightSmoke(character)
     o.openFlame = false;
-    if item:hasTag("Smokable") then o.openFlame = ISInventoryPaneContextMenu.hasOpenFlame(character) end
+	if not isServer() then
+		if item:hasTag(ItemTag.SMOKABLE) then o.openFlame = ISInventoryPaneContextMenu.hasOpenFlame(character) end
+	end
     o.useUtensil = false;
     o.isEating = true;
     local playerInv = o.character:getInventory()
-    o.spoon = playerInv:getFirstTagEvalRecurse("Spoon", predicateNotBroken) or playerInv:getFirstTypeEvalRecurse("Base.Spoon", predicateNotBroken);
-    o.fork = playerInv:getFirstTagEvalRecurse("Fork", predicateNotBroken) or playerInv:getFirstTypeEvalRecurse("Base.Fork", predicateNotBroken);
+    o.spoon = playerInv:getFirstTagEvalRecurse(ItemTag.SPOON, predicateNotBroken) or playerInv:getFirstTypeEvalRecurse("Base.Spoon", predicateNotBroken);
+    o.fork = playerInv:getFirstTagEvalRecurse(ItemTag.FORK, predicateNotBroken) or playerInv:getFirstTypeEvalRecurse("Base.Fork", predicateNotBroken);
     if ISEatFoodAction.getSecondItem(o) then
         o.useUtensil = true
     end
@@ -318,12 +317,6 @@ function ISEatFoodAction:new (character, item, percentage)
 
     o.eatSound = item:getCustomEatSound() or "Eating";
     o.eatAudio = 0
-
---	local w = item:getActualWeight();
---    if w > 3 then w = 3; end;
---
---    o.maxTime = o.maxTime * w;
-
     o.ignoreHandsWounds = true;
 	return o
 end

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPutOutFire = ISBaseTimedAction:derive("ISPutOutFire");
@@ -68,7 +64,7 @@ function ISPutOutFire:complete()
 				used = true
 			end
 		end
-		if square:Is(IsoFlagType.burning) then
+		if square:has(IsoFlagType.burning) then
 		    if not isServer() then
 		        square:stopFire()
 		    else

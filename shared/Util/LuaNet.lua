@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 local function getLuaNetModule( _name, _debug )
     local self 			= {};
     local self_commands = {};

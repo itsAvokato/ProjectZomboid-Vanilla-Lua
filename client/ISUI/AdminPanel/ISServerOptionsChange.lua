@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISServerOptionsChange = ISPanel:derive("ISServerOptionsChange");
@@ -18,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISServerOptionsChange:initialise()
     ISPanel.initialise(self);
@@ -80,7 +63,7 @@ function ISServerOptionsChange:create()
     end
 
     if instanceof(self.option, "EnumConfigOption") then
-        local comboWid = getTextManager():MeasureStringX(UIFont.Small, "false") + 30
+        local comboWid = getTextManager():MeasureStringX(UIFont.Small, "disabled") + 30
         self.enumOption = ISComboBox:new(getTextManager():MeasureStringX(UIFont.Small, self.option:getName()) + 20, y, comboWid, FONT_HGT_SMALL + 2 * 2, nil,nil);
         self.enumOption:initialise();
         for k=1,self.option:getNumValues() do

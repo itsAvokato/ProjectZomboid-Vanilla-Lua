@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

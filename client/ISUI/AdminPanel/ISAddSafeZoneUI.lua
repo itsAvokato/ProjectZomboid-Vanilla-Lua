@@ -1,16 +1,6 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- ISAddSafeZoneUI
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
 require "ISUI/ISPanel"
 require "ISUI/ISLayoutManager"
--------------------------------------------------
--------------------------------------------------
+
 ISAddSafeZoneUI = ISPanel:derive("ISAddSafeZoneUI");
 ISAddSafeZoneUI.instance = nil;
 
@@ -19,8 +9,7 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
--------------------------------------------------
--------------------------------------------------
+
 function ISAddSafeZoneUI:highlightZone(_x1, _x2, _y1, _y2, _fullHighlight)
 	local r = (self.notIntersecting and 0.4) or 1;
 	local g = (self.notIntersecting and 1) or 0;
@@ -85,13 +74,11 @@ function ISAddSafeZoneUI:highlightZone(_x1, _x2, _y1, _y2, _fullHighlight)
 	end;
 --]]
 end
--------------------------------------------------
--------------------------------------------------
+
 local function setSafehouseData(_title, _owner, _x, _y, _w, _h)
 	sendSafezoneClaim(_owner, _x, _y, _w, _h, _title)
 end
--------------------------------------------------
--------------------------------------------------
+
 function ISAddSafeZoneUI:checkIfIntersectingAnotherZone()
 	self.notIntersecting = true;
 	for xVal = self.X1, self.X2 do
@@ -105,8 +92,7 @@ function ISAddSafeZoneUI:checkIfIntersectingAnotherZone()
 		end;
 	end;
 end
--------------------------------------------------
--------------------------------------------------
+
 function ISAddSafeZoneUI:updateButtons()
     local p = getPlayerFromUsername(self.ownerEntry:getInternalText())
 	self.ok.enable = self.size > 1
@@ -277,8 +263,7 @@ function ISAddSafeZoneUI:onClick(button)
 		return;
 	end;
 end
--------------------------------------------------
--------------------------------------------------
+
 function ISAddSafeZoneUI:new(x, y, width, height, character)
 	local o = {}
 	o = ISPanel:new(x, y, width, height);
@@ -303,5 +288,3 @@ function ISAddSafeZoneUI:new(x, y, width, height, character)
 	o.buttonBorderColor = {r=0.7, g=0.7, b=0.7, a=0.5};
 	return o;
 end
--------------------------------------------------
--------------------------------------------------

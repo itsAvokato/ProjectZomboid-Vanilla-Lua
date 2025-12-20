@@ -2,12 +2,6 @@ require "ISUI/ISPanel"
 
 ISImage = ISPanel:derive("ISImage");
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISImage:initialise()
 	ISPanel.initialise(self);
 end
@@ -40,10 +34,6 @@ function ISImage:onMouseUp(x,y)
 	end
 end
 
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISImage:prerender()
 	if self.doBorder then
 		local c = self.borderColor;
@@ -106,10 +96,6 @@ function ISImage:updateTooltip()
     end
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISImage:new (x, y, width, height, texture)
 	local o = {};
 	o = ISPanel:new(x, y, width, height);

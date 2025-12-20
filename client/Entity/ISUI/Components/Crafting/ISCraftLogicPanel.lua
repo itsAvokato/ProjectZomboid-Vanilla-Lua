@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default panel for CraftLogic component.
---]]
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISCraftLogicPanel = ISBaseComponentPanel:derive("ISCraftLogicPanel");
@@ -16,11 +7,6 @@ function ISCraftLogicPanel.CanCreatePanelFor(_player, _entity, _component, _comp
         return instanceof(_component, "CraftLogic");
     end
 end
-
---************************************************************************--
---** ISCraftLogicPanel:initialise
---**
---************************************************************************--
 
 function ISCraftLogicPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -218,15 +204,7 @@ end
 
 function ISCraftLogicPanel:createLegacyRecipePanel()
     local resources = ArrayList.new();
-
-    --[[
-        LEFT SIDE PANELS
-    --]]
-
-    -- Energy Inputs
-
     resources = self.resourcesComponent:getResourcesFromGroup(self.inputsGroupName, resources, ResourceIO.Input, ResourceType.Energy);
-
     if resources:size()>0 then
         self.energyInputs = self:createEnergySlotPanel("S_EnergySlotPanel_Inputs");
         self.energyInputs:addResources(resources, nil, nil, nil);
@@ -234,8 +212,6 @@ function ISCraftLogicPanel:createLegacyRecipePanel()
         column = self.tableLayout:addColumn(nil);
         self.tableLayout:setElement(column:index(), 0, self.energyInputs);
     end
-
-    -- Fluid Inputs
 
     resources = self.resourcesComponent:getResourcesFromGroup(self.inputsGroupName, resources, ResourceIO.Input, ResourceType.Fluid);
 
@@ -249,10 +225,6 @@ function ISCraftLogicPanel:createLegacyRecipePanel()
         self.tableLayout:setElement(column:index(), 0, self.fluidInputs);
     end
 
-    --[[
-        MIDDLE PANELS
-    --]]
-
     local middleLayout = ISXuiSkin.build(self.xuiSkin, "S_TableLayout_Middle", ISTableLayout, 0, 0, 10, 10); --, columns, rows);
     middleLayout:addColumnFill(nil);
     middleLayout:initialise();
@@ -262,9 +234,6 @@ function ISCraftLogicPanel:createLegacyRecipePanel()
     self.tableLayout:setElement(column:index(), 0, middleLayout);
 
     local addedPanels = false;
-
-    -- Inputs
-
     if self.inputsGroupName then
         resources = self.resourcesComponent:getResourcesFromGroup(self.inputsGroupName, resources, ResourceIO.Input, ResourceType.Item);
 
@@ -485,7 +454,7 @@ function ISCraftLogicPanel.ItemSlotAddItems( _player, _entity, _itemSlot, _itemL
         for index,item in ipairs(_itemList) do
             local maxItems = math.min(_itemSlot.resource:getFreeItemCapacity(), math.max(0, _component:getFreeOutputSlotCount() - _itemSlot.resource:storedSize()));
             if index<=maxItems then
-                local action = ISItemSlotAddAction:new(_player, _entity, item, _itemSlot.resource)
+                local action = ISItemSlotAddAction:new(_player, _entity, item, _itemSlot)
                 action.itemSlot = _itemSlot;
                 action.component = _component;
                 action.canAddItem = function(_self)
@@ -498,10 +467,6 @@ function ISCraftLogicPanel.ItemSlotAddItems( _player, _entity, _itemSlot, _itemL
     end
 end
 
---************************************************************************--
---** ISCraftLogicPanel:new
---**
---************************************************************************--
 function ISCraftLogicPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

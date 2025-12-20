@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 SeamEditorUI_TileList = ISPanel:derive("SeamEditorUI_TileList")

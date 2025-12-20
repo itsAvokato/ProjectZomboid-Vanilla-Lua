@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObjectSystem"
 
 CFarmingSystem = CGlobalObjectSystem:derive("CFarmingSystem")
@@ -41,8 +37,7 @@ end
 
 -- make the player more tired etc. when plowing land
 function CFarmingSystem:changePlayer(player)
--- 	player:getStats():setFatigue(player:getStats():getFatigue() + 0.006)
-	player:getStats():setEndurance(player:getStats():getEndurance() - 0.0013)
+	player:getStats():remove(CharacterStat.ENDURANCE, 0.0013)
 end
 
 CGlobalObjectSystem.RegisterSystemClass(CFarmingSystem)

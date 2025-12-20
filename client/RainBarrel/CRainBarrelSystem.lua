@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObjectSystem"
 
 CRainBarrelSystem = CGlobalObjectSystem:derive("CRainBarrelSystem")
@@ -12,7 +8,7 @@ function CRainBarrelSystem:new()
 end
 
 function CRainBarrelSystem:isValidIsoObject(isoObject)
-	return instanceof(isoObject, "IsoThumpable") and isoObject:getProperties() and (isoObject:getProperties():Val("CustomName") == "Rain Collector Barrel")
+	return instanceof(isoObject, "IsoThumpable") and isoObject:getProperties() and (isoObject:getProperties():get("CustomName") == "Rain Collector Barrel")
 end
 
 function CRainBarrelSystem:newLuaObject(globalObject)

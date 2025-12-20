@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISGarmentUI = ISCollapsableWindow:derive("ISGarmentUI");
@@ -182,8 +178,8 @@ function ISGarmentUI:doContextMenu(part, x, y)
 	local context = ISContextMenu.get(self.chr:getPlayerNum(), x, y);
 	
 	-- you need thread and needle
-	local thread = self.chr:getInventory():getItemFromType("Thread", true, true) or self.chr:getInventory():getItemFromTag("Thread", true, true);
-	local needle = self.chr:getInventory():getItemFromType("Needle", true, true) or self.chr:getInventory():getFirstTagRecurse("SewingNeedle");
+	local thread = self.chr:getInventory():getItemFromType("Thread", true, true) or self.chr:getInventory():getItemFromTag(ItemTag.THREAD, true, true);
+	local needle = self.chr:getInventory():getItemFromType("Needle", true, true) or self.chr:getInventory():getFirstTagRecurse(ItemTag.SEWING_NEEDLE);
 	local fabric1 = self.chr:getInventory():getItemFromType("RippedSheets", true, true);
 	local fabric2 = self.chr:getInventory():getItemFromType("DenimStrips", true, true);
 	local fabric3 = self.chr:getInventory():getItemFromType("LeatherStrips", true, true);
@@ -411,9 +407,6 @@ function ISGarmentUI:addTextures(type, textureName, overlayName)
 	self.textures[type].hole = getTexture("media/ui/BodyParts/overlays/" .. self.sex .. "_clothing_overlays_holes" .. overlayName .. ".png")
 	self.textures[type].blood = getTexture("media/ui/BodyParts/overlays/" .. self.sex .. "_clothing_overlays_blood" .. overlayName .. ".png")
 	self.textures[type].patch = getTexture("media/ui/BodyParts/overlays/" .. self.sex .. "_clothing_overlays_patches" .. overlayName .. ".png")
-if self.textures[type].texture then
-	print(self.textures[type].texture:getHeight(),self.textures[type].texture:getHeightOrig())
-end
 end
 
 function ISGarmentUI:create()

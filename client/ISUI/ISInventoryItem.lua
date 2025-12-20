@@ -1,13 +1,5 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISInventoryItem = {};
 
---[[
-    Universal function to draw Inventory Icons
---]]
 function ISInventoryItem.renderItemIcon(self, _item, _x, _y, _alpha, _w, _h)
     if _item and _item:getTex() then
         local tex = _item:getTex();

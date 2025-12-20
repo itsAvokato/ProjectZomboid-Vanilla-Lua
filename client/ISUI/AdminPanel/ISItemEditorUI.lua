@@ -1,15 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                    ROBERT JOHNSON                     **
---**				  Refactor: turbotutone				   **
---***********************************************************
-
---[[
-    NOTE: this lua class has been refactor to be more automated
-    so that it can autogenerate options for the new Attribute system.
-    see ISItemEditPanel header for more info
---]]
-
 require "ISUI/ISPanel"
 
 ISItemEditorUI = ISPanel:derive("ISItemEditorUI");
@@ -106,6 +94,12 @@ end
 function ISItemEditorUI:onOptionMouseDown(button, x, y)
     if button.internal == "SAVE" then
         self.optionsPanel:saveAll();
+        if isClient() then
+            local player = self.item:getPlayer();
+            if player and player:getRole():hasCapability(Capability.InspectPlayerInventory) then
+                InvMngUpdateItem(self.item, player:getOnlineID())
+            end
+        end
         self:setVisible(false);
         self:removeFromUIManager();
     elseif button.internal == "CANCEL" then

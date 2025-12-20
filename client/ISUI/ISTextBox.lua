@@ -1,18 +1,9 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISTextBox = ISPanelJoypad:derive("ISTextBox");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISTextBox:initialise
---**
---************************************************************************--
 
 function ISTextBox:initialise()
     ISPanelJoypad.initialise(self);
@@ -211,12 +202,7 @@ function ISTextBox:updateButtons()
     end
 end
 
---************************************************************************--
---** ISTextBox:render
---**
---************************************************************************--
 function ISTextBox:render()
-
 end
 
 function ISTextBox:onMouseMove(dx, dy)
@@ -300,10 +286,6 @@ function ISTextBox:onJoypadDown(button, joypadData)
 	ISPanelJoypad.onJoypadDown(self, button, joypadData)
 end
 
---************************************************************************--
---** ISTextBox:new
---**
---************************************************************************--
 function ISTextBox:new(x, y, width, height, text, defaultEntryText, target, onclick, player, param1, param2, param3, param4)
 	local o = {}
 	o = ISPanelJoypad:new(x, y, width, height);
@@ -361,4 +343,3 @@ function ISTextBox:close()
 		setJoypadFocus(self.player, nil)
 	end
 end
-

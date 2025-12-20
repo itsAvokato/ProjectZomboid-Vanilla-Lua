@@ -1,9 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
--- walk to a vector3F
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWalkToTimedActionF = ISBaseTimedAction:derive("ISWalkToTimedActionF");

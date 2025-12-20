@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isServer() then return end
 
 JoypadState = {}
@@ -68,8 +64,6 @@ local function uiToString(ui)
     return ui and ui:toString() or "nil"
 end
 
------
-
 JoypadControllerData = ISBaseObject:derive("JoypadControllerData")
 
 function JoypadControllerData:setJoypad(joypadData)
@@ -101,8 +95,6 @@ function JoypadControllerData:new(id)
     o.joypad = nil
     return o
 end
-
------
 
 JoypadData = ISBaseObject:derive("JoypadData")
 
@@ -175,8 +167,6 @@ function JoypadData:new()
     return o
 end
 
------
-
 -- GLFW supports 16 controllers.
 for i=1,16 do
     JoypadState.controllers[i-1] = JoypadControllerData:new(i-1)
@@ -185,8 +175,6 @@ end
 for i=1,getMaxActivePlayers() do
     JoypadState.joypads[i] = JoypadData:new()
 end
-
------
 
 function getFocusForPlayer(playerNum)
     local joypadData = JoypadState.players[playerNum+1]
@@ -270,11 +258,8 @@ function JoypadControllerData:onPressButtonNoFocus(button)
         return
     end
 
-    -----
     -- Case 1: In the main menu.
-    -----
-
-    if MainScreen.instance and MainScreen.instance:isReallyVisible() then
+        if MainScreen.instance and MainScreen.instance:isReallyVisible() then
         -- Activating a controller in the main menu does not display the JoypadListBox.
         -- Also, the controller is not assigned to any player.
         if button == Joypad.AButton then
@@ -288,11 +273,8 @@ function JoypadControllerData:onPressButtonNoFocus(button)
         return
     end
 
-    -----
     -- Case 2: In game.
-    -----
-
-    if joypadData.player and getCell() and getCell():getDrag(joypadData.player) then
+        if joypadData.player and getCell() and getCell():getDrag(joypadData.player) then
         getCell():getDrag(joypadData.player):onJoypadPressButton(joypadIndex, joypadData, button);
         return;
     end
@@ -554,12 +536,12 @@ function updateJoypadFocus(joypadData)
         joypadData.lastfocus = joypadData.focus;
 
         if joypadData.focus == nil and getPlayerData(joypadData.player) then
-    
+
             if JoypadState.disableControllerPrompt then
                 joypadData.lastfocus = joypadData.focus;
                 return;
             end
-            
+
             local buts = getButtonPrompts(joypadData.player);
 
             if buts ~= nil then
@@ -574,7 +556,7 @@ function updateJoypadFocus(joypadData)
     else
         joypadData.lastfocus = joypadData.focus;
     end
-    
+
     if JoypadState.disableMovement then
         setPlayerMovementActive(joypadData.player, false);
     end
@@ -776,13 +758,13 @@ function JoypadControllerData:update(time)
     local i = self.id
     local v = self
     local t = time
-    
+
     if isJoypadDown(i) then
         if not v.down then	v.timedown = t; v.timedownproc = 0 end
         v.down = true
         v.dtdown = t - v.timedown
         v.dtprocdown = t - v.timedownproc
-    else 
+    else
         v.timedown = 0
         v.down = false
     end
@@ -792,7 +774,7 @@ function JoypadControllerData:update(time)
         v.up = true
         v.dtup = t - v.timeup
         v.dtprocup = t - v.timeupproc
-    else 
+    else
         v.timeup = 0
         v.up = false
     end
@@ -805,7 +787,7 @@ function JoypadControllerData:update(time)
         v.left = true
         v.dtleft = t - v.timeleft
         v.dtprocleft = t - v.timeleftproc
-    else 
+    else
         v.timeleft = 0
         v.left = false
     end
@@ -818,11 +800,11 @@ function JoypadControllerData:update(time)
         v.right = true
         v.dtright = t - v.timeright
         v.dtprocright = t - v.timerightproc
-    else 
+    else
         v.timeright = 0
         v.right = false
     end
-    
+
     --print("DEBUG: v.down="..tostring(v.down).." v.dtdown="..tostring(v.dtdown).." v.timedown="..tostring(v.timedown).." v.dtprocdown="..tostring(v.dtprocdown))
     --print("DEBUG: v.up="..tostring(v.up).." v.dtup="..tostring(v.dtup).." v.timeup="..tostring(v.timeup).." v.dtprocup="..tostring(v.dtprocup))
 
@@ -938,7 +920,7 @@ function onJoypadActivate(id)
             getCore():ResetLua("default", "gamepadStyleChange")
         end
     end
-    
+
     if MainScreen.instance and MainScreenInstance.inGame then
         local numPlayers = getNumActivePlayers() + 1
         local maxPlayer = math.min(numPlayers, getMaxActivePlayers())
@@ -1038,29 +1020,31 @@ end
 
 -- Player 0 controller was disconnected, and they chose to use keyboard and mouse.
 function JoypadState.useKeyboardMouse()
-    local playerNum = 0
-    local joypadData = JoypadState.players[playerNum+1]
-    JoypadState.players[playerNum+1] = nil
-    joypadData.player = nil
-    if joypadData.focus ~= nil then
-        joypadData.focus:onLoseJoypadFocus(joypadData)
-        joypadData.focus = nil
+    local playerNum = 0;
+    local joypadData = JoypadState.players[playerNum+1];
+    if joypadData then
+        joypadData.player = nil;
+        if joypadData.focus ~= nil then
+            joypadData.focus:onLoseJoypadFocus(joypadData);
+            joypadData.focus = nil;
+        end
+        if joypadData.listBox then
+            joypadData.listBox:removeFromUIManager();
+            joypadData.listBox = nil;
+        end
+        JoypadState.players[playerNum+1] = nil;
     end
-    local playerObj = getSpecificPlayer(playerNum)
+    local playerObj = getSpecificPlayer(playerNum);
     if playerObj then
         -- See inventory handling in JoypadControllerData:onPressButton().
-        playerObj:setBannedAttacking(false)
+        playerObj:setBannedAttacking(false);
     end
-    if joypadData.listBox then
-        joypadData.listBox:removeFromUIManager()
-        joypadData.listBox = nil
-    end
-    revertToKeyboardAndMouse()
+    revertToKeyboardAndMouse();
 end
 
 function JoypadState.getMainMenuJoypad()
     for _,joypadData in ipairs(JoypadState.joypads) do
-        if joypadData.inMainMenu then
+        if joypadData.inMainMenu and joypadData.id ~= -1 then
             return joypadData
         end
     end

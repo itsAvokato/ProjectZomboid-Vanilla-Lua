@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISOpenCloseCurtain = ISBaseTimedAction:derive("ISOpenCloseCurtain");
@@ -33,9 +29,11 @@ end
 
 function ISOpenCloseCurtain:complete()
 	if instanceof(self.item, "IsoDoor") then
-    		self.item:toggleCurtain()
-    	else
-    		self.item:ToggleDoor(self.character);
+    	self.item:toggleCurtain()
+    elseif instanceof(self.item, "IsoWindow") then
+        self.item:openCloseCurtain(self.character)
+    else
+    	self.item:ToggleDoor(self.character);
    	end
 
 	return true;

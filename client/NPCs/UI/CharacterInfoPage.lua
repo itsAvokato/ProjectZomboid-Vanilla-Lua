@@ -14,10 +14,6 @@ function CharacterInfoPage:initialise()
 
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function CharacterInfoPage:createChildren()
 
 	self.avatarPanel = ISPanel:new(16, 16, 96, 96);
@@ -44,8 +40,6 @@ function CharacterInfoPage:prerender()
 		local ob = obs:get(i);
 		if ob ~= nil then
 			self:drawText(StringReplacer.DoCharacter(ob:getDescription(), self.desc), 16, y, 1, 1, 1, 1, UIFont.Small);
-		else
-			--print("error: null observation");
 		end
 		y = y + 21;
 	end

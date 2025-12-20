@@ -12,9 +12,11 @@ function ISInventoryTransferAction:isValid()
 		return false;
     end
     -- fix for players being able to replace items into containers they shouldnt
-
-
     if not ISInventoryPaneContextMenu.getContainers(self.character):contains(self.destContainer) then
+        return false;
+    end
+    -- fix for players being able to add ingredients to evolved recipes after walking away from the container they are in
+    if not ISInventoryPaneContextMenu.getContainers(self.character):contains(self.srcContainer) then
         return false;
     end
 
@@ -27,7 +29,7 @@ function ISInventoryTransferAction:isValid()
 	
 	-- Limit items per container in MP
 	if isClient() then
-		if not self.started and not isItemTransactionConsistent(self.item, self.srcContainer, self.destContainer, nil) then
+		if not self.started and not isItemTransactionConsistent(self.item, self.srcContainer, self.destContainer, nil, self.character) then
 			return false
 		end
 		local limit = getServerOptions():getInteger("ItemNumbersLimitPerContainer");
@@ -118,21 +120,19 @@ end
 function ISInventoryTransferAction:update()
 
     -- players that aren't desensitized gain mild unhappiness from stripping items from corpses
-    if self.character and ( not self.character:getTraits():contains("Desensitized") ) and self.srcContainer and self.srcContainer:getType() and ( self.srcContainer:getType() == "inventoryfemale" or self.srcContainer:getType() == "inventorymale" ) then
-        local rate =  getGameTime():getMultiplier()
-        if self.character:getTraits():contains("Cowardly") then rate = rate*2
-        elseif self.character:getTraits():contains("Brave") then rate = rate/2 end
---         local stats = self.character:getStats()
---         stats:setStress(stats:getStress() + rate/10000);
-        local bodyDamage = self.character:getBodyDamage()
-        bodyDamage:setUnhappynessLevel(bodyDamage:getUnhappynessLevel()  + rate/100);
+    if self.character and (not self.character:hasTrait(CharacterTrait.DESENSITIZED)) and self.srcContainer and self.srcContainer:getType() and ( self.srcContainer:getType() == "inventoryfemale" or self.srcContainer:getType() == "inventorymale" ) then
+        local rate =  getGameTime():getMultiplier();
+        if self.character:hasTrait(CharacterTrait.COWARDLY) then rate = rate*2
+        elseif self.character:hasTrait(CharacterTrait.BRAVE) then rate = rate/2 end
+        local stats = self.character:getStats();
+        stats:add(CharacterStat.UNHAPPINESS, rate/100);
     end
 
     -- players that have fear of blood gain mild stress from handling bloody items
-    if self.character and self.character:getTraits():contains("Hemophobic") and self.item and self.item:getBloodLevel() > 0 then
+    if self.character and self.character:hasTrait(CharacterTrait.HEMOPHOBIC) and self.item and self.item:getBloodLevel() > 0 then
         local rate =  self.item:getBloodLevelAdjustedLow() * getGameTime():getMultiplier()
-        local stats = self.character:getStats()
-        stats:setStress(stats:getBasicStress() + rate/10000);
+        local stats = self.character:getStats();
+        stats:add(CharacterStat.STRESS, rate/10000);
     end
 
 	-- reopen the correct container
@@ -145,13 +145,7 @@ function ISInventoryTransferAction:update()
 		end
 		getPlayerLoot(self.character:getPlayerNum()):selectButtonForContainer(self.selectedContainer)
 	end
---    if self.updateDestCont then
---        self.destContainer:setSourceGrid(self.character:getCurrentSquare());
---    end
---
---    if self.updateSrcCont then
---        self.srcContainer:setSourceGrid(self.character:getCurrentSquare());
---    end
+
 	self.item:setJobDelta(self.action:getJobDelta());
 
     self.character:setMetabolicTarget(Metabolics.LightWork);
@@ -160,7 +154,7 @@ function ISInventoryTransferAction:update()
 		if isItemTransactionDone(self.transactionId) then
 			self:forceComplete();
 		elseif isItemTransactionRejected(self.transactionId) then
-			self:forceComplete();
+			self:forceStop();
 		end
 
         if self.maxTime == -1 then
@@ -487,7 +481,7 @@ function ISInventoryTransferAction:perform()
 			time = 0
 		end
 		if isClient() then
-		    self.action:setWaitForFinished(false)
+		    self.action:reset() -- set forceComplete=false
 		end
 		self.maxTime = time
 		self.action:setTime(tonumber(time))
@@ -501,6 +495,9 @@ function ISInventoryTransferAction:perform()
 
 		self.action:stopTimedActionAnim();
 		self.action:setLoopedAction(false);
+		if isClient() then
+		    self.action:setWaitForFinished(false)
+		end
 
 		if self.onCompleteFunc then
 			local args = self.onCompleteArgs
@@ -587,6 +584,7 @@ end
 function ISInventoryTransferAction:transferItem(item)
 
 	removeItemTransaction(self.transactionId, false)
+	self.transactionId = 0
 
 	for index,transaction in ipairs(self.transactions) do
 		if transaction[1] == self.item and transaction[2] == self.srcContainer and transaction[3] == self.destContainer then
@@ -806,10 +804,10 @@ function ISInventoryTransferAction:new (character, item, srcContainer, destConta
 			end
 		end
 
-		if character:HasTrait("Dextrous") then
+		if character:hasTrait(CharacterTrait.DEXTROUS) then
 			o.maxTime = o.maxTime * 0.5
 		end
-		if character:HasTrait("AllThumbs") or character:isWearingAwkwardGloves() then
+		if character:hasTrait(CharacterTrait.ALL_THUMBS) or character:isWearingAwkwardGloves() then
 			o.maxTime = o.maxTime * 2.0
 		end
     else

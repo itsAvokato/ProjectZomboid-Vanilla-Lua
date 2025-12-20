@@ -1,16 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: spurcival 				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISCraftLogicRecipePanel = ISPanel:derive("ISCraftLogicRecipePanel");
-
---************************************************************************--
---** ISCraftLogicRecipePanel:initialise
---**
---************************************************************************--
 
 function ISCraftLogicRecipePanel:initialise()
     ISPanel.initialise(self);
@@ -185,10 +175,6 @@ function ISCraftLogicRecipePanel:onResourceSlotContentsChanged()
     self:calculateLayout(self.width, self.height);
 end
 
---************************************************************************--
---** ISCraftLogicRecipePanel:new
---**
---************************************************************************--
 function ISCraftLogicRecipePanel:new(x, y, width, height, player, logic)
     local o = ISPanel.new(self, x, y, width, height);
 

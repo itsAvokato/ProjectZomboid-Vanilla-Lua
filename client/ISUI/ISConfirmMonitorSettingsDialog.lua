@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISModalDialog"
 
 ISConfirmMonitorSettingsDialog = ISModalDialog:derive("ISConfirmMonitorSettings")

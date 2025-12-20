@@ -1,19 +1,6 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 04/12/2017
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISVehicleRoadtripDebug = ISCollapsableWindow:derive("ISVehicleRoadtripDebug");
-
---************************************************************************--
---** ISVehicleRoadtripDebug:initialise
---**
---************************************************************************--
 
 function ISVehicleRoadtripDebug:createChildren()
 	local btnWid = 100
@@ -186,10 +173,6 @@ function ISVehicleRoadtripDebug:updateXY(x,y,startingListY)
 	return x,y;
 end
 
---************************************************************************--
---** ISVehicleRoadtripDebug:new
---**
---************************************************************************--
 function ISVehicleRoadtripDebug:new(x, y, character)
 	local o = {}
 	local width = 500;

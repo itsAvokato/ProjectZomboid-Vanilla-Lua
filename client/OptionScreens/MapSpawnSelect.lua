@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 
 MapSpawnSelect = ISPanelJoypad:derive("MapSpawnSelect")
@@ -9,14 +5,11 @@ MapSpawnSelect = ISPanelJoypad:derive("MapSpawnSelect")
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
 local WORLD_MAP, WORLD_MAP_X, WORLD_MAP_Y, WORLD_MAP_H, WORLD_MAP_W, WORLD_MAP_SCALE
 local ZOOM_X, ZOOM_Y, ZOOM_SCALE
-
------
 
 MapSpawnSelectImage = ISUIElement:derive("MapSpawnSelectImage")
 
@@ -264,8 +257,6 @@ function MapSpawnSelectImage:new(x, y, width, height)
 	return o
 end
 
------
-
 MapSpawnSelectListBox = ISScrollingListBox:derive("MapSpawnSelectListBox")
 
 function MapSpawnSelectListBox:render()
@@ -280,8 +271,6 @@ end
 function MapSpawnSelectListBox:onJoypadBeforeDeactivate(joypadData)
 	self.parent:onJoypadBeforeDeactivate(joypadData)
 end
-
------
 
 MapSpawnSelectInfoPanel = ISRichTextPanel:derive("MapSpawnSelectInfoPanel")
 
@@ -320,8 +309,6 @@ end
 function MapSpawnSelectInfoPanel:onJoypadBeforeDeactivate(joypadData)
 	self.parent:onJoypadBeforeDeactivate(joypadData)
 end
-
------
 
 MapSpawnSelectSeedPanel = ISPanelJoypad:derive("MapSpawnSelectSeedPanel")
 
@@ -377,8 +364,6 @@ function MapSpawnSelectSeedPanel:new(x, y, width, height)
 	local o = ISPanelJoypad.new(self, x, y, width, height)
 	return o
 end
-
------
 
 function MapSpawnSelect:initialise()
 	ISPanelJoypad.initialise(self)
@@ -536,6 +521,11 @@ function MapSpawnSelect:fillList()
 	self:hideOrShowSaveName()
 	self:recalculateMapSize()
 
+    if self.textEntry ~= nil and self.textEntry:getInternalText() == "" then
+        local sdf = SimpleDateFormat.new("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
+        self.textEntry:setText(sdf:format(Calendar.getInstance():getTime()));
+    end
+
 	self.mapPanel.shownInitialLocation = false
 end
 
@@ -545,7 +535,6 @@ function MapSpawnSelect:checkSorted(item)
 	if IgnoredMap then
 		for i,mapName in ipairs(IgnoredMap) do
 			if mapName == item.name then
-				print("ignoring", item.name)
 				return;
 			end
 		end
@@ -573,13 +562,13 @@ function MapSpawnSelect:hideOrShowSaveName()
 
 	-- When loading an existing save, don't display "Save Name" field
 	if MainScreen.instance.createWorld and not getCore():isChallenge() then
-		self.startY = UI_BORDER_SPACING*3+1 + FONT_HGT_TITLE + FONT_HGT_MEDIUM+6
+		self.startY = UI_BORDER_SPACING*3+1 + FONT_HGT_LARGE + FONT_HGT_MEDIUM+6
 		self.textEntryLabel:setVisible(true)
 		self.textEntry:setVisible(true)
 		self.seedPanel:setVisible(true)
 		self:checkSeed()
 	else
-		self.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE;
+		self.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE;
 		self.textEntryLabel:setVisible(false)
 		self.textEntry:setVisible(false)
 		self.seedPanel:setVisible(false)
@@ -693,7 +682,7 @@ end
 
 function MapSpawnSelect:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_mapspawn_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_mapspawn_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large)
 
 	local selectedItem = self.listbox.items[self.listbox.selected].item;
 	local tempString = ""
@@ -745,7 +734,7 @@ function MapSpawnSelect:recalculateMapSize()
 		--local mapW = WORLD_MAP:getWidth() --width of map image
 		--local mapH = WORLD_MAP:getHeight() --height of map image
 		--local maxW = self.width - UI_BORDER_SPACING*3 - 2 - self.width/4 --max width for map
-		--local maxH = self.height - FONT_HGT_TITLE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2 --max height for map
+		--local maxH = self.height - FONT_HGT_LARGE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2 --max height for map
 		--
 		--if maxH > mapH and maxW > mapW then
 		--	WORLD_MAP_SCALE = 1
@@ -758,12 +747,12 @@ function MapSpawnSelect:recalculateMapSize()
 		--WORLD_MAP_W = math.max(mapW/WORLD_MAP_SCALE, (self.width-UI_BORDER_SPACING*3-2)/2)
 		--WORLD_MAP_H = maxH
 		--WORLD_MAP_X = self.width - UI_BORDER_SPACING - WORLD_MAP_W
-		--WORLD_MAP_Y = FONT_HGT_TITLE + UI_BORDER_SPACING*2 + 1
+		--WORLD_MAP_Y = FONT_HGT_LARGE + UI_BORDER_SPACING*2 + 1
 
 		WORLD_MAP_W = (self.width-UI_BORDER_SPACING*3-2)*0.75
-		WORLD_MAP_H = self.height - FONT_HGT_TITLE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2
+		WORLD_MAP_H = self.height - FONT_HGT_LARGE - UI_BORDER_SPACING*4 - BUTTON_HGT - 2
 		WORLD_MAP_X = self.width - UI_BORDER_SPACING - WORLD_MAP_W
-		WORLD_MAP_Y = FONT_HGT_TITLE + UI_BORDER_SPACING*2 + 1
+		WORLD_MAP_Y = FONT_HGT_LARGE + UI_BORDER_SPACING*2 + 1
 	else
 		--no map found, set size to 0 and move off screen
 		WORLD_MAP_W = 0
@@ -905,21 +894,21 @@ function MapSpawnSelect:checkSeed()
 end
 
 function MapSpawnSelect:generateNewSeed()
-	self.seedTextBox:setText(WGUtils.instance:generateSeed())
+	self.seedTextBox:setText(WorldGenUtils.INSTANCE:generateSeed())
 end
 
 function MapSpawnSelect:saveGenParams()
 	self:checkSeed()
-	WGParams.instance:setSeedString(self.seedTextBox:getText())
-	--WGParams.instance:setMinXCell(self.minXSlider:getCurrentValue())
-	--WGParams.instance:setMinYCell(self.minYSlider:getCurrentValue())
-	--WGParams.instance:setMaxXCell(self.maxXSlider:getCurrentValue())
-	--WGParams.instance:setMaxYCell(self.maxYSlider:getCurrentValue())
+	WorldGenParams.INSTANCE:setSeedString(self.seedTextBox:getText())
+	--WorldGenParams.INSTANCE:setMinXCell(self.minXSlider:getCurrentValue())
+	--WorldGenParams.INSTANCE:setMinYCell(self.minYSlider:getCurrentValue())
+	--WorldGenParams.INSTANCE:setMaxXCell(self.maxXSlider:getCurrentValue())
+	--WorldGenParams.INSTANCE:setMaxYCell(self.maxYSlider:getCurrentValue())
 end
 
 function MapSpawnSelect:discardGenParams()
     self.seedTextBox:setText("")
-    WGParams.instance:setSeedString(self.seedTextBox:getText())
+    WorldGenParams.INSTANCE:setSeedString(self.seedTextBox:getText())
 end
 
 function MapSpawnSelect:create()
@@ -931,7 +920,7 @@ function MapSpawnSelect:create()
 	self:addChild(self.mapPanel)
 
     if not MainScreen.instance.inGame then -- don't show savefile entry in splitscreen
-        self.textEntryLabel = ISLabel:new(UI_BORDER_SPACING+1, UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE, FONT_HGT_MEDIUM+6, getText("UI_mapselecter_savename"), 1, 1, 1, 1, UIFont.Medium, true);
+        self.textEntryLabel = ISLabel:new(UI_BORDER_SPACING+1, UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE, FONT_HGT_MEDIUM+6, getText("UI_mapselecter_savename"), 1, 1, 1, 1, UIFont.Medium, true);
         self.textEntryLabel:initialise();
         self.textEntryLabel:instantiate();
         self.textEntryLabel:setAnchorLeft(true);
@@ -950,6 +939,7 @@ function MapSpawnSelect:create()
         self.textEntry:setAnchorTop(true);
         self.textEntry:setAnchorBottom(false);
         self.textEntry.onCommandEntered = function(entry) entry:unfocus(); GameKeyboard.eatKeyPress(Keyboard.KEY_RETURN) end
+        self.textEntry:setClearButton(true)
         self:addChild(self.textEntry);
         local sdf = SimpleDateFormat.new("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
         self.textEntry:setText(sdf:format(Calendar.getInstance():getTime()));
@@ -1033,7 +1023,7 @@ function MapSpawnSelect:new(x, y, width, height)
 	o.selectedRegion = nil
 	o.previousScreen = 'NewGameScreen'
 	o.addY = 0;
-	o.startY = MainScreen.instance.inGame and UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE or UI_BORDER_SPACING*3+1 + FONT_HGT_TITLE + FONT_HGT_MEDIUM+6;
+	o.startY = MainScreen.instance.inGame and UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE or UI_BORDER_SPACING*3+1 + FONT_HGT_LARGE + FONT_HGT_MEDIUM+6;
 	MapSpawnSelect.instance = o
 	return o
 end

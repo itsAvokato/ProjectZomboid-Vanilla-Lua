@@ -1,6 +1,6 @@
 TraitClothingSelectionDefinitions = TraitClothingSelectionDefinitions or {};
 
-TraitClothingSelectionDefinitions.Gardener = {
+TraitClothingSelectionDefinitions[CharacterTrait.GARDENER] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -21,7 +21,7 @@ TraitClothingSelectionDefinitions.Gardener = {
 	},
 }
 
-TraitClothingSelectionDefinitions.Fishing = {
+TraitClothingSelectionDefinitions[CharacterTrait.FISHING] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -35,7 +35,7 @@ TraitClothingSelectionDefinitions.Fishing = {
 	},
 }
 
-TraitClothingSelectionDefinitions.Hiker = {
+TraitClothingSelectionDefinitions[CharacterTrait.HIKER] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -44,7 +44,7 @@ TraitClothingSelectionDefinitions.Hiker = {
 	},
 }
 
-TraitClothingSelectionDefinitions.Hunter = {
+TraitClothingSelectionDefinitions[CharacterTrait.HUNTER] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -78,10 +78,9 @@ TraitClothingSelectionDefinitions.Hunter = {
 	},
 }
 
--- the survival expert trait should provide the same clothing as the hunter trait
-TraitClothingSelectionDefinitions.WildernessKnowledge = TraitClothingSelectionDefinitions.Hunter
+TraitClothingSelectionDefinitions[CharacterTrait.WILDERNESS_KNOWLEDGE] = TraitClothingSelectionDefinitions[CharacterTrait.HUNTER]
 
-TraitClothingSelectionDefinitions.Mechanics = {
+TraitClothingSelectionDefinitions[CharacterTrait.MECHANICS] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -90,7 +89,7 @@ TraitClothingSelectionDefinitions.Mechanics = {
 	},
 }
 
-TraitClothingSelectionDefinitions.Outdoorsman = {
+TraitClothingSelectionDefinitions[CharacterTrait.OUTDOORSMAN] = {
 	Female = {
 		Hat = {
 			chance = 10,
@@ -99,11 +98,11 @@ TraitClothingSelectionDefinitions.Outdoorsman = {
 	},
 }
 
-TraitClothingSelectionDefinitions.ShortSighted = {
+TraitClothingSelectionDefinitions[CharacterTrait.SHORT_SIGHTED] = {
 	Female = {
 		Eyes = {
-			chance = 100,
-			items = {"Base.Glasses_Normal", "Base.Glasses_Normal_HornRimmed", "Base.Glasses_CatsEye"},
+            chance = 100,
+	        items = {"Base.Glasses_Normal", "Base.Glasses_Normal_HornRimmed", "Base.Glasses_CatsEye"},
 		},
 	},
 	Male = {

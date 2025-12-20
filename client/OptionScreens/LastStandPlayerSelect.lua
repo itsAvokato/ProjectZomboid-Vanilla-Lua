@@ -17,11 +17,6 @@ function LastStandPlayerSelect:initialise()
 	ISPanelJoypad.initialise(self);
 end
 
-
-	--************************************************************************--
-	--** ISPanel:instantiate
-	--**
-	--************************************************************************--
 function LastStandPlayerSelect:instantiate()
 
 	--self:initialise();
@@ -55,17 +50,20 @@ function LastStandPlayerSelect:getAllSavedPlayers()
 end
 
 function LastStandPlayerSelect:createSurvivorDescFromData(newPlayer)
-	local newDesc = SurvivorFactory.CreateSurvivor();
-	newDesc:setForename(newPlayer.forename);
-	newDesc:setSurname(newPlayer.surname);
-	newDesc:setFemale(newPlayer.female);
-	local profession = ProfessionFactory.getProfession(newPlayer.profession)
-	if profession then
-		newDesc:setProfession(newPlayer.profession)
-		newDesc:setProfessionSkills(profession)
-	end
-	if newPlayer.female then newDesc:getExtras():clear() end -- remove the beard
-	return newDesc
+    local newDesc = SurvivorFactory.CreateSurvivor();
+    newDesc:setForename(newPlayer.forename);
+    newDesc:setSurname(newPlayer.surname);
+    newDesc:setFemale(newPlayer.female);
+    local characterProfession = CharacterProfession.get(ResourceLocation.of(newPlayer.profession))
+    local characterProfessionDefinition = CharacterProfessionDefinition.getCharacterProfessionDefinition(characterProfession)
+    if characterProfessionDefinition then
+        newDesc:setCharacterProfession(characterProfession)
+        newDesc:setProfessionSkills(characterProfessionDefinition)
+    end
+    if newPlayer.female then
+        newDesc:getExtras():clear()
+    end -- remove the beard
+    return newDesc
 end
 
 function LastStandPlayerSelect:createPlayerList()
@@ -127,8 +125,7 @@ function LastStandPlayerSelect:create()
 	self.backButton:setAnchorLeft(true);
 	self.backButton:setAnchorTop(false);
 	self.backButton:setAnchorBottom(true);
-	self.backButton.borderColor = {r=1, g=1, b=1, a=0.1};
-
+	self.backButton:enableCancelColor();
 	self.backButton:setFont(UIFont.Small);
 	self.backButton:ignoreWidthChange();
 	self.backButton:ignoreHeightChange();
@@ -142,7 +139,7 @@ function LastStandPlayerSelect:create()
 	self.playButton:setAnchorRight(true);
 	self.playButton:setAnchorTop(false);
 	self.playButton:setAnchorBottom(true);
-	self.playButton.borderColor = {r=1, g=1, b=1, a=0.1};
+	self.playButton:enableAcceptColor();
 	self:addChild(self.playButton);
 
 	self.newButton = ISButton:new(self.playButton.x - btnPadX - btnWid, btnY, btnWid, btnHgt, getText("UI_btn_new"), self, LastStandPlayerSelect.onOptionMouseDown);
@@ -164,7 +161,7 @@ function LastStandPlayerSelect:create()
 	self.deleteButton:setAnchorRight(true);
 	self.deleteButton:setAnchorTop(false);
 	self.deleteButton:setAnchorBottom(true);
-	self.deleteButton.borderColor = {r=1, g=1, b=1, a=0.1};
+	self.deleteButton:enableCancelColor();
 	self:addChild(self.deleteButton);
 
 	self:setVisible(false);
@@ -197,10 +194,11 @@ function LastStandPlayerSelect:drawMap(y, item, alt)
 	x = 160;
 	local y1 = y + 15 + FONT_HGT_LARGE + 4
 	for i,v in ipairs(item.item.traits) do
-		local trait = TraitFactory.getTrait(v);
-		if trait and trait:getTexture() then
-			self:drawTexture(trait:getTexture(), x, y1, 1,1,1,1);
-			x = x + trait:getTexture():getWidth() + 2
+        local trait = CharacterTrait.get(ResourceLocation.of(v))
+		local traitDef = trait and CharacterTraitDefinition.getCharacterTraitDefinition(trait);
+		if traitDef and traitDef:getTexture() then
+			self:drawTexture(traitDef:getTexture(), x, y1, 1,1,1,1);
+			x = x + traitDef:getTexture():getWidth() + 2
 		end
 	end
 	y1 = y1 + 16 + 4
@@ -210,9 +208,10 @@ function LastStandPlayerSelect:drawMap(y, item, alt)
 	self:drawText(getText("UI_challengeplayer_XP", item.item.globalXp), 160, y1, 0.7, 0.7, 0.7, 0.7, UIFont.Small);
 	y1 = y1 + FONT_HGT_SMALL
 
-	local prof = ProfessionFactory.getProfession(item.item.profession);
-	if prof and prof:getTexture() then
-		self:drawTexture(prof:getTexture(), self.width-80, y + 15, 1,1,1,1);
+    local profession = CharacterProfession.get(ResourceLocation.of(item.item.profession));
+	local professionDef = CharacterProfessionDefinition.getCharacterProfessionDefinition(profession);
+	if professionDef and professionDef:getTexture() then
+		self:drawTexture(professionDef:getTexture(), self.width-80, y + 15, 1,1,1,1);
 	end
 
 
@@ -295,7 +294,10 @@ LastStandPlayerSelect.initWorld = function()
 		getWorld():setLuaPlayerDesc(LastStandPlayerSelect.instance.playersDesc["Player" .. LastStandPlayerSelect.playerSelected.forename .. LastStandPlayerSelect.playerSelected.surname]:getDescriptor());
 		getWorld():getLuaTraits():clear()
 		for i,v in ipairs(LastStandPlayerSelect.playerSelected.traits) do
-			getWorld():addLuaTrait(v);
+			local trait = CharacterTrait.get(ResourceLocation.of(v))
+			if trait then
+			    getWorld():addLuaTrait(trait);
+			end
 		end
 	end
 end
@@ -375,6 +377,17 @@ end
 
 function LastStandPlayerSelect:onJoypadBeforeDeactivate_child(joypadData)
 	self.parent:onJoypadBeforeDeactivate(joypadData)
+end
+
+function LastStandPlayerSelect:onKeyRelease(key)
+    if key == Keyboard.KEY_ESCAPE then
+        self.backButton:forceClick()
+        return
+    end
+    if key == Keyboard.KEY_RETURN then
+        self.playButton:forceClick()
+        return
+    end
 end
 
 function LastStandPlayerSelect:new (x, y, width, height)

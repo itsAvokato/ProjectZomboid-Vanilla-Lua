@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISAdminPanelUI = ISPanel:derive("ISAdminPanelUI");
@@ -18,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISAdminPanelUI:initialise()
     ISPanel.initialise(self);
@@ -132,14 +115,6 @@ function ISAdminPanelUI:create()
     self:addChild(self.miniScoreboardBtn);
     self.miniScoreboardBtn.tooltip = getText("IGUI_AdminPanel_TooltipMiniScoreboard");
 
-    self.packetCountsBtn = ISButton:new(x, y, btnWid, BUTTON_HGT, getText("IGUI_AdminPanel_PacketCounts"), self, ISAdminPanelUI.onOptionMouseDown)
-    self.packetCountsBtn.internal = "PACKETCOUNTS"
-    self.packetCountsBtn:initialise()
-    self.packetCountsBtn:instantiate()
-    self.packetCountsBtn.borderColor = self.buttonBorderColor
-    self:addChild(self.packetCountsBtn)
-    self.packetCountsBtn.tooltip = getText("IGUI_AdminPanel_TooltipPacketCounts")
-
     self.sandboxOptionsBtn = ISButton:new(x, y, btnWid, BUTTON_HGT, getText("IGUI_AdminPanel_SandboxOptions"), self, ISAdminPanelUI.onOptionMouseDown)
     self.sandboxOptionsBtn.internal = "SANDBOX"
     self.sandboxOptionsBtn:initialise()
@@ -220,6 +195,11 @@ end
 function ISAdminPanelUI:updateButtons()
     local enabled = false;
 
+    if getPlayer() == nil or getPlayer():getRole() == nil then
+        self:close()
+        return
+    end
+
     self.checkStatsBtn.enable = getPlayer():getRole():hasCapability(Capability.CanSeePlayersStats);
     enabled = enabled or self.checkStatsBtn.enable
     self.adminPowerBtn.enable = getPlayer():getRole():hasAdminPower();
@@ -242,10 +222,8 @@ function ISAdminPanelUI:updateButtons()
     enabled = enabled or self.safezoneBtn.enable
     self.seeTicketsBtn.enable = getPlayer():getRole():hasCapability(Capability.AnswerTickets);
     enabled = enabled or self.seeTicketsBtn.enable
-    self.miniScoreboardBtn.enable = getPlayer():getRole():hasCapability(Capability.GetSteamScoreboard);
+    self.miniScoreboardBtn.enable = getPlayer():getRole():hasCapability(Capability.SeePlayersConnected);
     enabled = enabled or self.miniScoreboardBtn.enable
-    self.packetCountsBtn.enable = getPlayer():getRole():hasCapability(Capability.GetStatistic);
-    enabled = enabled or self.packetCountsBtn.enable
     self.sandboxOptionsBtn.enable = getPlayer():getRole():hasCapability(Capability.SandboxOptions);
     enabled = enabled or self.sandboxOptionsBtn.enable
     self.climateOptionsBtn.enable = getPlayer():getRole():hasCapability(Capability.ClimateManager);
@@ -369,14 +347,6 @@ function ISAdminPanelUI:onOptionMouseDown(button, x, y)
         local ui = ISMiniScoreboardUI:new(50,50,300,300, getPlayer());
         ui:initialise();
         ui:addToUIManager();
-    end
-    if button.internal == "PACKETCOUNTS" then
-        if ISPacketCounts.instance then
-            ISPacketCounts.instance:closeSelf()
-        end
-        local ui = ISPacketCounts:new(50, 50, 570, 630, getPlayer())
-        ui:initialise()
-        ui:addToUIManager()
     end
     if button.internal == "SANDBOX" then
         if ISServerSandboxOptionsUI.instance then

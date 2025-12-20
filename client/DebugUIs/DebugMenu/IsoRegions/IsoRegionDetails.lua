@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
-
 require "ISUI/ISCollapsableWindow"
 
 IsoRegionDetails = ISCollapsableWindow:derive("IsoRegionDetails");
@@ -70,7 +64,7 @@ function IsoRegionDetails:readRegion( _x, _y, _z, _o )
         --local ds = IsoRegions.getDataSquare(_x,_y,_z);
         self:addLine("hasGridsquare",gs and "true" or "false");
         if gs then
-            self:addLine("isSolidFloor",gs:Is(IsoFlagType.solidfloor) and "true" or "false");
+            self:addLine("isSolidFloor",gs:has(IsoFlagType.solidfloor) and "true" or "false");
             --self:addLine("hasDataSquare",gs:getDataSquare() and "true" or "false");
             self:addLine("hasWorldRegion",gs:getIsoWorldRegion() and tostring(gs:getIsoWorldRegion():getID()) or "false");
         else

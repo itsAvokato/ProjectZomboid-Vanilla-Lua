@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 --require "Camping/camping_fuel"
 
@@ -39,7 +35,11 @@ function ISBBQLightFromLiterature:start()
 	self.item:setJobType(campingText.lightFromLiterature)
 	self.item:setJobDelta(0.0)
 	self:setActionAnim("Loot")
-	self.character:SetVariable("LootPosition", "Mid")
+	local lootPosition = "Mid"
+	if instanceof(self.bbq, 'IsoFireplace') then
+        lootPosition = "Low"
+    end
+	self.character:SetVariable("LootPosition", lootPosition)
 	local soundName = "BBQRegularLight"
     local craftBenchSounds = self.bbq:getComponent(ComponentType.CraftBenchSounds)
     if craftBenchSounds ~= nil then
@@ -67,10 +67,10 @@ function ISBBQLightFromLiterature:perform()
 end
 
 function ISBBQLightFromLiterature:complete()
-
+    self.lighter:UseAndSync();
+    self.character:removeFromHands(self.item)
 	self.character:getInventory():Remove(self.item)
 	sendRemoveItemFromContainer(self.character:getInventory(), self.item);
-	self.lighter:Use(false, false, true)
 
 	if not self.bbq then return end
 	if self.fuelAmt then

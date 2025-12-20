@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPlasterAction = ISBaseTimedAction:derive("ISPlasterAction");
@@ -43,7 +39,7 @@ function ISPlasterAction:complete()
 		self.thumpable:transmitUpdatedSpriteToClients()
 		self.thumpable:sendObjectChange("paintable")
 
-		if not self.character:isBuildCheat() then
+		if not ISBuildMenu.cheat then
 			self.plasterBucket:UseAndSync();
 		end
 
@@ -53,7 +49,7 @@ function ISPlasterAction:complete()
 end
 
 function ISPlasterAction:getDuration()
-	if self.character:isTimedActionInstant() or self.character:isBuildCheat() then
+	if self.character:isTimedActionInstant() or ISBuildMenu.cheat then
 		return 1;
 	end
 	return 100

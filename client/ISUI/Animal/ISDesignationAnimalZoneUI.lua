@@ -1,13 +1,7 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISDesignationZoneAnimalZoneUI = ISPanelJoypad:derive("ISDesignationZoneAnimalZoneUI");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.NewSmall)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.NewMedium)
-
------
 
 ISDesignationZoneAnimalZoneUI_AnimalsPanel = ISPanelJoypad:derive("ISDesignationZoneAnimalZoneUI_AnimalsPanel")
 local AnimalsPanel = ISDesignationZoneAnimalZoneUI_AnimalsPanel
@@ -195,13 +189,6 @@ function AnimalsPanel:new(x, y, width, height, ui)
 	o.selected = -1
 	return o
 end
-
------
-
---************************************************************************--
---** ISDesignationZoneAnimalZoneUI:initialise
---**
---************************************************************************--
 
 function ISDesignationZoneAnimalZoneUI:initialise()
     ISPanelJoypad.initialise(self);
@@ -673,10 +660,6 @@ function ISDesignationZoneAnimalZoneUI:onJoypadDirDown(joypadData)
     end
 end
 
---************************************************************************--
---** ISDesignationZoneAnimalZoneUI:new
---**
---************************************************************************--
 function ISDesignationZoneAnimalZoneUI:new(x, y, width, height, player, zone)
     local o = {}
     o = ISPanelJoypad.new(self, x, y, width, height);

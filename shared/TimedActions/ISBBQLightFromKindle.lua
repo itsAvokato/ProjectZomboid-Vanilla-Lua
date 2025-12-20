@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBBQLightFromKindle = ISBaseTimedAction:derive("ISBBQLightFromKindle");
@@ -12,13 +8,13 @@ function ISBBQLightFromKindle:isValid()
             self.character:getInventory():containsID(self.item:getID()) and
             self.character:getInventory():containsID(self.plank:getID()) and
             not self.bbq:isLit() and
-            self.character:getStats():getEndurance() > 0
+            self.character:getStats():isAboveMinimum(CharacterStat.ENDURANCE)
     else
         return self.bbq:getObjectIndex() ~= -1 and self.item ~= nil and
             self.character:getInventory():contains(self.item) and
             self.character:getInventory():contains(self.plank) and
             not self.bbq:isLit() and
-            self.character:getStats():getEndurance() > 0
+            self.character:getStats():isAboveMinimum(CharacterStat.ENDURANCE)
     end
 end
 
@@ -32,7 +28,7 @@ function ISBBQLightFromKindle:update()
 	self.item:setJobDelta(self:getJobDelta());
 	self.plank:setJobDelta(self:getJobDelta());
 	-- every tick we lower the endurance of the player, he also have a chance to light the fire or broke the kindle
-	self.character:getStats():setEndurance(self.character:getStats():getEndurance() - 0.0001 * getGameTime():getMultiplier());
+	self.character:getStats():remove(CharacterStat.ENDURANCE, 0.0001 * getGameTime():getMultiplier());
 	if not isClient() then
 		if self:getJobDelta() < 0.2 then return end
 		local randNumber = 300;
@@ -67,7 +63,11 @@ function ISBBQLightFromKindle:start()
 	self.item:setJobDelta(0.0);
 	self.plank:setJobType(campingText.lightCampfire);
 	self.plank:setJobDelta(0.0);
-	self:setActionAnim("LightFire_KnotchedPlank_Stood")
+	if instanceof(self.bbq, 'IsoFireplace') then
+	    self:setActionAnim("LightFire_KnotchedPlank")
+    else
+	    self:setActionAnim("LightFire_KnotchedPlank_Stood")
+	end
     self:setOverrideHandModels("TreeBranchCrafting");
 end
 
@@ -120,6 +120,10 @@ function ISBBQLightFromKindle:animEvent(event, parameter)
 				end
 			end
 		end
+    else
+        if event == 'PlayNotchedPlankSound' then
+            self.character:playSound(parameter or "MakeFireNotchedPlank")
+        end
 	end
 end
 
@@ -147,7 +151,7 @@ function ISBBQLightFromKindle:new(character, plank, item, bbq)
 	o.plank = plank;
 	o.bbq = bbq;
 	-- if you are a outdoorsman (ranger) you can light the fire faster
-	o.isOutdoorsMan = character:HasTrait("Outdoorsman");
+	o.isOutdoorsMan = character:hasTrait(CharacterTrait.OUTDOORSMAN);
 	o.maxTime = o:getDuration();
 	return o;
 end

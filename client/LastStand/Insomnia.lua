@@ -1,5 +1,3 @@
-
-
 InsomniaChallenge = {}
 InsomniaChallenge.zombiesSpawned = 0;
 InsomniaChallenge.deadZombie = 0;
@@ -37,7 +35,7 @@ function injectInsomnia()
     Insomnia.init();
 
     Insomnia.OnPlayerUpdate = function(player)
-        player:getStats():setFatigue(0);
+        player:getStats():reset(CharacterStat.FATIGUE);
         if getPlayer():getModData()["IsNight"] == 0 then
             gameTime = GameTime.getInstance();
             gameTime:setViewDist(1);

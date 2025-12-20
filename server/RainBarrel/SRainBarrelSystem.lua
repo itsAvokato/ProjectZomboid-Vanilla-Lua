@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 require "Map/SGlobalObjectSystem"
@@ -31,7 +27,7 @@ end
 
 function SRainBarrelSystem:isValidIsoObject(isoObject)
 	return false;
-	--return instanceof(isoObject, "IsoThumpable") and isoObject:getProperties() and (isoObject:getProperties():Val("CustomName") == "Rain Collector Barrel")
+	--return instanceof(isoObject, "IsoThumpable") and isoObject:getProperties() and (isoObject:getProperties():get("CustomName") == "Rain Collector Barrel")
 end
 
 function SRainBarrelSystem:convertOldModData()
@@ -68,8 +64,6 @@ function SRainBarrelSystem:checkRain()
 end
 
 SGlobalObjectSystem.RegisterSystemClass(SRainBarrelSystem)
-
--- -- -- -- --
 
 local noise = function(msg)
 	SRainBarrelSystem.instance:noise(msg)

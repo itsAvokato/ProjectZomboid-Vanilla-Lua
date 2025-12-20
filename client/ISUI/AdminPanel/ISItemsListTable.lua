@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISItemsListTable = ISPanel:derive("ISItemsListTable");
@@ -298,17 +294,11 @@ function ISItemsListTable:initList(module)
     local displayCategoryMap = {}
     local lootCategoryMap = {}
     local spawnNumMap = {}
---     local craftNames = {}
---     local craftMap = {}
---     local forageNames = {}
---     local forageMap = {}
---     local lootNames = {}
---     local lootMap = {}
     for x,v in ipairs(module) do
         self.datas:addItem(v:getDisplayName(), v);
-        if not categoryMap[v:getTypeString()] then
-            categoryMap[v:getTypeString()] = true
-            table.insert(categoryNames, v:getTypeString())
+        if not categoryMap[v:getItemType():toString()] then
+            categoryMap[v:getItemType():toString()] = true
+            table.insert(categoryNames, v:getItemType():toString())
         end
         if not displayCategoryMap[v:getDisplayCategory()] then
             displayCategoryMap[v:getDisplayCategory()] = true
@@ -318,23 +308,6 @@ function ISItemsListTable:initList(module)
             lootCategoryMap[getText("Sandbox_" .. v:getLootType() .. "LootNew")] = true
             table.insert(lootCategoryNames, getText("Sandbox_" .. v:getLootType() .. "LootNew"))
         end
---         local spawned = getText(v:getNumSpawned())
---         if not spawnNumMap[spawned] then
---             spawnNumMap[spawned] = true
---             table.insert(spawnNumMap, getText(spawned))
---         end
---         if not craftMap[tostring(v:isCraftRecipeProduct())] then
---             craftMap[tostring(v:isCraftRecipeProduct())] = true
---             table.insert(craftNames, tostring(v:isCraftRecipeProduct()))
---         end
---         if not forageMap[tostring(v:canBeForaged())] then
---             forageMap[tostring(v:canBeForaged())] = true
---             table.insert(forageNames, tostring(v:canBeForaged()))
---         end
---         if not lootMap[tostring(v:canSpawnAsLoot())] then
---             lootMap[tostring(v:canSpawnAsLoot())] = true
---             table.insert(lootNames, tostring(v:canSpawnAsLoot()))
---         end
         self.totalResult = self.totalResult + 1;
     end
     table.sort(self.datas.items, function(a,b) return not string.sort(a.item:getDisplayName(), b.item:getDisplayName()); end);
@@ -406,7 +379,7 @@ end
 
 function ISItemsListTable:filterCategory(widget, scriptItem)
     if widget.selected == 1 then return true end -- Any category
-    return scriptItem:getTypeString() == widget:getOptionText(widget.selected)
+    return scriptItem:getItemType():toString() == widget:getOptionText(widget.selected)
 end
 
 function ISItemsListTable:filterName(widget, scriptItem)
@@ -537,7 +510,7 @@ function ISItemsListTable:drawDatas(y, item, alt)
     clipX = self.columns[3].size
     clipX2 = self.columns[4].size
     self:setStencilRect(clipX, clipY, clipX2 - clipX, clipY2 - clipY)
-    self:drawText(item.item:getTypeString(), self.columns[3].size + xoffset, y + 3, 1, 1, 1, a, self.font);
+    self:drawText(item.item:getItemType():toString(), self.columns[3].size + xoffset, y + 3, 1, 1, 1, a, self.font);
     self:clearStencilRect()
 
     if item.item:getDisplayCategory() ~= nil then

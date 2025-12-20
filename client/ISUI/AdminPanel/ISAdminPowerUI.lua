@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 if not isClient() then return end
 
 ISAdminPowerUI = ISPanel:derive("ISAdminPowerUI");
@@ -13,11 +9,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISAdminPowerUI:initialise
---**
---************************************************************************--
 
 function ISAdminPowerUI:initialise()
     ISPanel.initialise(self);
@@ -50,7 +41,6 @@ function ISAdminPowerUI:initialise()
     self.richText:paginate()
 
     self:addAdminPowerOptions()
-
 end
 
 function ISAdminPowerUI:addAdminPowerOptions()
@@ -143,8 +133,7 @@ function ISAdminPowerUI:addAdminPowerOptions()
         end);
         ISAdminPowerUI.cheatTooltips[getText("IGUI_AdminPanel_HealthCheat")] = getText("IGUI_AdminPanel_Tooltip_Capability", Capability.UseHealthCheat:name())
     end
-    -- disable mechanics cheat for non-debug
-    if getDebug() and self.player:getRole():hasCapability(Capability.UseMechanicsCheat) then
+    if self.player:getRole():hasCapability(Capability.UseMechanicsCheat) then
         self:addOption(getText("IGUI_AdminPanel_MechanicsCheat"), ISVehicleMechanics.cheat, function(self, selected)
             ISVehicleMechanics.cheat = selected;
             self.player:setMechanicsCheat(selected);
@@ -196,6 +185,13 @@ function ISAdminPowerUI:addAdminPowerOptions()
             self.player:setCanUseLootTool(selected)
         end);
         ISAdminPowerUI.cheatTooltips[getText("IGUI_AdminPanel_LootTool")] = getText("IGUI_AdminPanel_Tooltip_Capability", Capability.UseLootTool:name())
+    end
+    if self.player:getRole():hasCapability(Capability.AnimalCheats) then
+        self:addOption(getText("IGUI_CheatPanel_AnimalCheat"), AnimalContextMenu.cheat, function(self, selected)
+            AnimalContextMenu.cheat = selected;
+            self.player:setAnimalCheat(selected);
+        end);
+        ISAdminPowerUI.cheatTooltips[getText("IGUI_CheatPanel_AnimalCheat")] = getText("IGUI_AdminPanel_Tooltip_Capability", Capability.AnimalCheats:name())
     end
 
     --for some reason, sorting A-Z makes the options appear Z-A, so i reversed the sorting.
@@ -274,16 +270,11 @@ ISAdminPowerUI.onGameStart = function()
     ISMoveableDefinitions.cheat = getPlayer():isMovablesCheat();
     BrushToolManager.cheat = getPlayer():isCanUseBrushTool();
     ISFastTeleportMove.cheat = getPlayer():isFastMoveCheat();
-    -- disable mechanics cheat for non-debug
-    if getDebug() then
-        ISVehicleMechanics.cheat = getPlayer():isMechanicsCheat();
-    end
+    AnimalContextMenu.cheat = getPlayer():isAnimalCheat();
+    ISLootZed.cheat = getPlayer():canUseLootTool();
+    ISVehicleMechanics.cheat = getPlayer():isMechanicsCheat();
 end
 
---************************************************************************--
---** ISAdminPowerUI:new
---**
---************************************************************************--
 function ISAdminPowerUI:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

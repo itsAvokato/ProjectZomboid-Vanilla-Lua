@@ -1,7 +1,3 @@
---***********************************************************
---**                     SOUL FILCHER                      **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISTakeBricks = ISBaseTimedAction:derive("ISTakeBricks");

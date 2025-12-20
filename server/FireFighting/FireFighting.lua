@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 FireFighting = {}
 
 -- The number of InventoryItem.Use() calls per square extinguished.
@@ -108,7 +104,7 @@ function FireFighting.isSquareToExtinguish(square)
 	if not square then
 		return false
 	end
-	if square:Is(IsoFlagType.burning) then
+	if square:has(IsoFlagType.burning) then
 		for i=1,square:getObjects():size() do
 			local object = square:getObjects():get(i-1)
 			if instanceof(object, "IsoFire") and not object:isPermanent() then

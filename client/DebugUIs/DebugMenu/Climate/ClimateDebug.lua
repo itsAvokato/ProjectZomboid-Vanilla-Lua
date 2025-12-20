@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
-
 require "ISUI/ISCollapsableWindow"
 
 ClimateDebug = ISCollapsableWindow:derive("ClimateDebug");

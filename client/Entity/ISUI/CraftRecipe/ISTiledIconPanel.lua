@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -206,18 +202,20 @@ function ISTiledIconPanel:setDataList(_dataList)
     local currentRecipeFound = false;
     
     self.sourceDataList = ArrayList.new();
-    for i = 0, _dataList:size()-1 do
+    local recipeList = _dataList:getAllRecipes();
+    for i = 0, recipeList:size()-1 do
         local failed = false;
-        if _dataList:get(i):getOnAddToMenu() then
-            local func = _dataList:get(i):getOnAddToMenu();
-            local params = {player = self.player, recipe = _dataList:get(i)}
+        local recipe = recipeList:get(i);
+        if recipe:getOnAddToMenu() then
+            local func = recipe:getOnAddToMenu();
+            local params = {player = self.player, recipe = recipe}
 
             failed = not callLuaBool(func, params);
         end
         if not failed then
-            self.sourceDataList:add(_dataList:get(i));
+            self.sourceDataList:add(recipe);
 
-            if _dataList:get(i) == currentRecipe then
+            if recipe == currentRecipe then
                 currentRecipeFound = true;
             end
         end
@@ -282,10 +280,6 @@ function ISTiledIconPanel:onJoypadDirDown(joypadData)
     self.tiledIconListBox:onJoypadDirDown(joypadData)
 end
 
---************************************************************************--
---** ISTiledIconPanel:new
---**
---************************************************************************--
 function ISTiledIconPanel:new (x, y, width, height, player, dataList, callbackTarget)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

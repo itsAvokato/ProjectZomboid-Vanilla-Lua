@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require('ISUI/ISCollapsableWindowJoypad')
 require('ISUI/Maps/ISMapSymbolZoomPanel')
 
@@ -46,7 +42,7 @@ function ISMapSymbolDialog:createChildren()
         colorBtn.internal = "COLOR"
         colorBtn.backgroundColor = {r=info.colorInfo:getR(), g=info.colorInfo:getG(), b=info.colorInfo:getB(), a=1}
         colorBtn.borderColor = {r=1, g=1, b=1, a=0.4}
-        colorBtn.enable = (inv == nil) or inv:containsTagRecurse(info.item) or inv:containsTypeRecurse(info.item)
+        colorBtn.enable = (inv == nil) or inv:containsTagRecurse(ItemTag.get(ResourceLocation.of(info.item))) or inv:containsTypeRecurse(info.item)
         if not colorBtn.enable then colorBtn.tooltip = info.tooltip end
         colorBtn.buttonInfo = info
         self:addChild(colorBtn)
@@ -182,7 +178,7 @@ end
 function ISMapSymbolDialog:updateButtons()
     local inv = self.character and self.character:getInventory() or nil
     for _,colorBtn in ipairs(self.colorButtons) do
-        colorBtn.enable = (inv == nil) or inv:containsTagRecurse(colorBtn.buttonInfo.item) or inv:containsTypeRecurse(colorBtn.buttonInfo.item)
+        colorBtn.enable = (inv == nil) or inv:containsTagRecurse(ItemTag.get(ResourceLocation.of(colorBtn.buttonInfo.item))) or inv:containsTypeRecurse(colorBtn.buttonInfo.item)
     end
     
     self.yes:setEnable(true);

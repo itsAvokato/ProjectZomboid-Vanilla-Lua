@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBuryCorpse = ISBaseTimedAction:derive("ISBuryCorpse");
@@ -43,7 +39,7 @@ function ISBuryCorpse:complete()
 		return false;
 	end
 
-	if self.primaryHandItem and self.primaryHandItem:hasTag("AnimalCorpse") then
+	if self.primaryHandItem and self.primaryHandItem:hasTag(ItemTag.ANIMAL_CORPSE) then
 		return GraveHelper.onBuryAnimalCorpse(self.grave, self.character, self.primaryHandItem);
 	end
 

@@ -2,27 +2,14 @@ require "ISUI/ISUIElement"
 
 ISRect = ISUIElement:derive("ISRect");
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISRect:initialise()
 	ISUIElement.initialise(self);
 end
 
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISRect:prerender()
 	self:drawRectBorder(0, 0, self.width, self.height, self.a, self.r, self.g, self.b);
 end
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
+
 function ISRect:new(x, y, width, height, a, r, g, b)
 	local o = {}
 	--o.data = {}

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 FeedingTroughDef = FeedingTroughDef or {};
 
 FeedingTroughDef["doublemetal"] = {};

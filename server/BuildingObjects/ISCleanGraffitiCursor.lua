@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISCleanGraffitiCursor = ISBuildingObject:derive("ISCleanGraffitiCursor")
 
 function ISCleanGraffitiCursor:create(x, y, z, north, sprite)

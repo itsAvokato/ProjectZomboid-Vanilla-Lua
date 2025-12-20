@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISSleepingUI = ISPanel:derive("ISSleepingUI")
 
 function ISSleepingUI:createChildren()

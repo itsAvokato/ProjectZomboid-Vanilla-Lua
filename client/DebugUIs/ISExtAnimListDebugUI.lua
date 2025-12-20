@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 14/06/2022
--- Time: 11:09
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISExtAnimListDebugUI = ISCollapsableWindow:derive("ISExtAnimListDebugUI");
@@ -15,11 +7,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.NewLarge)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISExtAnimListDebugUI:initialise
---**
---************************************************************************--
 
 function ISExtAnimListDebugUI:createChildren()
     local x = UI_BORDER_SPACING+1
@@ -80,10 +67,6 @@ function ISExtAnimListDebugUI:render()
     ISCollapsableWindow.render(self);
 end
 
---************************************************************************--
---** ISExtAnimListDebugUI:new
---**
---************************************************************************--
 function ISExtAnimListDebugUI:new(x, y, character)
     local o = {}
     local width = 500;

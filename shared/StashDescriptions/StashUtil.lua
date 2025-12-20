@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/02/2017
--- Time: 09:18
--- To change this template use File | Settings | File Templates.
---
-
 StashUtil = {}
 
 StashUtil.newStash = function(name, type, item, customName)

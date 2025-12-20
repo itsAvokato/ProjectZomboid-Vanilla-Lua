@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISItemsListViewer = ISPanel:derive("ISItemsListViewer");
 ISItemsListViewer.messages = {};
 
@@ -9,11 +5,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISItemsListViewer:initialise
---**
---************************************************************************--
 
 function ISItemsListViewer:initialise()
     ISPanel.initialise(self);
@@ -50,7 +41,6 @@ end
 function ISItemsListViewer:initList()
     self.items = getAllItems();
 
-    -- we gonna separate items by module
     self.module = {};
     local moduleNames = {}
     local allItems = {}
@@ -82,16 +72,13 @@ function ISItemsListViewer:initList()
     local listBox = ISItemsListTable:new(0, 0, self.panel.width, self.panel.height - self.panel.tabHeight, self);
     listBox:initialise();
     self.panel:addView("All", listBox);
---    listBox.parent = self;
     listBox:initList(allItems)
 
     for _,moduleName in ipairs(moduleNames) do
-        -- we ignore the "Moveables" module
         if moduleName ~= "Moveables" then
             local cat1 = ISItemsListTable:new(0, 0, self.panel.width, self.panel.height - self.panel.tabHeight, self);
             cat1:initialise();
             self.panel:addView(moduleName, cat1);
---            cat1.parent = self;
             cat1:initList(self.module[moduleName])
         end
     end
@@ -138,10 +125,6 @@ function ISItemsListViewer.OnOpenPanel()
     modal.instance:setKeyboardFocus()
 end
 
---************************************************************************--
---** ISItemsListViewer:new
---**
---************************************************************************--
 function ISItemsListViewer:new(x, y, width, height)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

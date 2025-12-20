@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**       Contextual menu for building stuff when clicking in the inventory        **
---***********************************************************
-
 ISInventoryBuildMenu = {};
 
 local function predicateNotBroken(item)
@@ -10,7 +5,7 @@ local function predicateNotBroken(item)
 end
 
 local function predicateTakeDirt(item)
-	return not item:isBroken() and item:hasTag("TakeDirt")
+	return not item:isBroken() and item:hasTag(ItemTag.TAKE_DIRT)
 end
 
 ISInventoryBuildMenu.doBuildMenu = function(player, context, worldobjects, test)

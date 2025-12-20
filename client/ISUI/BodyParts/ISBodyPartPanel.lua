@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local setup_table = {
@@ -480,4 +475,3 @@ function ISBodyPartPanel:new (player, x, y, target, onPartSelected)
     o.toolTipText = "";
     return o
 end
-

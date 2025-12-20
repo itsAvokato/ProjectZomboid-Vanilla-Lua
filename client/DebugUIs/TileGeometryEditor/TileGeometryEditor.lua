@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "Vehicles/ISUI/ISUI3DScene"
 require "DebugUIs/TileGeometryEditor/TileGeometryEditor_EditMode"
@@ -18,8 +14,6 @@ local TEXTURE_OFFSET_X = 1
 local ONE_STAIRCASE_STEP = Z_SCALE * 3 / 12 -- 0.20412416666666666
 
 TileGeometryEditor = ISPanel:derive("TileGeometryEditor")
-
------
 
 TileGeometryEditor_SwitchView = ISUI3DScene:derive("TileGeometryEditor_SwitchView")
 local SwitchView = TileGeometryEditor_SwitchView
@@ -71,8 +65,6 @@ function SwitchView:new(editor, x, y, width, height)
 	return o
 end
 
------
-
 TileGeometryEditor_OptionsPanel = ISPanel:derive("TileGeometryEditor_OptionsPanel")
 local OptionsPanel = TileGeometryEditor_OptionsPanel
 
@@ -110,8 +102,6 @@ function OptionsPanel:new(x, y, width, height)
 	o.backgroundColor.a = 0.8
 	return o
 end
-
------
 
 TileGeometryEditor_Scene = ISUI3DScene:derive("TileGeometryEditor_Scene")
 local Scene = TileGeometryEditor_Scene
@@ -704,12 +694,8 @@ function Scene:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 require "DebugUIs/TileGeometryEditor/TileGeometryEditor_TileList"
 local TileList = TileGeometryEditor_TileList
-
------
 
 TileGeometryEditor_TilePicker = ISPanel:derive("TileGeometryEditor_TilePicker")
 local TilePicker = TileGeometryEditor_TilePicker
@@ -729,7 +715,7 @@ function TilePicker:createChildren()
 		local hasBed = false
 		for j=1,tileNames:size() do
 			local sprite = getSprite(tileNames:get(j-1))
-			if sprite then -- and sprite:getProperties():Is(IsoFlagType.bed) then
+			if sprite then -- and sprite:getProperties():has(IsoFlagType.bed) then
 				hasBed = true
 				break
 			end
@@ -769,12 +755,8 @@ function TilePicker:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 require "DebugUIs/TileGeometryEditor/TileGeometryEditor_TileList2"
 local TileList2 = TileGeometryEditor_TileList2
-
------
 
 TileGeometryEditor_TilePicker2 = ISPanel:derive("TileGeometryEditor_TilePicker2")
 local TilePicker2 = TileGeometryEditor_TilePicker2
@@ -794,7 +776,7 @@ function TilePicker2:createChildren()
 		local hasBed = false
 		for j=1,tileNames:size() do
 			local sprite = getSprite(tileNames:get(j-1))
-			if sprite then -- and sprite:getProperties():Is(IsoFlagType.bed) then
+			if sprite then -- and sprite:getProperties():has(IsoFlagType.bed) then
 				hasBed = true
 				break
 			end
@@ -834,8 +816,6 @@ function TilePicker2:new(x, y, width, height, editor)
 	o.editor = editor
 	return o
 end
-
------
 
 function TileGeometryEditor:createChildren()
 	local gameState = getTileGeometryState()

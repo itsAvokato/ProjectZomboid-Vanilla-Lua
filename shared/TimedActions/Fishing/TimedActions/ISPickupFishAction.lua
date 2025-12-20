@@ -39,6 +39,7 @@ function ISPickupFishAction:PickupFishUpdate()
         end
         if not isClient() then
             self.character:getInventory():AddItem(self.item)
+            sendAddItemToContainer(self.character:getInventory(), self.item);
             self.character:getModData()["fishing_CatchDone_" .. self.item:getFullType()] = true
 
             self.character:getModData().Fishing_IsFirstFishing = true
@@ -55,6 +56,13 @@ end
 
 function ISPickupFishAction:serverStart()
 	emulateAnimEvent(self.netAction, 100, "PickupFishUpdate", nil)
+    
+    local fishSize = self.item:getModData().fishing_FishSize
+    if fishSize == nil then
+        addXp(self.character, Perks.Fishing, 1)
+    else
+        addXp(self.character, Perks.Fishing, 2 * fishSize)
+    end
 end
 
 function ISPickupFishAction:start()
@@ -65,6 +73,10 @@ function ISPickupFishAction:start()
     end
     self.character:playSound("PickUpFish");
     if not isClient() then
+        local fishManager = Fishing.ManagerInstances[isMultiplayer() and self.character:getUsername() or self.character:getPlayerNum()]
+        fishManager.fishingRod.bobber:destroy()
+        fishManager.fishingRod.bobber = nil
+
         local fishSize = self.item:getModData().fishing_FishSize
         if fishSize == nil then
             addXp(self.character, Perks.Fishing, 1)

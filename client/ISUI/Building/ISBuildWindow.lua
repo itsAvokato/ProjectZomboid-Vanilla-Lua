@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISBuildWindow = ISCollapsableWindow:derive("ISBuildWindow");
@@ -38,7 +33,7 @@ function ISBuildWindow:createChildren()
     if self.isoObject then
 		local header = getText("IGUI_BuildingWindow_Header");
 		local props = self.isoObject:getProperties();
-		local surface = (props and props:Is("IsMoveAble") and props:Is("CustomName") and props:Val("CustomName")) or getText("IGUI_BuildingWindow_Surface"); --self.isoObject:getProperties():Is("IsMoveAble") and
+		local surface = (props and props:has("IsMoveAble") and props:has("CustomName") and props:get("CustomName")) or getText("IGUI_BuildingWindow_Surface"); --self.isoObject:getProperties():has("IsMoveAble") and
         self.windowHeader.titleStr = header .. surface;
     end
     self.windowHeader:initialise();

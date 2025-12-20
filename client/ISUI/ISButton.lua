@@ -2,11 +2,6 @@ require "ISUI/ISPanel"
 
 ISButton = ISPanel:derive("ISButton");
 
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISButton:initialise()
 	ISPanel.initialise(self);
 end
@@ -20,18 +15,10 @@ function ISButton:setVisible(visible)
     end
 end
 
---************************************************************************--
---** ISButton:onMouseMove
---**
---************************************************************************--
 function ISButton:onMouseMove(dx, dy)
 	self.mouseOver = self:isMouseOver();
 end
 
---************************************************************************--
---** ISButton:onMouseMoveOutside
---**
---************************************************************************--
 function ISButton:onMouseMoveOutside(dx, dy)
 	self.mouseOver = false;
 	if self.onmouseoutfunction then
@@ -43,10 +30,6 @@ function ISButton:setJoypadFocused(focused)
     self.joypadFocused = focused;
 end
 
---************************************************************************--
---** ISButton:onMouseUp
---**
---************************************************************************--
 function ISButton:onMouseUp(x, y)
 
     if not self:getIsVisible() then
@@ -71,10 +54,7 @@ function ISButton:onMouseUpOutside(x, y)
 
     self.pressed = false;
 end
---************************************************************************--
---** ISButton:onMouseDown
---**
---************************************************************************--
+
 function ISButton:onMouseDown(x, y)
 	if not self:getIsVisible() then
 		return;
@@ -111,10 +91,6 @@ function ISButton:clearJoypadButton()
     self.joypadTexture = nil;
 end
 
---************************************************************************--
---** ISButton:render
---**
---************************************************************************--
 function ISButton:prerender()
 	if self.displayBackground and not self.isJoypad then
 		-- Checking self:isMouseOver() in case the button is becoming visible again.
@@ -464,10 +440,6 @@ function ISButton:calculateLayout(_preferredWidth, _preferredHeight)
     self:setHeight(height);
 end
 
---************************************************************************--
---** ISButton:new
---**
---************************************************************************--
 function ISButton:new (x, y, width, height, title, clicktarget, onclick, onmousedown, allowMouseUpProcessing)
 
 	local o = {}

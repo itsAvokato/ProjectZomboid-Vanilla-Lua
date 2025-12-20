@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "RadioCom/ISUIRadio/ISSliderPanel"
 require "DebugUIs/DebugChunkState/ISSectionedPanel"
@@ -16,11 +12,7 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 DebugChunkStateUI = ISPanel:derive("DebugChunkStateUI")
 
------
-
 require "DebugUIs/DebugChunkState/DebugChunkState_Tools"
-
------
 
 DebugChunkStateUI_OptionsPanel = ISPanel:derive("DebugChunkStateUI_OptionsPanel")
 local OptionsPanel = DebugChunkStateUI_OptionsPanel
@@ -58,8 +50,6 @@ function OptionsPanel:new(x, y, width, height, gameState)
 	return o
 end
 
------
-
 DebugChunkStateUI_SpritePopupPanel = ISPanel:derive("DebugChunkStateUI_SpritePopupPanel")
 local SpritePopupPanel = DebugChunkStateUI_SpritePopupPanel
 
@@ -85,8 +75,6 @@ function SpritePopupPanel:new(x, y, w, h)
 	o.sprite = nil
 	return o
 end
-
------
 
 function DebugChunkStateUI:createChildren()
 	local panelWidth = 200+(getCore():getOptionFontSizeReal()*50);

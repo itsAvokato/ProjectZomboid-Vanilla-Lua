@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingRooms/ISBuildingRoomsEditor_ToolAddRect"
 
 ISBuildingRoomsEditor_ToolAddRoom = ISBuildingRoomsEditor_ToolAddRect:derive("ISBuildingRoomsEditor_ToolAddRoom")

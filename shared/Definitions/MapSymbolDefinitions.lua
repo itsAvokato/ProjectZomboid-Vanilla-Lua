@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 MapSymbolDefinitions.getInstance():addTexture("ArrowEast", "media/ui/LootableMaps/map_arroweast.png", "Locations")
 MapSymbolDefinitions.getInstance():addTexture("ArrowNorth", "media/ui/LootableMaps/map_arrownorth.png", "Locations")
 MapSymbolDefinitions.getInstance():addTexture("ArrowSouth", "media/ui/LootableMaps/map_arrowsouth.png", "Locations")

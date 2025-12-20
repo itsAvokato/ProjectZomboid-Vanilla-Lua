@@ -1,13 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 09/05/2023
--- Time: 08:49
--- To change this template use File | Settings | File Templates.
---
-
--- This is the definition used when spawning a group of animals for migration
-
 MigrationGroupDefinitions = MigrationGroupDefinitions or {};
 
 MigrationGroupDefinitions["deer"] = {};

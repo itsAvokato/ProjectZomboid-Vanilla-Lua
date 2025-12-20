@@ -29,7 +29,7 @@ DiggingUtil = {
                 DiggingUtil.excavatingStairs = false;
 
                 local function predicateDigGrave(item)
-                    return not item:isBroken() and item:hasTag("DigGrave")
+                    return not item:isBroken() and item:hasTag(ItemTag.DIG_GRAVE)
                 end
 
                 local playerObj = getPlayer()
@@ -145,4 +145,3 @@ DiggingUtil = {
 }
 
 Events.OnTick.Add(DiggingUtil.tick);
-

@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default panel for CraftLogic component.
---]]
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISFurnaceLogicPanel = ISBaseComponentPanel:derive("ISFurnaceLogicPanel");
@@ -16,11 +7,6 @@ function ISFurnaceLogicPanel.CanCreatePanelFor(_player, _entity, _component, _co
         return _component:getComponentType()==ComponentType.FurnaceLogic;
     end
 end
-
---************************************************************************--
---** ISFurnaceLogicPanel:initialise
---**
---************************************************************************--
 
 function ISFurnaceLogicPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -53,10 +39,7 @@ function ISFurnaceLogicPanel:createChildren()
             self.tableLayout:setElement(0, row:index(), self.furnaceInputs);
         end
 
-        -- Furnace Outputs
-
         resources = self.resourcesComponent:getResourcesFromGroup(self.furnaceOutputsGroupName, resources, ResourceIO.Output, ResourceType.Item);
-
         if resources:size()>0 then
             self.furnaceOutputs = self:createItemSlotPanel("S_ItemSlotPanel_Outputs", true);
             self.furnaceOutputs:addResources(resources, "S_ItemSlot_Output", nil, nil);
@@ -65,10 +48,6 @@ function ISFurnaceLogicPanel:createChildren()
             self.tableLayout:setElement(0, row:index(), self.furnaceOutputs);
         end
 
-        --[[
-            INNER FUEL TABLE
-        --]]
-
         self.fuelTableLayout = ISXuiSkin.build(self.xuiSkin, "S_TableLayout_Main", ISTableLayout, 0, 0, 10, 10);
         self.fuelTableLayout:addRowFill(nil);
         self.fuelTableLayout:initialise();
@@ -76,8 +55,6 @@ function ISFurnaceLogicPanel:createChildren()
 
         row = self.tableLayout:addRow(nil);
         self.tableLayout:setElement(0, row:index(), self.fuelTableLayout);
-
-        -- Fuel Inputs
 
         resources = self.resourcesComponent:getResourcesFromGroup(self.fuelInputsGroupName, resources, ResourceIO.Input, ResourceType.Item);
 
@@ -89,9 +66,6 @@ function ISFurnaceLogicPanel:createChildren()
             self.fuelTableLayout:setElement(column:index(), 0, self.fuelInputs);
         end
 
-        --[[
-            MIDDLE PANELS
-        --]]
 
         local middleLayout = ISXuiSkin.build(self.xuiSkin, "S_TableLayout_Middle", ISTableLayout, 0, 0, 10, 10); --, columns, rows);
         middleLayout:addColumnFill(nil);
@@ -100,8 +74,6 @@ function ISFurnaceLogicPanel:createChildren()
 
         column = self.fuelTableLayout:addColumnFill(nil);
         self.fuelTableLayout:setElement(column:index(), 0, middleLayout);
-
-        -- Progress
 
         self.craftProgress = ISXuiSkin.build(self.xuiSkin, "S_WidgetCraftProgress_Std", ISWidgetCraftProgress, 0, 0, 10, 10, self.player, self.entity, self, nil);
         self.craftProgress.callbackTarget = self;
@@ -113,8 +85,6 @@ function ISFurnaceLogicPanel:createChildren()
 
         row = middleLayout:addRow(nil);
         middleLayout:setElement(0, row:index(), self.craftProgress);
-
-        -- Craft Control
 
         if self.component:getStartMode()==StartMode.Manual then
             self.craftControl = ISXuiSkin.build(self.xuiSkin, "S_WidgetCraftControl_Std", ISWidgetCraftControl,0, 0, 10, 10, self.player, self.entity, self.component, self, nil);
@@ -141,8 +111,6 @@ function ISFurnaceLogicPanel:createChildren()
             middleLayout:setElement(0, row:index(), self.craftControl);
         end
 
-        -- Craft Control Debug
-
         if getDebug() and getDebugOptions():getBoolean("Entity.DebugUI") then
             self.craftControlDebug = ISXuiSkin.build(self.xuiSkin, "S_WidgetCraftDebug_Std", ISWidgetCraftDebug,0, 0, 10, 10, self.player, self.entity, self.component, self, nil);
             self.craftControlDebug.callbackTarget = self;
@@ -162,8 +130,6 @@ function ISFurnaceLogicPanel:createChildren()
             row = middleLayout:addRow(nil);
             middleLayout:setElement(0, row:index(), self.craftControlDebug);
         end
-
-        -- Fuel Inputs
 
         resources = self.resourcesComponent:getResourcesFromGroup(self.fuelOutputsGroupName, resources, ResourceIO.Output, ResourceType.Item);
 
@@ -260,11 +226,6 @@ function ISFurnaceLogicPanel:update()
     ISBaseComponentPanel.update(self);
 end
 
-
---************************************************************************--
---** ISFurnaceLogicPanel:new
---**
---************************************************************************--
 function ISFurnaceLogicPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

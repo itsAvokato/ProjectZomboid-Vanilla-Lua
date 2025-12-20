@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISCraftingCategoryUI = ISPanelJoypad:derive("ISCraftingCategoryUI");
 ISCraftingCategoryUI.instance = nil;
 ISCraftingCategoryUI.SMALL_FONT_HGT = getTextManager():getFontFromEnum(UIFont.Small):getLineHeight()

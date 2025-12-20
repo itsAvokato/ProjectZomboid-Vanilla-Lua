@@ -1,11 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: tea-amuller				   **
---***********************************************************
-
---[[
-    This widget displays a list of recipe categories.
---]]
 require "ISUI/ISPanel"
 
 local FONT_SCALE = getTextManager():getFontHeight(UIFont.Small) / 19; -- normalize to 1080p
@@ -13,11 +5,6 @@ local UI_BORDER_SPACING = 10
 local MIN_LIST_BOX_WIDTH = 125 * FONT_SCALE;
 
 ISWidgetRecipeCategories = ISPanel:derive("ISWidgetRecipeCategories");
-
---************************************************************************--
---** ISWidgetRecipeCategories:initialise
---**
---************************************************************************--
 
 function ISWidgetRecipeCategories:initialise()
     ISPanel.initialise(self);
@@ -137,10 +124,6 @@ function ISWidgetRecipeCategories:onCategoryChanged(_item)
     self.callbackTarget:onCategoryChanged(_item);
 end
 
---************************************************************************--
---** ISWidgetRecipeCategories:new
---**
---************************************************************************--
 function ISWidgetRecipeCategories:new(x, y, width, height)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

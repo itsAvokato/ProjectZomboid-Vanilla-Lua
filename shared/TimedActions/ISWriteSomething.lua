@@ -1,10 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 ISWriteSomething = ISBaseTimedAction:derive("ISWriteSomething");
-
 
 function ISWriteSomething:isValid()
 	if self.character:tooDarkToRead() then
@@ -37,9 +32,9 @@ function ISWriteSomething:start()
 
     if self.item:getReadType() then
         self:setAnimVariable("ReadType", self.item:getReadType())
-    elseif (self.item:getType() == "Newspaper" or self.item:hasTag("NewspaperRead")) then
+    elseif (self.item:getType() == "Newspaper" or self.item:hasTag(ItemTag.NEWSPAPER_READ)) then
         self:setAnimVariable("ReadType", "newspaper")
-    elseif (self.item:hasTag("Picture")) then
+    elseif (self.item:hasTag(ItemTag.PICTURE)) then
         self:setAnimVariable("ReadType", "photo")
     else
         self:setAnimVariable("ReadType", "book")

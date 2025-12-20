@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**      Contextual inventory menu for farming stuff      **
---***********************************************************
-
 ISFarmingMenu = {};
 ISFarmingMenu.info = {};
 ISFarmingMenu.GardeningSprayMilk = nil;
@@ -24,7 +19,7 @@ local function predicateDrainableUsesInt(item, count)
 end
 
 local function predicateDigPlow(item)
-	return not item:isBroken() and item:hasTag("DigPlow")
+	return not item:isBroken() and item:hasTag(ItemTag.DIG_PLOW)
 end
 
 local function predicateGoodSeed(item) --, isHerb)
@@ -33,7 +28,7 @@ local function predicateGoodSeed(item) --, isHerb)
 
 	if item:isRotten() or item:isCooked() or item:isBurnt() then return false end
 	-- herbs ("cutings") have to be fresh
-	if item:hasTag("isCutting") and not item:isFresh() then return false end
+	if item:hasTag(ItemTag.IS_CUTTING) and not item:isFresh() then return false end
 
 	-- check for a whole item
 	local baseHunger = math.abs(item:getBaseHunger())
@@ -46,9 +41,9 @@ end
 local function getEffectiveFarmingLevel(playerObj)
 	local farmingLevel = CFarmingSystem.instance:getXp(playerObj);
 	local magnifierFactor = 0
-	if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag("Magnifier") then
+	if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag(ItemTag.MAGNIFIER) then
 		magnifierFactor = 2;
-	elseif playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():hasTag("Magnifier") then
+	elseif playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():hasTag(ItemTag.MAGNIFIER) then
 		magnifierFactor = 2;
 	end;
 
@@ -119,6 +114,37 @@ ISFarmingMenu.itemSortByName = function(a,b)
     return not string.sort(a:getName(), b:getName());
 end
 
+ISFarmingMenu.doDigMenu = function(playerObj, context, worldobjects, test)
+    local shovel = ISFarmingMenu.getShovel(playerObj)
+    if ISFarmingMenu.canDigHere(worldobjects) then
+        if shovel then
+            if test then return ISWorldObjectContextMenu.setTest() end
+            local option = context:addOption(getText("ContextMenu_Dig"), worldobjects, ISFarmingMenu.onPlow, playerObj, shovel);
+            option.iconTexture = getTexture("Item_TZ_GardenTrowel");
+        else
+            if(not playerObj:getBodyDamage():getBodyPart(BodyPartType.Hand_L):HasInjury() and not playerObj:getBodyDamage():getBodyPart(BodyPartType.Hand_R):HasInjury()) then
+                if test then return ISWorldObjectContextMenu.setTest() end
+                local option = context:addOption(getText("ContextMenu_DigWithHands"), worldobjects, ISFarmingMenu.onPlow, playerObj, nil)
+                local tooltip = ISWorldObjectContextMenu.addToolTip();
+                tooltip.description = getText("ContextMenu_DigWithHandsTT");
+                option.toolTip = tooltip;
+            else
+                if test then return ISWorldObjectContextMenu.setTest() end
+                local option = context:addOption(getText("ContextMenu_DigWithHands"), worldobjects, ISFarmingMenu.onPlow, playerObj, nil)
+                option.notAvailable = true;
+                local tooltip = ISWorldObjectContextMenu.addToolTip();
+                tooltip.description = getText("ContextMenu_DamagedHands");
+                option.toolTip = tooltip;
+            end
+        end
+
+    elseif shovel and (not ISFarmingMenu.canDigHere(worldobjects)) and not currentPlant then
+        local option = context:addOption(getText("ContextMenu_no_soil"))
+        option.notAvailable = true;
+    end
+end
+
+
 ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
 	local playerObj = getSpecificPlayer(player)
 	local playerInv = playerObj:getInventory()
@@ -146,13 +172,13 @@ ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
             local plant = CFarmingSystem.instance:getLuaObjectOnSquare(v:getSquare())
             if plant then
                 if plant.state == "dead" or plant.state == "rotten" or plant.state == "destroyed" or plant.state == "harvested" then deadPlant = true end
-                if plant.state ~= "plow" and playerInv:containsTagRecurse("Fertilizer") or playerInv:containsTypeRecurse("Fertilizer") then -- fertilizer
+                if plant.state ~= "plow" and playerInv:containsTagRecurse(ItemTag.FERTILIZER) or playerInv:containsTypeRecurse("Fertilizer") then -- fertilizer
                     fertilizer = true;
                 end
-                if plant.state ~= "plow" and playerInv:containsTagRecurse("Compost") or playerInv:containsTypeRecurse("CompostBag") then -- fertilizer
+                if plant.state ~= "plow" and playerInv:containsTagRecurse(ItemTag.COMPOST) or playerInv:containsTypeRecurse("CompostBag") then -- fertilizer
                     compost = true
                 end
-                if plant.state == "plow" and playerObj:getInventory():containsTagRecurse("IsSeed") then -- sow seed
+                if plant.state == "plow" and playerObj:getInventory():containsTagRecurse(ItemTag.IS_SEED) then -- sow seed
                     canSeed = true;
                 end
                 if plant.state == "seeded" then -- water the plant
@@ -179,43 +205,22 @@ ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
         end
 	end
 
-    if ISFarmingMenu.canDigHere(worldobjects) then
-        if shovel then
-            if test then return ISWorldObjectContextMenu.setTest() end
-            context:addOption(getText("ContextMenu_Dig"), worldobjects, ISFarmingMenu.onPlow, playerObj, shovel);
-        else
-            if(not playerObj:getBodyDamage():getBodyPart(BodyPartType.Hand_L):HasInjury() and not playerObj:getBodyDamage():getBodyPart(BodyPartType.Hand_R):HasInjury()) then
-                if test then return ISWorldObjectContextMenu.setTest() end
-                local option = context:addOption(getText("ContextMenu_DigWithHands"), worldobjects, ISFarmingMenu.onPlow, playerObj, nil)
-                local tooltip = ISWorldObjectContextMenu.addToolTip();
-                tooltip.description = getText("ContextMenu_DigWithHandsTT");
-                option.toolTip = tooltip;
-            else
-                if test then return ISWorldObjectContextMenu.setTest() end
-                local option = context:addOption(getText("ContextMenu_DigWithHands"), worldobjects, ISFarmingMenu.onPlow, playerObj, nil)
-                option.notAvailable = true;
-                local tooltip = ISWorldObjectContextMenu.addToolTip();
-                tooltip.description = getText("ContextMenu_DamagedHands");
-                option.toolTip = tooltip;
-            end
-        end
-
-    elseif shovel and (not ISFarmingMenu.canDigHere(worldobjects)) and not currentPlant then
-        local option = context:addOption(getText("ContextMenu_no_soil"))
-        option.notAvailable = true;
-    end
-
-	local cropsMenu = nil
+	local cropsMenu;
 	if currentPlant or canSeed then
 		if test then return ISWorldObjectContextMenu.setTest() end;
-		local cropsOption = context:addOption(getText("ContextMenu_Crops"), worldobjects, nil)
+		local cropsOption = context:addOption(farming_vegetableconf.getObjectName(currentPlant) or getText("ContextMenu_Crops"), worldobjects, nil)
+        local tile = farming_vegetableconf.getSpriteName(currentPlant);
+        if tile then
+            cropsOption.iconTexture = getTexture(tile):splitIcon();
+        end
 		cropsMenu = ISContextMenu:getNew(context)
 		context:addSubMenu(cropsOption, cropsMenu)
 	end
 
 	if info then
 		if test then return ISWorldObjectContextMenu.setTest() end
-		cropsMenu:addOption(getText("ContextMenu_Info"), worldobjects, ISFarmingMenu.onInfo, currentPlant, sq, playerObj);
+		local option = cropsMenu:addOption(getText("ContextMenu_Info"), worldobjects, ISFarmingMenu.onInfo, currentPlant, sq, playerObj);
+        option.iconTexture = getTexture("media/ui/inventoryPanes/Button_Info.png"):splitIcon();
 	end
 	if fertilizer then
 		if test then return ISWorldObjectContextMenu.setTest() end
@@ -227,7 +232,8 @@ ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
 	end
 	if canHarvest then
 		if test then return ISWorldObjectContextMenu.setTest() end
-		cropsMenu:addOption(getText("ContextMenu_Harvest"), worldobjects, ISFarmingMenu.onHarvest, currentPlant, sq, playerObj);
+		local option = cropsMenu:addOption(getText("ContextMenu_Harvest"), worldobjects, ISFarmingMenu.onHarvest, currentPlant, sq, playerObj);
+        option.iconTexture = getTexture("Item_HandScythe");
 	end
 	-- plant seed subMenu
 	if canSeed then
@@ -252,6 +258,8 @@ ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
 			if test then return ISWorldObjectContextMenu.setTest() end
 			local waterOption = cropsMenu:addOption(getText("ContextMenu_Water"), worldobjects, nil);
 			local subMenuWater = ISContextMenu:getNew(cropsMenu);
+            waterOption.iconTexture = getTexture("Item_Waterdrop_Grey");
+            waterOption.color = { r = 0.48, g = 0.68, b = 0.99 };
 
 			cropsMenu:addSubMenu(waterOption, subMenuWater);
 
@@ -364,12 +372,11 @@ ISFarmingMenu.doFarmingMenu2 = function(player, context, worldobjects, test)
 		end
 	end
 
-	if ISFarmingMenu.cheat and currentPlant then
+	if ISFarmingMenu.cheat and currentPlant and cropsMenu then
 		if test then return ISWorldObjectContextMenu.setTest() end
-		local option = context:addOption("Cheat", worldobjects, nil);
-	    option.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
-		local subMenu = context:getNew(context);
-		context:addSubMenu(option, subMenu);
+		local option = cropsMenu:addDebugOption("Cheat", worldobjects, nil);
+		local subMenu = ISContextMenu:getNew(cropsMenu);
+        cropsMenu:addSubMenu(option, subMenu);
 		subMenu:addOption("Grow", worldobjects, ISFarmingMenu.onCheatGrow, currentPlant);
 		subMenu:addOption("Water To Max", worldobjects, ISFarmingMenu.onCheatWater, currentPlant);
 		subMenu:addOption("Zero Water", worldobjects, ISFarmingMenu.onCheat, currentPlant, { var = 'waterLvl', count = -currentPlant.waterLvl });
@@ -1211,7 +1218,7 @@ function ISFarmingMenu:isFertilizeValid()
 
 	cursor.tooltipTxt = plantName
 
-	if playerInv:containsTagRecurse("Fertilizer") or playerInv:containsTypeRecurse("Fertilizer") or playerInv:containsTypeRecurse("CompostBag") then
+	if playerInv:containsTagRecurse(ItemTag.FERTILIZER) or playerInv:containsTypeRecurse("Fertilizer") or playerInv:containsTypeRecurse("CompostBag") then
 		return true
 	end
 
@@ -1293,5 +1300,3 @@ ISFarmingMenu.onCheat = function(worldobjects, plant, args)
 	args.z = plant.z
 	CFarmingSystem.instance:sendCommand(getSpecificPlayer(0), 'cheat', args)
 end
-
-Events.OnFillWorldObjectContextMenu.Add(ISFarmingMenu.doFarmingMenu);

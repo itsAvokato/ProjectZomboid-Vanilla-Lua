@@ -1,9 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISCreateFactionUI = ISPanel:derive("ISCreateFactionUI");
 ISCreateFactionUI.messages = {};
 
@@ -12,11 +6,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISCreateFactionUI:initialise
---**
---************************************************************************--
 
 function ISCreateFactionUI:initialise()
     ISPanel.initialise(self);
@@ -98,10 +87,6 @@ function ISCreateFactionUI:close()
     self:removeFromUIManager()
 end
 
---************************************************************************--
---** ISCreateFactionUI:new
---**
---************************************************************************--
 function ISCreateFactionUI:new(x, y, width, height, player)
     local o = {}
     o = ISPanel:new(x, y, width, height);

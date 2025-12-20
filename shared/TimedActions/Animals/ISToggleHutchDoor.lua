@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISToggleHutchDoor = ISBaseTimedAction:derive("ISToggleHutchDoor");

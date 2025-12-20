@@ -1,7 +1,3 @@
---***********************************************************
---**                    TIM BAKER                          **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISAddFuelAction = ISBaseTimedAction:derive("ISAddFuelAction");
@@ -59,7 +55,7 @@ function ISAddFuelAction:perform()
 end
 
 function ISAddFuelAction:complete()
-	if self.item:IsDrainable() then
+	if self.item:IsDrainable() and not self.item:hasTag(ItemTag.IS_FIRE_FUEL_SINGLE_USE) then
 		self.item:UseAndSync()
 	else
 		self.character:removeFromHands(self.item)

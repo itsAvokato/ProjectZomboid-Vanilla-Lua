@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObject"
 
 CPlantGlobalObject = CGlobalObject:derive("CPlantGlobalObject")

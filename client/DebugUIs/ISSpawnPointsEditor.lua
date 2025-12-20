@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isServer() then return end
 
 require "ISUI/ISCollapsableWindow"

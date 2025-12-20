@@ -240,29 +240,6 @@ function ISMoveableInfoWindow:setHeaderText( _header, _font )
     end
 end
 
-local function print_body(_t)
-    if _t or type(_t)=="table" then
-        for k,v in pairs(_t) do
-            print(tostring(k),tostring(v),type(v));
-            if type(v)=="table" then
-                for k2,v2 in pairs(v) do
-                    print("  " .. tostring(k2),tostring(v2),type(v2));
-                    if type(v2)=="table" then
-                        for k3,v3 in pairs(v2) do
-                            print("    " .. tostring(k3),tostring(v3),type(v3));
-                            if type(v3)=="table" then
-                                for k4,v4 in pairs(v3) do
-                                    print("      " .. tostring(k4),tostring(v4),type(v4));
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
-
 function ISMoveableInfoWindow:setBodyText( _bodyTextTable, _font, _align)
     --o.fontheight = getTextManager():MeasureStringY(UIFont.Small, "AbdfghijklpqtyZ")+2;
     --print_body(_bodyTextTable);

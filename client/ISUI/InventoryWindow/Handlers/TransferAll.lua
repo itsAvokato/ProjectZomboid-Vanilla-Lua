@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/InventoryWindow/ISInventoryWindowControlHandler"
 
 ISInventoryWindowControlHandler_TransferAll = ISInventoryWindowControlHandler:derive("ISInventoryWindowControlHandler_TransferAll")

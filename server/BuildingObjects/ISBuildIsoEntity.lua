@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 --[[
     To build iso objects via entity script.
     Objects require a EntityScript and SpriteConfig component.
@@ -127,12 +122,12 @@ function ISBuildIsoEntity:render(x, y, z, square)
 					if not self.tileCheck or self.tileCheck ~= getSprite(tileInfo:getSpriteName()) then
 						self.tileCheck = getSprite(tileInfo:getSpriteName());
 						local props = self.tileCheck:getProperties();
-						self.isWallLike = props:Is("WallN") or props:Is("WallW") or props:Is("WallNTrans") or props:Is("WallWTrans") or props:Is("WindowN") or props:Is("WindowW") or props:Is("DoorWallN") or props:Is("DoorWallW");
+						self.isWallLike = props:has("WallN") or props:has("WallW") or props:has("WallNTrans") or props:has("WallWTrans") or props:has("WindowN") or props:has("WindowW") or props:has("DoorWallN") or props:has("DoorWallW");
 					end
 					local sprite = tileInfo:getSpriteName() and self.spriteCache[tileInfo:getSpriteName()] or self.tileSprite;
 					if sprite then
 						local offsetY = 0
-						if self.tileCheck:getProperties():Is("IsStackable") then
+						if self.tileCheck:getProperties():has("IsStackable") then
 							local props = ISMoveableSpriteProps.new(self.tileCheck);
 							offsetY = props:getTotalTableHeight(square);
 						end
@@ -152,15 +147,15 @@ function ISBuildIsoEntity:isObjectSpriteBlockingWallPlacement(_sprite, _north)
 	local sprite = _sprite;
 	if sprite then
 		if _north then
-			if sprite:getProperties():Is(IsoFlagType.collideN) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.WindowN) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.DoorWallN) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.HoppableN) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.collideN) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.WindowN) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.DoorWallN) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.HoppableN) then return true; end;
 		else
-			if sprite:getProperties():Is(IsoFlagType.collideW) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.WindowW) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.DoorWallW) then return true; end;
-			if sprite:getProperties():Is(IsoFlagType.HoppableW) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.collideW) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.WindowW) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.DoorWallW) then return true; end;
+			if sprite:getProperties():has(IsoFlagType.HoppableW) then return true; end;
 		end;
 	end;
 	return false;
@@ -190,10 +185,10 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 
 	if testCollisions then
 		-- check if we are passing through a wall - do not allow
-		if _extendsN and ((square:getProperties():Is(IsoFlagType.collideN) or square:getProperties():Is(IsoFlagType.WallN) or square:getProperties():Is(IsoFlagType.WallNW) or square:getProperties():Is(IsoFlagType.WindowN) or square:getProperties():Is(IsoFlagType.DoorWallN) or square:getProperties():Is(IsoFlagType.HoppableN))) then
+		if _extendsN and ((square:getProperties():has(IsoFlagType.collideN) or square:getProperties():has(IsoFlagType.WallN) or square:getProperties():has(IsoFlagType.WallNW) or square:getProperties():has(IsoFlagType.WindowN) or square:getProperties():has(IsoFlagType.DoorWallN) or square:getProperties():has(IsoFlagType.HoppableN))) then
 			return false;
 		end
-		if _extendsW and ((square:getProperties():Is(IsoFlagType.collideW) or square:getProperties():Is(IsoFlagType.WallW) or square:getProperties():Is(IsoFlagType.WallNW) or square:getProperties():Is(IsoFlagType.WindowW) or square:getProperties():Is(IsoFlagType.DoorWallW) or square:getProperties():Is(IsoFlagType.HoppableW))) then
+		if _extendsW and ((square:getProperties():has(IsoFlagType.collideW) or square:getProperties():has(IsoFlagType.WallW) or square:getProperties():has(IsoFlagType.WallNW) or square:getProperties():has(IsoFlagType.WindowW) or square:getProperties():has(IsoFlagType.DoorWallW) or square:getProperties():has(IsoFlagType.HoppableW))) then
 			return false;
 		end
 
@@ -212,11 +207,11 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 					-- check if we can build over water
 					if canBuildOverWater then
 						-- look for water tile
-						local isWater = square:getFloor():getSprite():getProperties():Is(IsoFlagType.water) or (square:getObjects():size() == 2 and square:getProperties():Is(IsoFlagType.taintedWater));
+						local isWater = square:getFloor():getSprite():getProperties():has(IsoFlagType.water) or (square:getObjects():size() == 2 and square:getProperties():has(IsoFlagType.taintedWater));
 						if not isWater then
 							return false;
 						end
-					elseif tileInfoSpriteProps and tileInfoSpriteProps:Is("IsStackable") then
+					elseif tileInfoSpriteProps and tileInfoSpriteProps:has("IsStackable") then
 						if square:getFloor() == nil then
 							return false;
 						end
@@ -277,10 +272,10 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 					hasFrame = true
 				end
 				local sprite = o:getSprite()
-				if self.north and sprite and sprite:getProperties():Is("DoorWallN") then
+				if self.north and sprite and sprite:getProperties():has("DoorWallN") then
 					hasFrame = true
 				end
-				if not self.north and sprite and sprite:getProperties():Is("DoorWallW") then
+				if not self.north and sprite and sprite:getProperties():has("DoorWallW") then
 					hasFrame = true
 				end
 			end
@@ -301,7 +296,7 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 	end
 
 	-- WINDOW STUFF
-	--local isWindow = tileInfoSprite and (tileInfoSpriteProps:Is("WindowW") or tileInfoSpriteProps:Is("WindowN"));
+	--local isWindow = tileInfoSprite and (tileInfoSpriteProps:has("WindowW") or tileInfoSpriteProps:has("WindowN"));
 	if self.needWindowFrame then
 		local hasFrame = false
 		local hasWindow = false;
@@ -322,10 +317,10 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 				--	hasFrame = true
 				--end
 				local sprite = o:getSprite()
-				if self.north and sprite and sprite:getProperties():Is("WindowN") then
+				if self.north and sprite and sprite:getProperties():has("WindowN") then
 					hasFrame = true
 				end
-				if not self.north and sprite and sprite:getProperties():Is("WindowW") then
+				if not self.north and sprite and sprite:getProperties():has("WindowW") then
 					hasFrame = true
 				end
 			end
@@ -338,8 +333,8 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 	end
 
 	-- CHECK SOLID, can never place a solid on a solid
-	if tileInfoSpriteProps and (square and square:getProperties() and square:getProperties():Is("BlocksPlacement") or square:isSolid() or square:isSolidTrans()) and (tileInfoSpriteProps:Is(IsoFlagType.solidtrans) or tileInfoSpriteProps:Is("BlocksPlacement")) then
-		if tileInfoSpriteProps:Is("IsStackable") then
+	if tileInfoSpriteProps and (square and square:getProperties() and square:getProperties():has("BlocksPlacement") or square:isSolid() or square:isSolidTrans()) and (tileInfoSpriteProps:has(IsoFlagType.solidtrans) or tileInfoSpriteProps:has("BlocksPlacement")) then
+		if tileInfoSpriteProps:has("IsStackable") then
 			local props = ISMoveableSpriteProps.new(tileInfoSprite)
 			return props:canPlaceMoveable("bogus", square, nil)
 		end
@@ -362,7 +357,7 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 		square = getSquare(x, y, z);
 		for i=0,square:getObjects():size()-1 do
 			local obj = square:getObjects():get(i);
-			if (self.north and obj:getProperties():Is("WallN")) or (not self.north and obj:getProperties():Is("WallW")) then
+			if (self.north and obj:getProperties():has("WallN")) or (not self.north and obj:getProperties():has("WallW")) then
 				for j=0,originalSq:getSpecialObjects():size() - 1 do
 					local sObj = originalSq:getSpecialObjects():get(j);
 					--print("got sobj?", sObj, obj)
@@ -424,7 +419,7 @@ function ISBuildIsoEntity:isValidPerSquare(square, tileInfo, _requiresFloor, _ex
 			if belowSQ then
 				if self.north and not belowSQ:HasStairsWest() then return false; end
 				if not self.north and not belowSQ:HasStairsNorth() then return false; end
-				if not belowSQ:Has(IsoObjectType.wall) then return false; end
+				if not belowSQ:has(IsoObjectType.wall) then return false; end
 			end
 		end
 	end
@@ -513,24 +508,6 @@ function ISBuildIsoEntity:create(x, y, z, north, sprite)
 		self:getSprite()
     end
 
-	local consumed = false;
-	if self.buildPanelLogic then
-		if cheat then
-			consumed= true;
-			self.character:getPlayerCraftHistory():addCraftHistoryCraftedEvent(self.craftRecipe:getName());
-		else
-			consumed = self.buildPanelLogic:performCurrentRecipe();
-		end
-	else
-		consumed = cheat or ISBuildIsoEntity.ConsumeBuildEntityItems(self.objectInfo, playerObj);
-	end
-
-	if not consumed then
-		print("ISBuildIsoEntity -> consume failed")
-		return;
-	end
-	print("ISBuildIsoEntity -> consume success")
-
 	local cell = getWorld():getCell();
 	self.sq = cell:getGridSquare(x, y, z);
 
@@ -556,11 +533,39 @@ function ISBuildIsoEntity:create(x, y, z, north, sprite)
 		return false;
 	end
 
+	local consumed = false;
+	if self.buildPanelLogic then
+		if cheat then
+			consumed= true;
+			self.character:getPlayerCraftHistory():addCraftHistoryCraftedEvent(self.craftRecipe:getName());
+		else
+			consumed = self.buildPanelLogic:performCurrentRecipe();
+		end
+	else
+		consumed = cheat or ISBuildIsoEntity.ConsumeBuildEntityItems(self.objectInfo, playerObj);
+	end
+
+	if not consumed then
+		print("ISBuildIsoEntity -> consume failed")
+		return;
+	end
+
+    if cheat then
+		print("ISBuildingEntity -> BuildCheat is active, materials are not required and will not be consumed")
+    else
+	    print("ISBuildIsoEntity -> consume success")
+    end
+
 	if openFace and (openFace:getWidth() ~= face:getWidth() or openFace:getHeight() ~= face:getHeight()) then
 		print("ISBuildIsoEntity -> openFace different size to closedFace - discarding")
 		-- note: this is normal for doubleDoors and garageDoors - these openFaces are determined by tile offset elsewhere - spurcival
 		openFace = nil;
 	end
+
+    if self.buildPanelLogic then
+        self.buildPanelLogic:getRecipeDataInProgress():luaCallOnCreate(self.character);
+        self.buildPanelLogic:getRecipeDataInProgress():processDestroyAndUsedItems(self.character); -- todo handle syncing items and inventory stuff here
+    end
 
 	self:updateModData()
 
@@ -602,21 +607,21 @@ function ISBuildIsoEntity:setInfo(square, north, sprite, openSprite)
 	-- set property flags
 	local spriteType = thumpable:getType();
 	local thumpableProps = thumpable:getProperties();
-	self.blockAllTheSquare = thumpableProps and thumpableProps:Is("BlocksPlacement"); -- need to consider prop IsHigh and IsLow here
-	self.canPassThrough = thumpableProps and not (thumpableProps:Is(IsoFlagType.solid) or thumpableProps:Is(IsoFlagType.solidtrans) or
-		thumpableProps:Is(IsoFlagType.doorN) or thumpableProps:Is(IsoFlagType.doorW) or
-		thumpableProps:Is(IsoFlagType.WallN) or thumpableProps:Is(IsoFlagType.WallNTrans) or thumpableProps:Is(IsoFlagType.WallW) or
-		thumpableProps:Is(IsoFlagType.WallWTrans) or thumpableProps:Is(IsoFlagType.WallNW));
-	self.hoppable = thumpableProps and (thumpableProps:Is(IsoFlagType.HoppableN) or thumpableProps:Is(IsoFlagType.HoppableW) or thumpableProps:Is(IsoFlagType.TallHoppableN) or thumpableProps:Is(IsoFlagType.TallHoppableW));
+	self.blockAllTheSquare = thumpableProps and thumpableProps:has("BlocksPlacement"); -- need to consider prop IsHigh and IsLow here
+	self.canPassThrough = thumpableProps and not (thumpableProps:has(IsoFlagType.solid) or thumpableProps:has(IsoFlagType.solidtrans) or
+		thumpableProps:has(IsoFlagType.doorN) or thumpableProps:has(IsoFlagType.doorW) or
+		thumpableProps:has(IsoFlagType.WallN) or thumpableProps:has(IsoFlagType.WallNTrans) or thumpableProps:has(IsoFlagType.WallW) or
+		thumpableProps:has(IsoFlagType.WallWTrans) or thumpableProps:has(IsoFlagType.WallNW));
+	self.hoppable = thumpableProps and (thumpableProps:has(IsoFlagType.HoppableN) or thumpableProps:has(IsoFlagType.HoppableW) or thumpableProps:has(IsoFlagType.TallHoppableN) or thumpableProps:has(IsoFlagType.TallHoppableW));
 	self.isStairs = spriteType and (spriteType == IsoObjectType.stairsTW or spriteType == IsoObjectType.stairsTN or spriteType == IsoObjectType.stairsMW or spriteType == IsoObjectType.stairsMN or spriteType == IsoObjectType.stairsBW or spriteType == IsoObjectType.stairsBN);
 	self.isDoorFrame = spriteType and (spriteType == IsoObjectType.doorFrN or spriteType == IsoObjectType.doorFrW);
 	self.isDoor = spriteType and (spriteType == IsoObjectType.doorN or spriteType == IsoObjectType.doorW);
-	self.isFloor = thumpableProps and thumpableProps:Is(IsoFlagType.solidfloor);
+	self.isFloor = thumpableProps and thumpableProps:has(IsoFlagType.solidfloor);
 	if self.isDoor then	-- set thumpDmg override for doors
 		self.thumpDmg = 5;
 	end
-	self.canBarricade = ((spriteType and (spriteType == IsoObjectType.doorN or spriteType == IsoObjectType.doorW)) or (thumpableProps and (thumpableProps:Is(IsoFlagType.WindowN) or thumpableProps:Is(IsoFlagType.WindowW) or thumpableProps:Is(IsoFlagType.windowN) or thumpableProps:Is(IsoFlagType.windowW))))
-			and thumpableProps and not (thumpableProps:Is("DoubleDoor") or thumpableProps:Is("GarageDoor"));
+	self.canBarricade = ((spriteType and (spriteType == IsoObjectType.doorN or spriteType == IsoObjectType.doorW)) or (thumpableProps and (thumpableProps:has(IsoFlagType.WindowN) or thumpableProps:has(IsoFlagType.WindowW) or thumpableProps:has(IsoFlagType.windowN) or thumpableProps:has(IsoFlagType.windowW))))
+			and thumpableProps and not (thumpableProps:has("DoubleDoor") or thumpableProps:has("GarageDoor"));
 
 	buildUtil.setInfo(thumpable, self);
 
@@ -659,7 +664,7 @@ function ISBuildIsoEntity:setInfo(square, north, sprite, openSprite)
 
 	thumpable:setBreakSound(self.objectInfo:getScript():getBreakSound());
 
-	if thumpableProps and thumpableProps:Is("IsStackable") then
+	if thumpableProps and thumpableProps:has("IsStackable") then
 		local props = ISMoveableSpriteProps.new(thumpable:getSprite())
 		local offsetY = props:getTotalTableHeight(square)
 		thumpable:setRenderYOffset(offsetY)
@@ -703,7 +708,7 @@ function ISBuildIsoEntity:setInfo(square, north, sprite, openSprite)
 				if script:getLightsourceTagItem() then
 					for j=0, script:getLightsourceTagItem():size()-1 do
 						local tag = script:getLightsourceTagItem():get(j);
-						if item:getTags():contains(tag) then
+						if item:hasTag(ItemTag.get(ResourceLocation.of(tag))) then
 							torchUsed = item;
 							break;
 						end
@@ -862,9 +867,6 @@ function ISBuildIsoEntity:updateManualInputs(_logic)
 	self.buildPanelLogic:copyManualInputsFrom(_logic);
 end
 
---************************************************************************--
---** ISBuildIsoEntity:new
---************************************************************************--
 -- We need to send the nSprite to the server side.
 function ISBuildIsoEntity:new(character, objectInfo, nSprite, containers, logic)
 	local o = {};
@@ -952,10 +954,6 @@ function ISBuildIsoEntity:new(character, objectInfo, nSprite, containers, logic)
 	showDebugInfoInChat("Cursor New \'ISBuildIsoEntity\'")
 	return o;
 end
-
---************************************************************************--
---** ISBuildIsoEntity Static
---************************************************************************--
 
 function ISBuildIsoEntity.GetAllBuildableEntities()
 	local resultObjectInfos = {};

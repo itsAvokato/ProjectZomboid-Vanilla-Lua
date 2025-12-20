@@ -1,19 +1,6 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- forageServer
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
-
 if not isServer() then return; end;
 
 forageServer = {};
-
---[[--======== Data ========--
-]]--
 
 forageData = ModData.getOrCreate("forageData");
 
@@ -24,9 +11,6 @@ end
 function forageServer.clearData()
     ModData.remove("forageData");
 end
-
---[[--======== Zone ========--
-]]--
 
 function forageServer.addZone(_zoneData)
     forageData[_zoneData.id] = _zoneData;
@@ -44,15 +28,9 @@ function forageServer.syncForageData()
     ModData.transmit("forageData");
 end
 
---[[--======== Icon ========--
-]]--
-
 function forageServer.updateIcon(_zoneData, _iconID, _icon)
     forageData[_zoneData.id].forageIcons[_iconID] = _icon;
 end
-
---[[--======== Event ========--
-]]--
 
 forageServer.OnClientCommand = function(_module, _command, _plObj, _packet, _clientID)
     if _module ~= "forageData" then return; end;

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObject"
 
 CFeedingTroughGlobalObject = CGlobalObject:derive("CFeedingTroughGlobalObject")
@@ -15,7 +11,6 @@ function CFeedingTroughGlobalObject:OnLuaObjectUpdated()
 	if not isClient() then return end -- Already updated in singleplayer
 	local isoObject = self:getIsoObject()
 	if isoObject then
-		print("lua object updated")
 		for type,amount in pairs(self.feedAmount) do
 --			print("feed amount",type, amount)
 			isoObject:setFeedAmount(type, amount);

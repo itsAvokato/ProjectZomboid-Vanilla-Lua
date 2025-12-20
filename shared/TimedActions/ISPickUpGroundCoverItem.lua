@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISPickUpGroundCoverItem = ISBaseTimedAction:derive("ISPickUpGroundCoverItem")
 
 function ISPickUpGroundCoverItem:isValid()
@@ -124,10 +120,10 @@ ISPickUpGroundCoverItem.grabItemTime2 = function(playerObj, trashItemWeight)
 		maxTime = maxTime * 0.3;
 	end
 
-	if playerObj:HasTrait("Dextrous") then
+	if playerObj:hasTrait(CharacterTrait.DEXTROUS) then
 		maxTime = maxTime * 0.5
 	end
-	if playerObj:HasTrait("AllThumbs") or playerObj:isWearingAwkwardGloves() then
+	if playerObj:hasTrait(CharacterTrait.ALL_THUMBS) or playerObj:isWearingAwkwardGloves() then
 		maxTime = maxTime * 2.0
 	end
 
@@ -172,7 +168,7 @@ function ISPickUpGroundCoverItem:new(character, square, object)
 	o.square = square
 	o.object = object
     local props = object:getSprite():getProperties()
-    objectType = objectType or props:Is("CustomName") and props:Val("CustomName") or nil
+    objectType = objectType or props:has("CustomName") and props:get("CustomName") or nil
 	o.objectType = objectType;
 	o.objectType = objectType;
 	o.maxTime = o:getDuration()

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 local FONT_SCALE = getTextManager():getFontHeight(UIFont.Small) / 19; -- normalize to 1080p
@@ -13,11 +8,6 @@ local BUTTON_ICON_SIZE = 16 * ICON_SCALE;
 ISWidgetBuildControl = ISPanelJoypad:derive("ISWidgetBuildControl");
 
 local debugSpam = true
--- local debugSpam = false
---************************************************************************--
---** ISWidgetBuildControl:initialise
---**
---************************************************************************--
 
 function ISWidgetBuildControl:initialise()
 	ISPanelJoypad.initialise(self);
@@ -75,7 +65,7 @@ function ISWidgetBuildControl:createChildren()
     -- Debug tool to force being able to do recipes regardless of knowing recipes, skills, whatever
     if isDebugEnabled() and debugSpam and (self.player:getRole() and self.player:getRole():hasCapability(Capability.UseBuildCheat)) then
         self.buttonForceCraft = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISButton, 0, 0, 48, 32, "Force Action")
-        self.buttonForceCraft.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
+        self.buttonForceCraft.iconTexture = getTexture("media/textures/Item_Plumpabug_Left.png");
         self.buttonForceCraft.joypadTextureWH = BUTTON_ICON_SIZE;
         --self.buttonPrev.image = getTexture("ArrowLeft");
         self.buttonForceCraft.font = UIFont.Medium;
@@ -90,7 +80,7 @@ function ISWidgetBuildControl:createChildren()
     -- debug tool to know all recipes
 --     if isDebugEnabled() and debugSpam then
 --         self.buttonKnowAllRecipes = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISButton, 0, 0, 48, 32, "(DEBUG) TOGGLE KNOW ALL RECIPES")
---         self.buttonKnowAllRecipes.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
+--         self.buttonKnowAllRecipes.iconTexture = getTexture("media/textures/Item_Plumpabug_Left.png");
 --         --self.buttonPrev.image = getTexture("ArrowLeft");
 --         self.buttonKnowAllRecipes.font = UIFont.Medium;
 --         self.buttonKnowAllRecipes.target = self;
@@ -311,7 +301,6 @@ function ISWidgetBuildControl:startBuild(force)
 end
 
 function ISWidgetBuildControl:onHandcraftActionComplete()
-    print("ISWidgetBuildControl -> Craft action completed")
 --     print("Return to container " .. tostring(self.returnToContainer))
     self.logic:stopCraftAction();
 --     ISCraftingUI.ReturnItemsToOriginalContainer(self.player, self.returnToContainer)
@@ -349,10 +338,6 @@ function ISWidgetBuildControl:onLoseJoypadFocus(joypadData)
     self:clearJoypadFocus()
 end
 
---************************************************************************--
---** ISWidgetBuildControl:new
---**
---************************************************************************--
 function ISWidgetBuildControl:new(x, y, width, height, player, logic)
     local o = ISPanelJoypad:new(x, y, width, height);
     setmetatable(o, self)

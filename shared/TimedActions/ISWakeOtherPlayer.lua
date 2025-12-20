@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWakeOtherPlayer = ISBaseTimedAction:derive("ISWakeOtherPlayer");

@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
--- TODO DEPRECATED
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small);
@@ -117,7 +111,6 @@ function ISWidgetRecipeSelect:update()
                 self.comboBox:selectData(recipe);
             end
         end
-
     end
 end
 
@@ -130,10 +123,6 @@ function ISWidgetRecipeSelect:comboChange(_combo, _arg1, _arg2)
     end
 end
 
---************************************************************************--
---** ISWidgetRecipeSelect:new
---**
---************************************************************************--
 function ISWidgetRecipeSelect:new (x, y, width, height, player, entity, component, craftProcessor, _styleComboBox)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

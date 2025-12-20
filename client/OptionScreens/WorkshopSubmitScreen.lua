@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISComboBox"
 require "ISUI/ISScrollingListBox"
@@ -26,9 +22,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local TEST = false
 WorkshopSubmitScreen.TEST = TEST
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page1:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -88,7 +81,7 @@ end
 
 function Page1:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title1"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title1"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page1", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 end
@@ -151,9 +144,6 @@ function Page1:onJoypadDirDown(joypadData)
 	self.listbox:onJoypadDirDown(joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page2:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -298,7 +288,7 @@ end
 
 function Page2:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title2"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title2"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page2", self.width / 2, self.height + 2, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	local x = self.titleEntry:getRight() + 32
@@ -419,9 +409,6 @@ function Page2:onJoypadDirDown(joypadData)
 	ISPanelJoypad.onJoypadDirDown(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page3:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -491,7 +478,7 @@ end
 
 function Page3:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title3"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title3"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page3", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	if self.joyfocus and self.joypadIndexY > 0 then
@@ -567,9 +554,6 @@ function Page3:onJoypadDirDown(joypadData)
 	ISPanelJoypad.onJoypadDirDown(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page4:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -661,7 +645,7 @@ end
 
 function Page4:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title4"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title4"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page4", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 end
@@ -726,9 +710,6 @@ function Page4:onJoypadDirDown(joypadData)
 	ISPanelJoypad.onJoypadDirDown(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page5:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -828,7 +809,7 @@ end
 
 function Page5:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title5"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title5"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page5", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	if self.joyfocus and self.joypadIndexY > 0 then
@@ -930,9 +911,6 @@ function Page5:onJoypadDirDown(joypadData)
 	ISPanelJoypad.onJoypadDirDown(self, joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page6:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -983,7 +961,7 @@ end
 
 function Page6:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(self.title, self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(self.title, self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page6", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	
 	if self.joyfocus and self.entry.joypadFocused then
@@ -1052,9 +1030,6 @@ function Page6:onJoypadDirDown(joypadData)
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page7:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -1159,7 +1134,7 @@ end
 
 function Page7:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title7"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title7"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page7", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 	self:updateWhenVisible()
 
@@ -1244,9 +1219,6 @@ function Page7:onGainJoypadFocus(joypadData)
 	self:setISButtonForY(self.overlayButton)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page8:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -1270,7 +1242,7 @@ end
 
 function Page8:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title8"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title8"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page8", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 
 	self:drawTextCentre(self.error, self.width / 2, self.height / 3, 1, 1, 1, 1, UIFont.Medium)
@@ -1291,9 +1263,6 @@ function Page8:onGainJoypadFocus(joypadData)
 	self:setISButtonForB(self.backButton)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page9:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -1360,7 +1329,7 @@ end
 
 function Page9:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title9"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title9"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page9", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 end
 
@@ -1399,9 +1368,6 @@ function Page9:onGainJoypadFocus(joypadData)
 	self:restoreJoypadFocus()
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function Page10:new(x, y, width, height)
 	local o = ISPanelJoypad:new(x, y, width, height)
@@ -1426,7 +1392,7 @@ end
 
 function Page10:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_WorkshopSubmit_Title10"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+	self:drawTextCentre(getText("UI_WorkshopSubmit_Title10"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 	if getDebug() then self:drawTextCentre("DEBUG: Page10", self.width / 2, self.height - 20, 0.5, 0.5, 0.5, 1, UIFont.Small) end
 end
 
@@ -1438,9 +1404,6 @@ function Page10:onButtonBack()
 	self.parent.page9:setVisible(true, self.joyfocus)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function TagsList:onMouseDown(x, y)
 	if not self.enabled then return end
@@ -1584,9 +1547,6 @@ function TagsList:new(x, y, width, height)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function WorkshopSubmitScreen:create()
 	self.page1 = Page1:new(0, 0, self.width, self.height)

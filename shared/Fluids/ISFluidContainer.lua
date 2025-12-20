@@ -1,14 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Wrapper for FluidContainer java objects for ui purposes.
-
-    FluidObject may be FluidContainer.java or ResourceFluid.java instances.
---]]
-
 require "ISBaseObject"
 
 ISFluidContainer = ISBaseObject:derive("ISFluidContainer");

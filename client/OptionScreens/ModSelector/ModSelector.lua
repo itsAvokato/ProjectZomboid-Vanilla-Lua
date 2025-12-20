@@ -1,12 +1,8 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ModSelector = ISPanelJoypad:derive("ModSelector")
 
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
@@ -28,7 +24,7 @@ function ModSelector:new(x, y, width, height)
 end
 
 function ModSelector:create()
-    local listY = UI_BORDER_SPACING*2 + math.max(FONT_HGT_TITLE, BUTTON_HGT) + 1
+    local listY = UI_BORDER_SPACING*2 + math.max(FONT_HGT_LARGE, BUTTON_HGT) + 1
     local listHgt = self.height - listY - BUTTON_HGT - UI_BORDER_SPACING*2 - 1
     self.modListPanel = ModSelector.ModListPanel:new(UI_BORDER_SPACING+1, listY, self.width/2-UI_BORDER_SPACING, listHgt, self.model)
     self.modListPanel:initialise()
@@ -143,7 +139,7 @@ end
 function ModSelector:prerender()
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b)
     ISPanelJoypad.prerender(self)
-    self:drawTextCentre(getText("UI_mods_SelectMods"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title)
+    self:drawTextCentre(getText("UI_mods_SelectMods"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large)
 end
 
 function ModSelector:render()
@@ -298,8 +294,6 @@ function ModSelector:onKeyRelease(key)
     end
 end
 
----------------------------
-
 function ModSelector:onGainJoypadFocus(joypadData)
     ISPanelJoypad.onGainJoypadFocus(self, joypadData)
     self:restoreJoypadFocus(joypadData)
@@ -325,8 +319,6 @@ function ModSelector:onJoypadNavigateStart_Descendant(descendant, joypadData)
     end
     self.presetPanel.joypadNavigate = { up = self.modListPanel.modList, parent = self }
 end
-
----------------------------
 
 function ModSelector.showNagPanel()
     if getCore():isModsPopupDone() or getDebug() and getDebugOptions():getBoolean("UI.DisableWelcomeMessage") then

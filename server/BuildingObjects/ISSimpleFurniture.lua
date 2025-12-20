@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISSimpleFurniture = ISBuildingObject:derive("ISSimpleFurniture");
 
---************************************************************************--
---** ISSimpleFurniture:new
---**
---************************************************************************--
 function ISSimpleFurniture:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISSimpleFurniture\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -63,7 +55,7 @@ function ISSimpleFurniture:isValid(square)
 	if self.needToBeAgainstWall then
         for i=0,square:getObjects():size()-1 do
            local obj = square:getObjects():get(i);
-           if (self.north and obj:getProperties():Is("WallN")) or (not self.north and obj:getProperties():Is("WallW")) then
+           if (self.north and obj:getProperties():has("WallN")) or (not self.north and obj:getProperties():has("WallW")) then
                return true;
            end
         end

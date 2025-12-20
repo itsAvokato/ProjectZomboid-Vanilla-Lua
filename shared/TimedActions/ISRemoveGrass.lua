@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveGrass = ISBaseTimedAction:derive("ISRemoveGrass")
@@ -9,7 +5,7 @@ ISRemoveGrass = ISBaseTimedAction:derive("ISRemoveGrass")
 function ISRemoveGrass:isValid()
     for i=0,self.square:getObjects():size()-1 do
         local object = self.square:getObjects():get(i);
-        if object:getProperties() and object:getProperties():Is(IsoFlagType.canBeRemoved) then
+        if object:getProperties() and object:getProperties():has(IsoFlagType.canBeRemoved) then
             return true
         end
     end
@@ -48,7 +44,7 @@ function ISRemoveGrass:complete()
 	local sq = self.square
 	for i=sq:getObjects():size(),1,-1 do
 		local object = sq:getObjects():get(i-1)
-		if object:getProperties() and object:getProperties():Is(IsoFlagType.canBeRemoved) then
+		if object:getProperties() and object:getProperties():has(IsoFlagType.canBeRemoved) then
 			sq:transmitRemoveItemFromSquare(object)
 		end
 	end

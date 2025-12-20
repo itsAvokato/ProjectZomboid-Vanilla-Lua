@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "DebugUIs/DebugChunkState/ISSectionedPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -56,8 +52,6 @@ function SquarePropsHandler:new(x, y, width, height, gameState)
 	o.object = nil
 	return o
 end
-
------
 
 local SPH_misc = SquarePropsHandler:derive("DebugChunkStateUI_SPH_misc")
 
@@ -140,20 +134,18 @@ function SPH_misc:render1()
 			local building = light:getLocalToBuilding()
 			self:addLine("light  active = %s  hydro = %s  localToBuilding = %d", light:isActive(), light:isHydroPowered(), building and building:getID() or -1)
 		end
-		self:addLine("exterior = %s", square:Is(IsoFlagType.exterior))
+		self:addLine("exterior = %s", square:has(IsoFlagType.exterior))
 		self:addLine("haveElectricity = %s", square:haveElectricity())
 		self:addLine("TreatAsSolidFloor = %s", square:TreatAsSolidFloor())
-		self:addLine("solid = %s", square:Is(IsoFlagType.solid))
-		self:addLine("solidTrans = %s", square:Is(IsoFlagType.solidtrans))
-		self:addLine("burning = %s", square:Is(IsoFlagType.burning))
-		self:addLine("burntOut = %s", square:Is(IsoFlagType.burntOut))
-		self:addLine("HasRaindrop = %s", square:Is(IsoFlagType.HasRaindrop))
+		self:addLine("solid = %s", square:has(IsoFlagType.solid))
+		self:addLine("solidTrans = %s", square:has(IsoFlagType.solidtrans))
+		self:addLine("burning = %s", square:has(IsoFlagType.burning))
+		self:addLine("burntOut = %s", square:has(IsoFlagType.burntOut))
+		self:addLine("HasRaindrop = %s", square:has(IsoFlagType.HasRaindrop))
 	end
 
 	self:setHeight(self.addLineY)
 end
-
------
 
 local SPH_modData = SquarePropsHandler:derive("DebugChunkStateUI_SPH_modData")
 
@@ -171,8 +163,6 @@ function SPH_modData:render1()
 		self:addLine("%s = %s", k, v)
 	end
 end
-
------
 
 local SPH_properties = SquarePropsHandler:derive("DebugChunkStateUI_SPH_properties")
 
@@ -193,7 +183,7 @@ function SPH_properties:render1()
 	local props = square:getProperties()
 	local names = props:getPropertyNames()
 	for i=1,names:size() do
-		self:addLine("%s = %s", names:get(i-1), props:Val(names:get(i-1)))
+		self:addLine("%s = %s", names:get(i-1), props:get(names:get(i-1)))
 	end
 	if not names:isEmpty() then
 		self.addLineY = self.addLineY + FONT_HGT_SMALL
@@ -203,8 +193,6 @@ function SPH_properties:render1()
 		self:addLine("flag: %s", flags:get(i-1):toString())
 	end
 end
-
------
 
 local SPH_matrix = SquarePropsHandler:derive("DebugChunkStateUI_SPH_matrix")
 
@@ -328,8 +316,6 @@ function SPH_matrix:draw9x9aux(x, y, dx, dy, isSet)
 	if isSet then r = 0.0; b = 0.0 end
 	self:drawRect(x + (dx + 1) * side, y + (dy + 1) * side, side, side, a, r, g, b)
 end
-
------
 
 DebugChunkStateUI_SquarePanel = ISSectionedPanel:derive("DebugChunkStateUI_SquarePanel")
 local SquarePanel = DebugChunkStateUI_SquarePanel

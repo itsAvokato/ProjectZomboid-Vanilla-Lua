@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require('ISUI/ISScrollingListBox')
 require('Vehicles/ISUI/ISUI3DScene')
 
@@ -65,8 +61,6 @@ function SwitchView:new(editor, x, y, width, height)
 	return o
 end
 
------
-
 AttachmentEditorUI_WorldAttachmentPanel = ISPanel:derive("AttachmentEditorUI_WorldAttachmentPanel")
 local WorldAttachmentPanel = AttachmentEditorUI_WorldAttachmentPanel
 
@@ -116,8 +110,6 @@ function WorldAttachmentPanel:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 local function vectorComponentToString(n, scale)
 	return tostring(round(n * scale, 3))
 end
@@ -152,8 +144,6 @@ local function alignVectorToGrid(v, gridMult)
 	v:setComponent(2, vz)
 	return v
 end
-
------
 
 AttachmentEditorUI_ListBox = ISScrollingListBox:derive("AttachmentEditorUI_ListBox")
 local ListBox = AttachmentEditorUI_ListBox
@@ -246,8 +236,6 @@ function ListBox:new(x, y, width, height)
 	return o
 end
 
------
-
 AttachmentEditorUI_EditPanel = ISPanel:derive("AttachmentEditorUI_EditPanel")
 local EditPanel = AttachmentEditorUI_EditPanel
 
@@ -317,8 +305,6 @@ function EditPanel:new(x, y, width, height)
 	local o = ISPanel.new(self, x, y, width, height)
 	return o
 end
-
------
 
 AttachmentEditorUI_EditAttachment = EditPanel:derive("AttachmentEditorUI_EditAttachment")
 local EditAttachment = AttachmentEditorUI_EditAttachment
@@ -1324,8 +1310,6 @@ function EditAttachment:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 function Scene:prerenderEditor()
 	self.javaObject:fromLua1("setGizmoVisible", "none")
 	self.javaObject:fromLua1("setGizmoOrigin", "none")
@@ -1414,8 +1398,6 @@ function Scene:new(x, y, width, height)
 	o.gizmoAxis = "None"
 	return o
 end
-
------
 
 function AttachmentEditorUI:createChildren()
 	self.scene = Scene:new(0, 0, self.width, self.height)

@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISTradingUI = ISPanel:derive("ISTradingUI");
 ISTradingUI.messages = {};
 ISTradingUI.CoolDownMessage = 300;
@@ -11,11 +7,6 @@ ISTradingUI.States.SealOffer = 1;
 ISTradingUI.States.UnSealOffer = 2;
 ISTradingUI.States.FinalizeDeal = 3;
 ISTradingUI.MaxItems = 20;
-
---************************************************************************--
---** ISTradingUI:initialise
---**
---************************************************************************--
 
 function ISTradingUI:initialise()
     ISPanel.initialise(self);
@@ -393,10 +384,6 @@ function ISTradingUI:finalizeDeal()
     self:removeFromUIManager();
 end
 
---************************************************************************--
---** ISTradingUI:new
---**
---************************************************************************--
 function ISTradingUI:new(x, y, width, height, player, otherPlayer)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

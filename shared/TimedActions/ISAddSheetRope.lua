@@ -50,7 +50,7 @@ function ISAddSheetRope:complete()
     if instanceof(o, 'IsoWindow') or instanceof(o, 'IsoThumpable') or instanceof(o, 'IsoWindowFrame') then
         o:addSheetRope(self.character, itemType or "SheetRope")
     elseif instanceof(o, 'IsoObject') then
-        if o:getSquare():getProperties():Is(IsoFlagType.HoppableN) or o:getSquare():getProperties():Is(IsoFlagType.HoppableW) then
+        if o:getSquare():getProperties():has(IsoFlagType.HoppableN) or o:getSquare():getProperties():has(IsoFlagType.HoppableW) then
             o:addSheetRope(self.character, itemType or "SheetRope")
         end
     else

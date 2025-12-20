@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISGroupBox = ISPanel:derive("ISGroupBox");
@@ -129,10 +125,6 @@ function ISGroupBox:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISGroupBox:new
---**
---************************************************************************--
 function ISGroupBox:new (x, y, width, height, _styleLabel)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

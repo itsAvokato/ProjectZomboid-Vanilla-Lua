@@ -181,7 +181,8 @@ function ISScoreboard:drawMap(y, item, alt)
     end
     self:drawRectBorder(0, (y), self:getWidth(), item.height, 0.5, self.borderColor.r, self.borderColor.g, self.borderColor.b);
     local fontHgtLarge = FONT_HGT_LARGE
-    if getSteamScoreboard() then
+
+    if (getSteamScoreboard() or getPlayer():getRole():hasCapability(Capability.GetSteamScoreboard)) and not getStreamModeActive() and getSteamModeActive() then
         local avatarW = 32
         local avatarH = 32
         if item.item.avatar then
@@ -191,14 +192,10 @@ function ISScoreboard:drawMap(y, item, alt)
         if self.mouseoverselected ~= item.index then
             local fontHgtSmall = getTextManager():getFontFromEnum(UIFont.Small):getLineHeight()
             local profileText = getText("UI_Scoreboard_SteamName", item.item.profileName)
-            if not getStreamModeActive() then
-                self:drawText(profileText, 4 + avatarW + 8 + self.parent.maxNameWid + 20, y+(item.height - fontHgtSmall)/2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
-            end
+            self:drawText(profileText, 4 + avatarW + 8 + self.parent.maxNameWid + 20, y+(item.height - fontHgtSmall)/2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
             if ISScoreboard.isAdmin then
                 local textWid2 = getTextManager():MeasureStringX(UIFont.Small, profileText)
-                if not getStreamModeActive() then
-                    self:drawText(getText("UI_Scoreboard_SteamID", item.item.steamID), 4 + avatarW + 8 + self.parent.maxNameWid + 20 + textWid2 + 20, y+(item.height - fontHgtSmall)/2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
-                end
+                self:drawText(getText("UI_Scoreboard_SteamID", item.item.steamID), 4 + avatarW + 8 + self.parent.maxNameWid + 20 + textWid2 + 20, y+(item.height - fontHgtSmall)/2, 0.9, 0.9, 0.9, 0.9, UIFont.Small);
             end
         end
         item.height = 2 + avatarH + 2

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "RadioCom/RadioWindowModules/RWMPanel"
 
 RWMSignal = RWMPanel:derive("RWMSignal");

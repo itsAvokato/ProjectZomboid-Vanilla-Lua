@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    TODO : Probably deprecated
---]]
-
 local sortItemNodes = function (a, b)
     -- sort alphabetically.
     return a.name < b.name
@@ -83,7 +74,6 @@ function ISCraftInputItems:rebuildItemNodes()
 
     table.sort(self.nodes, sortItemNodes);
 
-    print("TRIGGER EVENT: ISCraftInputItems.rebuildItemNodes")
     --the function object is used as identifier for the event, subscribers add listeners for 'ISCraftInputItems.rebuildItemNodes'
     self:triggerEvent(ISCraftInputItems.rebuildItemNodes, self);
 end
@@ -105,10 +95,6 @@ function ISCraftInputItems:new(_player, _recipeData)
 
     return o;
 end
-
---[[
-    ISCraftInputItemNode
---]]
 
 ISCraftInputItemNode = ISBaseObject:derive("ISCraftInputItemNode");
 

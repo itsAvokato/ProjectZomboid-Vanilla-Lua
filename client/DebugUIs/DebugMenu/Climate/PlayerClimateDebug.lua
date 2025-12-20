@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 PlayerClimateDebug = ISCollapsableWindow:derive("PlayerClimateDebug");
@@ -94,102 +89,6 @@ function PlayerClimateDebug:createChildren()
     self.clrGreenYellow = {r=0.678,g=1,b=0.184,a=1};
     self.clrGreen = {r=0.000,g=0.502,b=0,a=1};
 
-    --[[*******************************************************************************************--]]
-    --[[
-    y = self:addLabel(y,"tit_Ext","EXTERNAL AIR","");
-    --y, lbl = self:addLabelValue(y,"value","worldTemp","World temperature:",0,nil,"= Celsius");
-    --y, lbl = self:addLabelValue(y,"value","heatsourceTemp","HeatSource:",0,nil,"= Celsius");
-    --y, lbl = self:addLabelValue(y,"value","vehicleTemp","VehicleTempMod:",0,nil,"= Celsius");
-    y, lbl = self:addLabelValue(y,"value","tempBase","B-T:",0,nil,"= Celsius");
-    y, lbl = self:addLabelValue(y,"value","isInVehicle","Inside Vehicle:","false",nil);
-    y, lbl = self:addLabelValue(y,"value","isInside","Inside Building:","false",nil);
-    y, lbl = self:addLabelValue(y,"value","airTemperature","Air Near Player:",0,nil,"= Celsius");
-    y, lbl = self:addLabelValue(y,"value","windSpeed","Windspeed:",0,nil,"= Kph");
-    --y = self:addLabelValue(y,"value","seasonMidpoint","Midpoint:",0);
-
-    y = y+8;
-
-    y = self:addLabel(y,"tit_Plr","MODIFIERS","");
-    y, lbl = self:addLabelValue(y,"value","hunger","Hunger:",0,nil,"= 0.0 to 1.0   [c]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","thirst","Thirst:",0,nil,"= 0.0 to 1.0   [h]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","tired","Tired:",0,nil,"= 0.0 to 1.0   [c,h]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","excercise","Excercise:",0,self.colWhite,"= 0.0 to 1.0   [c,h]");
-    y, lbl = self:addLabelValue(y,"value","weight","Weight:",0,self.colWhite,"= Kg           [c,h]");
-    --lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","fitness","Fitness:",0,nil,"= 0.0 to 1.0   [c,h]");
-    lbl.valueLabel.colUnitMinPlus = true;
-    y, lbl = self:addLabelValue(y,"value","drunkenness","Drunkenness:",0,nil,"= 0.0 to 1.0   [c]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","sickness","Sickness:",0,nil,"= 0.0 to 1.0   [c,h]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","hasACold","HasACold:",0,nil,"= 0.0 to 1.0   [c,h]");
-    lbl.valueLabel.colUnitInv = true;
-    --y = self:addLabel(y,"tit_Cloth","CLOTHING MODIFIERS","");
-    y, lbl = self:addLabelValue(y,"value","wetness","Wetness:",0,nil,"= 0.0 to 1.0   [cloth,c,h]");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","clothing","Clothing:",0,nil,"= 0.0 to 1.0   [c,h]");
-    lbl.valueLabel.colUnit = true;
-    --y, lbl = self:addLabelValue(y,"value","clothingFinal","Clothing cold resist:",0,nil,"= 0.0 to 1.0   [c]");
-    --lbl.valueLabel.colUnit = true;
-    --y, lbl = self:addLabelValue(y,"value","clothInvert","Clothing heat resist:",0,nil,"= 0.0 to 1.0   [h]");
-    --lbl.valueLabel.colUnit = true;
-    --y, lbl = self:addLabelValue(y,"value","clothInvert2","Clothing heat resistII:",0,nil,"= 0.0 to 1.0   [h]");
-    --lbl.valueLabel.colUnit = true;
-
-    y = y+8;
-    self.colRed = {r=0.392,g=0.584,b=0.929,a=1};
-    local c = self.colRed;
-    y = self:addLabel(y,"tit_Final","COLD AND HEAT","");
-    y, lbl = self:addLabelValue(y,"value","coldBodyResist","Cold Body Resist:",0,nil,"= 0.0 to 2.0");
-    lbl.valueLabel.colUnit2 = true;
-    y, lbl = self:addLabelValue(y,"value","coldClothResist","Cold Clothing Resist:",0,nil,"= 0.0 to 1.0");
-    lbl.valueLabel.colUnit = true;
-    y, lbl = self:addLabelValue(y,"value","coldBodyBonus","(body Bonus):",0,c,"= celsius");
-    y, lbl = self:addLabelValue(y,"value","coldClothBonus","(cloth Bonus):",0,c,"= celsius");
-    y, lbl = self:addLabelValue(y,"value","coldResist","Cold Resist:",0,c,"(final)");
-    y, lbl = self:addLabelValue(y,"value","coldStrength","Cold Strength:",0,c);
-    y, lbl = self:addLabelValue(y,"value","coldChange","Cold Change:",0,c,"base value");
-    y = y+8;
-    self.colBlue = {r=0.980,g=0.502,b=0.447,a=1};
-    c = self.colBlue;
-    y, lbl = self:addLabelValue(y,"value","heatBodyResist","Heat Body Resist:",0,nil,"= 0.0 to 2.0");
-    lbl.valueLabel.colUnit2 = true;
-    y, lbl = self:addLabelValue(y,"value","heatClothResist","Heat Clothing Resist:",0,nil,"= 0.0 to 1.0");
-    lbl.valueLabel.colUnit = true;
-    y, lbl = self:addLabelValue(y,"value","heatBodyBonus","(body Bonus):",0,c,"= celsius");
-    y, lbl = self:addLabelValue(y,"value","heatClothBonus","(cloth Bonus):",0,c,"= celsius");
-    y, lbl = self:addLabelValue(y,"value","heatResist","Heat Resist:",0,c,"(final)");
-    y, lbl = self:addLabelValue(y,"value","heatStrength","Heat Strength:",0,c);
-    y, lbl = self:addLabelValue(y,"value","heatChange","Heat Change:",0,c,"base value");
-
-    y = y+8;
-
-    y = self:addLabel(y,"tit_PlrTemp","FINAL","");
-    y, lbl = self:addLabelValue(y,"value","tickChangePm","Change per min:",0,self.colWhite,"= Celsius per Real Min");
-    lbl.valueLabel.colByValue = true;
-    y, lbl = self:addLabelValue(y,"value","tickChange","Applied change:",0,self.colWhite,"= Celsius per tick");
-    lbl.valueLabel.colByValue = true;
-    --y, lbl = self:addLabelValue(y,"value","appliedModTick","Applied change (tick):",0,self.colWhite,"= Celsius");
-    --lbl.valueLabel.colByValue = true;
-    y, lbl = self:addLabelValue(y,"value","playerTemp","Player body temp:",0,nil,"= Celsius");
-
-    y = y+8;
-    y, lbl = self:addLabelValue(y,"value","hypoState","Player hypo state:",0,nil,"");
-    y, lbl = self:addLabelValue(y,"value","hyperState","Player hyper state:",0,nil,"");
-
-    y, lbl = self:addLabelValue(y,"value","underCooled","Undercooled:",0,nil,"= 0.0 to 1.0");
-    lbl.valueLabel.colUnitInv = true;
-    y, lbl = self:addLabelValue(y,"value","overHeated","Overheated:",0,nil,"= 0.0 to 1.0");
-    lbl.valueLabel.colUnitInv = true;
-    --]]
-    --y = y+8;
-
-    --y = self:addLabel(y,"tit_Extra","EXTRA","");
-    --y, lbl = self:addLabelValue(y,"value","clothInvert","Clothing invert val:",0,nil,"");
-
     for k,v in ipairs(self.vars) do
         if v.isValue then
             y, lbl = self:addLabelValue(y,"value",v.variable,v.title,v.defaultVal,v.color,v.postfix);
@@ -251,15 +150,15 @@ function PlayerClimateDebug:initVariables()
     self:registerVariable("getSkinCelciusMultiplier", getText("IGUI_PlayerClimate_SkinC") ..":", true, thermos, 0, nil, nil);
 
     self:registerVariable("title_stats",getText("IGUI_PlayerClimate_StatsTitle"),false);
-    self:registerVariable("getHunger", getText("IGUI_StatsAndBody_Hunger") ..":", true, stats, 0, nil, nil);
-    self:registerVariable("getThirst", getText("IGUI_StatsAndBody_Thirst") ..":", true, stats, 0, nil, nil);
-    self:registerVariable("getFatigue", getText("IGUI_StatsAndBody_Fatigue") ..":", true, stats, 0, nil, nil);
-    self:registerVariable("getFitness", getText("IGUI_StatsAndBody_Fitness") ..":", true, stats, 0, nil, nil);
-    self:registerVariable("getDrunkenness", getText("IGUI_StatsAndBody_Drunkenness") ..":", true, stats, 0, nil, nil);
-    self:registerVariable("getSickness", getText("IGUI_StatsAndBody_Sickness") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getHunger", getText("IGUI_StatsAndBody_Hunger") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getThirst", getText("IGUI_StatsAndBody_Thirst") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getFatigue", getText("IGUI_StatsAndBody_Fatigue") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getFitness", getText("IGUI_StatsAndBody_Fitness") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getIntoxication", getText("IGUI_StatsAndBody_Intoxication") ..":", true, stats, 0, nil, nil);
+--    self:registerVariable("getSickness", getText("IGUI_StatsAndBody_Sickness") ..":", true, stats, 0, nil, nil);
 
     self:registerVariable("title_body",getText("IGUI_PlayerClimate_BodyTitle"),false);
-    self:registerVariable("getWetness", getText("IGUI_StatsAndBody_Wetness") ..":", true, body, 0, nil, nil);
+--    self:registerVariable("getWetness", getText("IGUI_StatsAndBody_Wetness") ..":", true, body, 0, nil, nil);
     self:registerVariable("getColdStrength", getText("IGUI_StatsAndBody_ColdStrength") ..":", true, body, 0, nil, nil);
     self:registerVariable("getCatchACold", getText("IGUI_PlayerClimate_CatchCold") ..":", true, body, 0, nil, nil);
 
@@ -279,10 +178,7 @@ function PlayerClimateDebug:registerVariable(_variable,_title,_isValue, _javaIns
     });
 end
 
-local vars = { -- ----------------------------------- OLD UNUSED
-    --worldTemp = 0,
-    --heatsourceTemp = 0,
-    --vehicleTemp = 0,
+local vars = { -- OLD UNUSED
     tempBase = 0,
     isInside = false,
     isInVehicle = false,
@@ -295,7 +191,7 @@ local vars = { -- ----------------------------------- OLD UNUSED
     excercise = 0,
     weight = 0,
     fitness = 0,
-    drunkenness = 0,
+    intoxication = 0,
     sickness = 0,
     hasACold = 0,
     wetness = 0,
@@ -331,57 +227,6 @@ local vars = { -- ----------------------------------- OLD UNUSED
     --clothInvert = 0,
     --clothInvert2 = 0,
 };
-
-function PlayerClimateDebug.onClimateTickDebug()
-    -- NOTE: This panel is now obsolete
-    --[[
-    local v = Temperature.getPlayerTemperatureVars(getPlayer());
-    if not v then return end
-
-    vars.tempBase = getWorld():getGlobalTemperature();
-
-    vars.isInside = v:IsInside();
-    vars.isInVehicle = v:IsInVehicle();
-    vars.windSpeed = v:getWindSpeed();
-    vars.airTemperature = v:getAirTemperature();
-
-    vars.hunger = v:getHunger();
-    vars.thirst = v:getThirst();
-    vars.tired = v:getTired();
-    vars.excercise = v:getExcercise();
-    vars.weight = v:getWeight();
-    vars.fitness = v:getFitness();
-    vars.drunkenness = v:getDrunkenness();
-    vars.sickness = v:getSickness();
-    vars.hasACold = v:getHasACold();
-    vars.wetness = v:getWetness();
-    vars.clothing = v:getClothing();
-
-    vars.coldStrength = v:getColdStrength();
-    vars.coldBodyResist = v:getBodyColdResist();
-    vars.coldClothResist = v:getClothColdResist();
-    vars.coldBodyBonus = v:getDebugColdBodyBonus();
-    vars.coldClothBonus = v:getDebugColdClothBonus();
-    vars.coldResist = v:getColdResist();
-    vars.coldChange = v:getColdChange();
-
-    vars.heatStrength = v:getHeatStrength();
-    vars.heatBodyResist = v:getBodyHeatResist();
-    vars.heatClothResist = v:getClothHeatResist();
-    vars.heatBodyBonus = v:getDebugHeatBodyBonus();
-    vars.heatClothBonus = v:getDebugHeatClothBonus();
-    vars.heatResist = v:getHeatResist();
-    vars.heatChange = v:getHeatChange();
-
-    vars.tickChangePm = v:getTickChangePm();
-    vars.tickChange = v:getTickChange();
-
-    vars.playerTemp = getPlayer():getTemperature();
-
-    vars.underCooled = v:getUndercooled();
-    vars.overHeated = v:getOverheated();
-    --]]
-end
 
 function PlayerClimateDebug:addLabel(_curY, _labelID, _title)
     if not self.labels[_labelID] then
@@ -549,8 +394,8 @@ function PlayerClimateDebug:updateOLD()
                     end
                 elseif k=="playerTemp" then
                     doCol = true;
-                    local hypo = getPlayer():getMoodles():getMoodleLevel(MoodleType.Hypothermia);
-                    local hyper = getPlayer():getMoodles():getMoodleLevel(MoodleType.Hyperthermia);
+                    local hypo = getPlayer():getMoodles():getMoodleLevel(MoodleType.HYPOTHERMIA);
+                    local hyper = getPlayer():getMoodles():getMoodleLevel(MoodleType.HYPERTHERMIA);
                     if hypo==1 or hyper==1 then
                         c = self.clrGreenYellow;
                     elseif hypo==2 or hyper==2 then
@@ -652,13 +497,3 @@ function PlayerClimateDebug:new (x, y, width, height, player)
     ISDebugMenu.RegisterClass(self);
     return o
 end
-
---[[
-if enabled then
-    Events.OnCustomUIKey.Add(PlayerClimateDebug.OnKeyDown);
-    Events.OnKeyKeepPressed.Add(PlayerClimateDebug.OnKeepKeyDown);
-    --Events.OnObjectLeftMouseButtonUp.Add(PlayerClimateDebug.onMouseButtonUp);
-end--]]
-
-
-

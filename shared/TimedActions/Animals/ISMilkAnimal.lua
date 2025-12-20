@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISMilkAnimal = ISBaseTimedAction:derive("ISMilkAnimal");
@@ -169,6 +165,10 @@ function ISMilkAnimal:forceStop()
 	self.action:forceStop();
 end
 
+function ISMilkAnimal:serverStop()
+    self.animal:getBehavior():setBlockMovement(false);
+end
+
 function ISMilkAnimal:stop()
 	self:stopSound()
 	self.character:setVariable("milkanimalout", true)
@@ -184,7 +184,6 @@ function ISMilkAnimal:perform()
 --	self.bucket = self.animal:milkAnimal(self.character, self.bucket);
 
 	self.character:setVariable("milkanimalout", true)
-	self.animal:getBehavior():setBlockMovement(false);
 	if self.bucket then
 		self.bucket:setJobDelta(0.0);
 	end
@@ -194,6 +193,7 @@ function ISMilkAnimal:perform()
 end
 
 function ISMilkAnimal:complete()
+    self.animal:getBehavior():setBlockMovement(false);
 	return true
 end
 
@@ -209,6 +209,8 @@ function ISMilkAnimal:animEvent(event, parameter)
 end
 
 function ISMilkAnimal:serverStart()
+    self.animal:getBehavior():setBlockMovement(true);
+
 	local period = self.timePerLiter * 20
 	emulateAnimEvent(self.netAction, period, "update", nil)
 end

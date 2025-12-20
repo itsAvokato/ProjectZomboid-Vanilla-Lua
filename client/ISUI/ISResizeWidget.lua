@@ -2,15 +2,9 @@ require "ISUI/ISPanel"
 
 ISResizeWidget = ISPanel:derive("ISResizeWidget");
 
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISResizeWidget:initialise()
 	ISPanel.initialise(self);
 end
-
 
 function ISResizeWidget:resize(dx, dy)
 	local x = self.target.width+dx;
@@ -43,10 +37,6 @@ function ISResizeWidget:resize(dx, dy)
 	end
 end
 
---************************************************************************--
---** ISButton:onMouseMove
---**
---************************************************************************--
 function ISResizeWidget:onMouseMove(dx, dy)
 	self.mouseOver = true;
 	if self.resizing then
@@ -60,10 +50,6 @@ function ISResizeWidget:onMouseMove(dx, dy)
     end
 end
 
---************************************************************************--
---** ISButton:onMouseMoveOutside
---**
---************************************************************************--
 function ISResizeWidget:onMouseMoveOutside(dx, dy)
 	self.mouseOver = false;
 	if self.resizing then
@@ -77,10 +63,6 @@ function ISResizeWidget:onMouseMoveOutside(dx, dy)
     end
 end
 
---************************************************************************--
---** ISButton:onMouseUp
---**
---************************************************************************--
 function ISResizeWidget:onMouseUp(x, y)
     if not self:getIsVisible() then
         return;
@@ -113,10 +95,6 @@ function ISResizeWidget:onMouseDown(x, y)
 	return true;
 end
 
---************************************************************************--
---** ISResizeWidget:render
---**
---************************************************************************--
 function ISResizeWidget:prerender()
  --   if(self.mouseOver) then
    --     self:drawRect(0, 0, self.width, self.height, self.backgroundColorMouseOver.a, self.backgroundColorMouseOver.r, self.backgroundColorMouseOver.g, self.backgroundColorMouseOver.b);
@@ -130,10 +108,6 @@ function ISResizeWidget:render()
 
 end
 
---************************************************************************--
---** ISResizeWidget:new
---**
---************************************************************************--
 function ISResizeWidget:new (x, y, width, height,  resizeTarget, yonly)
 	local o = {}
 	setmetatable(o, self)

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISContextMenu"
 
 DebuggerContextMenu = ISContextMenu:derive("DebuggerContextMenu")

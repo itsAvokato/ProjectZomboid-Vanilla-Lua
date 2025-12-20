@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISVolumeIndicator = ISPanel:derive("ISVolumeIndicator")

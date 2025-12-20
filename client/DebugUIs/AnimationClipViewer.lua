@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require('ISUI/ISScrollingListBox')
 require('Vehicles/ISUI/ISUI3DScene')
 
@@ -12,8 +8,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 local LABEL_HGT = FONT_HGT_MEDIUM + 6
 
 AnimationClipViewer = ISPanel:derive("AnimationClipViewer")
-
------
 
 AnimationClipViewer_ListBox = ISScrollingListBox:derive("AnimationClipViewer_ListBox")
 local ListBox = AnimationClipViewer_ListBox
@@ -51,8 +45,6 @@ function ListBox:new(x, y, width, height)
 	local o = ISScrollingListBox.new(self, x, y, width, height)
 	return o
 end
-
------
 
 AnimationClipViewer_SoundBar = ISPanel:derive("AnimationClipViewer_SoundBar")
 local SoundBar = AnimationClipViewer_SoundBar
@@ -173,8 +165,6 @@ function SoundBar:new(x, y, width, height)
 	return o
 end
 
------
-
 AnimationClipViewer_SoundPanel = ISPanel:derive("AnimationClipViewer_SoundPanel")
 local SoundPanel = AnimationClipViewer_SoundPanel
 
@@ -246,8 +236,6 @@ function SoundPanel:new(x, y, width, height)
 	return o
 end
 
------
-
 AnimationClipViewer_OptionsPanel = ISPanel:derive("AnimationClipViewer_OptionsPanel")
 local OptionsPanel = AnimationClipViewer_OptionsPanel
 
@@ -296,8 +284,6 @@ function OptionsPanel:new(x, y, width, height)
 	o.backgroundColor.a = 0.8
 	return o
 end
-
------
 
 AnimationClipViewer_Scene = ISUI3DScene:derive("AnimationClipViewer_Scene")
 local Scene = AnimationClipViewer_Scene
@@ -355,8 +341,6 @@ function Scene:new(x, y, width, height)
 	local o = ISUI3DScene.new(self, x, y, width, height)
 	return o
 end
-
------
 
 AnimationClipViewer_Timeline = ISPanel:derive("AnimationClipViewer_Timeline")
 local Timeline = AnimationClipViewer_Timeline
@@ -423,8 +407,6 @@ function Timeline:new(x, y, width, height)
 	o.borderColor.a = 0.0
 	return o
 end
-
------
 
 function AnimationClipViewer:createChildren()
 	local gameState = getAnimationViewerState()

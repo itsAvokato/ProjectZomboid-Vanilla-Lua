@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBuildAction = ISBaseTimedAction:derive("ISBuildAction");
@@ -70,7 +66,7 @@ function ISBuildAction:isValid()
     --    self:stop();
     --    return false;
     --end;
-    -----
+
     --if not self.item.noNeedHammer and self.hammer then
 	--	return self.hammer:getCondition() > 0;
 	--end
@@ -102,7 +98,7 @@ function ISBuildAction:update()
             local playingSaw = self.sawSound ~= 0 and self.character:getEmitter():isPlaying(self.sawSound)
             local playingHammer = self.hammerSound ~= 0 and self.character:getEmitter():isPlaying(self.hammerSound)
             if not playingSaw and not playingHammer then
-                if self.doSaw == true and self.character:getInventory():containsTag("Saw") then
+                if self.doSaw == true and self.character:getInventory():containsTag(ItemTag.SAW) then
                     self.sawSound = self.character:getEmitter():playSound("Sawing");
                     worldSoundRadius = 15
                     self.doSaw = false;
@@ -236,13 +232,16 @@ function ISBuildAction:perform()
     end
 
 	if isClient() then
+        if self.item.completionSound ~= nil and self.item.completionSound ~= "" then
+            self.character:playSound(self.item.completionSound)
+        end
 	    ISBaseTimedAction.perform(self);
 		return
 	end
     -- reduce the condition of the hammer if it's a stone hammer
     local hammer = self.character:getPrimaryHandItem()
-    if hammer and ( hammer:getType() == "HammerStone" or hammer:hasTag("Crude") ) and hammer:damageCheck(0,1,false) then
---     if hammer and ( hammer:getType() == "HammerStone" or hammer:hasTag("Crude") ) and ZombRand(hammer:getConditionLowerChance()) == 0 then
+    if hammer and ( hammer:getType() == "HammerStone" or hammer:hasTag(ItemTag.CRUDE) ) and hammer:damageCheck(0,1,false) then
+--     if hammer and ( hammer:getType() == "HammerStone" or hammer:hasTag(ItemTag.CRUDE) ) and ZombRand(hammer:getConditionLowerChance()) == 0 then
 --         hammer:setCondition(hammer:getCondition() - 1)
         ISWorldObjectContextMenu.checkWeapon(self.character);
     end
@@ -288,7 +287,7 @@ function ISBuildAction:new(character, item, x, y, z, north, spriteName, time)
 	o.north = north;
 	o.spriteName = spriteName;
 	o.maxTime = time;
-	if character:HasTrait("Handy") then
+	if character:hasTrait(CharacterTrait.HANDY) then
 		o.maxTime = time - 50;
     end
     o.square = getCell():getGridSquare(x,y,z);

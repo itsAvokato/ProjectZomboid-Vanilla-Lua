@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/InventoryWindow/ISLootWindowControlHandler"
 
 ISLootWindowObjectControlHandler_TakeSameType = ISLootWindowObjectControlHandler:derive("ISLootWindowObjectControlHandler_TakeSameType")
@@ -16,7 +12,8 @@ function Handler:shouldBeVisible()
 end
 
 function Handler:getControl()
-    self.control = self:getButtonControl(getText("IGUI_invpage_Loot_TakeSameType"))
+    self.control = self:getImageButtonControl("media/ui/inventoryPanes/TakeSameTypeOneContainer.png")
+    self.control:setTooltip(getText("IGUI_invpage_Loot_TakeSameType_tt"))
     self.control:setOnMouseOverFunction(self.onMouseOverButton)
     self.control:setOnMouseOutFunction(self.onMouseOutButton)
     return self.control
@@ -39,6 +36,14 @@ function Handler:getItemsTable(container)
         local type = item:getFullType()
         result[type] = result[type] or {}
         table.insert(result[type], item)
+        if item:getClothingItemExtra() ~= nil then
+            local typeList = item:getClothingItemExtra()
+            for j=1,typeList:size() do
+                type = moduleDotType(item:getModule(), item:getClothingItemExtra():get(j-1))
+                result[type] = result[type] or {}
+                table.insert(result[type], item)
+            end
+        end
     end
     return result
 end
@@ -53,7 +58,7 @@ function Handler:getItemsToTransfer()
     for type,items in pairs(itemMapLoot) do
         if itemMapSelf[type] then
             for _,item in ipairs(itemMapSelf[type]) do
-                if not item:isFavorite() and not item:isEquipped() then
+                if not item:isFavorite() and not item:isUnwanted(self.playerObj) then
                     table.insert(itemsToTransferList, item)
                     itemsToTransferMap[item] = true
                 end

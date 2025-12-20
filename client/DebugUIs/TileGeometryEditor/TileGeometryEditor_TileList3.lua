@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 TileGeometryEditor_TileList3 = ISPanel:derive("TileGeometryEditor_TileList3")

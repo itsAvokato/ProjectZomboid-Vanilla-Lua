@@ -59,7 +59,6 @@ end
 
 function doLastStandInit()
     if getCore():getGameMode() == "LastStand" then
-        print("initialising last stand");
         loadLastStandPlayerVisuals(getSpecificPlayer(0))
         getGameTime():setTimeOfDay(globalChallenge.hourOfDay);
         getGameTime():setMinutesPerDay(60 * 24);
@@ -100,7 +99,7 @@ function saveLastStandPlayerInFile(player)
 	fileOutput:writeln("{");
 	fileOutput:writeln("  Forename=" .. player:getDescriptor():getForename());
 	fileOutput:writeln("  Surname=" .. player:getDescriptor():getSurname());
-	fileOutput:writeln("  Profession=" .. player:getDescriptor():getProfession());
+	fileOutput:writeln("  Profession=" .. player:getDescriptor():getCharacterProfession():getName());
 	fileOutput:writeln("  Visual=" .. player:getHumanVisual():getLastStandString());
 	fileOutput:writeln("  Level=" .. player:getModData()["challenge2Level"]);
 	fileOutput:writeln("  GlobalXp=" .. player:getModData()["challenge2Xp"]);
@@ -124,9 +123,9 @@ function saveLastStandPlayerInFile(player)
 	fileOutput:writeln("}");
 	fileOutput:writeln("Traits");
 	fileOutput:writeln("{");
-	for i=0,player:getTraits():size() -1 do
-		local trait = player:getTraits():get(i);
-		fileOutput:writeln("  addTrait="..trait);
+	for i=0,player:getCharacterTraits():getKnownTraits():size() -1 do
+		local trait = player:getCharacterTraits():getKnownTraits():get(i);
+		fileOutput:writeln("  addTrait="..trait:getName());
 	end
 	fileOutput:writeln("}");
 	fileOutput:writeln("Skills");
@@ -146,7 +145,6 @@ end
 
 function doLastStandCreatePlayer(playerNum, playerObj)
     if getCore():getGameMode() == "LastStand" then
-        print("Creating player for last stand");
         if id == 0 then
             loadLastStandPlayerVisuals(playerObj)
         end

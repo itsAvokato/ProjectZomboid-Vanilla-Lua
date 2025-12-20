@@ -1,40 +1,7 @@
--------------------------------------------------
--------------------------------------------------
---
--- SpawnItems
---
--- eris
---
--------------------------------------------------
--------------------------------------------------
 local SpawnItems = {};
 
 -- this is an explicit % chance, ie 1% at default, no funny business or complexity beyond that
 SpawnItems.SpecialKeyRingChance = 1
-
-local function addTestSpawnPistol(playerObj)
-    -- attaching the pistol to the holster doesn't work properly when the player spawns so it's commented out
--- 	local holster = playerObj:getInventory():AddItem("Base.HolsterSimple")
--- 	playerObj:setWornItem(holster:getBodyLocation(), holster)
-    local pistol = playerObj:getInventory():AddItem("Base.Pistol")
-    pistol:setRoundChambered(true)
-    pistol:setContainsClip(true)
-    pistol:setCurrentAmmoCount(pistol:getMaxAmmo())
-
--- the pistol isn't attached to the holster because it doesn't work properly when the player spawns
---     playerObj:setAttachedItem("Holster Right", pistol);
---     pistol:setAttachedSlot(4);
---     pistol:setAttachedSlotType("Holster Right");
---     pistol:setAttachedToModel("Holster Right");
-
-    for i = 0, 4 do
-        local clip = playerObj:getInventory():AddItem("Base.9mmClip")
-        clip:setCurrentAmmoCount(clip:getMaxAmmo())
-    end
-
-    playerObj:getInventory():AddItem("Base.Bullets9mmBox")
-
-end
 
 local function addTestFishingStuff(playerObj)
     if "Darkwallow Lake, KY" == getCore():getSelectedMap() then
@@ -178,10 +145,6 @@ function SpawnItems.OnNewGame(playerObj, square)
 		return
 	end
 
-	-- spawn with a belt
-	local belt = playerObj:getInventory():AddItem("Base.Belt2");
-	playerObj:setWornItem(belt:getBodyLocation(), belt);
-
 	-- add StarterKit if configured
 	if SandboxVars.StarterKit then
 		local bag = playerObj:getInventory():AddItem("Base.Bag_Schoolbag");
@@ -236,7 +199,7 @@ function SpawnItems.OnNewGame(playerObj, square)
 	end;
 
 	-- apply the character name if they have a DogTag
-	local dogTag = playerObj:getInventory():getFirstTagRecurse("DogTag") or playerObj:getInventory():getFirstTypeRecurse("Necklace_DogTag");
+	local dogTag = playerObj:getInventory():getFirstTagRecurse(ItemTag.DOG_TAG) or playerObj:getInventory():getFirstTypeRecurse("Necklace_DogTag");
 	if dogTag then
 	    dogTag:nameAfterDescriptor(playerObj:getDescriptor())
 	end
@@ -249,120 +212,102 @@ function SpawnItems.OnNewGame(playerObj, square)
 	if card then
 	    card:nameAfterDescriptor(playerObj:getDescriptor())
 	end
-    if playerObj:HasTrait("SpeedDemon") and ZombRand(100) < SpawnItems.SpecialKeyRingChance then
+    if playerObj:hasTrait(CharacterTrait.SPEED_DEMON) and ZombRand(100) < SpawnItems.SpecialKeyRingChance then
 	   local ticket = playerObj:getInventory():AddItem("Base.SpeedingTicket")
 	    ticket:nameAfterDescriptor(playerObj:getDescriptor())
     end
-    if playerObj:getDescriptor():getProfession() then
-        local prof = playerObj:getDescriptor():getProfession()
+    if playerObj:getDescriptor():getCharacterProfession() then
+        local survivorDescription = playerObj:getDescriptor()
 	    -- add a badge if a character has a suitable profession
-        if prof == "parkranger" or prof == "policeofficer" or prof == "fireofficer" then
+        if survivorDescription:isCharacterProfession(CharacterProfession.PARK_RANGER) or survivorDescription:isCharacterProfession(CharacterProfession.POLICE_OFFICER) or survivorDescription:isCharacterProfession(CharacterProfession.FIRE_OFFICER) then
 	        local badge = playerObj:getInventory():AddItem("Base.Badge")
 	        badge:nameAfterDescriptor(playerObj:getDescriptor())
         end
 	    -- add a pager if a character is a doctor
-        if prof == "doctor" then
+        if survivorDescription:isCharacterProfession(CharacterProfession.DOCTOR) then
 	        playerObj:getInventory():AddItem("Base.Pager");
         end
     end
     local keyRings = {  }
-    -- 1% chance of having a special keyRing
     if ZombRand(100) < SpawnItems.SpecialKeyRingChance then
         SpawnItems.GenerateSpecialKeyRing(playerObj, keyRings)
     end
-    if #keyRings < 1 then table.insert(keyRings, "Base.KeyRing") end
+    if #keyRings < 1 then table.insert(keyRings, ItemKey.Container.KEY_RING) end
     local keyRing = keyRings[ZombRand(#keyRings)+1]
-	-- key ring handling is now here and not in java
 	playerObj:createKeyRing(keyRing)
 
- 	addTestSpawnPistol(playerObj)
 	addTestFishingStuff(playerObj)
     addRanchStuff(playerObj)
     addBunkerStuff(playerObj)
 end
 
 SpawnItems.TraitKeyRings = {
-    AdrenalineJunkie = { "Base.KeyRing_EightBall", "Base.KeyRing_Panther", },
-    Axeman = { "KeyRing_PineTree", },
-    Brave = { "Base.KeyRing_Panther", },
-    Brawler = { "Base.KeyRing_EightBall", "Base.KeyRing_Panther", },
-    Burglar = { "Base.KeyRing_EightBall", "Base.KeyRing_Panther", },
-    Cook = { "Base.KeyRing_HotDog", },
-    Cook2 = { "Base.KeyRing_HotDog", },
-    Desensitized = { "Base.KeyRing_Panther", },
-    Dextrous = { "Base.KeyRing_Kitty", },
-    Fishing = { "Base.KeyRing_Bass", },
-    FormerScout = { "KeyRing_PineTree", },
-    Gardener = { "Base.KeyRing_Bug", },
-    Graceful = { "Base.KeyRing_Kitty", },
-    HeartyAppetite = { "Base.KeyRing_HotDog", },
-    FormerScout = { "KeyRing_PineTree", },
-    Herbalist = { "KeyRing_PineTree", },
-    Hiker = { "KeyRing_PineTree", },
-    Hunter = { "KeyRing_PineTree", },
-    IronGut = { "Base.KeyRing_HotDog", },
-    Lucky = { "Base.KeyRing_Clover", "Base.KeyRing_RabbitFoot", },
-    Mechanics = { "Base.KeyRing_EagleFlag", "Base.KeyRing_EightBall", "Base.KeyRing_Panther", "Base.KeyRing_Sexy", },
-    Nightvision = { "Base.KeyRing_Kitty", },
-    Outdoorsman = { "KeyRing_PineTree", },
-    Smoker = { "Base.KeyRing_EightBall", "Base.KeyRing_Panther","Base.KeyRing_Sexy", },
-    SpeedDemon = { "Base.KeyRing_EagleFlag", "Base.KeyRing_EightBall", "Base.KeyRing_Panther", "Base.KeyRing_Sexy", },
-    ThickSkinned = { "Base.KeyRing_Panther", },
-    Unlucky = { "Base.KeyRing_EightBall", },
-    WeakStomach = { "Base.KeyRing_StinkyFace", },
-    WildernessKnowledge = { "KeyRing_PineTree", },
+    [CharacterTrait.ADRENALINE_JUNKIE] = { ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.AXEMAN] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.BRAVE] = { ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.BRAWLER] = { ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.BURGLAR] = { ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.COOK] = { ItemKey.Container.KEY_RING_HOTDOG, },
+    [CharacterTrait.COOK2] = { ItemKey.Container.KEY_RING_HOTDOG, },
+    [CharacterTrait.DESENSITIZED] = { ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.DEXTROUS] = { ItemKey.Container.KEY_RING_KITTY, },
+    [CharacterTrait.FISHING] = { ItemKey.Container.KEY_RING_BASS, },
+    [CharacterTrait.GARDENER] = { ItemKey.Container.KEY_RING_BUG, },
+    [CharacterTrait.GRACEFUL] = { ItemKey.Container.KEY_RING_KITTY, },
+    [CharacterTrait.HEARTY_APPETITE] = { ItemKey.Container.KEY_RING_HOTDOG, },
+    [CharacterTrait.HERBALIST] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.HIKER] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.HUNTER] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.IRON_GUT] = { ItemKey.Container.KEY_RING_HOTDOG, },
+    [CharacterTrait.MECHANICS] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, ItemKey.Container.KEY_RING_SEXY, },
+    [CharacterTrait.NIGHT_VISION] = { ItemKey.Container.KEY_RING_KITTY, },
+    [CharacterTrait.OUTDOORSMAN] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.SCOUT] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterTrait.SMOKER] = { ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER,ItemKey.Container.KEY_RING_SEXY, },
+    [CharacterTrait.SPEED_DEMON] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, ItemKey.Container.KEY_RING_SEXY, },
+    [CharacterTrait.THICK_SKINNED] = { ItemKey.Container.KEY_RING_PANTHER, },
+    [CharacterTrait.WEAK_STOMACH] = { ItemKey.Container.KEY_RING_STINKY_FACE, },
+    [CharacterTrait.WILDERNESS_KNOWLEDGE] = { ItemKey.Container.KEY_RING_PINE_TREE, },
 }
 
 -- note that a lot of professions would already have their key rings applied above via the traits that the profession gives
 SpawnItems.ProfessionKeyRings = {
-    burgerflipper = { "Base.KeyRing_Spiffoes", },
-    carpenter = { "Base.KeyRing_EagleFlag", "Base.KeyRing_PineTree", },
-    constructionworker = { "Base.KeyRing_EagleFlag",  },
-    electrician = { "Base.KeyRing_EagleFlag",  },
-    engineer = { "Base.KeyRing_EagleFlag",  },
-    farmer = { "Base.KeyRing_EagleFlag",  },
-    fireofficer = { "Base.KeyRing_EagleFlag",  },
-    fisherman = { "Base.KeyRing_Bass", },
-    mechanics = { "Base.KeyRing_EagleFlag", "Base.KeyRing_Panther",  },
-    metalworker = { "Base.KeyRing_EagleFlag", "Base.KeyRing_Panther",  },
-    nurse = { "Base.KeyRing_Kitty", "Base.KeyRing_RainbowStar",  },
-    parkranger = { "Base.KeyRing_PineTree", },
-    policeofficer = { "Base.KeyRing_EagleFlag",  },
-    repairman = { "Base.KeyRing_EagleFlag", "Base.KeyRing_EightBall", "Base.KeyRing_Panther", "Base.KeyRing_Sexy",  },
-    veteran = { "Base.KeyRing_EagleFlag",  },
+    [CharacterProfession.BURGER_FLIPPER] = { ItemKey.Container.KEY_RING_SPIFFOS, },
+    [CharacterProfession.CARPENTER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterProfession.CONSTRUCTION_WORKER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.ELECTRICIAN] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.ENGINEER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.FARMER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.FIRE_OFFICER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.FISHERMAN] = { ItemKey.Container.KEY_RING_BASS, },
+    [CharacterProfession.MECHANICS] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_PANTHER,  },
+    [CharacterProfession.METALWORKER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_PANTHER,  },
+    [CharacterProfession.NURSE] = { ItemKey.Container.KEY_RING_KITTY, ItemKey.Container.KEY_RING_RAINBOW_STAR,  },
+    [CharacterProfession.PARK_RANGER] = { ItemKey.Container.KEY_RING_PINE_TREE, },
+    [CharacterProfession.POLICE_OFFICER] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
+    [CharacterProfession.REPAIRMAN] = { ItemKey.Container.KEY_RING_EAGLE_FLAG, ItemKey.Container.KEY_RING_EIGHT_BALL, ItemKey.Container.KEY_RING_PANTHER, ItemKey.Container.KEY_RING_SEXY,  },
+    [CharacterProfession.VETERAN] = { ItemKey.Container.KEY_RING_EAGLE_FLAG,  },
 }
 
--- TODO: move all the trait/profession definition stuff to some table because modding etc; will probably do in MainCreationMethod however.
 function SpawnItems.GenerateSpecialKeyRing(playerObj, keyRings)
-
-    for i=0, playerObj:getTraits():size() - 1 do
-        local trait = TraitFactory.getTrait(playerObj:getTraits():get(i));
+    for i=0, playerObj:getCharacterTraits():getKnownTraits():size() - 1 do
+        local trait = CharacterTraitDefinition.getCharacterTraitDefinition(playerObj:getCharacterTraits():getKnownTraits():get(i));
         if trait and trait:getType() then
-            local traitType = trait:getType()
-            if SpawnItems.TraitKeyRings[traitType] then
-                local entry = SpawnItems.TraitKeyRings[traitType]
-                for j=0, #entry - 1 do
-                    if entry[j] then
-                        table.insert(keyRings, entry[j])
-                    end
+            if SpawnItems.TraitKeyRings[trait:getType()] then
+                for i,entry in ipairs(SpawnItems.TraitKeyRings[trait:getType()]) do
+                    table.insert(keyRings, entry)
                 end
             end
         end
     end
 
-    if not playerObj:getDescriptor():getProfession() then return end
+    if not playerObj:getDescriptor():getCharacterProfession() then return end
 
-    -- note that a lot of professions would already have their key rings applied above via the traits that the profession gives
-    local profession = playerObj:getDescriptor():getProfession()
-    if SpawnItems.ProfessionKeyRings[profession] then
-        local entry = SpawnItems.ProfessionKeyRings[profession]
-        for j=0, #entry - 1 do
-            if entry[j] then
-                table.insert(keyRings, entry[j])
-            end
+    if SpawnItems.ProfessionKeyRings[playerObj:getDescriptor():getCharacterProfession()] then
+        for i,entry in ipairs(SpawnItems.ProfessionKeyRings[playerObj:getDescriptor():getCharacterProfession()]) do
+            table.insert(keyRings, entry)
         end
     end
-
     return keyRings
 end
 
@@ -381,9 +326,5 @@ function SpawnItems.OnGameStart()
 	end;
 end
 
--------------------------------------------------
--------------------------------------------------
 Events.OnNewGame.Add(SpawnItems.OnNewGame);
 Events.OnGameStart.Add(SpawnItems.onNewGame);
--------------------------------------------------
--------------------------------------------------

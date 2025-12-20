@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISUIHandler = {};
 ISUIHandler.allUIVisible = true;
 ISUIHandler.visibleUI = {};

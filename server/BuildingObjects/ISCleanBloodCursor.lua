@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISCleanBloodCursor = ISBuildingObject:derive("ISCleanBloodCursor")
 
 function ISCleanBloodCursor:create(x, y, z, north, sprite)

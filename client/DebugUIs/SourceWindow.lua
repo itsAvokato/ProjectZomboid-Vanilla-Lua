@@ -58,11 +58,13 @@ function SourceWindow:fill()
 end
 function SourceWindow:createChildren()
     local buttonHgt = math.max(24, FONT_HGT_SMALL + 3 * 2)
+    local entryHgt = FONT_HGT_CODE + 3 * 2
+    local bottomHgt = math.max(buttonHgt, entryHgt)
 
     --print("instance");
     ISCollapsableWindow.createChildren(self);
 
-    self.sourceView = ISScrollingListBox:new(0, self:titleBarHeight(), self.width, self.height - self:resizeWidgetHeight() - buttonHgt - self:titleBarHeight());
+    self.sourceView = ISScrollingListBox:new(0, self:titleBarHeight(), self.width, self.height - self:resizeWidgetHeight() - bottomHgt - self:titleBarHeight());
     self.sourceView:setFont(getTextManager():getCurrentCodeFont(), 0)
     self.sourceView.filename = self.filename;
     self.sourceView.anchorRight = true;
@@ -75,12 +77,34 @@ function SourceWindow:createChildren()
     self.sourceView.onMouseWheel = SourceWindow.onSourceMouseWheel;
     self:addChild(self.sourceView);
 
-    self.reloadBtn = ISButton:new(0, self:getHeight() - self:resizeWidgetHeight() - buttonHgt, self:getWidth(), buttonHgt, "reload file", self, SourceWindow.reloadFile);
-    self.reloadBtn.anchorTop = false;
+    self.bottomPanel = ISPanel:new(1, self:getHeight() - self:resizeWidgetHeight() - bottomHgt, self.width - 2, bottomHgt)
+    self.bottomPanel:noBackground()
+    self.bottomPanel.anchorRight = true
+    self.bottomPanel.anchorTop = false
+    self.bottomPanel.anchorBottom = true
+    self:addChild(self.bottomPanel)
+
+    local entryFont = getTextManager():getCurrentCodeFont()
+    local clearButtonSize = FONT_HGT_CODE
+    local entryWid = getTextManager():MeasureStringX(entryFont, "123456") + clearButtonSize + 3 * 2
+    self.lineNumberEntry = ISTextEntryBox:new("", 0, 0, entryWid, bottomHgt);
+    self.lineNumberEntry.font = entryFont
+    self.lineNumberEntry:initialise();
+    self.lineNumberEntry:instantiate();
+    self.lineNumberEntry:setOnlyNumbers(true);
+    self.lineNumberEntry.onCommandEntered = function(_entry)
+        self:onLineNumberEntered()
+    end
+    self.lineNumberEntry:setPlaceholderText("line#");
+    self.lineNumberEntry.javaObject:setCentreVertically(true);
+    self.lineNumberEntry:setClearButton(true);
+    self.bottomPanel:addChild(self.lineNumberEntry);
+
+    local buttonX = self.lineNumberEntry:getRight() + 10
+    self.reloadBtn = ISButton:new(buttonX, 0, self.bottomPanel.width - buttonX, bottomHgt, "RELOAD", self, SourceWindow.reloadFile);
     self.reloadBtn.anchorRight = true;
-    self.reloadBtn.anchorBottom = true;
     self.reloadBtn:initialise();
-    self:addChild(self.reloadBtn);
+    self.bottomPanel:addChild(self.reloadBtn);
 
     self.resizeWidget2:bringToTop()
     self.resizeWidget:bringToTop()
@@ -146,7 +170,7 @@ end
 
 function SourceWindow:scrollToLine(line)
     local p = (line - 1) * self.sourceView.itemheight;
-    p = p - (self:getHeight() / 2);
+    p = p - (self.sourceView:getHeight() / 2);
     self.sourceView:setScrollHeight(self.sourceView.count * self.sourceView.itemheight);
     self.sourceView:setYScroll(-p);
     self.sourceView.selected = line;
@@ -159,6 +183,33 @@ function SourceWindow:checkFontSize()
     FONT_HGT_CODE = fontHeight
     self.sourceView:setFont(font, 0)
     self:setListBoxItemHeight(self.sourceView)
+    local buttonHgt = math.max(24, FONT_HGT_SMALL + 3 * 2)
+    local entryHgt = FONT_HGT_CODE + 3 * 2
+    local clearButtonSize = FONT_HGT_CODE
+    local entryWid = getTextManager():MeasureStringX(font, "123456") + clearButtonSize + 3 * 2
+    local bottomHgt = math.max(buttonHgt, entryHgt)
+    self.bottomPanel:setHeight(bottomHgt)
+    self.bottomPanel:setY(self:getHeight() - self:resizeWidgetHeight() - bottomHgt)
+    self.lineNumberEntry:setFont(font)
+    self.lineNumberEntry:setWidth(entryWid)
+    self.lineNumberEntry:setHeight(bottomHgt)
+    self.reloadBtn:setHeight(bottomHgt)
+    local buttonX = self.lineNumberEntry:getRight() + 10
+    self.reloadBtn:setWidth(self.bottomPanel.width - 1 - buttonX)
+    self.reloadBtn:setX(buttonX)
+    self.sourceView:setHeight(self.height - self:resizeWidgetHeight() - bottomHgt - self:titleBarHeight())
+end
+
+function SourceWindow:onLineNumberEntered()
+    local lineNumber = tonumber(self.lineNumberEntry:getInternalText())
+    if not lineNumber then
+        lineNumber = self.sourceView.selected
+    end
+    if lineNumber then
+        lineNumber = math.min(lineNumber, self.sourceView:size())
+        self:scrollToLine(lineNumber)
+    end
+    self.lineNumberEntry:unfocus()
 end
 
 function SourceWindow:setListBoxItemHeight(listBox)

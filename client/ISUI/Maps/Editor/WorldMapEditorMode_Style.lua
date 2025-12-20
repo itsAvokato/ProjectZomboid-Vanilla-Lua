@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require 'ISUI/Maps/Editor/WorldMapEditorMode'
 require 'ISUI/Maps/Editor/WorldMapEditorListBox'
 
@@ -11,8 +7,6 @@ local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 WorldMapEditorMode_Style = WorldMapEditorMode:derive("WorldMapEditorMode_Style")
-
------
 
 -- Base class for a panel displayed when a WorldMapStyleLayer is selected.
 WorldMapStyleEditor = ISPanel:derive("WorldMapStyleEditor")
@@ -57,8 +51,6 @@ function WorldMapStyleEditor:new(editorMode)
 	o.styleAPI = editorMode.styleAPI
 	return o
 end
-
------
 
 -- Base class for one panel in an ISTabPanel to edit a WorldMapStyleLayer
 WorldMapStyleEditor_TabPanel = ISPanel:derive("WorldMapStyleEditor_TabPanel")
@@ -117,8 +109,6 @@ function WorldMapStyleEditor_TabPanel:new(width, editorMode)
 	return o
 end
 
------
-
 -- Panel that displays WorldMapBaseStyleLayer filter
 WorldMapStyleEditor_FilterPanel = WorldMapStyleEditor_TabPanel:derive("WorldMapStyleEditor_FilterPanel")
 
@@ -157,8 +147,6 @@ function WorldMapStyleEditor_FilterPanel:new(width, editorMode)
 	local o = WorldMapStyleEditor_TabPanel.new(self, width, editorMode)
 	return o
 end
-
------
 
 -- Panel that displays a list of ColorStop
 WorldMapStyleEditor_ColorStopsPanel = WorldMapStyleEditor_TabPanel:derive("WorldMapStyleEditor_ColorStopsPanel")
@@ -367,8 +355,6 @@ function WorldMapStyleEditor_ColorStopsPanel:new(width, editorMode)
 	return o
 end
 
------
-
 -- Panel that displays a list of TextureStop
 WorldMapStyleEditor_TextureStopsPanel = WorldMapStyleEditor_TabPanel:derive("WorldMapStyleEditor_TextureStopsPanel")
 
@@ -518,8 +504,6 @@ function WorldMapStyleEditor_TextureStopsPanel:new(width, editorMode)
 	local o = WorldMapStyleEditor_TabPanel.new(self, width, editorMode)
 	return o
 end
-
------
 
 -- Panel that displays a list of TextureStop and other controls for WorldMapTextureStyle
 WorldMapStyleEditor_TexturePanel = WorldMapStyleEditor_TextureStopsPanel:derive("WorldMapStyleEditor_TexturePanel")
@@ -734,8 +718,6 @@ function WorldMapStyleEditor_TexturePanel:new(width, editorMode)
 	return o
 end
 
------
-
 -- A panel displayed when a WorldMapPolygonStyleLayer is selected.
 WorldMapStyleEditor_PolygonLayerPanel = WorldMapStyleEditor:derive("WorldMapStyleEditor_PolygonLayerPanel")
 
@@ -807,8 +789,6 @@ function WorldMapStyleEditor_PolygonLayerPanel:new(editorMode)
 	return o
 end
 
------
-
 -- Panel for editing WorldMapPyramidStyleLayer properties
 WorldMapStyleEditor_PyramidPanel = WorldMapStyleEditor_TabPanel:derive("WorldMapStyleEditor_PyramidPanel")
 
@@ -835,8 +815,6 @@ function WorldMapStyleEditor_PyramidPanel:new(width, editorMode)
 	local o = WorldMapStyleEditor_TabPanel.new(self, width, editorMode)
 	return o
 end
-
------
 
 -- A panel displayed when a WorldMapPyramidStyleLayer is selected.
 WorldMapStyleEditor_PyramidLayerPanel = WorldMapStyleEditor:derive("WorldMapStyleEditor_PyramidLayerPanel")
@@ -903,8 +881,6 @@ function WorldMapStyleEditor_PyramidLayerPanel:new(editorMode)
 	return o
 end
 
------
-
 -- Panel for editing WorldMapTextStyleLayer properties
 WorldMapStyleEditor_TextPanel = WorldMapStyleEditor_TabPanel:derive("WorldMapStyleEditor_TextPanel")
 
@@ -938,8 +914,6 @@ function WorldMapStyleEditor_TextPanel:new(width, editorMode)
 	local o = WorldMapStyleEditor_TabPanel.new(self, width, editorMode)
 	return o
 end
-
------
 
 -- A panel displayed when a WorldMapTextStyleLayer is selected.
 WorldMapStyleEditor_TextLayerPanel = WorldMapStyleEditor:derive("WorldMapStyleEditor_TextLayerPanel")
@@ -1005,8 +979,6 @@ function WorldMapStyleEditor_TextLayerPanel:new(editorMode)
 	local o = WorldMapStyleEditor.new(self, editorMode)
 	return o
 end
-
------
 
 -- A panel displayed when a WorldMapTextureStyleLayer is selected.
 WorldMapStyleEditor_TextureLayerPanel = WorldMapStyleEditor:derive("WorldMapStyleEditor_TextureLayerPanel")
@@ -1077,8 +1049,6 @@ function WorldMapStyleEditor_TextureLayerPanel:new(editorMode)
 	local o = WorldMapStyleEditor.new(self, editorMode)
 	return o
 end
-
------
 
 function WorldMapEditorMode_Style:createChildren()
 	self.listbox = WorldMapEditorListBox:new(UI_BORDER_SPACING, UI_BORDER_SPACING*2+BUTTON_HGT, 400, 200, self.onListboxEvent, self)

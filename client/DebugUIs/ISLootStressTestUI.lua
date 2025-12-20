@@ -1,10 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
 require "ISUI/ISPanelJoypad"
 
 ISLootStreetTestUI = ISCollapsableWindow:derive("ISLootStreetTestUI");
@@ -24,11 +17,6 @@ local TICK_BOX_LABEL_WIDTH = UI_BORDER_SPACING*3 + 1 + BUTTON_HGT + math.max(
 		getTextManager():MeasureStringX(UIFont.Small, getText("Sandbox_LootLiterature")),
 		getTextManager():MeasureStringX(UIFont.Small, getText("Sandbox_LootMedical"))
 )
-
---************************************************************************--
---** ISLootStreetTestUI:initialise
---**
---************************************************************************--
 
 function ISLootStreetTestUI:createChildren()
 	local y = self:titleBarHeight() + UI_BORDER_SPACING+1
@@ -349,10 +337,6 @@ function ISLootStreetTestUI:render()
 	self:drawText(txt, TICK_BOX_LABEL_WIDTH, self.town.y + self.town.height + 10, 1,1,1,1, UIFont.Small);
 end
 
---************************************************************************--
---** ISLootStreetTestUI:new
---**
---************************************************************************--
 function ISLootStreetTestUI:new(x, y, character)
 	local o = {}
 	local width = 1000;

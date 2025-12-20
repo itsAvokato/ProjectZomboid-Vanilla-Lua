@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISDoubleTileFurniture = ISBuildingObject:derive("ISDoubleTileFurniture");
 
---************************************************************************--
---** ISDoubleTileFurniture:new
---**
---************************************************************************--
 function ISDoubleTileFurniture:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISDoubleTileFurniture\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -180,4 +172,3 @@ function ISDoubleTileFurniture:getSquare2(square, north)
 	local x, y, z = self:getSquare2Pos(square, north)
 	return getCell():getGridSquare(x, y, z)
 end
-

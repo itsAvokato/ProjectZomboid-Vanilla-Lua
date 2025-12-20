@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 local group = AttachedLocations.getGroup("Animal")
 group:getOrCreateLocation("head_hat"):setAttachmentName("head_hat")
 group:getOrCreateLocation("bowtie"):setAttachmentName("bowtie")

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -144,7 +139,8 @@ function ISFluidItemsViewPanel:populate()
 
         local found = true;
         if needle then
-            found = string.find( string.lower(itemScript:getTypeString()), string.lower(self.searchText) ) and true or false;
+            found = string.find( string.lower(itemScript:getItemType():toString()), string.lower(self.searchText) ) and true or false;
+
             if not found then
                 found = string.find( string.lower(itemScript:getDisplayName()), string.lower(self.searchText) ) and true or false;
             end

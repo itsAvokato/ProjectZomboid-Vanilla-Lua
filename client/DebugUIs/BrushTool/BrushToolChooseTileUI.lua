@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 BrushToolTilePickerList = ISPanel:derive("BrushToolTilePickerList")
 
 function BrushToolTilePickerList:render()
@@ -63,7 +58,6 @@ function BrushToolTilePickerList:new(x, y, w, h, character)
     return o
 end
 
----------------------------------------
 local TileCategories = {}
 TileCategories["advertising_01"] = "[OTHER] "
 TileCategories["advertising_02"] = "[OTHER] "
@@ -332,8 +326,6 @@ TileCategories["walls_special_01"] = "[DECOR] "
 TileCategories["weapons_01"] = "[DECOR] "
 TileCategories["z_templates_wallcutaways"] = "[WALL] "
 
-
----------------------------------------
 
 BrushToolChooseTileUI = ISCollapsableWindow:derive("BrushToolChooseTileUI");
 BrushToolChooseTileUI.instance = nil

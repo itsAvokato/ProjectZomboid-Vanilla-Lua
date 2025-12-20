@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISClimbOverFence = ISBaseTimedAction:derive("ISClimbOverFence")
@@ -49,7 +45,7 @@ function ISClimbOverFence:getFacingDirection()
 		return self.direction
 	end
 	local square = self.item:getSquare()
-	local north = square:Is(IsoFlagType.HoppableN)
+	local north = square:has(IsoFlagType.HoppableN)
 	if north then
 		if self.character:getY() < square:getY() then
 			return IsoDirections.S

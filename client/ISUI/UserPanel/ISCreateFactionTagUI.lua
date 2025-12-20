@@ -1,9 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISCreateFactionTagUI = ISPanel:derive("ISCreateFactionTagUI");
 ISCreateFactionTagUI.messages = {};
 
@@ -11,11 +5,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISCreateFactionTagUI:initialise
---**
---************************************************************************--
 
 function ISCreateFactionTagUI:initialise()
     ISPanel.initialise(self);
@@ -97,10 +86,6 @@ function ISCreateFactionTagUI:onClick(button)
     end
 end
 
---************************************************************************--
---** ISCreateFactionTagUI:new
---**
---************************************************************************--
 function ISCreateFactionTagUI:new(x, y, width, height, player, faction)
     local o = {}
     o = ISPanel:new(x, y, width, height);

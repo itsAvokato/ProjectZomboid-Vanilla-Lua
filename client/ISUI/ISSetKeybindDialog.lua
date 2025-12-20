@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISSetKeybindDialog = ISPanel:derive("ISSetKeybindDialog")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

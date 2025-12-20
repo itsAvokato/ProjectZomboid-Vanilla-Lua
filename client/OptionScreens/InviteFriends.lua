@@ -1,7 +1,3 @@
---***********************************************************
---**                    Gennadii Potapov                   **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 
 InviteFriends = ISPanelJoypad:derive("InviteFriends")

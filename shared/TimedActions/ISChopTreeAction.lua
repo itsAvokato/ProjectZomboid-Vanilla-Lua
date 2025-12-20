@@ -4,9 +4,10 @@ ISChopTreeAction = ISBaseTimedAction:derive("ISChopTreeAction")
 
 function ISChopTreeAction:isValid()
 	return self.tree ~= nil and self.tree:getObjectIndex() >= 0 and
-	        self.character:isEnduranceSufficientForAction() and
-			self.character:getPrimaryHandItem() ~= nil and
-            self.character:getPrimaryHandItem():getScriptItem():containsWeaponCategory("Axe")
+        self.character:isEnduranceSufficientForAction() and
+        self.character:getPrimaryHandItem() ~= nil and
+        self.character:getPrimaryHandItem():hasTag(ItemTag.CHOP_TREE) and
+        not self.character:getPrimaryHandItem():isBroken()
 end
 
 function ISChopTreeAction:waitToStart()
@@ -66,7 +67,7 @@ function ISChopTreeAction:animEvent(event, parameter)
 		if event == 'ChopTree' and self.axe then
 			self.tree:WeaponHit(self.character, self.axe)
 			local modifier = 1
-			if ("lumberjack" == self.character:getDescriptor():getProfession()) then modifier = 0.5 end
+			if (self.character:getDescriptor():isCharacterProfession(CharacterProfession.LUMBERJACK)) then modifier = 0.5 end
             self.character:addCombatMuscleStrain(self.axe, 1, modifier)
 
 			self:useEndurance()
@@ -100,7 +101,7 @@ function ISChopTreeAction:useEndurance()
 		if self.axe:isTwoHandWeapon() and self.character:getSecondaryHandItem() ~= self.axe then
 			use = use + self.axe:getWeight() / 1.5 / 10 / 20
 		end
-		self.character:getStats():setEndurance(self.character:getStats():getEndurance() - use)
+		self.character:getStats():remove(CharacterStat.ENDURANCE, use)
 	end
 end
 

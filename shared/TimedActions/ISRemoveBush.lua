@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveBush = ISBaseTimedAction:derive("ISRemoveBush")
@@ -37,8 +33,6 @@ function ISRemoveBush:update()
 	end
 
 	self.spriteFrame = self.character:getSpriteDef():getFrame()
---	self:setJobDelta(1 - self.tree:getHealth() / self.tree:getMaxHealth())
-
     self.character:setMetabolicTarget(Metabolics.DiggingSpade);
 end
 
@@ -46,11 +40,11 @@ function ISRemoveBush:start()
     self.weapon = self.character:getPrimaryHandItem()
 	addSound(self.character, self.character:getX(), self.character:getY(), self.character:getZ(), 20, 10)
 	if self.weapon then
-		if self.weapon:getScriptItem():containsWeaponCategory("Axe") then
+		if self.weapon:getScriptItem():containsWeaponCategory(WeaponCategory.AXE) then
 			self:setActionAnim("RemoveBushAxe")
-		elseif self.weapon:getScriptItem():containsWeaponCategory("LongBlade") then
+		elseif self.weapon:getScriptItem():containsWeaponCategory(WeaponCategory.LONG_BLADE) then
 			self:setActionAnim("RemoveBushLongBlade")
-		elseif self.weapon:getScriptItem():containsWeaponCategory("SmallBlade") then
+		elseif self.weapon:getScriptItem():containsWeaponCategory(WeaponCategory.SMALL_BLADE) then
 			self:setActionAnim("RemoveBushKnife")
 		else
 			self:setActionAnim("RemoveBush")
@@ -74,20 +68,16 @@ function ISRemoveBush:animEvent(event, parameter)
 		addSound(self.character, self.character:getX(), self.character:getY(), self.character:getZ(), 20, 1)
 		if isServer() then
 		    if self.weapon then
-
-			local modifier = 1
-			if ("lumberjack" == self.character:getDescriptor():getProfession()) then modifier = 0.5 end
-            self.character:addCombatMuscleStrain(self.weapon, 1, modifier)
-
+    			local modifier = 1
+                if (self.character:getDescriptor():isCharacterProfession(CharacterProfession.LUMBERJACK)) then
+                    modifier = 0.5
+                end
+                self.character:addCombatMuscleStrain(self.weapon, 1, modifier)
             end
 			self:useEndurance()
             if self.weapon and self.weapon:damageCheck(0,4,false) then
                 ISWorldObjectContextMenu.checkWeapon(self.character)
             end
--- 			if self.weapon and ZombRand(self.weapon:getConditionLowerChance() * 4) == 0 then
--- 				self.weapon:setCondition(self.weapon:getCondition() - 1)
--- 				ISWorldObjectContextMenu.checkWeapon(self.character)
--- 			end
 		end
 	end
 end
@@ -96,7 +86,7 @@ function ISRemoveBush:getBushObject(square)
 	if not square then return nil end
 	for i=1,square:getObjects():size() do
 		local o = square:getObjects():get(i-1)
-		if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():Is(IsoFlagType.canBeCut) then
+		if o:getSprite() and o:getSprite():getProperties() and o:getSprite():getProperties():has(IsoFlagType.canBeCut) then
 			return o
 		end
 	end
@@ -111,7 +101,6 @@ function ISRemoveBush:getWallVineObject(square)
 		if attached then
 			for n=1,attached:size() do
 				local sprite = attached:get(n-1)
---					if sprite and sprite:getParentSprite() and sprite:getParentSprite():getProperties():Is(IsoFlagType.canBeCut) then
 				if sprite and sprite:getParentSprite() and sprite:getParentSprite():getName() and luautils.stringStarts(sprite:getParentSprite():getName(), "f_wallvines_") then
 					return object, n-1
 				end
@@ -152,7 +141,7 @@ function ISRemoveBush:complete()
 		else
 			for i=0,sq:getObjects():size()-1 do
 				local object = sq:getObjects():get(i);
-				if object:getProperties():Is(IsoFlagType.canBeCut) then
+				if object:getProperties():has(IsoFlagType.canBeCut) then
 					sq:transmitRemoveItemFromSquare(object)
 					if ZombRand(2) == 0 then
 						sq:AddWorldInventoryItem("Base.TreeBranch2", 0, 0, 0);
@@ -177,7 +166,7 @@ function ISRemoveBush:useEndurance()
 		if self.weapon:isTwoHandWeapon() and self.character:getSecondaryHandItem() ~= self.weapon then
 			use = use + self.weapon:getWeight() / 1.5 / 10 / 20
 		end
-		self.character:getStats():setEndurance(self.character:getStats():getEndurance() - use)
+		self.character:getStats():remove(CharacterStat.ENDURANCE, use)
 
 		--Stat_Endurance
 		syncPlayerStats(self.character, 0x00000002);

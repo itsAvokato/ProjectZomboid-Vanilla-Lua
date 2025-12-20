@@ -1,12 +1,8 @@
-
 Fishing = Fishing or {}
-
---------------------- FISHING PROPERTIES --------------------
 
 Fishing.actionProperties = {}
 Fishing.actionProperties.defaultLineLen = 6
 
---------------------- LURE PROPERTIES -----------------------
 Fishing.lure = Fishing.lure or {}
 
 Fishing.lure.Insect = {}
@@ -86,8 +82,6 @@ end
 Fishing.IsArtificalLure = function(item)
     return Fishing.lure.ArtificalLure[item] ~= nil
 end
-
---------------------- FISH PROPERTIES -----------------------
 
 Fishing.FishConfig = {}
 Fishing.isSizeLimit = false
@@ -219,9 +213,7 @@ function Fishing.FishConfig:getFishSizeData(smallChance, mediumChance, bigChance
 end
 
 
---- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 Fishing.fishes = Fishing.fishes or {};
---- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 local LargemouthBass = Fishing.FishConfig:new("Base.LargemouthBass")
 LargemouthBass:setLocation(true, true)    -- River, Lake
@@ -244,8 +236,6 @@ LargemouthBass.lure["Base.Maggots"] = 0.9
 
 table.insert(Fishing.fishes, LargemouthBass)
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local SmallmouthBass = Fishing.FishConfig:new("Base.SmallmouthBass")
 SmallmouthBass:setLocation(true, true)    -- River, Lake
 SmallmouthBass:setMaxLength(41) -- CM
@@ -266,8 +256,6 @@ SmallmouthBass.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from p
 SmallmouthBass.lure["Base.Worm"] = 0.9
 
 table.insert(Fishing.fishes, SmallmouthBass)
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local WhiteBass = Fishing.FishConfig:new("Base.WhiteBass")
 WhiteBass:setLocation(true, true)    -- River, Lake
@@ -290,8 +278,6 @@ WhiteBass.lure["Base.Tadpole"] = 0.9
 
 table.insert(Fishing.fishes, WhiteBass);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local SpottedBass = Fishing.FishConfig:new("Base.SpottedBass")
 SpottedBass:setLocation(true, true)    -- River, Lake
 SpottedBass:setMaxLength(38) -- CM
@@ -312,8 +298,6 @@ SpottedBass.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from plas
 SpottedBass.lure["Base.Crayfish"] = 0.9
 
 table.insert(Fishing.fishes, SpottedBass);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 -- Large saltwater fish that can swim upstream from coastal waters. Only found in lakes when stocked.
 local StripedBass = Fishing.FishConfig:new("Base.StripedBass")
@@ -337,8 +321,6 @@ StripedBass.lure["Base.Leech"] = 0.9
 
 table.insert(Fishing.fishes, StripedBass);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local Bluegill = Fishing.FishConfig:new("Base.Bluegill")
 Bluegill:setLocation(true, true)    -- River, Lake
 Bluegill:setMaxLength(20) -- CM
@@ -359,8 +341,6 @@ Bluegill.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from plastic
 Bluegill.lure["Base.Cricket"] = 0.9
 
 table.insert(Fishing.fishes, Bluegill);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local WhiteCrappie = Fishing.FishConfig:new("Base.WhiteCrappie")
 WhiteCrappie:setLocation(true, true)    -- River, Lake
@@ -383,8 +363,6 @@ WhiteCrappie.lure["Base.Tadpole"] = 0.9
 
 table.insert(Fishing.fishes, WhiteCrappie);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local BlackCrappie = Fishing.FishConfig:new("Base.BlackCrappie")
 BlackCrappie:setLocation(true, true)    -- River, Lake
 BlackCrappie:setMaxLength(25) -- CM
@@ -405,8 +383,6 @@ BlackCrappie.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from pla
 BlackCrappie.lure["Base.Tadpole"] = 0.9
 
 table.insert(Fishing.fishes, BlackCrappie);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local RedearSunfish = Fishing.FishConfig:new("Base.RedearSunfish")
 RedearSunfish:setLocation(true, true)    -- River, Lake
@@ -429,8 +405,6 @@ RedearSunfish.lure["Base.Grasshopper"] = 0.9
 
 table.insert(Fishing.fishes, RedearSunfish);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local YellowPerch = Fishing.FishConfig:new("Base.YellowPerch")
 YellowPerch:setLocation(true, true)    -- River, Lake
 YellowPerch:setMaxLength(30) -- CM
@@ -451,8 +425,6 @@ YellowPerch.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from plas
 YellowPerch.lure["Base.Snail"] = 0.9
 
 table.insert(Fishing.fishes, YellowPerch);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local Sauger = Fishing.FishConfig:new("Base.Sauger")
 Sauger:setLocation(true, true)    -- River, Lake
@@ -475,8 +447,6 @@ Sauger.lure["Base.Crayfish"] = 0.9
 
 table.insert(Fishing.fishes, Sauger);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local GreenSunfish = Fishing.FishConfig:new("Base.GreenSunfish")
 GreenSunfish:setLocation(true, true)    -- River, Lake
 GreenSunfish:setMaxLength(20) -- CM
@@ -497,8 +467,6 @@ GreenSunfish.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from pla
 GreenSunfish.lure["Base.Worm"] = 0.9
 
 table.insert(Fishing.fishes, GreenSunfish);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local Walleye = Fishing.FishConfig:new("Base.Walleye")
 Walleye:setLocation(true, true)    -- River, Lake
@@ -521,8 +489,6 @@ Walleye.lure["Base.Leech"] = 0.9
 
 table.insert(Fishing.fishes, Walleye);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local FreshwaterDrum = Fishing.FishConfig:new("Base.FreshwaterDrum")
 FreshwaterDrum:setLocation(true, true)    -- River, Lake
 FreshwaterDrum:setMaxLength(76) -- CM
@@ -543,8 +509,6 @@ FreshwaterDrum.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from p
 FreshwaterDrum.lure["Base.Dough"] = 0.9
 
 table.insert(Fishing.fishes, FreshwaterDrum);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local BlueCatfish = Fishing.FishConfig:new("Base.BlueCatfish")
 BlueCatfish:setLocation(true, true)    -- River, Lake
@@ -569,8 +533,6 @@ BlueCatfish.lure["Base.DogfoodOpen"] = 0.9
 
 table.insert(Fishing.fishes, BlueCatfish);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local ChannelCatfish = Fishing.FishConfig:new("Base.ChannelCatfish")
 ChannelCatfish:setLocation(true, true)    -- River, Lake
 ChannelCatfish:setMaxLength(30) -- CM
@@ -591,8 +553,6 @@ ChannelCatfish.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from p
 ChannelCatfish.lure["Base.DogfoodOpen"] = 0.9
 
 table.insert(Fishing.fishes, ChannelCatfish);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local FlatheadCatfish = Fishing.FishConfig:new("Base.FlatheadCatfish")
 FlatheadCatfish:setLocation(true, true)    -- River, Lake
@@ -617,8 +577,6 @@ FlatheadCatfish.lure["Base.DogfoodOpen"] = 0.9
 
 table.insert(Fishing.fishes, FlatheadCatfish);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local Muskellunge = Fishing.FishConfig:new("Base.Muskellunge")
 Muskellunge:setLocation(true, true)    -- River, Lake
 Muskellunge:setMaxLength(101) -- CM
@@ -641,8 +599,6 @@ Muskellunge.lure["Base.MinnowLure"] = 0.5   -- Looks like minnow. Made from plas
 Muskellunge.lure["Base.BaitFish"] = 0.9
 
 table.insert(Fishing.fishes, Muskellunge);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local AligatorGar = Fishing.FishConfig:new("Base.AligatorGar")
 AligatorGar:setLocation(true, true)    -- River, Lake
@@ -667,8 +623,6 @@ AligatorGar.lure["Base.BaitFish"] = 0.9
 
 table.insert(Fishing.fishes, AligatorGar);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
 local Paddlefish = Fishing.FishConfig:new("Base.Paddlefish")
 Paddlefish:setLocation(true, true)    -- River, Lake
 Paddlefish:setMaxLength(150) -- CM
@@ -688,8 +642,6 @@ Paddlefish.lure["Base.JigLure"] = 0.1  -- Looks like worm/leech/shrimp. Made fro
 Paddlefish.lure["Base.MinnowLure"] = 0.1   -- Looks like minnow. Made from plastic.
 
 table.insert(Fishing.fishes, Paddlefish);
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 local BaitFish = Fishing.FishConfig:new("Base.BaitFish")
 BaitFish:setLocation(true, true)    -- River, Lake
@@ -711,11 +663,6 @@ BaitFish.lure["Base.MinnowLure"] = 0.0   -- Looks like minnow. Made from plastic
 
 table.insert(Fishing.fishes, BaitFish);
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
-
---------------------- TRASH PROPERTIES -----------------------
-
 Fishing.trashItems = Fishing.trashItems or {};
 table.insert(Fishing.trashItems, "Base.Seaweed");
 table.insert(Fishing.trashItems, "Base.RippedSheetsDirty");
@@ -723,13 +670,11 @@ table.insert(Fishing.trashItems, "Base.BrokenFishingNet");
 table.insert(Fishing.trashItems, "Base.TinCanEmpty");
 table.insert(Fishing.trashItems, "Base.WaterBottleEmpty");
 
---------------------- LINE PROPERTIES -----------------------
 Fishing.line = Fishing.line or {};
 Fishing.line["Base.Twine"] = 0.3 / 15.0
 Fishing.line["Base.FishingLine"] = 0.2 / 15.0
 Fishing.line["Base.PremiumFishingLine"] = 0.1 / 15.0
 
---------------------- HOOK PROPERTIES -----------------------
 Fishing.hook = Fishing.hook or {};
 Fishing.hook["Base.Paperclip"] = 0.8
 Fishing.hook["Base.Nails"] = 1.0
@@ -737,18 +682,13 @@ Fishing.hook["Base.FishingHook"] = 1.2
 Fishing.hook["Base.FishingHook_Forged"] = 1.2
 Fishing.hook["Base.FishingHook_Bone"] = 1.2
 
---------------------- ROD PROPERTIES -----------------------
 Fishing.rods = Fishing.rods or {};
 Fishing.rods["Base.CraftedFishingRod"] = 0.8
 Fishing.rods["Base.FishingRod"] = 1
 
---------------------- ROD BREAK REPLACEMENT -----------------------
-
 Fishing.breakRodReplacement = Fishing.breakRodReplacement or {}
 Fishing.breakRodReplacement["Base.CraftedFishingRod"] = "Base.WoodenStick"
 Fishing.breakRodReplacement["Base.FishingRod"] = "Base.FishingRodBreak"
-
---------------------- FISH NET PROPERTIES -----------------------
 
 Fishing.fishNet = Fishing.fishNet or {}
 table.insert(Fishing.fishNet,"Base.BaitFish")
@@ -765,8 +705,6 @@ table.insert(Fishing.fishNetWithBait, "Base.Crayfish")
 table.insert(Fishing.fishNetWithBait, "Base.BlueCatfish")
 table.insert(Fishing.fishNetWithBait, "Base.ChannelCatfish")
 table.insert(Fishing.fishNetWithBait, "Base.FlatheadCatfish")
-
---------------------- Item OnCreate functions -------------------
 
 function Fishing.onCreateFish(item)
     if not item then return end

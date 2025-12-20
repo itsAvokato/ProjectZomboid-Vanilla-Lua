@@ -1,14 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default panel for CraftBench component.
-
-    uses ISHandCraftPanel
---]]
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISCraftBenchPanel = ISBaseComponentPanel:derive("ISCraftBenchPanel");
@@ -18,11 +7,6 @@ function ISCraftBenchPanel.CanCreatePanelFor(_player, _entity, _component, _comp
         return _component:getComponentType()==ComponentType.CraftBench;
     end
 end
-
---************************************************************************--
---** ISCraftBenchPanel:initialise
---**
---************************************************************************--
 
 function ISCraftBenchPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -134,10 +118,6 @@ function ISCraftBenchPanel:OnCloseWindow()
     end
 end
 
---************************************************************************--
---** ISCraftBenchPanel:new
---**
---************************************************************************--
 function ISCraftBenchPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

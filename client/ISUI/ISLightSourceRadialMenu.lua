@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISRadialMenu"
 
 ISLightSourceRadialMenu = ISBaseObject:derive("ISLightSourceRadialMenu")
@@ -106,7 +102,7 @@ function ISLightSourceRadialMenu:fillMenuForItem(menu, item)
 		return
 	end
 
-	if item:getFullType() == "Base.Lantern_Hurricane" or item:hasTag("LitLantern") then
+	if item:getFullType() == "Base.Lantern_Hurricane" or item:hasTag(ItemTag.LIT_LANTERN) then
 		local recipe = getScriptManager():getRecipe("Light Hurricane Lantern")
 		if not recipe then return end
 		local numberOfTimes = RecipeManager.getNumberOfTimesRecipeCanBeDone(recipe, playerObj, containerList, item)
@@ -115,7 +111,7 @@ function ISLightSourceRadialMenu:fillMenuForItem(menu, item)
 		return
 	end
 
-	if item:getFullType() == "Base.Lantern_HurricaneLit" or item:hasTag("UnlitLantern") then
+	if item:getFullType() == "Base.Lantern_HurricaneLit" or item:hasTag(ItemTag.UNLIT_LANTERN) then
 		local recipe = getScriptManager():getRecipe("Extinguish Hurricane Lantern")
 		if not recipe then return end
 		local numberOfTimes = RecipeManager.getNumberOfTimesRecipeCanBeDone(recipe, playerObj, containerList, item)
@@ -161,7 +157,7 @@ function ISLightSourceRadialMenu:fillMenu()
 			if (fullType == "Base.Candle") or (fullType == "Base.CandleLit") then
 				-- Remove duplicate Candle and CandleLit
 				accept = false
-			elseif (fullType == "Base.Lantern_Hurricane") or (fullType == "Base.Lantern_HurricaneLit") or item:hasTag("LitLantern") or item:hasTag("UnlitLantern") then
+			elseif (fullType == "Base.Lantern_Hurricane") or (fullType == "Base.Lantern_HurricaneLit") or item:hasTag(ItemTag.LIT_LANTERN) or item:hasTag(ItemTag.UNLIT_LANTERN) then
 				-- Remove duplicate Candle and CandleLit
 				accept = false
 			else
@@ -226,6 +222,7 @@ function ISLightSourceRadialMenu:onEquipLight(item, primary)
 		ISTimedActionQueue.add(ISEquipWeaponAction:new(playerObj, item, 50, primary, false));
 		if not item:isActivated() then
 			item:setActivated(true)
+			syncItemActivated(playerObj, item)
 			item:playActivateDeactivateSound()
 		end;
 	end
@@ -250,6 +247,7 @@ end
 function ISLightSourceRadialMenu:onToggle(item)
 	if item:canBeActivated() then
 		item:setActivated(not item:isActivated())
+		syncItemActivated(self.character, item)
 		item:playActivateDeactivateSound()
 	end
 end
@@ -274,8 +272,6 @@ function ISLightSourceRadialMenu:new(character)
 	o.playerNum = character:getPlayerNum()
 	return o
 end
-
------
 
 local STATE = {}
 STATE[1] = {}
@@ -366,4 +362,3 @@ local function OnGameStart()
 end
 
 Events.OnGameStart.Add(OnGameStart)
-

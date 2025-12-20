@@ -2,12 +2,6 @@ require "ISUI/ISUIElement"
 
 ISScrollBar = ISUIElement:derive("ISScrollBar");
 
-
---************************************************************************--
---** ISScrollBar:initialise
---**
---************************************************************************--
-
 function ISScrollBar:initialise()
 	ISUIElement.initialise(self);
 end
@@ -275,10 +269,6 @@ function ISScrollBar:onMouseMove(dx, dy)
 	end
 end
 
---************************************************************************--
---** ISScrollBar:instantiate
---**
---************************************************************************--
 function ISScrollBar:instantiate()
 	--self:initialise();
 	self.javaObject = UIElement.new(self);
@@ -410,10 +400,7 @@ function ISScrollBar:render()
 		end
 	end
 end
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
+
 function ISScrollBar:new (parent, vertical)
 	local o = {}
 	--o.data = {}

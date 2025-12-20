@@ -2,12 +2,6 @@ require "ISUI/ISPanelJoypad"
 
 ISTextEntryBox = ISPanelJoypad:derive("ISTextEntryBox");
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISTextEntryBox:initialise()
 	ISPanelJoypad.initialise(self);
 end
@@ -42,10 +36,7 @@ end
 function ISTextEntryBox:setOnlyText(onlyText)
 	self.javaObject:setOnlyText(onlyText);
 end
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
+
 function ISTextEntryBox:instantiate()
 	--self:initialise();
 	self.javaObject = UITextBox2.new(self.font, self.x, self.y, self.width, self.height, self.title, false);
@@ -189,10 +180,6 @@ function ISTextEntryBox:setCursorPos(charIndex)
 	self.javaObject:setCursorPos(charIndex)
 end
 
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISTextEntryBox:prerender()
 
 	self.fade:setFadeIn(self:isMouseOver() or self.javaObject:isFocused())
@@ -322,10 +309,6 @@ function ISTextEntryBox:onJoypadDown(button, joypadData)
 	end
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISTextEntryBox:new (title, x, y, width, height)
 	local o = ISPanelJoypad.new(self, x, y, width, height);
 	o.title = title;

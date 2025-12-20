@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISVolumeBar = ISPanel:derive("ISVolumeBar");
@@ -77,7 +73,6 @@ function ISVolumeBar:onMouseUp(x, y)
         return;
     end
     self.dragInside = false;
-    print(x);
     local newVol = self:getVolumeFromXPosition( x );
     if newVol then
         --self.volume = newVol;

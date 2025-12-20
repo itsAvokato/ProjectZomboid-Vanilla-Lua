@@ -105,7 +105,7 @@ function ISHutch:isSquareFree(square)
 	if square:isVehicleIntersecting() then return false end
 	for i=0,square:getObjects():size()-1 do
 		local object = square:getObjects():get(i)
-		if object:getSprite() and not object:getSprite():getProperties():Is(IsoFlagType.solidfloor) then
+		if object:getSprite() and not object:getSprite():getProperties():has(IsoFlagType.solidfloor) then
             if object:getType() == IsoObjectType.tree or object:getType() == IsoObjectType.wall then
                 return false;
             end

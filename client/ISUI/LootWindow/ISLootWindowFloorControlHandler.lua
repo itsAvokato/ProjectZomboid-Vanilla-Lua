@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISBaseObject"
 require "ISUI/ISButton"
 
@@ -27,6 +23,17 @@ function ISLootWindowFloorControlHandler:getButtonControl(title)
     self.control:setTitle(title)
     self.control:setWidthToTitle()
     return self.control
+end
+
+function ISLootWindowFloorControlHandler:getImageButtonControl(imagePath)
+    local button = self:getButtonControl("")
+    button:setImage(getTexture(imagePath))
+    local hgt = FONT_HGT_SMALL
+    local wid = (button.image:getWidth() / button.image:getHeight()) * hgt
+    button:forceImageSize(wid, hgt)
+    button:setWidth(wid + 2 * 2)
+    button:setHeight(hgt + 2 * 2)
+    return button
 end
 
 function ISLootWindowFloorControlHandler:handleJoypadContextMenu(context)

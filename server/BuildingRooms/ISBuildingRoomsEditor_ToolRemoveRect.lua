@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISBuildingRoomsEditor_ToolRemoveRect = ISBuildingObject:derive("ISBuildingRoomsEditor_ToolRemoveRect")

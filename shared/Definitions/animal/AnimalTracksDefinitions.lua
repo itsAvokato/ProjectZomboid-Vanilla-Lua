@@ -1,14 +1,4 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 22/05/2023
--- Time: 08:39
--- To change this template use File | Settings | File Templates.
---
-
 AnimalTracksDefinitions = AnimalTracksDefinitions or {};
-
--------- [TRACKS] ---------
 
 -- list of track type, as they're often the same per animal
 AnimalTracksDefinitions.trackType = {};
@@ -57,10 +47,7 @@ AnimalTracksDefinitions.trackType["fur"].chanceToFindTrack = 180;
 AnimalTracksDefinitions.trackType["fur"].minskill = 2;
 AnimalTracksDefinitions.trackType["fur"].chanceToSpawn = 50;
 
-
--------- [ANIMALS] ---------
 AnimalTracksDefinitions.animallist = {};
-
 AnimalTracksDefinitions.animallist["deer"] = {}; -- "deer" should correspond to the migration group (see MigrationGroupDefinitions.lua)
 AnimalTracksDefinitions.animallist["deer"].tracks = {}; -- define all tracks this animal can leave
 AnimalTracksDefinitions.animallist["deer"].tracks["footstep"] = copyTable(AnimalTracksDefinitions.trackType["footstep"]);

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISUnequipAction = ISBaseTimedAction:derive("ISUnequipAction");
@@ -21,7 +17,9 @@ end
 function ISUnequipAction:start()
 	self.item:setJobType(getText("ContextMenu_Unequip") .. " " .. self.item:getName());
 	self.item:setJobDelta(0.0);
-	if self.fromHotbar then
+    if self.isDropping and self.character:isHandItem(self.item) then
+        -- Unequipping then dropping a held item is nearly instantaneous.
+	elseif self.fromHotbar then
 		self.character:setVariable("AttachItemSpeed", self.animSpeed)
 		self.hotbar:setAttachAnim(self.item);
 		self:setActionAnim("AttachItem")
@@ -47,12 +45,17 @@ function ISUnequipAction:start()
 	if self.item:getUnequipSound() then
 		self.sound = self.character:getEmitter():playSound(self.item:getUnequipSound())
 	end
+	if self.item:canBeActivated() and self.item:isActivated() then
+        self.item:setActivated(false);
+        syncItemActivated(self.character, self.item)
+        self.item:playDeactivateSound();
+	end
 end
 
 function ISUnequipAction:stop()
 	if self.sound then
         if self.soundNoTrigger then
-            self.character:stopSound(self.sound)
+            self.character:getEmitter():stopSound(self.sound)
         else
 		    self.character:stopOrTriggerSound(self.sound)
         end
@@ -87,7 +90,7 @@ function ISUnequipAction:perform()
 	end
     self.item:setJobDelta(0.0);
 
-	if self.item:IsInventoryContainer() or self.item:hasTag("Wearable") then
+	if self.item:IsInventoryContainer() or self.item:hasTag(ItemTag.WEARABLE) then
 		getPlayerInventory(self.character:getPlayerNum()):refreshBackpacks();
 	end
 
@@ -97,15 +100,6 @@ function ISUnequipAction:perform()
 		local hotbar = getPlayerHotbar(self.character:getPlayerNum());
 		hotbar.chr:setAttachedItem(self.item:getAttachedToModel(), self.item);
 		self:setOverrideHandModels(nil, nil)
-	end
-
-
-	-- if it was an animal corpse, drop it
-	if self.item:getType() == "CorpseAnimal" and self.character:getCurrentSquare() then
-		if self.item:getContainer() then
-			self.item:getContainer():Remove(self.item);
-		end
-		self.character:getCurrentSquare():AddWorldInventoryItem(self.item, 0,0,0, true);
 	end
 
 	ISInventoryPage.renderDirty = true
@@ -143,6 +137,15 @@ function ISUnequipAction:complete()
 		self.character:getCurrentSquare():AddWorldInventoryItem(self.item, dropX, dropY, dropZ)
 	end
 
+	-- if it was an animal corpse, drop it
+	if self.item:getType() == "CorpseAnimal" and self.character:getCurrentSquare() then
+		if self.item:getContainer() then
+            sendRemoveItemFromContainer(self.item:getContainer(), self.item);
+			self.item:getContainer():Remove(self.item);
+		end
+		self.character:getCurrentSquare():AddWorldInventoryItem(self.item, 0,0,0, true);
+	end
+
 	if isClient() then
 		ISInventoryPage.renderDirty = true
 	end
@@ -174,20 +177,6 @@ function ISUnequipAction:new(character, item, maxTime)
 	o.maxTime = maxTime;
 	o.ignoreHandsWounds = true;
 	o.clothingAction = true;
-
-	if not isServer() then
-		o.hotbar = getPlayerHotbar(character:getPlayerNum());
-		if o.hotbar then
-			o.fromHotbar = o.hotbar:isItemAttached(item);
-		else
-			o.fromHotbar = false;
-		end
-		o.useProgressBar = not o.fromHotbar;
-		if o.maxTime > 1 and o.fromHotbar then
-			o.animSpeed = o.maxTime / o:adjustMaxTime(o.maxTime)
-		else
-			o.animSpeed = 1.0
-		end
-	end
+	o.stopOnWalk = ISWearClothing.isStopOnWalk(item);
 	return o;
 end

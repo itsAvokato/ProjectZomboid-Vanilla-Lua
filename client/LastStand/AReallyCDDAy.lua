@@ -2,8 +2,6 @@ CDDA = {}
 
 CDDA.Add = function()
 	addChallenge(CDDA);
-
-
 end
 
 CDDA.OnGameStart = function()
@@ -12,13 +10,10 @@ CDDA.OnGameStart = function()
 	if pl:getHoursSurvived() > 0 then return end
 
 	local square = pl:getCurrentSquare();
-	print(square)
 	if not square then return end
 	local room = square:getRoom();
-	print(room)
 	if not room then return end
 	local building = room:getBuilding();
-	print(building);
 	if not building then return end
 
 	local i = 0
@@ -28,7 +23,6 @@ CDDA.OnGameStart = function()
 			-- nothing
 		else
 			i = i + 1;
-			print(tile);
 	        IsoFireManager.explode(getCell(), tile, 100000)
 		end
 	end
@@ -100,12 +94,11 @@ end
 CDDA.AddPlayer = function(playerNum, playerObj)
 	if playerObj:getHoursSurvived() > 0 then return end
 
-	playerObj:getStats():setDrunkenness(100);
+	playerObj:getStats():set(CharacterStat.INTOXICATION, 100);
 
-	print("adding challenge inventory");
 	playerObj:getInventory():clear();
 	playerObj:clearWornItems();
-	playerObj:getBodyDamage():setWetness(100);
+	playerObj:getStats():set(CharacterStat.WETNESS, CharacterStat.WETNESS:getMaximumValue());
 	playerObj:getBodyDamage():setCatchACold(0.0);
 	playerObj:getBodyDamage():setHasACold(true);
 	playerObj:getBodyDamage():setColdStrength(20.0);
@@ -147,9 +140,7 @@ CDDA.spawns = {
 	{x = 10639, y = 6800, z = 1},
 	{x = 10839, y = 12153, z = 1},
 	{x = 11673, y = 6810, z = 1},
-
 }
 
 CDDA.hourOfDay = 7;
 Events.OnChallengeQuery.Add(CDDA.Add)
-

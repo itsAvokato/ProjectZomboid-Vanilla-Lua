@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISTicketsUI = ISPanel:derive("ISTicketsUI");
 ISTicketsUI.messages = {};
 
@@ -12,11 +8,6 @@ local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local COLUMN2_LEFT = 100
-
---************************************************************************--
---** ISTicketsUI:initialise
---**
---************************************************************************--
 
 function ISTicketsUI:initialise()
     ISPanel.initialise(self);
@@ -177,10 +168,6 @@ function ISTicketsUI:onAddTicket(button)
     end
 end
 
---************************************************************************--
---** ISTicketsUI:new
---**
---************************************************************************--
 function ISTicketsUI:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

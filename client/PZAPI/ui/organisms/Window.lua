@@ -79,7 +79,6 @@ UI.Window = UI.Node{
                     texture = getTexture("media/ui/inventoryPanes/Button_Info.png"),
                     onLeftClick = function(self)
                         getSoundManager():playUISound(self.sounds.activate)
-                        print("Info")
                     end
                 },
                 settingsButton = UI.ImageButton{

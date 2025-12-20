@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLureAnimal = ISBaseTimedAction:derive("ISLureAnimal");
@@ -171,8 +167,9 @@ function ISLureAnimal:animEvent(event, parameter)
 end
 
 function ISLureAnimal:serverStart()
-	local period = self.luringTick * 20
-	emulateAnimEvent(self.netAction, period, "update", nil)
+    self.character:setIsLuringAnimals(true);
+    local period = self.luringTick * 20
+    emulateAnimEvent(self.netAction, period, "update", nil)
 end
 
 function ISLureAnimal:getDuration()

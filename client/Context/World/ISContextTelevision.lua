@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISWorldMenuElements = ISWorldMenuElements or {};
 
 function ISWorldMenuElements.ContextTelevision()
@@ -20,7 +15,7 @@ function ISWorldMenuElements.ContextTelevision()
             if instanceof( item, "IsoWaveSignal") and item:getSprite() ~= nil and item:getModData().RadioItemID == nil then
                 if _data.test then return true; end
                 local option = _data.context:addOption(getText("IGUI_DeviceOptions"), _data, self.openPanel, item );
-                local CustomItem = item:getProperties() and item:getProperties():Val("CustomItem")
+                local CustomItem = item:getProperties() and item:getProperties():get("CustomItem")
                 if CustomItem then
                     local itemScript = getItem(CustomItem)
                     option.iconTexture = itemScript and itemScript:getNormalTexture()

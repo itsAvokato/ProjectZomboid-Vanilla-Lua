@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ConnectToServer = ISPanelJoypad:derive("ConnectToServer")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -273,8 +269,7 @@ function ConnectToServer:onGainJoypadFocus(joypadData)
 end
 
 function ConnectToServer:OnConnected()
-	if SystemDisabler.getKickInDebug() and getDebug() and not isAdmin() and not isCoopHost() and
-			not SystemDisabler.getOverrideServerConnectDebugCheck() then
+	if getDebug() and not haveAccess("ConnectWithDebug") and not isCoopHost() then
 		forceDisconnect()
 		return
 	end

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISFarmingCursor = ISBuildingObject:derive("ISFarmingCursor");

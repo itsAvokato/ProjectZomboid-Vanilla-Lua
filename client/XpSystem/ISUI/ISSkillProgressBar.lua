@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** A bar wich display square for each lvl of a skill (you need one for each skills) **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISSkillProgressBar = ISPanel:derive("ISSkillProgressBar");
@@ -30,6 +25,10 @@ end
 
 function ISSkillProgressBar:render()
 	self:renderPerkRect();
+	if (self.tooltip ~= nil) and (self.tooltip:isMouseOver() or not self:isMouseOver()) then
+        -- This is to handle the parent panel scrolling via the mouse wheel.
+        self:removeTooltip()
+    end
 	if self.message ~= nil then
 		if self.tooltip == nil then
 			self.tooltip = ISToolTip:new();
@@ -55,12 +54,7 @@ function ISSkillProgressBar:onMouseUp(x, y)
 		-- how much xp we need for the next lvl
 		self.xpForLvl = ISSkillProgressBar.getXpForLvl(self.perk, self.level);
 		-- reset the tooltip
-		self.message = nil;
-		if self.tooltip ~= nil then
-			self.tooltip:setVisible(false);
-			self.tooltip:removeFromUIManager();
-			self.tooltip = nil;
-		end
+        self:removeTooltip()
 	end
 end
 
@@ -116,6 +110,10 @@ function ISSkillProgressBar:onMouseMove(dx, dy)
 end
 
 function ISSkillProgressBar:onMouseMoveOutside(dx, dy)
+    self:removeTooltip()
+end
+
+function ISSkillProgressBar:removeTooltip()
 	self.message = nil;
 	if self.tooltip ~= nil then
 		self.tooltip:setVisible(false);
@@ -139,7 +137,7 @@ function ISSkillProgressBar:renderPerkRect()
 		self.parent.lastLevelUpTime = 1
 	end
 	
-	-- how much xp we already aquire for this perk
+	-- how much xp we already acquire for this perk
 	self.xp = ISSkillProgressBar.getPerkXp(self);
 
 	if self.xp > self.xpForLvl then

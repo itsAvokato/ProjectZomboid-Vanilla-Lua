@@ -53,6 +53,8 @@ function Options:addTextEntry(id, name, value, _tooltip)
             self.element:setEditable(bool)
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -75,6 +77,8 @@ function Options:addTickBox(id, name, value, _tooltip)
             self.element:disableOption("", not bool)
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -106,6 +110,8 @@ function Options:addMultipleTickBox(id, name, _tooltip)
             self.element:setSelected(index, value)
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -141,6 +147,8 @@ function Options:addComboBox(id, name, _tooltip)
             self.element.disabled = not bool
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -163,6 +171,8 @@ function Options:addColorPicker(id, name, r, g, b, a, _tooltip)
             self.element.backgroundColor = self.color
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -185,6 +195,8 @@ function Options:addKeyBind(id, name, key, _tooltip)
             self.element.keyCode = key
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -207,6 +219,8 @@ function Options:addSlider(id, name, min, max, step, value, _tooltip)
             self.element:setCurrentValue(value, true)
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
@@ -222,13 +236,13 @@ function Options:addButton(id, name, tooltip, onclickfunc, target, arg1, arg2, a
             self.element:setEnable(bool)
         end
     end
+    option.onChangeApply = self.onChangeApply
+    option.onChange = self.onChange
 
     table.insert(self.data, option)
     self.dict[id] = option
     return option
 end
-
------------
 
 function PZAPI.ModOptions:create(modOptionsID, name)
     name = name or modOptionsID

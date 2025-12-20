@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISPlayerStatsUI = ISPanel:derive("ISPlayerStatsUI");
@@ -17,11 +5,6 @@ ISPlayerStatsUI = ISPanel:derive("ISPlayerStatsUI");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsUI:initialise()
     ISPanel.initialise(self);
@@ -66,12 +49,14 @@ function ISPlayerStatsUI:render()
 
     self:setStencilRect(0,60,self:getWidth(),self:getHeight()-60);
 
+    local characterProfession = self.char:getDescriptor():getCharacterProfession()
+    local characterProfessionDefinition = CharacterProfessionDefinition.getCharacterProfessionDefinition(characterProfession)
     local items = {
         getText("IGUI_PlayerStats_Username"), self.char:getUsername(), nil,
         getText("IGUI_PlayerStats_DisplayName"), self.char:getDisplayName(), self.changeUsernameBtn,
         getText("UI_characreation_forename") .. ":", self.char:getDescriptor():getForename(), self.changeForename,
         getText("UI_characreation_surname") .. ":", self.char:getDescriptor():getSurname(), self.changeSurname,
-        getText("IGUI_PlayerStats_Profession"), ProfessionFactory.getProfession(self.char:getDescriptor():getProfession()):getName(), self.changeProfession,
+        getText("IGUI_PlayerStats_Profession"), characterProfessionDefinition:getUIName(), self.changeProfession,
         getText("IGUI_char_Survived_For") .. ":", self.char:getTimeSurvived(), nil,
         getText("IGUI_char_Zombies_Killed") .. ":", tostring(self.char:getZombieKills()), nil
     }
@@ -340,7 +325,7 @@ function ISPlayerStatsUI:create()
     self.closeBtn:setAnchorLeft(true);
     self.closeBtn:setAnchorTop(true);
     self.closeBtn:setAnchorBottom(false);
-    self.closeBtn.borderColor = self.buttonBorderColor;
+    self.closeBtn:enableCancelColor()
     self:addChild(self.closeBtn);
 
     self.addTraitBtn = ISButton:new(16, self.height - 30, self.buttonWidth, self.buttonHeight, getText("IGUI_PlayerStats_AddTrait"), self, self.onOptionMouseDown);
@@ -670,7 +655,7 @@ end
 
 function ISPlayerStatsUI:onAddTrait(button, trait)
     if button.internal == "OK" then
-        ISPlayerStatsUI.instance.char:getTraits():add(trait:getType());
+        ISPlayerStatsUI.instance.char:getCharacterTraits():add(trait:getType());
         ISPlayerStatsUI.instance.char:modifyTraitXPBoost(trait:getType(), false);
         SyncXp(ISPlayerStatsUI.instance.char);
         ISPlayerStatsUI.instance:loadTraits();
@@ -679,7 +664,7 @@ end
 
 function ISPlayerStatsUI:onChangeProfession(button, prof)
     if button.internal == "OK" then
-        ISPlayerStatsUI.instance.char:getDescriptor():setProfession(prof:getType());
+        ISPlayerStatsUI.instance.char:getDescriptor():setCharacterProfession(prof:getType());
         sendPlayerStatsChange(ISPlayerStatsUI.instance.char);
         ISPlayerStatsUI.instance:loadProfession()
     end
@@ -754,7 +739,7 @@ function ISPlayerStatsUI:onChangeWeight(button, player)
 end
 
 function ISPlayerStatsUI:onRemoveTrait(button, x, y)
-    self.char:getTraits():remove(button.internal);
+    self.char:getCharacterTraits():remove(button.internal);
     self.char:modifyTraitXPBoost(button.internal, true);
     SyncXp(self.char);
     self:loadTraits();
@@ -767,8 +752,8 @@ ISPlayerStatsUI.loadTraits = function(self)
     end
     self.traits = {};
 
-    for i=0, self.char:getTraits():size() - 1 do
-        local trait = TraitFactory.getTrait(self.char:getTraits():get(i));
+    for i=0, self.char:getCharacterTraits():getKnownTraits():size() - 1 do
+        local trait = CharacterTraitDefinition.getCharacterTraitDefinition(self.char:getCharacterTraits():getKnownTraits():get(i));
         if trait and trait:getTexture() then
             local textImage = ISImage:new(0, 0, trait:getTexture():getWidth(), trait:getTexture():getHeight(), trait:getTexture());
             textImage:initialise();
@@ -795,15 +780,11 @@ end
 
 ISPlayerStatsUI.loadProfession = function(self)
     self.profession = nil;
-    if self.char:getDescriptor() and self.char:getDescriptor():getProfession() then
-        local prof = ProfessionFactory.getProfession(self.char:getDescriptor():getProfession());
-        if prof then
-            self.profession = prof:getName();
-        end
+    if self.char:getDescriptor() and self.char:getDescriptor():getCharacterProfession() then
+        local prof = self.char:getDescriptor():getCharacterProfession();
+        self.profession = prof:getName();
     end
 end
-
-
 
 ISPlayerStatsUI.loadPerks = function(self)
     local previousSelection = self.xpListBox.selected;
@@ -837,6 +818,7 @@ ISPlayerStatsUI.loadPerks = function(self)
     self.xpListBox:sort()
     self.xpListBox.selected = previousSelection;
     self.xpListBox.columnWidth[1] = maxNameWidth + 15
+    self.xpListBox:setScrollHeight(self.xpListBox:size() * self.xpListBox.itemheight)
     self:updateColumns()
 end
 

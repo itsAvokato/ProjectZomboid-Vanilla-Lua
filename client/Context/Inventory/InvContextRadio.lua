@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISInventoryMenuElements = ISInventoryMenuElements or {};
 
 function ISInventoryMenuElements.ContextRadio()
@@ -30,11 +25,13 @@ function ISInventoryMenuElements.ContextRadio()
                     end
                 end
                 if _obj ~= nil then
-                    self.invMenu.context:addOption(getText("IGUI_DeviceOptions"), self.invMenu, self.openPanel, _obj );
+                    local option = self.invMenu.context:addOption(getText("IGUI_DeviceOptions"), self.invMenu, self.openPanel, _obj );
+                    option.itemForTexture = _item
                 end
             else
                 if self.invMenu.player:getPrimaryHandItem() == _item or self.invMenu.player:getSecondaryHandItem() == _item  or self.invMenu.player:getClothingItem_Back() == _item then
-                    self.invMenu.context:addOption(getText("IGUI_DeviceOptions"), self.invMenu, self.openPanel, _item );
+                    local option = self.invMenu.context:addOption(getText("IGUI_DeviceOptions"), self.invMenu, self.openPanel, _item );
+                    option.itemForTexture = _item
                 end
             end
         end

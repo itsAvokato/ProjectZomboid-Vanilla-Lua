@@ -7,14 +7,15 @@ local function predicateNotBroken(item)
 end
 
 function ISRemoveWeaponUpgrade:isValid()
-    if not self.weapon or not self.weapon:getWeaponPart(self.partType):canDetach(self.character, self.weapon) then return false end
+    if not self.weapon then return false end
     --if not self.character:getInventory():containsTagEval("Screwdriver", predicateNotBroken) then return false end
     if isClient() and self.weapon then
+        -- The weapon part goes nil at the end of the action.
         return self.character:getInventory():containsID(self.weapon:getID())
-    else
-        if not self.character:getInventory():contains(self.weapon) then return false end
     end
-    return self.weapon:getWeaponPart(self.partType) ~= nil
+    if not self.character:getInventory():contains(self.weapon) then return false end
+    local part = self.weapon:getWeaponPart(self.partType)
+    return part ~= nil and part:canDetach(self.character, self.weapon)
 end
 
 function ISRemoveWeaponUpgrade:update()

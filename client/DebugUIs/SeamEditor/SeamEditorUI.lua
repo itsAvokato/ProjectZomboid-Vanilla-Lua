@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "DebugUIs/SeamEditor/SeamEditorUI_SeamTileList"
 
@@ -21,8 +17,6 @@ local function lastIndexOf( _string, _needle)
 	local i=_string:match(".*".._needle.."()")
 	if i==nil then return nil else return i end
 end
-
------
 
 SeamEditorUI_OptionsPanel = ISPanel:derive("SeamEditorUI_OptionsPanel")
 local OptionsPanel = SeamEditorUI_OptionsPanel
@@ -61,8 +55,6 @@ function OptionsPanel:new(x, y, width, height)
 	o.backgroundColor.a = 0.8
 	return o
 end
-
------
 
 SeamEditorUI_Scene = ISPanel:derive("SeamEditorUI_Scene")
 local Scene = SeamEditorUI_Scene
@@ -390,12 +382,8 @@ function Scene:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 require "DebugUIs/SeamEditor/SeamEditorUI_TileList"
 local TileList = SeamEditorUI_TileList
-
------
 
 SeamEditorUI_TilePicker = ISPanel:derive("SeamEditorUI_TilePicker")
 local TilePicker = SeamEditorUI_TilePicker
@@ -415,7 +403,7 @@ function TilePicker:createChildren()
 		local hasBed = false
 		for j=1,tileNames:size() do
 			local sprite = getSprite(tileNames:get(j-1))
-			if sprite then -- and sprite:getProperties():Is(IsoFlagType.bed) then
+			if sprite then -- and sprite:getProperties():has(IsoFlagType.bed) then
 				hasBed = true
 				break
 			end
@@ -468,12 +456,8 @@ function TilePicker:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 require "DebugUIs/SeamEditor/SeamEditorUI_TileList2"
 local TileList2 = SeamEditorUI_TileList2
-
------
 
 SeamEditorUI_TilePicker2 = ISPanel:derive("SeamEditorUI_TilePicker2")
 local TilePicker2 = SeamEditorUI_TilePicker2
@@ -493,7 +477,7 @@ function TilePicker2:createChildren()
 		local hasBed = false
 		for j=1,tileNames:size() do
 			local sprite = getSprite(tileNames:get(j-1))
-			if sprite then -- and sprite:getProperties():Is(IsoFlagType.bed) then
+			if sprite then -- and sprite:getProperties():has(IsoFlagType.bed) then
 				hasBed = true
 				break
 			end
@@ -545,8 +529,6 @@ function TilePicker2:new(x, y, width, height, editor)
 	o.editor = editor
 	return o
 end
-
------
 
 function SeamEditorUI:createChildren()
 	local gameState = getSeamEditorState()

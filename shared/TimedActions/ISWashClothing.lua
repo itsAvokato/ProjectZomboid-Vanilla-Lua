@@ -1,13 +1,13 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWashClothing = ISBaseTimedAction:derive("ISWashClothing");
 
 function ISWashClothing:isValid()
-	if self.sink:getFluidAmount() < ISWashClothing.GetRequiredWater(self.item) or self.item:getContainer() ~= self.character:getInventory() then
+	if self.sink:getFluidAmount() < ISWashClothing.GetRequiredWater(self.item) then
+		return false
+	end
+	-- A dirty bandage is converted into a different item.
+	if not isClient() and self.item:getContainer() ~= self.character:getInventory() then
 		return false
 	end
 	return true
@@ -139,6 +139,7 @@ function ISWashClothing:complete()
 		self.character:getInventory():Remove(item);
 		sendRemoveItemFromContainer(self.character:getInventory(), item);
 		local newItem = self.character:getInventory():AddItem(newItemType);
+        newItem:setFavorite(item:isFavorite())
 		sendAddItemToContainer(self.character:getInventory(), newItem);
 	else
 		self:useSoap(item, nil);

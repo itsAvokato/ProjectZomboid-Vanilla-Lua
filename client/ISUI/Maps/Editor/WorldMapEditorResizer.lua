@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 local CELL_SIZE_SQUARES = getCellSizeInSquares()
 local CHUNK_SIZE_SQUARES = getChunkSizeInSquares()
 

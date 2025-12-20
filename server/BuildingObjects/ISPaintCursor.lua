@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISPaintCursor = ISBuildingObject:derive("ISPaintCursor");
@@ -22,8 +18,6 @@ local PaintColor = {
 	PaintTurquoise  = {r=0.49,g=0.70,b=0.80};
 	PaintWhite 		= {r=0.92,g=0.92,b=0.92};
 	PaintYellow 	= {r=0.84,g=0.78,b=0.30};
-
-
 }
 
 function ISPaintCursor:create(x, y, z, north, sprite)
@@ -36,7 +30,7 @@ function ISPaintCursor:create(x, y, z, north, sprite)
 	if self.action == "paintSign" then
 		local paintCan = nil
 		if not ISBuildMenu.cheat then
-			local paintBrush = playerInv:getFirstTagRecurse("Paintbrush")
+			local paintBrush = playerInv:getFirstTagRecurse(ItemTag.PAINTBRUSH)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paintBrush)
 			paintCan = playerInv:getFirstTypeRecurse(args.paintType)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paintCan)
@@ -46,7 +40,7 @@ function ISPaintCursor:create(x, y, z, north, sprite)
 	if self.action == "paintThump" then
 		local paintCan = nil
 		if not ISBuildMenu.cheat then
-			local paintBrush = playerInv:getFirstTagRecurse("Paintbrush")
+			local paintBrush = playerInv:getFirstTagRecurse(ItemTag.PAINTBRUSH)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paintBrush)
 			paintCan = playerInv:getFirstTypeRecurse(args.paintType)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paintCan)
@@ -71,7 +65,7 @@ end
 
 function ISPaintCursor:_isWall(object)
 	if object and object:getProperties() then
-		return object:getProperties():Is(IsoFlagType.cutW) or object:getProperties():Is(IsoFlagType.cutN)
+		return object:getProperties():has(IsoFlagType.cutW) or object:getProperties():has(IsoFlagType.cutN)
 	end
 	return false
 end
@@ -124,7 +118,7 @@ function ISPaintCursor:render(x, y, z, square)
 		if self.action == "paintSign" then
 --			if not self.signSprite then
 				local sign = self.args.sign
-				if object:getProperties():Is("WallW") then
+				if object:getProperties():has("WallW") then
 					sign = sign + 8;
 				end
 				self.signSprite = IsoSprite.new()
@@ -199,7 +193,7 @@ function ISPaintCursor:canPaint(object)
 	if not self:hasItems() then return false end
 	local props = object:getProperties()
 	if self.action == "paintSign" then
-		if props:Is("WallN") or props:Is("WallW") then
+		if props:has("WallN") or props:has("WallW") then
 			return true
 		end
 	end
@@ -207,8 +201,8 @@ function ISPaintCursor:canPaint(object)
 		if instanceof(object, "IsoThumpable") and object:isPaintable() then
 			return Painting[ISPaintMenu.getWallType(object)][self.args.paintType] ~= nil
 		end
-		if props and props:Is("IsPaintable") then
-			local wallType = props:Val("PaintingType")
+		if props and props:has("IsPaintable") then
+			local wallType = props:get("PaintingType")
 			if Painting[wallType] ~= nil and Painting[wallType][self.args.paintType] ~= nil then
 				return true
 			end
@@ -230,7 +224,7 @@ function ISPaintCursor:hasItems()
 	local playerInv = playerObj:getInventory()
 	if self.action == "paintSign" or self.action == "paintThump" then
 		if not ISBuildMenu.cheat then
-			local paintBrush = playerInv:getFirstTagRecurse("Paintbrush")
+			local paintBrush = playerInv:getFirstTagRecurse(ItemTag.PAINTBRUSH)
 			local paintCan = playerInv:getFirstTypeRecurse(self.args.paintType)
 			return paintBrush ~= nil and paintCan ~= nil
 		end
@@ -280,4 +274,3 @@ function ISPaintCursor:new(character, action, args)
 	showDebugInfoInChat("Cursor New \'ISPaintCursor\'")
 	return o
 end
-

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISFluidTransferAction = ISBaseTimedAction:derive("ISFluidTransferAction")

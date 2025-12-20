@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 require "Map/SGlobalObject"
@@ -221,17 +217,12 @@ function STrapGlobalObject:addAliveAnimal(character)
 
     -- give xp only if you are the one who placed this trap);
     if self.player == character:getUsername() then
-        if isServer() then
-            character:sendObjectChange('addXp', { perk = Perks.Trapping:index(), xp = xp })
-        else
-            character:getXp():AddXP(Perks.Trapping, xp);
-        end
+        addXp(character, Perks.Trapping, xp);
     end
 
     animal:setWild(false);
 
     if not self.animalAliveHour then
-        print("animalAliveHour is missing, resetting to 1");
         self.animalAliveHour = 1;
     end;
 
@@ -631,7 +622,5 @@ function STrapGlobalObject.SpawnDestroyItems(trapType, square, object)
                 spawnItem:setUsedDelta(math.min(roll1, roll2)/10);
             end
         end
-    else
-        print("no square for spawnDestroyItems");
     end
 end

@@ -12,12 +12,8 @@ ModMoreInfo = ISPanel:derive("ModMoreInfo");
 function ModMoreInfo:initialise()
 	ISPanel.initialise(self);
 end
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
-function ModMoreInfo:instantiate()
 
+function ModMoreInfo:instantiate()
 	--self:initialise();
 	self.javaObject = UIElement.new(self);
 	self.javaObject:setX(self.x);
@@ -28,9 +24,6 @@ function ModMoreInfo:instantiate()
 	self.javaObject:setAnchorRight(self.anchorRight);
 	self.javaObject:setAnchorTop(self.anchorTop);
 	self.javaObject:setAnchorBottom(self.anchorBottom);
-
-
-
 end
 
 function ModMoreInfo:create(desc)

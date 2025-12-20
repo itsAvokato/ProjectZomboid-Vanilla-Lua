@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 local ClientCommands = {}
@@ -92,7 +88,7 @@ local function _getWallVineObject(square)
 		if attached then
 			for n=1,attached:size() do
 				local sprite = attached:get(n-1)
---					if sprite and sprite:getParentSprite() and sprite:getParentSprite():getProperties():Is(IsoFlagType.canBeCut) then
+--					if sprite and sprite:getParentSprite() and sprite:getParentSprite():getProperties():has(IsoFlagType.canBeCut) then
 				if sprite and sprite:getParentSprite() and sprite:getParentSprite():getName() and luautils.stringStarts(sprite:getParentSprite():getName(), "f_wallvines_") then
 					return object, n-1
 				end
@@ -122,7 +118,7 @@ Commands.object.removeBush = function(player, args)
 		else
 			for i=0,sq:getObjects():size()-1 do
 				local object = sq:getObjects():get(i);
-				if object:getProperties():Is(IsoFlagType.canBeCut) then
+				if object:getProperties():has(IsoFlagType.canBeCut) then
 					sq:transmitRemoveItemFromSquare(object)
 					if ZombRand(2) == 0 then
 						sq:AddWorldInventoryItem("Base.TreeBranch2", 0, 0, 0);
@@ -172,14 +168,14 @@ Commands.object.shovelGround = function(player, args)
 				o = sq:getObjects():get(i-1)
 				-- FIXME: blends_grassoverlays tiles should have 'vegitation' flag
 				if o:getSprite() and (
-						o:getSprite():getProperties():Is(IsoFlagType.canBeRemoved) or
-						(o:getSprite():getProperties():Is(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
+						o:getSprite():getProperties():has(IsoFlagType.canBeRemoved) or
+						(o:getSprite():getProperties():has(IsoFlagType.vegitation) and o:getType() ~= IsoObjectType.tree) or
 						(o:getSprite():getName() and luautils.stringStarts(o:getSprite():getName(), "blends_grassoverlays"))) then
 					sq:transmitRemoveItemFromSquare(o)
 				end
 			end
 			local emptyBag = player:getInventory():getItemWithID(args.emptyBag)
-			if emptyBag:hasTag("HoldDirt") and (args.newBag == "Base.Dirtbag" or args.newBag == "Base.Gravelbag" or args.newBag == "Base.Sandbag" or args.newBag == "Base.Claybag") then
+			if emptyBag:hasTag(ItemTag.HOLD_DIRT) and (args.newBag == "Base.Dirtbag" or args.newBag == "Base.Gravelbag" or args.newBag == "Base.Sandbag" or args.newBag == "Base.Claybag") then
 				local isPrimary = player:isPrimaryHandItem(emptyBag)
 				local isSecondary = player:isSecondaryHandItem(emptyBag)
 				player:removeFromHands(emptyBag);
@@ -237,7 +233,7 @@ local _getTrashCan = function(x, y, z, index)
 	local sq = getCell():getGridSquare(x, y, z)
 	if sq and index >= 0 and index < sq:getObjects():size() then
 		local object = sq:getObjects():get(index)
-		if object:getSprite() and object:getSprite():getProperties():Is("IsTrashCan") then
+		if object:getSprite() and object:getSprite():getProperties():has("IsTrashCan") then
 			return object
 		end
 	end
@@ -247,21 +243,18 @@ end
 Commands.object.emptyTrash = function(player, args)
 	local object = _getTrashCan(args.x, args.y, args.z, args.index)
 	if object then
-		if not isClient() then
-			local container = object:getContainer()
-			while container:getItems():size() > 0 do
-				local item = container:getItems():get(0)
-				container:DoRemoveItem(item)
-				print("emptyTrash: removing item !!!")
-			end
-			container:clear()
-
-			if object:getOverlaySprite() then
-				ItemPicker.updateOverlaySprite(object)
-			end
-		else
-			-- sendObjectChange will do all needed logic in SP and for clients	// FIXME: Not work on SP
-			object:sendObjectChange('emptyTrash');
+		local container = object:getContainer()
+		if isServer() then
+			sendRemoveItemsFromContainer(container, container:getItems())
+		end
+		while container:getItems():size() > 0 do
+			local item = container:getItems():get(0)
+			container:DoRemoveItem(item)
+			print("emptyTrash: removing item !!!")
+		end
+		container:clear()
+		if object:getOverlaySprite() then
+			ItemPicker.updateOverlaySprite(object)
 		end
 	else
 		print('expected trash can')
@@ -367,8 +360,6 @@ Commands.object.setBombTimer = function(player, args)
 	end
 	itemBomb:setExplosionTimer(args.time);
 end
--- -- -- -- --
-
 Commands.fireplace = {}
 
 local getFireplace = function(x, y, z)
@@ -415,7 +406,27 @@ Commands.bbq.setFuel = function(player, args)
 	end
 end
 
--- -- -- -- --
+Commands.deadBody = {}
+Commands.deadBody.addBody = function(player, args)
+    if ISDropCorpseIntoContainer.bodyCache[args.id] then
+        for character, container in pairs(ISDropCorpseIntoContainer.bodyCache[args.id]) do
+            local deadBody = character:becomeCorpseSilently()
+            if deadBody then
+                local corpse = deadBody:getItem()
+                if corpse and container:canItemFit(corpse) then
+                    container:AddItem(corpse)
+                    sendAddItemToContainer(container, corpse)
+                    local sq = deadBody:getSquare()
+                    if sq then
+                        sq:removeCorpse(deadBody, false)
+                        deadBody:invalidateCorpse()
+                    end
+                end
+            end
+        end
+        ISDropCorpseIntoContainer.bodyCache[args.id] = {}
+    end
+end
 
 Commands.player = {}
 Commands.player.onHealthCheat = function(player, args)
@@ -434,23 +445,29 @@ Commands.player.onHealthCheatCurrentPlayer = function(player, args)
 	end
 	if action == "hole" then
 		otherPlayer:addHole(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())));
+		syncVisuals(otherPlayer)
 	end
 	if action == "patch" then
 		otherPlayer:addBasicPatch(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())));
+		syncVisuals(otherPlayer)
 	end
 	if action == "blood" then
 		otherPlayer:addBlood(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())), false, true, false);
+		syncVisuals(otherPlayer)
 	end
 	if action == "removeblood" then
 		otherPlayer:getVisual():setBlood(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())), 0);
 		otherPlayer:resetModelNextFrame();
+		syncVisuals(otherPlayer)
 	end
 	if action == "dirt" then
 		otherPlayer:addDirt(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())), nil, false);
+		syncVisuals(otherPlayer)
 	end
 	if action == "removedirt" then
 		otherPlayer:getVisual():setDirt(BloodBodyPartType.FromIndex(BodyPartType.ToIndex(bodyPart:getType())), 0);
 		otherPlayer:resetModelNextFrame();
+		syncVisuals(otherPlayer)
 	end
 	if action == "bite" then
 		if bodyPart:bitten() then
@@ -463,6 +480,7 @@ Commands.player.onHealthCheatCurrentPlayer = function(player, args)
 	end
 	if action == "holeback" then
 		otherPlayer:addHole(BloodBodyPartType.Back);
+		syncVisuals(otherPlayer)
 	end
 	if action == "bullet" then
 		if bodyPart:haveBullet() then
@@ -576,6 +594,16 @@ Commands.player.syncWeight = function(player, args)
 	end
 end
 
+Commands.player.onVehicleSleep = function(player, args)
+    local otherPlayer = getPlayerByOnlineID(args.id)
+    otherPlayer:setAsleep(args.isAsleep)
+end
+
+Commands.player.onDropHeavyItem = function(player, args)
+    local playerObj = getPlayerByOnlineID(args.id)
+    forceDropHeavyItems(playerObj)
+end
+
 Commands.erosion = {};
 Commands.erosion.disableForSquare = function(player, args)
     local sq = getCell():getGridSquare(args.x, args.y, args.z);
@@ -597,8 +625,6 @@ Commands.event.thunder = function(player, args)
 		getClimateManager():getThunderStorm():triggerThunderEvent(args.x, args.y, true, true, true)
 	end
 end
-
- -- -- -- -- --
 
 Commands.debugAction = {}
 Commands.debugAction.getBuildingKey = function(player, args)
@@ -684,21 +710,10 @@ Commands.debugAction.mannequinCreateItem = function(player, args)
 	sendAddItemToContainer(player:getInventory(), item);
 end
 
--- -- -- -- --
 Commands.animal = {}
-Commands.animal.forceEgg = function(player, args)
-	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
-		return
-	end
-	local animal = getAnimal(tonumber(args.id))
-	animal:debugForceEgg()
-	sendServerCommandV("animal", "forceEgg",
-			"id", animal:getOnlineID())
-end
 Commands.animal.add = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
+		print('animal.add The player\'s access level is not sufficient to perform this action')
 		return
 	end
 	local breed = AnimalDefinitions.getDef(args.type):getBreedByName(args.breed)
@@ -707,7 +722,7 @@ Commands.animal.add = function(player, args)
 end
 Commands.animal.addBaby = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
+		print('animal.addBaby The player\'s access level is not sufficient to perform this action')
 		return
 	end
 	local animal = getAnimal(tonumber(args.id))
@@ -715,7 +730,7 @@ Commands.animal.addBaby = function(player, args)
 end
 Commands.animal.addEgg = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
+		print('animal.addEgg The player\'s access level is not sufficient to perform this action')
 		return
 	end
 	local animal = getAnimal(tonumber(args.id))
@@ -723,7 +738,7 @@ Commands.animal.addEgg = function(player, args)
 end
 Commands.animal.forceEgg = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
+		print('animal.forceEgg The player\'s access level is not sufficient to perform this action')
 		return
 	end
 	local animal = getAnimal(tonumber(args.id))
@@ -731,38 +746,54 @@ Commands.animal.forceEgg = function(player, args)
 end
 Commands.animal.remove = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.hutch The player\'s access level is not sufficient to perform this action')
+		print('animal.remove The player\'s access level is not sufficient to perform this action')
 		return
 	end
 	removeAnimal(tonumber(args.id))
 end
 Commands.animal.removeFromHutch = function(player, args)
-	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.removeFromHutch The player\'s access level is not sufficient to perform this action')
-		return
-	end
-	local animal = getAnimal(tonumber(args.id))
-	sendHutchRemoveAnimalAction(animal, player, animal:getHutch());
-	animal:getHutch():removeAnimal(animal)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.removeFromHutch The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    sendHutchRemoveAnimalAction(animal, player, animal:getHutch());
+    animal:getHutch():removeAnimal(animal)
 end
 Commands.animal.removeEggFromNestBox = function(player, args)
-	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.removeEggFromNestBox The player\'s access level is not sufficient to perform this action')
-		return
-	end
-	local hutch = getHutch(tonumber(args.x), tonumber(args.y), tonumber(args.z))
-	local nestBox = hutch:getNestBox(tonumber(args.nestIdx))
-	local egg = nestBox:removeEgg(ZombRand(nestBox:getEggsNb()))
-	hutch:sync()
-	player:getInventory():AddItem(egg)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.removeEggFromNestBox The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local hutch = getHutch(tonumber(args.x), tonumber(args.y), tonumber(args.z))
+    local nestBox = hutch:getNestBox(tonumber(args.nestIdx))
+    local egg = nestBox:removeEgg(ZombRand(nestBox:getEggsNb()))
+    hutch:sync()
+    player:getInventory():AddItem(egg)
 end
 Commands.animal.forceHutch = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	sendServerCommand(animal:getOwner(), "animal", "forceHutch", args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+        print('animal.forceHutch The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getBehavior():callToHutch(nil, true)
 end
 Commands.animal.forceWander = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	sendServerCommand(animal:getOwner(), "animal", "forceWander", args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+        print('animal.forceWander The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:forceWanderNow()
+end
+Commands.animal.forceSit = function(player, args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.forceSit The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:debugForceSit()
 end
 Commands.animal.hutch = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
@@ -783,15 +814,12 @@ Commands.animal.hutch = function(player, args)
 	end
 end
 Commands.animal.invincible = function(player, args)
-	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.invincible The player\'s access level is not sufficient to perform this action')
-		return
-	end
-	local animal = getAnimal(tonumber(args.id))
-	animal:setIsInvincible(not animal:isInvincible())
-	sendServerCommandV("animal", "invincible",
-			"id", args.id,
-			"value", animal:isInvincible())
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.invincible The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:setIsInvincible(not animal:isInvincible())
 end
 Commands.animal.kill = function(player, args)
 	if not player:getRole():hasCapability(Capability.AnimalCheats) then
@@ -819,119 +847,143 @@ Commands.animal.kill = function(player, args)
 
 end
 Commands.animal.setWool = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setWoolQuantity(tonumber(args.value), true)
-	sendServerCommandV("animal", "setWool",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setWool The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setWoolQuantity(tonumber(args.value), true)
 end
 Commands.animal.setMilk = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setMaxMilkActual(tonumber(args.value))
-	animal:getData():setMilkQuantity(tonumber(args.value))
-	sendServerCommandV("animal", "setMilk",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setMilk The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setMaxMilkActual(tonumber(args.value))
+    animal:getData():setMilkQuantity(tonumber(args.value))
 end
 Commands.animal.setStress = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:setDebugStress(tonumber(args.value))
-	sendServerCommandV("animal", "setStress",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setStress The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:setDebugStress(tonumber(args.value))
 end
 Commands.animal.setAge = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:setAgeDebug(tonumber(args.value))
-	sendServerCommandV("animal", "setAge",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setAge The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:setAgeDebug(tonumber(args.value))
 end
 Commands.animal.setHunger = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getStats():setHunger(tonumber(args.value));
-	sendServerCommandV("animal", "setHunger",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setHunger The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getStats():set(CharacterStat.HUNGER, tonumber(args.value));
 end
 Commands.animal.setThirst = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getStats():setThirst(tonumber(args.value));
-	sendServerCommandV("animal", "setThirst",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.setThirst The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getStats():set(CharacterStat.THIRST, tonumber(args.value));
 end
 Commands.animal.addBucketMilk = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	local item = animal:addDebugBucketOfMilk(player)
-	player:getInventory():AddItem(item)
-	sendAddItemToContainer(player:getInventory(), item)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.addBucketMilk The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    local item = animal:addDebugBucketOfMilk(player)
+    player:getInventory():AddItem(item)
+    sendAddItemToContainer(player:getInventory(), item)
 end
 Commands.animal.acceptance = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	local player = getPlayerByOnlineID(tonumber(args.player))
-	animal:setDebugAcceptance(player, tonumber(args.acceptance))
-	sendServerCommandV("animal", "acceptance",
-			"id", args.id,
-			"player", player:getOnlineID(),
-			"acceptance", args.acceptance)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.acceptance The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    local player = getPlayerByOnlineID(tonumber(args.player))
+    animal:setDebugAcceptance(player, tonumber(args.acceptance))
 end
 Commands.animal.updateStatsAway = function(player, args)
-	print("id="..tostring(args.id))
-	local animal = getAnimal(tonumber(args.id))
-	animal:updateLastTimeSinceUpdate();
-	animal:updateStatsAway(tonumber(args.value));
-	sendServerCommandV("animal", "updateStatsAway",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.updateStatsAway The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    print("id="..tostring(args.id))
+    local animal = getAnimal(tonumber(args.id))
+    animal:updateLastTimeSinceUpdate();
+    animal:updateStatsAway(tonumber(args.value));
 end
 Commands.animal.fertilized = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setFertilized(args.value)
-	local male = getAnimal(tonumber(args.male))
-	if male and args.value then
-		animal:getData():setMaleGenome(male:getFullGenome())
-	end
-	sendServerCommandV("animal", "fertilized",
-			"id", args.id,
-			"value", args.value,
-			"male", args.male)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.fertilized The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setFertilized(args.value)
+    local male = getAnimal(tonumber(args.male))
+    if male and args.value then
+    	animal:getData():setMaleGenome(male:getFullGenome())
+    end
 end
 Commands.animal.fertilizedTime = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setFertilizedTime(args.value)
-	sendServerCommandV("animal", "fertilizedTime",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.fertilizedTime The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setFertilizedTime(args.value)
 end
 Commands.animal.pregnant = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setPregnant(args.value)
-	sendServerCommandV("animal", "pregnant",
-		"id", args.id,
-		"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.pregnant The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setPregnant(args.value)
 end
 Commands.animal.pregnancyTime = function(player, args)
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():setPregnancyTime(args.value)
-	sendServerCommandV("animal", "pregnancyTime",
-			"id", args.id,
-			"value", args.value)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.pregnancyTime The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():setPregnancyTime(args.value)
 end
 Commands.animal.dung = function(player, args)
-	if not player:getRole():hasCapability(Capability.AnimalCheats) then
-		print('animal.dung The player\'s access level is not sufficient to perform this action')
-		return
-	end
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.dung The player\'s access level is not sufficient to perform this action')
+    	return
+    end
 
-	local animal = getAnimal(tonumber(args.id))
-	animal:getData():checkPoop(false, true);
+    local animal = getAnimal(tonumber(args.id))
+    animal:getData():checkPoop(false, true);
+end
+Commands.animal.randomIdle = function(player, args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+    	print('animal.randomIdle The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+    local animal = getAnimal(tonumber(args.id))
+    animal:debugRandomIdleAnim()
 end
 Commands.animal.happy = function(player, args)
+	if not player:getRole():hasCapability(Capability.AnimalCheats) then
+		print('animal.happy The player\'s access level is not sufficient to perform this action')
+		return
+	end
 	local animal = getAnimal(tonumber(args.id))
 	animal:debugRandomHappyAnim()
-	sendServerCommandV("animal", "happy",
-			"id", args.id)
 end
 Commands.animal.attach = function(player, args)
 	local animal = getAnimal(tonumber(args.id))
@@ -942,7 +994,37 @@ Commands.animal.attach = function(player, args)
 			"location", args.location,
 			"item", args.item)
 end
--- -- -- -- --
+Commands.animal.attackPlayer = function(player, args)
+	if not player:getRole():hasCapability(Capability.AnimalCheats) then
+		print('animal.attackPlayer The player\'s access level is not sufficient to perform this action')
+		return
+	end
+	local animal = getAnimal(tonumber(args.id))
+    animal:getBehavior():goAttack(player)
+end
+Commands.animal.rename = function(player, args)
+    if not args then
+        return
+    end
+
+    local text = args.text
+    if type(text) ~= "string" or #text > 30 then
+        print("animal.rename Failed: Text is not string or larger than 30 symbols")
+        return
+    end
+
+    local animalID = tonumber(args.id)
+    if not animalID then
+        print("animal.rename Failed: Cannot find the animal")
+        return
+    end
+
+	local animal = getAnimal(animalID)
+	if animal and animal:getCustomName() ~= text then
+        animal:setCustomName(text);
+    end
+end
+
 Commands.hutch = {}
 Commands.hutch.dirt = function(player, args)
 	local hutch = getHutch(tonumber(args.x), tonumber(args.y), tonumber(args.z))
@@ -962,7 +1044,7 @@ Commands.hutch.nestBoxDirt = function(player, args)
 			"z", hutch:getZ(),
 			"dirt", args.dirt)
 end
--- -- -- -- --
+
 Commands.stove = {}
 Commands.stove.setOvenParamsAndToggle = function(player, args)
 	local sq = getSquare(args.x, args.y, args.z);
@@ -976,6 +1058,92 @@ Commands.stove.setOvenParamsAndToggle = function(player, args)
 			end
 		end
 	end
+end
+
+Commands.feedingThrough = {}
+Commands.feedingThrough.addWaterDebug = function(player, args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+        print('feedingThrough.addWaterDebug The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+
+    local isoObject = nil;
+    local sq = getCell():getGridSquare(args.x, args.y, args.z);
+    for i=1, sq:getObjects():size() do
+        local obj = sq:getObjects():get(i-1);
+        if instanceof(obj, "IsoFeedingTrough") then
+            isoObject = obj;
+            break;
+        end
+    end
+
+    if isoObject:getContainer() then
+        sendRemoveItemsFromContainer(isoObject:getContainer(), isoObject:getContainer():getItems());
+    	isoObject:getContainer():removeAllItems();
+    end
+
+    if not isoObject:getFluidContainer() then
+    	isoObject:createFluidContainer();
+    end
+
+    isoObject:addWater(FluidType.TaintedWater, isoObject:getMaxWater());
+    isoObject:sendSyncEntity(nil);
+    isoObject:checkOverlayAfterAnimalEat();
+end
+Commands.feedingThrough.addFoodDebug = function(player, args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+        print('feedingThrough.addFoodDebug The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+
+    local isoObject = nil;
+    local sq = getCell():getGridSquare(args.x, args.y, args.z);
+    for i=1, sq:getObjects():size() do
+        local obj = sq:getObjects():get(i-1);
+        if instanceof(obj, "IsoFeedingTrough") then
+            isoObject = obj;
+            break;
+        end
+    end
+
+	isoObject:removeFluidContainer();
+	if not isoObject:getContainer() then
+		isoObject:setContainer(ItemContainer.new());
+	end
+
+    isoObject:sendSyncEntity(nil);
+
+	local items = isoObject:getContainer():addItems(ItemKey.Drainable.ANIMAL_FEED_BAG, 2);
+    sendAddItemsToContainer(isoObject:getContainer(), items);
+
+	isoObject:checkOverlayAfterAnimalEat();
+end
+Commands.feedingThrough.removeFoodDebug = function(player, args)
+    if not player:getRole():hasCapability(Capability.AnimalCheats) then
+        print('feedingThrough.removeFoodDebug The player\'s access level is not sufficient to perform this action')
+    	return
+    end
+
+    local isoObject = nil;
+    local sq = getCell():getGridSquare(args.x, args.y, args.z);
+    for i=1, sq:getObjects():size() do
+        local obj = sq:getObjects():get(i-1);
+        if instanceof(obj, "IsoFeedingTrough") then
+            isoObject = obj;
+            break;
+        end
+    end
+
+    sendRemoveItemsFromContainer(isoObject:getContainer(), isoObject:getContainer():getItems());
+    isoObject:getContainer():removeAllItems();
+
+    if not isoObject:getFluidContainer() then
+    	isoObject:createFluidContainer();
+    end
+
+    isoObject:sendSyncEntity(nil);
+
+    isoObject:checkOverlayAfterAnimalEat();
 end
 
 ClientCommands.OnClientCommand = function(module, command, player, args)

@@ -1,13 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISModalRichText"
 
 ISModsNagPanel = ISPanelJoypad:derive("ISModsNagPanel")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
@@ -15,7 +11,7 @@ local BUTTON_PADDING = JOYPAD_TEX_SIZE + UI_BORDER_SPACING*2
 
 function ISModsNagPanel:createChildren()
 	self.textureX = UI_BORDER_SPACING
-	self.textureY = UI_BORDER_SPACING*2 + FONT_HGT_TITLE + 1
+	self.textureY = UI_BORDER_SPACING*2 + FONT_HGT_LARGE + 1
 	self.textureW = self.texture:getWidth()
 	self.textureH = self.texture:getHeight()
 
@@ -44,7 +40,7 @@ end
 
 function ISModsNagPanel:render()
 	ISPanelJoypad.render(self)
-	self:drawTextCentre(getText("UI_ModsNagPanel_Title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+	self:drawTextCentre(getText("UI_ModsNagPanel_Title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
 	self:drawTextureScaledAspect(self.texture, self.textureX, self.textureY, self.textureW, self.textureH, 1, 1, 1, 1)
 end
 

@@ -1,16 +1,5 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISTradingUIHistorical = ISPanel:derive("ISTradingUIHistorical");
 ISTradingUIHistorical.messages = {};
-
---************************************************************************--
---** ISTradingUIHistorical:initialise
---**
---************************************************************************--
 
 function ISTradingUIHistorical:initialise()
     ISPanel.initialise(self);
@@ -85,10 +74,6 @@ function ISTradingUIHistorical:onClick(button)
     end
 end
 
---************************************************************************--
---** ISTradingUIHistorical:new
---**
---************************************************************************--
 function ISTradingUIHistorical:new(x, y, width, height, list, otherPlayer)
     local o = {}
     o = ISPanel:new(x, y, width, height);

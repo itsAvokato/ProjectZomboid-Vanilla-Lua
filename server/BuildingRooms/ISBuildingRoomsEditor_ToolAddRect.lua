@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISBuildingRoomsEditor_ToolAddRect = ISBuildingObject:derive("ISBuildingRoomsEditor_ToolAddRect")
@@ -142,6 +138,6 @@ function ISBuildingRoomsEditor_ToolAddRect:new(editor)
     o.javaEditor = editor.javaEditor
     o.playerNum = o.player
     o.mode = "AddRect"
-    o.zoneColor = {r=DesignationZoneAnimal.ZONECOLORR, g=DesignationZoneAnimal.ZONECOLORG, b=DesignationZoneAnimal.ZONECOLORB, a=0.5}
+    o.zoneColor = {r=DesignationZoneAnimal.ZONE_COLOR_R, g=DesignationZoneAnimal.ZONE_COLOR_G, b=DesignationZoneAnimal.ZONE_COLOR_B, a=0.5}
     return o
 end

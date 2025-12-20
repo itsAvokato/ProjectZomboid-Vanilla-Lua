@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISButcheringHook = ISBuildingObject:derive("ISButcheringHook");
 
---************************************************************************--
---** ISButcheringHook:new
---**
---************************************************************************--
 function ISButcheringHook:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISButcheringHook\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();

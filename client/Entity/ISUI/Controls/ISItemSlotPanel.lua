@@ -1,7 +1,4 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
+
 require "Entity/ISUI/Controls/ISGroupBox"
 
 ISItemSlotPanel = ISGroupBox:derive("ISItemSlotPanel");
@@ -86,6 +83,7 @@ function ISItemSlotPanel:addResource(_resourceItem, _styleItemSlot, _itemTypeFil
         itemSlot.drawTooltip = self.drawTooltip;
     end
     itemSlot.itemTypeFilter = _itemTypeFilter;
+    itemSlot.actionAnim = self.actionAnim;
     itemSlot:initialise();
     itemSlot:instantiate();
     itemSlot:setCharacter(self.player);
@@ -241,10 +239,6 @@ function ISItemSlotPanel:onStoredItemChanged( _itemSlot )
     end
 end
 
---************************************************************************--
---** ISItemSlotPanel:new
---**
---************************************************************************--
 function ISItemSlotPanel:new (x, y, width, height, player, entity, logic, _styleLabel, _styleCell)
 	local o = ISGroupBox:new(x, y, width, height, _styleLabel);
     setmetatable(o, self)
@@ -267,6 +261,8 @@ function ISItemSlotPanel:new (x, y, width, height, player, entity, logic, _style
     
     o.showSelectInputsButton = false;
     o.maxColumns = 4;
+
+    o.actionAnim = nil;
 
     return o
 end

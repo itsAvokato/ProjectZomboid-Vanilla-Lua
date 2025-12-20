@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenContainer = ISBuildingObject:derive("ISWoodenContainer");
 
---************************************************************************--
---** ISWoodenContainer:new
---**
---************************************************************************--
 function ISWoodenContainer:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenContainer\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -22,7 +14,7 @@ function ISWoodenContainer:create(x, y, z, north, sprite)
 	self.javaObject:setBreakSound(IsoThumpable.GetBreakFurnitureSound(sprite));
 
 	local sharedSprite = getSprite(self:getSprite())
-	if self.sq and sharedSprite and sharedSprite:getProperties():Is("IsStackable") then
+	if self.sq and sharedSprite and sharedSprite:getProperties():has("IsStackable") then
 		local props = ISMoveableSpriteProps.new(sharedSprite)
 		self.javaObject:setRenderYOffset(props:getTotalTableHeight(self.sq))
 	end
@@ -59,7 +51,7 @@ function ISWoodenContainer:isValid(square)
     if buildUtil.stairIsBlockingPlacement( square, true ) then return false; end
 	if not self:haveMaterial(square) then return false end
 	local sharedSprite = getSprite(self:getSprite())
-	if square and sharedSprite and sharedSprite:getProperties():Is("IsStackable") then
+	if square and sharedSprite and sharedSprite:getProperties():has("IsStackable") then
 		local props = ISMoveableSpriteProps.new(sharedSprite)
 		return props:canPlaceMoveable("bogus", square, nil)
 	end

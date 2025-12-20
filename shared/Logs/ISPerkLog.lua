@@ -1,16 +1,4 @@
---[[---------------------------------------------
--------------------------------------------------
---
--- ISPerkLog
---
--- eris
---
--------------------------------------------------
---]]---------------------------------------------
-
 require "Logs/ISLogSystem";
-
---[[--========  ========--]]--
 
 local function inBrackets(_string) return "["..tostring(_string).."]"; end;
 
@@ -30,15 +18,7 @@ local function getPerkLevels(_character)
     return perkLevels;
 end
 
---[[--========  ========--]]--
-
 ISPerkLog = {};
-
---[[--======== logPerkLevelChange ========--
-    @param _character   - local IsoPlayer
-    @param _perk        - PerkFactory.Perk
-    @param _perkLevel   - new perk level
-]]--
 
 function ISPerkLog.logPerkLevelChange(_character, _perk, _perkLevel)
     if getServerOptions():getBoolean("PerkLogs") then
@@ -59,10 +39,6 @@ function ISPerkLog.logPerkLevelChange(_character, _perk, _perkLevel)
     end;
 end
 
---[[--======== logAllPerks ========--
-    @param _character - local IsoPlayer
-]]--
-
 function ISPerkLog.logAllPerks(_character)
     if getServerOptions():getBoolean("PerkLogs") then
         if isClient() and _character and _character:isLocalPlayer() then
@@ -77,10 +53,6 @@ function ISPerkLog.logAllPerks(_character)
         end;
     end;
 end
-
---[[--======== logCreatePlayer ========--
-    @param _character - local IsoPlayer
-]]--
 
 function ISPerkLog.logCreatePlayer(_player)
     if getServerOptions():getBoolean("PerkLogs") then
@@ -100,11 +72,6 @@ function ISPerkLog.logCreatePlayer(_player)
     end;
 end
 
-
---[[--======== logLogin ========--
-    @param _character - local IsoPlayer
-]]--
-
 function ISPerkLog.logLogin(_character)
     if getServerOptions():getBoolean("PerkLogs") then
         if isClient() and _character and _character:isLocalPlayer() then
@@ -120,10 +87,6 @@ function ISPerkLog.logLogin(_character)
     end;
 end
 
---[[--======== logDeath ========--
-    @param _character - local IsoPlayer
-]]--
-
 function ISPerkLog.logDeath(_character)
     if getServerOptions():getBoolean("PerkLogs") then
         if isClient() and _character and _character:isLocalPlayer() then
@@ -138,8 +101,6 @@ function ISPerkLog.logDeath(_character)
         end;
     end;
 end
-
---[[--======== init ========--]]--
 
 function ISPerkLog.init()
     Events.EveryOneMinute.Remove(ISPerkLog.init)

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISHandcraftWindow = ISCollapsableWindow:derive("ISHandcraftWindow");
@@ -24,7 +19,7 @@ function ISHandcraftWindow:createChildren()
     if self.isoObject then
 		local header = getText("IGUI_CraftingWindow_Header");
 		local props = self.isoObject:getProperties();
-		local surface = (props and props:Is("IsMoveAble") and props:Is("CustomName") and props:Val("CustomName")) or getText("IGUI_CraftingWindow_Surface"); --self.isoObject:getProperties():Is("IsMoveAble") and  
+		local surface = (props and props:has("IsMoveAble") and props:has("CustomName") and props:get("CustomName")) or getText("IGUI_CraftingWindow_Surface"); --self.isoObject:getProperties():has("IsMoveAble") and
         self.windowHeader.titleStr = header .. surface;
     end
     self.windowHeader:initialise();
@@ -180,7 +175,7 @@ function ISHandcraftWindow:prerender()
 
             local header = getText("IGUI_CraftingWindow_Header");
             local props = self.isoObject:getProperties();
-            local surface = (props and props:Is("IsMoveAble") and props:Is("CustomName") and props:Val("CustomName")) or getText("IGUI_CraftingWindow_Surface"); --self.isoObject:getProperties():Is("IsMoveAble") and
+            local surface = (props and props:has("IsMoveAble") and props:has("CustomName") and props:get("CustomName")) or getText("IGUI_CraftingWindow_Surface"); --self.isoObject:getProperties():has("IsMoveAble") and
             self.windowHeader.title.name = header .. surface;
         else
 --             self.isoObject:setOutlineHighlight(false);
@@ -388,6 +383,7 @@ function ISHandcraftWindow:new(x, y, width, height, player, isoObject, queryOver
     o.title = nil;
     --o.resizable = false;
     o.drawFrame = true;
+    o.locked = true;
 
     -- reduced distance to be consistent with the distance at which you can initially interact with a workstation
     o.panelCloseDistance = 2;
@@ -395,8 +391,6 @@ function ISHandcraftWindow:new(x, y, width, height, player, isoObject, queryOver
     o.isoObject = isoObject;
     o.queryOverride = queryOverride;
     o.isoObjectInProximity = true;
-    
-    o.locked = false;
     o.lockedButtonTexture = getTexture("media/ui/inventoryPanes/Button_Lock.png");
     o.unlockedButtonTexture = getTexture("media/ui/inventoryPanes/Button_LockOpen.png");
     o.originalSquare = player:getSquare();
@@ -404,11 +398,12 @@ function ISHandcraftWindow:new(x, y, width, height, player, isoObject, queryOver
     o.resizable = true;
     o.enableHeader = true;
 
-    o.minimumWidth = 600;
+    o.minimumWidth = 1200;
     o.minimumHeight = 400;
 
     o.maximumWidth = 0;
     o.maximumHeight = 0;
+    o.locked = false;
 
     o.maximumHeightPercent = -1;
 

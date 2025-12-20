@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPickAxeGroundCoverItem = ISBaseTimedAction:derive("ISPickAxeGroundCoverItem");
@@ -9,7 +5,7 @@ ISPickAxeGroundCoverItem = ISBaseTimedAction:derive("ISPickAxeGroundCoverItem");
 local function predicatePickAxe(item)
 	if item:isBroken() then return false end
 	local type = item:getType()
-	return item:hasTag("Hammer") or item:hasTag("Sledgehammer") or item:hasTag("ClubHammer") or item:hasTag("PickAxe") or type == "PickAxe" or item:hasTag("StoneMaul")
+	return item:hasTag(ItemTag.HAMMER) or item:hasTag(ItemTag.SLEDGEHAMMER) or item:hasTag(ItemTag.CLUB_HAMMER) or item:hasTag(ItemTag.PICK_AXE) or type == "PickAxe" or item:hasTag(ItemTag.STONE_MAUL)
 end
 
 function ISPickAxeGroundCoverItem:isValid()
@@ -40,10 +36,10 @@ function ISPickAxeGroundCoverItem:start()
 	if not self.pickAxe then
 		self.pickAxe = self.character:getPrimaryHandItem();
 	end
-	if self.pickAxe and not self.pickAxe:isTwoHandWeapon() then
-	    self:setActionAnim(CharacterActionAnims.BuildLow)
-	else
+	if self.pickAxe and self.character:getSecondaryHandItem() and self.pickAxe == self.character:getSecondaryHandItem() then
 	    self:setActionAnim("DestroyFloor")
+	else
+	    self:setActionAnim(CharacterActionAnims.BuildLow)
 	end
 	addSound(self.character, self.character:getX(),self.character:getY(),self.character:getZ(), 20, 10);
 end
@@ -102,14 +98,12 @@ function ISPickAxeGroundCoverItem:perform()
                 addXp(self.character, Perks.Masonry, 5);
             end
         elseif self.objectType == "LimestoneBoulder" then
-			self.item:getSquare():SpawnWorldInventoryItem("Base.CrushedLimestone", 0.0, 0.0, 0.0)
+			self.item:getSquare():SpawnWorldInventoryItem("Base.Limestone", 0.0, 0.0, 0.0)
             trashItem = "Base.Limestone"
             xp = true
             local roll = ZombRand(4) + 1
             for i = 1, roll do
-                local trashItem2 = "Base.Limestone"
-                if ZombRand(3) == 0 then trashItem2 = "Base.CrushedLimestone" end
-			    self.item:getSquare():SpawnWorldInventoryItem(trashItem2, 0.0, 0.0, 0.0)
+			    self.item:getSquare():SpawnWorldInventoryItem(trashItem, 0.0, 0.0, 0.0)
                 addXp(self.character, Perks.Masonry, 5);
             end
 		end
@@ -174,7 +168,7 @@ function ISPickAxeGroundCoverItem:new(character, item)
 	local o = ISBaseTimedAction.new(self, character)
 	o.item = item;
     local props = item:getSprite():getProperties()
-    local objectType = props:Is("CustomName") and props:Val("CustomName") or nil
+    local objectType = props:has("CustomName") and props:get("CustomName") or nil
 	o.objectType = objectType;
 	o.cornerCounter = -1;
 	if cornerCounter ~= nil then
@@ -190,3 +184,4 @@ function ISPickAxeGroundCoverItem:new(character, item)
 	o.pickAxe = character:getPrimaryHandItem();
 	return o;
 end
+

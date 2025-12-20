@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**   Contextual inventory menu for all the camping stuff **
---***********************************************************
-
 require 'Camping/CCampfireSystem'
 
 ISCampingMenu = {};
@@ -52,15 +47,15 @@ function ISCampingMenu.isPetrol(item)
 end
 
 function ISCampingMenu.isValidFuel(item)
-	return (item and not item:hasTag("NotFireFuel") and ISCampingMenu.shouldBurn(item) and
-			((item:hasTag("IsFireFuel") or item:getFireFuelRatio() > 0) or
+	return (item and ISCampingMenu.shouldBurn(item) and
+			((item:hasTag(ItemTag.IS_FIRE_FUEL) or item:getFireFuelRatio() > 0) or
 					(campingFuelCategory[item:getCategory()] and campingFuelCategory[item:getCategory()] ~= 0) or
 					(campingFuelType[item:getType()] and campingFuelType[item:getType()] ~= 0)))
 end
 
 function ISCampingMenu.isValidTinder(item)
-	return (item and not item:hasTag("NotFireTinder") and ISCampingMenu.shouldBurn(item) and
-			(item:hasTag("IsFireTinder") or
+	return (item and ISCampingMenu.shouldBurn(item) and
+			(item:hasTag(ItemTag.IS_FIRE_TINDER) or
 					(campingLightFireType[item:getType()] and campingLightFireType[item:getType()] ~= 0) or
 					(campingLightFireCategory[item:getCategory()] and campingLightFireCategory[item:getCategory()] ~= 0)))
 end
@@ -90,7 +85,7 @@ function ISCampingMenu.getFuelDurationForItem(item)
 end
 
 function ISCampingMenu.getFuelItemUses(item)
-	if not item:IsDrainable() then return 1 end
+	if not item:IsDrainable() or item:hasTag(ItemTag.IS_FIRE_FUEL_SINGLE_USE) then return 1 end
 	return item:getCurrentUses()
 end
 
@@ -119,7 +114,7 @@ function ISCampingMenu.getNearbyFuelInfo(playerObj)
 			item = container:getItems():get(j-1)
 			type = item:getType()
 			local uses = item:getCurrentUses()
-			if (item:hasTag("StartFire") or type == "Lighter" or type == "Matches") and (item:getCurrentUses() > 0) then
+			if (item:hasTag(ItemTag.START_FIRE) or type == "Lighter" or type == "Matches") and (item:getCurrentUses() > 0) then
 				if not starterTypes[type] then
 					table.insert(fuel.starters, item)
 					starterTypes[type] = true
@@ -212,6 +207,7 @@ function ISCampingMenu.doAddFuelOption(context, worldobjects, currentFuel, fuelI
 			label = label..' ('..originalCount..')'
 			local subMenu = context:getNew(subMenuFuel)
 			option = subMenuFuel:addOption(label)
+			option.itemForTexture = item
 			subMenuFuel:addSubMenu(option, subMenu)
 
 			option = subMenu:addActionsOption(getText("ContextMenu_One"), ISCampingMenu.onAddFuel, target, item:getFullType(), timedAction, currentFuel)
@@ -226,7 +222,7 @@ function ISCampingMenu.doAddFuelOption(context, worldobjects, currentFuel, fuelI
             if allReallyFits then
 			    option = subMenu:addActionsOption(getText("ContextMenu_AllWithCount", count), ISCampingMenu.onAddMultipleFuel, target, item:getFullType(), timedAction, currentFuel)
             else
-			    option = subMenu:addActionsOption(getText("ContextMenu_AllThatFitsWithCount", count), ISCampingMenu.onAddMultipleFuel, target, item:getFullType(), timedAction, currentFuel)
+			    option = subMenu:addActionsOption(getText("ContextMenu_AllThatFitsWithCount", count), ISCampingMenu.onAddMultipleFuel, target, item:getFullType(), timedAction, currentFuel, count)
             end
 			option.toolTip = ISWorldObjectContextMenu.addToolTip()
 			option.toolTip.description = getText("IGUI_BBQ_FuelAmount", ISCampingMenu.timeString(ISCampingMenu.getFuelDurationForItem(item) * count))
@@ -237,6 +233,7 @@ function ISCampingMenu.doAddFuelOption(context, worldobjects, currentFuel, fuelI
             end
 		else
 			option = subMenuFuel:addActionsOption(label, ISCampingMenu.onAddFuel, target, item:getFullType(), timedAction, currentFuel)
+			option.itemForTexture = item
 			option.toolTip = ISWorldObjectContextMenu.addToolTip()
 			option.toolTip.description = getText("IGUI_BBQ_FuelAmount", ISCampingMenu.timeString(ISCampingMenu.getFuelDurationForItem(item)))
             if ( currentFuel + ISCampingMenu.getFuelDurationForItem(item) ) > getCampingFuelMax() then
@@ -269,7 +266,8 @@ function ISCampingMenu.doLightFireOption(playerObj, context, worldobjects, hasFu
 
 	if not table.isempty(fuelInfo.starters) and hasFuel and fuelInfo.petrol then
 		for _,item in ipairs(fuelInfo.starters) do
-			subMenu:addActionsOption(fuelInfo.petrol:getName()..' + '..item:getName(), ISCampingMenu.onLightFromPetrol, item, fuelInfo.petrol, target, petrolAction)
+			local option = subMenu:addActionsOption(fuelInfo.petrol:getName()..' + '..item:getName(), ISCampingMenu.onLightFromPetrol, item, fuelInfo.petrol, target, petrolAction)
+			option.itemForTexture = fuelInfo.petrol
 		end
 	end
 
@@ -285,6 +283,7 @@ function ISCampingMenu.doLightFireOption(playerObj, context, worldobjects, hasFu
 			end
 			for _,item in ipairs(fuelInfo.starters) do
 				option = subMenu:addActionsOption(label..' + '..item:getName(), ISCampingMenu.onLightFromLiterature, v:getFullType(), item, target, tinderAction)
+			    option.itemForTexture = v
 				option.toolTip = ISWorldObjectContextMenu.addToolTip()
 				option.toolTip.description = getText("IGUI_BBQ_FuelAmount", ISCampingMenu.timeString(round(fuelAmt,2)))
 			end
@@ -292,32 +291,32 @@ function ISCampingMenu.doLightFireOption(playerObj, context, worldobjects, hasFu
 	end
 
 	if fuelInfo.percedWood then
--- 	if fuelInfo.percedWood and hasFuel and playerObj:getStats():getEndurance() > 0 then
-		if (fuelInfo.stick or fuelInfo.branch) and hasFuel and playerObj:getStats():getEndurance() > 0 then
+		if (fuelInfo.stick or fuelInfo.branch) and hasFuel and playerObj:getStats():get(CharacterStat.ENDURANCE) > 0 then
 			local item = fuelInfo.stick or fuelInfo.branch
-			subMenu:addActionsOption(fuelInfo.percedWood:getName()..' + '..item:getName(), ISCampingMenu.onLightFromKindle, fuelInfo.percedWood, item, target, kindleAction);
+			local option = subMenu:addActionsOption(fuelInfo.percedWood:getName()..' + '..item:getName(), ISCampingMenu.onLightFromKindle, fuelInfo.percedWood, item, target, kindleAction);
+			option.itemForTexture = fuelInfo.percedWood
         else
 			local option = subMenu:addOption(fuelInfo.percedWood:getName(), worldobjects, nil);
+			option.itemForTexture = fuelInfo.percedWood
 			option.notAvailable = true;
 			local tooltip = ""
 
-			if playerObj:getStats():getEndurance() <= 0 then
-                if string.len(tooltip) > 0 then tooltip = tooltip .. "<LINE>" end
+			if playerObj:getStats():get(CharacterStat.ENDURANCE) <= 0 then
+                if string.len(tooltip) > 0 then tooltip = tooltip .. " <LINE> " end
                 tooltip = tooltip ..getText("Tooltip_lightFireNoEndurance")
             end
 
 			if (not fuelInfo.stick) and (not fuelInfo.branch) then
-                if string.len(tooltip) > 0 then tooltip = tooltip .. "<LINE>" end
+                if string.len(tooltip) > 0 then tooltip = tooltip .. " <LINE> " end
                 tooltip = tooltip ..getText("Tooltip_lightFireNoStick")
             end
 
 			if (not hasFuel) then
-                if string.len(tooltip) > 0 then tooltip = tooltip .. "<LINE>" end
+                if string.len(tooltip) > 0 then tooltip = tooltip .. " <LINE> " end
                 tooltip = tooltip ..getText("Tooltip_lightFireNoFuel")
             end
 			option.toolTip = ISWorldObjectContextMenu.addToolTip()
 			option.toolTip:setName(fuelInfo.percedWood:getName())
-			print("tooltip " .. tostring(tooltip))
 			option.toolTip.description = tooltip
         end
 	end
@@ -327,84 +326,6 @@ function ISCampingMenu.doLightFireOption(playerObj, context, worldobjects, hasFu
 		context:addSubMenu(option, subMenu);
 	end
 
-end
-
-ISCampingMenu.doCampingMenu = function(player, context, worldobjects, test)
-
-	if test and ISWorldObjectContextMenu.Test then return true end
-
-	local playerObj = getSpecificPlayer(player)
-	if playerObj:getVehicle() then return end
-
-	-- TODO: the following section is to be removed in build 43.
-	if true then
-		if test then return ISWorldObjectContextMenu.setTest() end
-		local disabledOption = context:addOption(getText("ContextMenu_CampfireKit"), worldobjects, ISCampingMenu.onPlaceCampfire, player) --, campfireKit);
-		local tooltip = ISWorldObjectContextMenu.addToolTip()
-		tooltip.description = getText("ContextMenu_CampfireKit_tooltip")
-		disabledOption.toolTip = tooltip
-		disabledOption.isDisabled = true;
-
-		local disabledOption2 = context:addOption(getText("ContextMenu_Firetiles"));
-		local tooltip = ISWorldObjectContextMenu.addToolTip()
-		tooltip.description = getText("ContextMenu_Firetiles_tooltip")
-		disabledOption2.toolTip = tooltip
-		disabledOption2.isDisabled = true;
-	end
-	-- TODO: the preceding section is to be removed in build 43.
-
-	local campfire = nil
-
-	for _,v in ipairs(worldobjects) do
-		campfire = CCampfireSystem.instance:getLuaObjectOnSquare(v:getSquare())
-	end
-
-	if not campfire then return end
-	if test then return ISWorldObjectContextMenu.setTest() end
-
--- 	local fuelInfo = ISCampingMenu.getNearbyFuelInfo(playerObj)
---
--- 	local isoCampfireObject = campfire:getIsoObject()
--- 	local distance = playerObj:DistToSquared(isoCampfireObject:getX() + 0.5, isoCampfireObject:getY() + 0.5)
--- 	local option = context:addOption(getText("ContextMenu_CampfireInfo"), worldobjects, ISCampingMenu.onDisplayInfo, playerObj, isoCampfireObject, campfire)
--- 	if distance < 4 then -- distance < 2 * 2
--- 		option.toolTip = ISToolTip:new()
--- 		option.toolTip:initialise()
--- 		option.toolTip:setVisible(false)
--- 		option.toolTip:setName(getText("IGUI_Campfire_Campfire"))
--- 		option.toolTip.description = getText("IGUI_BBQ_FuelAmount", ISCampingMenu.timeString(luautils.round(campfire.fuelAmt))) ..
--- 				" (" .. (campfire.isLit and getText("IGUI_Fireplace_Burning") or getText("IGUI_Fireplace_Unlit")) .. ")"
--- 	end
---
--- 	-- Add corpse to fire
--- 	if playerObj:isGrappling() then
--- 		option = context:addOption(getText("ContextMenu_CampfireCorpse"), worldobjects, ISCampingMenu.onDropCorpse, playerObj, isoCampfireObject, campfire)
--- 		if campfire.isLit then
--- 			option.notAvailable = true
--- 			option.toolTip = ISToolTip:new()
--- 			option.toolTip:initialise()
--- 			option.toolTip:setVisible(false)
--- 			option.toolTip:setName(getText("ContextMenu_CampfireCorpse"))
--- 			option.toolTip.description = getText("Tooltip_campfire_addcorpse")
--- 		elseif distance > 1.5 then
--- 			option.notAvailable = true
--- 			option.toolTip = ISToolTip:new()
--- 			option.toolTip:initialise()
--- 			option.toolTip:setVisible(false)
--- 			option.toolTip:setName(getText("ContextMenu_CampfireCorpse"))
--- 			option.toolTip.description = getText("Tooltip_campfire_addcorpse_far")
--- 		end
--- 	end
---
--- 	ISCampingMenu.doAddFuelOption(context, worldobjects, campfire.fuelAmt or 0, fuelInfo, campfire, ISAddFuelAction)
---
--- 	if campfire.isLit then
--- 		context:addOption(campingText.putOutCampfire, worldobjects, ISCampingMenu.onPutOutCampfire, playerObj, campfire)
--- 	else
--- 		ISCampingMenu.doLightFireOption(playerObj, context, worldobjects, campfire.fuelAmt and campfire.fuelAmt > 0,
--- 				fuelInfo, campfire, ISLightFromPetrol, ISLightFromLiterature, ISLightFromKindle)
--- 	end
-	context:addOption(campingText.removeCampfire, worldobjects, ISCampingMenu.onRemoveCampfire, playerObj, campfire);
 end
 
 function ISCampingMenu.toPlayerInventory(playerObj, item)
@@ -439,6 +360,27 @@ function ISCampingMenu.onDropCorpse(worldobjects, playerObj, isoCampfireObject, 
 end
 
 function ISCampingMenu.walkToCampfire(playerObj, square)
+    for i=1,square:getObjects():size() do
+        local object = square:getObjects():get(i-1)
+        if instanceof(object, 'IsoFireplace') and not square:isSolid() and not square:isSolidTrans() then
+            local x = square:getX()
+            local y = square:getY()
+            local z = square:getZ()
+            if object:getProperties():has(IsoFlagType.collideW) then
+                x = x + 0.8
+                y = y + 0.5
+            else
+                x = x + 0.5
+                y = y + 0.8
+            end
+            if (square:getZ() == playerObj:getCurrentSquare():getZ()) and
+                    (playerObj:DistToSquared(x, y) < 0.2 * 0.2) then
+                return true
+            end
+            ISTimedActionQueue.add(ISPathFindAction:pathToLocationF(playerObj, x, y, z))
+            return true
+        end
+    end
 	local adjacent = AdjacentFreeTileFinder.FindClosest(square, playerObj)
 	if adjacent == nil then return false end
 	local x = adjacent:getX()
@@ -468,59 +410,6 @@ function ISCampingMenu.walkToCampfire(playerObj, square)
 	return true
 end
 
--- deprecated
-ISCampingMenu.doSleepOption = function(context, bed, player, playerObj)
-	--local sleepOption = context:addOption(getText("ContextMenu_Sleep"), bed, ISWorldObjectContextMenu.onSleep, player);
-	--local tooltipText = nil
-	--local sleepNeeded = not isClient() or getServerOptions():getBoolean("SleepNeeded")
-	---- Not tired enough
-	--if sleepNeeded and (playerObj:getStats():getFatigue() <= 0.3) then
-	--    sleepOption.notAvailable = true;
-	--    tooltipText = getText("IGUI_Sleep_NotTiredEnough");
-	--end
-	--
-	--local isZombies = playerObj:getStats():getNumVisibleZombies() > 0 or playerObj:getStats():getNumChasingZombies() > 0 or playerObj:getStats():getNumVeryCloseZombies() > 0
-	--if sleepNeeded and isZombies then
-	--    sleepOption.notAvailable = true;
-	--    tooltipText = getText("IGUI_Sleep_NotSafe");
-	--end
-	--
-	--if sleepNeeded and ((playerObj:getHoursSurvived() - playerObj:getLastHourSleeped()) <= 1) then
-	--	-- cant go right back to sleep even with pills (sleeping pill exploit)
-	--	sleepOption.notAvailable = true;
-	--	tooltipText = getText("ContextMenu_NoSleepTooEarly");
-	--	-- Sleeping pills counter those sleeping problems
-	--elseif playerObj:getSleepingTabletEffect() < 2000 then
-	--    -- In pain, can still sleep if really tired
-	--    if playerObj:getMoodles():getMoodleLevel(MoodleType.Pain) >= 2 and playerObj:getStats():getFatigue() <= 0.85 then
-	--        sleepOption.notAvailable = true;
-	--        tooltipText = getText("ContextMenu_PainNoSleep");
-	--        -- In panic
-	--    elseif playerObj:getMoodles():getMoodleLevel(MoodleType.Panic) >= 1 then
-	--        sleepOption.notAvailable = true;
-	--        tooltipText = getText("ContextMenu_PanicNoSleep");
-	--        -- tried to sleep not so long ago
-	--    end
-	--end
-	--
-	--local bedType = ISWorldObjectContextMenu.getBedQuality(bed)
-	--local bedTypeXln = getTextOrNull("Tooltip_BedType_" .. bedType)
-	--if bedTypeXln then
-	--    if tooltipText then
-	--        tooltipText = tooltipText .. " <BR> " .. getText("Tooltip_BedType", bedTypeXln)
-	--    else
-	--        tooltipText = getText("Tooltip_BedType", bedTypeXln)
-	--    end
-	--end
-	--
-	--if tooltipText then
-	--    local sleepTooltip = ISWorldObjectContextMenu.addToolTip();
-	--    sleepTooltip:setName(getText("ContextMenu_Sleeping"));
-	--    sleepTooltip.description = tooltipText;
-	--    sleepOption.toolTip = sleepTooltip;
-	--end
-end
-
 ISCampingMenu.onAddFuel = function(playerObj, target, fuelType, timedAction, currentFuel)
 	--if not ISCampingMenu.isValidCampfire(campfire) then return end
 	local fuelItem = nil
@@ -540,11 +429,19 @@ ISCampingMenu.onAddFuel = function(playerObj, target, fuelType, timedAction, cur
 	ISTimedActionQueue.add(timedAction:new(playerObj, target, fuelItem, fuelAmt))
 end
 
-local function addFuel(playerObj, target, fuelItems, timedAction, currentFuel)
-	if fuelItems:isEmpty() then return end
+local function addFuel(playerObj, target, fuel, timedAction, currentFuel, count)
+	if fuel:isEmpty() then return end
+	local max = fuel:size()
+	if count then max = count end
+
+    local fuelItems = ArrayList.new();
+	for i=1,max do
+        fuelItems:add(fuel:get(i-1))
+    end
+
 	ISCampingMenu.toPlayerInventory(playerObj, fuelItems)
 	if not ISCampingMenu.walkToCampfire(playerObj, target:getSquare()) then return end
-	for i=1,fuelItems:size() do
+	for i=1,max do
 		local fuelItem = fuelItems:get(i-1)
 		if playerObj:isEquipped(fuelItem) then
 			ISTimedActionQueue.add(ISUnequipAction:new(playerObj, fuelItem, 50))
@@ -567,37 +464,14 @@ ISCampingMenu.onAddAllFuel = function(playerObj, target, timedAction, currentFue
 	fuelItemList:clear() -- dont forget to clear!
 end
 
-ISCampingMenu.onAddMultipleFuel = function(playerObj, target, fuelType, timedAction, currentFuel)
+ISCampingMenu.onAddMultipleFuel = function(playerObj, target, fuelType, timedAction, currentFuel, count)
 	local containers = ISInventoryPaneContextMenu.getContainers(playerObj)
 	for i=1,containers:size() do
 		local container = containers:get(i-1)
 		container:getAllTypeEval(fuelType, ISCampingMenu.isValidFuel, fuelItemList)
 	end
-	addFuel(playerObj, target, fuelItemList, timedAction, currentFuel)
+	addFuel(playerObj, target, fuelItemList, timedAction, currentFuel, count)
 	fuelItemList:clear() -- dont forget to clear!
-end
-
--- deprecated
-ISCampingMenu.onPlaceCampfire = function(worldobjects, player) --, campfireKit)
-	--local playerObj = getSpecificPlayer(player)
-	--
-	--
-	--local containers = ISInventoryPaneContextMenu.getContainers(playerObj)
-	--local newCount = 0
-	--for i=1,containers:size() do
-	--	local container = containers:get(i-1)
-	--	for j=1,container:getItems():size() do
-	--		local item = container:getItems():get(j-1)
-	--		if item:getType() == "Stone2" and newCount < 3 then
-	--			ISCampingMenu.toPlayerInventory(playerObj, item)
-	--			newCount = newCount + 1
-	--			if newCount >=3 then break end
-	--		end
-	--	end
-	--end
-	--local bo = campingCampfire:new(getSpecificPlayer(player))
-	--bo.player = player
-	--getCell():setDrag(bo, player)
 end
 
 ISCampingMenu.onPutOutCampfire = function(worldobjects, playerObj, campfire)
@@ -642,15 +516,7 @@ ISCampingMenu.onLightFromKindle = function(playerObj, percedWood, stickOrBranch,
 	ISCraftingUI.ReturnItemToContainer(playerObj, stickOrBranch, stickCont)
 	ISCraftingUI.ReturnItemToContainer(playerObj, percedWood, percCont)
 end
---[[
-ISCampingMenu.onAddPetrol = function(worldobjects, player, petrol, campfire)
-	local playerObj = getSpecificPlayer(player)
-	ISCampingMenu.toPlayerInventory(playerObj, petrol)
-	if ISCampingMenu.walkToCampfire(playerObj, campfire:getSquare()) then
-		ISTimedActionQueue.add(ISAddPetrolAction:new(playerObj, campfire, petrol, 10));
-	end
-end
---]]
+
 ISCampingMenu.onLightFromPetrol = function(playerObj, lighter, petrol, target, timedAction)
 	timedAction = timedAction or ISLightFromPetrol
 	local lighterCont = lighter:getContainer()
@@ -661,13 +527,3 @@ ISCampingMenu.onLightFromPetrol = function(playerObj, lighter, petrol, target, t
 	end
 	ISCraftingUI.ReturnItemToContainer(playerObj, lighter, lighterCont)
 end
-
--- deprecated
-ISCampingMenu.onRest = function(worldobjects, player, tent)
-	local playerObj = getSpecificPlayer(player)
-	if luautils.walkAdj(playerObj, tent:getSquare()) then
-		ISTimedActionQueue.add(ISRestAction:new(playerObj), tent, false);
-	end
-end
-
-Events.OnFillWorldObjectContextMenu.Add(ISCampingMenu.doCampingMenu);

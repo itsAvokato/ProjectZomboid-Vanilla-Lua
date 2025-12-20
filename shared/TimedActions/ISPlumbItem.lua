@@ -1,14 +1,9 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISPlumbItem = ISBaseTimedAction:derive("ISPlumbItem");
 
 function ISPlumbItem:isValid()
 	return self.character:isEquipped(self.wrench);
---	return true;
 end
 
 function ISPlumbItem:update()

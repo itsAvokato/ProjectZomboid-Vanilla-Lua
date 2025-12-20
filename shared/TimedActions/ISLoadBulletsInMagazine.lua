@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLoadBulletsInMagazine = ISBaseTimedAction:derive("ISLoadBulletsInMagazine")
@@ -15,7 +11,8 @@ function ISLoadBulletsInMagazine:isValid()
 end
 
 function ISLoadBulletsInMagazine:start()
-	if not self.character:getInventory():containsWithModule(self.magazine:getAmmoType()) then
+    local itemKey = self.magazine:getAmmoType():getItemKey();
+	if not self.character:getInventory():containsWithModule(itemKey) then
 		self:forceStop();
 		return;
 	end
@@ -43,8 +40,8 @@ function ISLoadBulletsInMagazine:initVars()
 end
 
 function ISLoadBulletsInMagazine:isLoadFinished()
-	return self.magazine:getCurrentAmmoCount() >= self.magazine:getMaxAmmo() or
-		not self.character:getInventory():containsWithModule(self.magazine:getAmmoType())
+    local itemKey = self.magazine:getAmmoType():getItemKey();
+	return self.magazine:getCurrentAmmoCount() >= self.magazine:getMaxAmmo() or not self.character:getInventory():containsWithModule(itemKey)
 end
 
 function ISLoadBulletsInMagazine:serverStart()
@@ -84,8 +81,8 @@ function ISLoadBulletsInMagazine:animEvent(event, parameter)
 			if ZombRand(chance) == 0 then
 				addXp(self.character, Perks.Reloading, xp)
 			end
-
-			local removedBullet = self.character:getInventory():RemoveOneOf(self.magazine:getAmmoType(), true)
+            local itemKey = self.magazine:getAmmoType():getItemKey();
+			local removedBullet = self.character:getInventory():RemoveOneOf(itemKey, true)
 			self.magazine:setCurrentAmmoCount(self.magazine:getCurrentAmmoCount() + 1)
 			sendRemoveItemFromContainer(self.character:getInventory(), removedBullet);
 			syncItemFields(self.character, self.magazine)
@@ -106,7 +103,6 @@ function ISLoadBulletsInMagazine:animEvent(event, parameter)
 		end
 	end
 end
-
 
 function ISLoadBulletsInMagazine:stop()
 	self.magazine:setJobDelta(0.0)

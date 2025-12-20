@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISOnScreenKeyboard = ISPanelJoypad:derive("ISOnScreenKeyboard")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -11,8 +7,6 @@ local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local KEY_HGT = FONT_HGT_MEDIUM + UI_BORDER_SPACING*2
 local JOYPAD_TEX_SIZE = 32
-
------
 
 -- The text-entry box at the top of the keyboard
 OnScreenKeyboardEntry = ISPanelJoypad:derive("OnScreenKeyboardEntry")
@@ -151,8 +145,6 @@ function OnScreenKeyboardEntry:new(x, y, width, height)
 	o.borderColor = {r=0.4, g=0.4, b=0.4, a=1}
 	return o
 end
-
------
 
 -- The panel that contains all the keyboard buttons
 OnScreenKeyboardPanel = ISPanelJoypad:derive("OnScreenKeyboardPanel")
@@ -401,8 +393,6 @@ function OnScreenKeyboardPanel:new(x, y, parent)
 	o:noBackground()
 	return o
 end
-
------
 
 function ISOnScreenKeyboard:createChildren()
 	self.toggleButtonBG = { r = 0.5, g = 0.75, b = 1.0, a = 1 }
@@ -676,8 +666,6 @@ function ISOnScreenKeyboard:new(x, y, width, height)
 	OnScreenKeyboard.instance = o
 	return o
 end
-
------
 
 OnScreenKeyboard = {}
 

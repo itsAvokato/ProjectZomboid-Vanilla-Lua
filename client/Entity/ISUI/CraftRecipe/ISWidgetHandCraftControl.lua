@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISWidgetHandCraftControl = ISPanelJoypad:derive("ISWidgetHandCraftControl");
@@ -14,11 +9,6 @@ local FONT_SCALE = getTextManager():getFontHeight(UIFont.Small) / 19; -- normali
 local BUTTON_SIZE = getTextManager():getFontHeight(UIFont.Small) * 1.5
 local ICON_SCALE = math.max(1, (FONT_SCALE - math.floor(FONT_SCALE)) < 0.5 and math.floor(FONT_SCALE) or math.ceil(FONT_SCALE));
 local BUTTON_ICON_SIZE = 16 * ICON_SCALE;
-
---************************************************************************--
---** ISWidgetHandCraftControl:initialise
---**
---************************************************************************--
 
 function ISWidgetHandCraftControl:initialise()
 	ISPanelJoypad.initialise(self);
@@ -120,7 +110,7 @@ function ISWidgetHandCraftControl:createChildren()
     -- Debug tool to force being able to do recipes regardless of knowing recipes, skills, whatever
     if isDebugEnabled() and debugSpam then
         self.buttonForceCraft = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISButton, 0, 0, BUTTON_SIZE * 1.5, BUTTON_SIZE, "Force Action")
-        self.buttonForceCraft.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
+        self.buttonForceCraft.iconTexture = getTexture("media/textures/Item_Plumpabug_Left.png");
         self.buttonForceCraft.joypadTextureWH = BUTTON_ICON_SIZE;
         --self.buttonPrev.image = getTexture("ArrowLeft");
         self.buttonForceCraft.font = UIFont.Small;
@@ -135,7 +125,7 @@ function ISWidgetHandCraftControl:createChildren()
     -- debug tool to know all recipes
 --     if isDebugEnabled() and debugSpam then
 --         self.buttonKnowAllRecipes = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISButton, 0, 0, BUTTON_SIZE * 1.5, BUTTON_SIZE, "(DEBUG) TOGGLE KNOW ALL RECIPES")
---         self.buttonKnowAllRecipes.iconTexture = getTexture("media/textures/Item_Insect_Aphid.png");
+--         self.buttonKnowAllRecipes.iconTexture = getTexture("media/textures/Item_Plumpabug_Left.png");
 --         --self.buttonPrev.image = getTexture("ArrowLeft");
 --         self.buttonKnowAllRecipes.font = UIFont.Small;
 --         self.buttonKnowAllRecipes.target = self;
@@ -302,6 +292,8 @@ function ISWidgetHandCraftControl:calculateLayout(_preferredWidth, _preferredHei
     self:setWidth(width);
     self:setHeight(height);
 
+    local joypadState = self:recordJoypadState()
+
     self.joypadButtonsY = {}
     self.joypadButtons = {}
     self.joypadIndexY = 1
@@ -313,6 +305,8 @@ function ISWidgetHandCraftControl:calculateLayout(_preferredWidth, _preferredHei
     if self.buttonForceCraft then
         self:insertNewLineOfButtons(self.buttonForceCraft)
     end
+
+    self:restoreJoypadState(joypadState)
 end
 
 function ISWidgetHandCraftControl:onResize()
@@ -480,32 +474,29 @@ function ISWidgetHandCraftControl:startHandcraft(force)
         self.craftTimes = 1;
     end
 
-    self.returnToContainer = {}; -- keep track of items we moved to put them back to their original container
-    --local items = self.logic:getRecipeData():getAllInputItems()
-    --local itemsToReturn = self.logic:getRecipeData():getAllPutBackInputItems()
-    --local recipe = self.logic:getRecipe()
-    --log(DebugType.CraftLogic, "Recipe " .. tostring(recipe))
+    self.returnToContainer = {};
+    local items = self.logic:getRecipeData():getAllInputItems()
+    local itemsToReturn = self.logic:getRecipeData():getAllPutBackInputItems()
 
---     if self.logic:isUsingRecipeAtHandBenefit() then
---         recipeAtHandItem = self.logic:getUsingRecipeAtHandItem()
---         if recipeAtHandItem then
---             items:add(recipeAtHandItem)
---             itemsToReturn:add(recipeAtHandItem)
---         end
---     end
+    if self.logic:isUsingRecipeAtHandBenefit() then
+        recipeAtHandItem = self.logic:getUsingRecipeAtHandItem()
+        if recipeAtHandItem then
+            items:add(recipeAtHandItem)
+            itemsToReturn:add(recipeAtHandItem)
+        end
+    end
 
-    --
-    --if not recipe:isCanBeDoneFromFloor() then
-    --    for i=1,items:size() do
-    --        local item = items:get(i-1)
-    --        if item:getContainer() ~= self.player:getInventory() then
-    --            ISTimedActionQueue.add(ISInventoryTransferAction:new(self.player, item, item:getContainer(), self.player:getInventory(), nil))
-    --            if itemsToReturn:contains(item) then
-    --                table.insert(self.returnToContainer, item)
-    --            end
-    --        end
-    --    end
-    --end
+    if not self.logic:getRecipe():isCanBeDoneFromFloor() then
+        for i=1,items:size() do
+        local item = items:get(i-1)
+            if item:getContainer() ~= self.player:getInventory() then
+                ISInventoryPaneContextMenu.transferIfNeeded(self.player, item)
+                if itemsToReturn:contains(item) then
+                    table.insert(self.returnToContainer, item)
+                end
+            end
+        end
+    end
 
     self.logic:updateManualInputAllowedItemTypes();
     
@@ -523,6 +514,7 @@ function ISWidgetHandCraftControl:startHandcraft(force)
             return
         end
     end
+    ISCraftingUI.ReturnItemsToOriginalContainer(self.player, self.returnToContainer)
 end
 
 function ISWidgetHandCraftControl:onHandcraftActionStart(action)
@@ -547,8 +539,6 @@ function ISWidgetHandCraftControl:onHandcraftActionComplete()
 
     if not self.craftTimes then
         self.logic:stopCraftAction();
-        ISCraftingUI.ReturnItemsToOriginalContainer(self.player, self.returnToContainer)
-        --self.logic:stopCraftAction();
     end
 end
 
@@ -612,10 +602,6 @@ function ISWidgetHandCraftControl:onLoseJoypadFocus(joypadData)
     self:clearJoypadFocus()
 end
 
---************************************************************************--
---** ISWidgetHandCraftControl:new
---**
---************************************************************************--
 function ISWidgetHandCraftControl:new(x, y, width, height, player, logic)
     local o = ISPanelJoypad.new(self, x, y, width, height);
 

@@ -58,6 +58,9 @@ function ISGrabCorpseAction:perform()
 end
 
 function ISGrabCorpseAction:complete()
+    if self.corpseBody == nil then
+        return false;
+    end
     -- so animal corpse grabbing still works!
     if self.corpse and "Base.CorpseAnimal" == self.corpse:getFullType() then
         self.character:getInventory():AddItem(self.corpse);
@@ -103,7 +106,9 @@ end
 function ISGrabCorpseAction:new (character, corpseBody)
     local o = ISBaseTimedAction.new(self, character)
     o.corpseBody = corpseBody
-    o.corpse = corpseBody:getItem();
+    if corpseBody ~= nil then
+        o.corpse = corpseBody:getItem();
+    end
     o.maxTime = o:getDuration();
     o.forceProgressBar = true;
     return o

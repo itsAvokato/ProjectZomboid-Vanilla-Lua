@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 Vehicles = {}
 Vehicles.CheckEngine = {}
 Vehicles.CheckOperate = {}
@@ -295,6 +291,10 @@ function Vehicles.Create.Headlight(vehicle, part)
 	VehicleUtils.initHeadlight(vehicle, part)
 end
 
+function Vehicles.Create.Headlight_Racecar(vehicle, part)
+    return
+end
+
 function Vehicles.Create.Radio(vehicle, part)
 	local deviceData = part:createSignalDevice()
 	local invItem = VehicleUtils.createPartInventoryItem_Radio(part)
@@ -335,8 +335,13 @@ function Vehicles.Create.Radio_HAM(vehicle, part)
 		deviceData:setUseDelta(invItem:getDeviceData():getUseDelta())
 		deviceData:setMediaType(invItem:getDeviceData():getMediaType())
 		deviceData:generatePresets()
+		deviceData:addEmergencyChannel()
 		deviceData:setRandomChannel()	
 	end
+end
+
+function Vehicles.Create.Radio_Racecar(vehicle, part)
+    return
 end
 
 function Vehicles.InstallComplete.Radio (vehicle, part) -- ,player)
@@ -401,6 +406,16 @@ end
 
 function Vehicles.Create.Window(vehicle, part)
 	local item = VehicleUtils.createPartInventoryItem(part)
+end
+
+function Vehicles.Create.Seat_Racecar(vehicle, part)
+	local seat = part:getContainerSeatNumber()
+	local areaId = vehicle:getPassengerArea(seat)
+	DebugLog.log("areaId 1")
+	DebugLog.log(tostring(areadId))
+	if areaId == "SeatFrontLeft" then
+        local item = VehicleUtils.createPartInventoryItem(part)
+    end
 end
 
 function Vehicles.Init.Door(vehicle, part)
@@ -494,11 +509,6 @@ function Vehicles.Update.Battery(vehicle, part, elapsedMinutes)
 	if part:getInventoryItem() then
 		local chargeOld = part:getInventoryItem():getCurrentUsesFloat()
 		local charge = chargeOld
-		-- Starting the engine drains the battery
-		local engineStarted = vehicle:isEngineRunning()
-		if engineStarted and not part:getModData().engineStarted then
-			charge = charge - 0.025
-		end
 		part:getModData().engineStarted = engineStarted
 		-- Running the engine charges the battery
 		if elapsedMinutes > 0 and vehicle:isEngineRunning() then
@@ -939,6 +949,7 @@ function Vehicles.UninstallTest.Default(vehicle, part, chr)
 	if not VehicleUtils.testTraits(chr, keyvalues.traits) then return false end
 	if not VehicleUtils.testItems(chr, keyvalues.items, typeToItem, tagToItem) then return false end
 	if keyvalues.requireEmpty and round(part:getContainerContentAmount(), 3) > 0 then return false end
+	if keyvalues.requireEmpty and part:getItemContainer() and not part:getItemContainer():isEmpty() then return false end
 	local seatNumber = part:getContainerSeatNumber()
 	local seatOccupied = (seatNumber ~= -1) and vehicle:isSeatOccupied(seatNumber)
 	if keyvalues.requireEmpty and seatOccupied then return false end
@@ -991,8 +1002,6 @@ function Vehicles.UninstallComplete.Default(vehicle, part, item)
 	vehicle:doDamageOverlay();
 end
 
------
-
 VehicleUtils = {}
 
 function VehicleUtils.getContainers(playerNum)
@@ -1016,14 +1025,12 @@ function VehicleUtils.getItems(playerNum)
 			if item:getCondition() > 0 then
 				typeToItem[item:getFullType()] = typeToItem[item:getFullType()] or {}
 				table.insert(typeToItem[item:getFullType()], item)
-				local tags = item:getTags()
-				for j=1,tags:size() do
-					local tag = tags:get(j-1)
-					tagToItem[tag] = tagToItem[tag] or {}
+
+				for _, tag in ipairs(item:getTags():toArray()) do
+				    tagToItem[tag] = tagToItem[tag] or {}
 					table.insert(tagToItem[tag], item)
 				end
-				-- This isn't needed for Radios any longer.  There was a bug setting
-				-- the item type to Radio.worldSprite, but that no longer happens.
+
 				if instanceof(item, "Moveable") and item:getWorldSprite() then
 					local fullType = item:getScriptItem():getFullName()
 					if fullType ~= item:getFullType() then
@@ -1045,7 +1052,9 @@ end
 function VehicleUtils.testProfession(chr, professions)
 	if not professions or professions == "" then return true end
 	for _,profession in ipairs(professions:split(";")) do
-		if chr:getDescriptor():getProfession() == profession then return true end
+        if chr:getDescriptor():isCharacterProfession(profession) then
+            return true
+        end
 	end
 	return false
 end
@@ -1062,7 +1071,7 @@ end
 function VehicleUtils.testTraits(chr, traits)
 	if not traits or traits == "" then return true end
 	for _,trait in ipairs(traits:split(";")) do
-		if not chr:getTraits():contains(trait) then return false end
+		if not chr:hasTrait(trait) then return false end
 	end
 	return true
 end
@@ -1086,6 +1095,7 @@ function VehicleUtils.testItems(chr, items, typeToItem, tagToItem)
 		if (tagToItem ~= nil) and (item.tags ~= nil) then
 			local tags = item.tags:split(";")
 			for _,tag in ipairs(tags) do
+				tag = ItemTag.get(ResourceLocation.of(tag))
 				hasItemWithTag = tagToItem[tag] ~= nil
 				if hasItemWithTag then
 					break
@@ -1117,7 +1127,7 @@ function VehicleUtils.getItemScripts(items)
 		if item.tags then
 			local tags = item.tags:split(";")
 			for _,tag in ipairs(tags) do
-				local allItems = getScriptManager():getAllItemsWithTag(tag)
+				local allItems = getScriptManager():getItemsTag(ItemTag.get(ResourceLocation.of(tag)))
 				if (allItems ~= nil) and not allItems:isEmpty() then
 					for i=1,allItems:size() do
 						local scriptItem = allItems:get(i-1)
@@ -1164,7 +1174,7 @@ function VehicleUtils.createPartInventoryItem(part)
 				item:setMaxCapacity(part:getContainerCapacity());
 			end
 			item:setConditionMax(item:getConditionMax()*conditionMultiply);
-			item:setCondition(item:getCondition()*conditionMultiply);
+			item:setConditionNoSound(item:getCondition()*conditionMultiply);
 --		else
 --			item = instanceItem(part:getItemType():get(0));
 --		end
@@ -1205,7 +1215,7 @@ function VehicleUtils.createPartInventoryItem_Radio(part)
 			item:setMaxCapacity(part:getContainerCapacity());
 		end
 		item:setConditionMax(item:getConditionMax()*conditionMultiply);
-		item:setCondition(item:getCondition()*conditionMultiply);
+		item:setConditionNoSound(item:getCondition()*conditionMultiply);
 		part:setRandomCondition(item);
 		part:setInventoryItem(item)
 	end
@@ -1245,7 +1255,7 @@ function VehicleUtils.createPartInventoryItem_HAMRadio(part)
 			item:setMaxCapacity(part:getContainerCapacity());
 		end
 		item:setConditionMax(item:getConditionMax()*conditionMultiply);
-		item:setCondition(item:getCondition()*conditionMultiply);
+		item:setConditionNoSound(item:getCondition()*conditionMultiply);
 		part:setRandomCondition(item);
 		part:setInventoryItem(item)
 	end
@@ -1518,4 +1528,3 @@ LuaEventManager.AddEvent("OnUseVehicle")
 LuaEventManager.AddEvent("OnVehicleHorn")
 Events.OnUseVehicle.Add(VehicleUtils.OnUseVehicle)
 Events.OnVehicleHorn.Add(VehicleUtils.OnVehicleHorn)
-

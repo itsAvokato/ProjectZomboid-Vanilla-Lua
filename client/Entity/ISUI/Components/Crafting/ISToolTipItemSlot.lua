@@ -1,15 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISToolTipItemSlot = ISPanel:derive("ISToolTipItemSlot");
-
---************************************************************************--
---** ISToolTipItemSlot:initialise
---**
---************************************************************************--
 
 function ISToolTipItemSlot:initialise()
     ISPanel.initialise(self);
@@ -40,11 +31,6 @@ end
 function ISToolTipItemSlot:onRightMouseUp(x, y)
     return false
 end
-
---************************************************************************--
---** ISToolTipItemSlot:render
---**
---************************************************************************--
 
 function ISToolTipItemSlot:prerender()
     if self.owner and not self.owner:isReallyVisible() then
@@ -161,10 +147,6 @@ function ISToolTipItemSlot:setCharacter(chr)
     self.tooltip:setCharacter(chr)
 end
 
---************************************************************************--
---** ISToolTipItemSlot:new
---**
---************************************************************************--
 function ISToolTipItemSlot:new(itemSlot)
     local o = {}
     o = ISPanel:new(0, 0, 0, 0);

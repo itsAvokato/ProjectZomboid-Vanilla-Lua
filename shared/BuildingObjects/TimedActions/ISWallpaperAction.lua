@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISWallpaperAction = ISBaseTimedAction:derive("ISWallpaperAction");
@@ -28,15 +24,15 @@ function ISWallpaperAction:start()
 end
 
 function ISWallpaperAction:serverStart()
-    self.sprite = WallPaper[self.thumpable:getSprite():getProperties():Val("PaintingType")][self.papering];
-    self.wallType = self.thumpable:getSprite():getProperties():Val("PaintingType");
+    self.sprite = WallPaper[self.thumpable:getSprite():getProperties():get("PaintingType")][self.papering];
+    self.wallType = self.thumpable:getSprite():getProperties():get("PaintingType");
 
     local props = self.thumpable:getSprite():getProperties()
-    if props:Is("WallN") or props:Is("DoorWallN")  or props:Is("WindowN") then
-        self.sprite = WallPaper[self.thumpable:getSprite():getProperties():Val("PaintingType")][self.papering .. "North"]
+    if props:has("WallN") or props:has("DoorWallN")  or props:has("WindowN") then
+        self.sprite = WallPaper[self.thumpable:getSprite():getProperties():get("PaintingType")][self.papering .. "North"]
     end
-    if props:Is("WallNW") then
-        self.sprite = WallPaper[self.thumpable:getSprite():getProperties():Val("PaintingType")][self.papering .. "Corner"]
+    if props:has("WallNW") then
+        self.sprite = WallPaper[self.thumpable:getSprite():getProperties():get("PaintingType")][self.papering .. "Corner"]
     end
     if not instanceof(self.thumpable, "IsoThumpable") then
         self.isThump = false;
@@ -60,7 +56,7 @@ function ISWallpaperAction:complete()
         if self.wallpaper then
             self.wallpaper:UseAndSync();
         end
-        local paste = self.character:getInventory():getFirstTagRecurse("WallpaperPaste")
+        local paste = self.character:getInventory():getFirstTagRecurse(ItemTag.WALLPAPER_PASTE)
         if paste then
             paste:UseAndSync();
         end
@@ -86,14 +82,14 @@ function ISWallpaperAction:new(character, thumpable, wallpaper, papering)
 	o.wallpaper = wallpaper;
 	o.maxTime = o:getDuration();
     o.isThump = true;
-    o.wallType = thumpable:getSprite():getProperties():Val("PaintingType");
-    o.sprite = WallPaper[thumpable:getSprite():getProperties():Val("PaintingType")][papering]
+    o.wallType = thumpable:getSprite():getProperties():get("PaintingType");
+    o.sprite = WallPaper[thumpable:getSprite():getProperties():get("PaintingType")][papering]
     local props = thumpable:getSprite():getProperties()
-    if props:Is("WallN") or props:Is("DoorWallN")  or props:Is("WindowN") then
-        o.sprite = WallPaper[thumpable:getSprite():getProperties():Val("PaintingType")][papering .. "North"]
+    if props:has("WallN") or props:has("DoorWallN")  or props:has("WindowN") then
+        o.sprite = WallPaper[thumpable:getSprite():getProperties():get("PaintingType")][papering .. "North"]
     end
-    if props:Is("WallNW") then
-        o.sprite = WallPaper[thumpable:getSprite():getProperties():Val("PaintingType")][papering .. "Corner"]
+    if props:has("WallNW") then
+        o.sprite = WallPaper[thumpable:getSprite():getProperties():get("PaintingType")][papering .. "Corner"]
     end
     if not instanceof(thumpable, "IsoThumpable") then
         o.isThump = false;
@@ -102,3 +98,4 @@ function ISWallpaperAction:new(character, thumpable, wallpaper, papering)
     o.caloriesModifier = 4;
 	return o;
 end
+

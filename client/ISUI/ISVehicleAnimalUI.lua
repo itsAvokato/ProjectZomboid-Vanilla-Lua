@@ -6,8 +6,6 @@ ISVehicleAnimalUI.ui = nil;
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 
------
-
 -- Avatar and controls for a single animal in a vehicle.
 ISAnimalInVehiclePanel = ISPanelJoypad:derive("ISAnimalInVehiclePanel")
 
@@ -43,10 +41,10 @@ function ISAnimalInVehiclePanel:onRightMouseUp(x, y)
     end
 
     context:addOption(getText("IGUI_TicketUI_RemoveTicket"), self.animalUI, ISVehicleAnimalUI.onRemoveAnimal, animal);
-    if not animal:isDead() and animal:getStats():getThirst() >= 0.1 then
+    if not animal:isDead() and animal:getStats():get(CharacterStat.THIRST) >= 0.1 then
         AnimalContextMenu.doWaterAnimalMenu(context, animal, self.animalUI.character);
     end
-    if not animal:isDead() and animal:getStats():getHunger() >= 0.1 then
+    if not animal:isDead() and animal:getStats():get(CharacterStat.HUNGER) >= 0.1 then
         AnimalContextMenu.doFeedFromHandMenu(self.animalUI.character, animal, context);
     end
     if AnimalContextMenu.cheat and not animal:isDead() then
@@ -72,8 +70,6 @@ function ISAnimalInVehiclePanel:new(width, height, animalUI)
     o.animalUI = animalUI
     return o
 end
-
------
 
 function ISVehicleAnimalUI:initialise()
     ISCollapsableWindowJoypad.initialise(self);

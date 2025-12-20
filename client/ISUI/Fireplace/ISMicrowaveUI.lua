@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISMicrowaveUI = ISPanelJoypad:derive("ISMicrowaveUI");
@@ -9,11 +5,6 @@ ISMicrowaveUI.instance = {};
 ISMicrowaveUI.messages = {};
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
---************************************************************************--
---** ISMicrowaveUI:initialise
---**
---************************************************************************--
 
 function ISMicrowaveUI:initialise()
     ISPanel.initialise(self);
@@ -173,10 +164,6 @@ function ISMicrowaveUI:onJoypadDown(button)
     end
 end
 
---************************************************************************--
---** ISMicrowaveUI:new
---**
---************************************************************************--
 function ISMicrowaveUI:new(x, y, width, height, oven, character)
     local o = {}
     o = ISPanelJoypad:new(x, y, width, height);

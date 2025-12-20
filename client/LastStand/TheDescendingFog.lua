@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 TheDescendingFog = {}
 
 TheDescendingFog.Add = function()

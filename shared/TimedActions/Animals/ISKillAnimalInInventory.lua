@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISKillAnimalInInventory = ISBaseTimedAction:derive("ISKillAnimalInInventory");
@@ -49,11 +45,13 @@ end
 function ISKillAnimalInInventory:perform()
 	-- needed to remove from queue / start next.
 	ISBaseTimedAction.perform(self);
-	local isSinglePlayerMode = (not isClient() and not isServer());
 
-	if isSinglePlayerMode then
-		self:kill();
-	end
+    if isClient() then
+        local animal = self.animalItem and self.animalItem:getAnimal()
+        if animal then
+            animal:playBreedSound("death")
+        end
+    end
 end
 
 function ISKillAnimalInInventory:complete()
@@ -61,8 +59,7 @@ function ISKillAnimalInInventory:complete()
 		return false;
 	end
 
---    local animal = self.animalItem:getAnimal()
---	sendServerCommand('animal', 'kill', { id = animal:getOnlineID() });
+    self:kill();
 
 	return true
 end
@@ -76,8 +73,10 @@ function ISKillAnimalInInventory:kill()
     local isoDeadBody = IsoDeadBody.new(animal, wasCorpseAlready, addToSquareAndWorld)
     local corpseItem = isoDeadBody:getItem()
     self.character:getInventory():Remove(self.animalItem)
+    sendRemoveItemFromContainer(self.character:getInventory(), self.animalItem)
     self.animalItem = nil
     self.character:getInventory():AddItem(corpseItem)
+    sendAddItemToContainer(self.character:getInventory(), corpseItem)
 end
 
 function ISKillAnimalInInventory:getDuration()

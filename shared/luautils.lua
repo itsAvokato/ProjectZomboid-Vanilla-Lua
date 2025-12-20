@@ -1,7 +1,3 @@
--------------------------------------------------------
---              ROBERT JOHNSON'S LUA UTILS           --
--------------------------------------------------------
-
 luautils = {};
 
 -- startWith java style !
@@ -183,10 +179,10 @@ end
 
 -- taking other side of the wall if we're behind a collidable item
 luautils.getCorrectSquareForWall = function(playerObj, square)
-    if square:Is(IsoFlagType.collideW) and playerObj:getX() < square:getX() then
+    if square:has(IsoFlagType.collideW) and playerObj:getX() < square:getX() then
         return getCell():getGridSquare(square:getX() + 1, square:getY(), square:getZ());
     end
-    if square:Is(IsoFlagType.collideN) and playerObj:getY() < square:getY() then
+    if square:has(IsoFlagType.collideN) and playerObj:getY() < square:getY() then
         return getCell():getGridSquare(square:getX(), square:getY() + 1, square:getZ());
     end
     return square;
@@ -246,18 +242,18 @@ function luautils.walkAdjFence(playerObj, square, object, keepActions)
 	if not keepActions then
 		ISTimedActionQueue.clear(playerObj);
 	end
-	if object:getProperties():Is(IsoFlagType.cutW) and object:getProperties():Is(IsoFlagType.cutN) then
+	if object:getProperties():has(IsoFlagType.cutW) and object:getProperties():has(IsoFlagType.cutN) then
 		-- Special case handling of combined north-west corner fences.
 		local choices = {}
-		if AdjacentFreeTileFinder.privCanStand(square) then
+		if square:canStand() then
 			table.insert(choices, square)
 		end
 		local n = square:getAdjacentSquare(IsoDirections.N)
-		if n ~= nil and AdjacentFreeTileFinder.privCanStand(n) then
+		if n ~= nil and n:canStand() then
 			table.insert(choices, n)
 		end
 		local w = square:getAdjacentSquare(IsoDirections.W)
-		if w ~= nil and AdjacentFreeTileFinder.privCanStand(w) then
+		if w ~= nil and w:canStand() then
 			table.insert(choices, w)
 		end
 		local adjacent = getClosestChoice(choices, playerObj)
@@ -377,23 +373,6 @@ function luautils.updatePerksXp(perks, player)
 	player:getXp():setXPToLevel(perks, level);
 end
 
--------------------------------------------------------
---              ROBOMAT'S LUA UTILS           --
--------------------------------------------------------
-
----
--- This function tries to equip the passed items as
--- primary or secondary items. It will return the items
--- that had been originally equipped.
--- Alternatively you can pass on Strings (e.g.: "Base.Screwdriver") and
--- the function will try to find that item in the player's inventory and equip it.
---
--- @param _player - The player who equips the items.
--- @param _primItemToEquip - The item to equip in the primary slot.
--- @param _scndItemToEquip - The item to equip in the secondary slot.
---
--- @author RoboMat
---
 function luautils.equipItems(_player, _primItemToEquip, _scndItemToEquip)
     local player = _player;
     local primItem = _primItemToEquip;
@@ -429,17 +408,6 @@ function luautils.equipItems(_player, _primItemToEquip, _scndItemToEquip)
 end
 
 
----
--- Shows a modal window that informs the player about something and only has
--- an okay button to be closed.
---
--- @param _text - The text to display on the modal
--- @param _centered - If set to true the modal will be centered (optional)
--- @param _width - The width of the window (optional)
--- @param _height - The height of the window (optional)
---
--- @author RoboMat
---
 function luautils.okModal(_text, _centered, _width, _height, _posX, _posY)
     local posX = _posX or 0;
     local posY = _posY or 0;
@@ -460,17 +428,6 @@ function luautils.okModal(_text, _centered, _width, _height, _posX, _posY)
     modal:addToUIManager();
 end
 
----
--- Based on the walkTo function from RJ's luautils.
---
--- @param _player - Player who should move his buttocks.
--- @param _object - The object / tile to walk to.
--- @param _cancelTA - Determines wether timed actions should be canceled
--- before the player starts to walk.
---
--- @author RoboMat
--- @since 2.0.0
---
 function luautils.walkToObject(_player, _object, _cancelTA)
     local player = _player;
     local object = _object;
@@ -494,20 +451,6 @@ function luautils.walkToObject(_player, _object, _cancelTA)
     return true;
 end
 
----
--- Ported the WeaponLowerCondition(...) function of the
--- SwipeState.class to lua. Use this to damage your weapons.
--- If the weapon breaks during the execution of this function
--- it checks in which hand the item was equipped and tries to
--- replace it with the next best weapon.
---
--- @param _weapon - The weapon / item to damage.
--- @param _character - The player who is carrying the weapon.
--- @param _replace - (Optional) Wether or not to replace the item if it is broken.
--- @param _chance - (Optional) The chance for the weapon to be damaged. If omitted it uses the conditionLowerChance of the item.
---
--- @author RoboMat
---
 function luautils.weaponLowerCondition(_weapon, _character, _replace, _chance)
     local weapon = _weapon;
     local chance = _chance or weapon:getConditionLowerChance();
@@ -540,23 +483,6 @@ function luautils.weaponLowerCondition(_weapon, _character, _replace, _chance)
     end
 end
 
----
--- Checks if the item is equipped as the primary or
--- secondary weapon of the player. Returns 1 if the
--- weapon is the primary, 2 if it is the secondary,
--- 3 if it is equipped in both hands at the same time
--- and zero if it is not equipped.
---
--- @param _item - The item to check for.
--- @param _player - The player to search through.
---
--- @return 1 if in primary hand.
--- @return 2 if in secondary hand.
--- @return 3 if in both hands.
--- @return 0 if not equipped.
---
--- @author RoboMat
---
 function luautils.isEquipped(_item, _player)
     local p = _player;
     local i = _item;
@@ -592,17 +518,7 @@ function luautils.getConditionRGB(condition)
 	return {r = r, g = g, b = 0};
 end
 
----
---checks if two squares are adjacent to one another
---
---@param _square1
---@param _square2
---
---@return true if adjacent
---@return false if not adjacent
---
---@author eris
---
+
 function luautils.isSquareAdjacentToSquare(_square1, _square2)
 	if not (_square1 and _square2) then return false; end;
 	local squares = {
@@ -616,15 +532,6 @@ function luautils.isSquareAdjacentToSquare(_square1, _square2)
 	end;
 	return false;
 end
-
---counts all items in the root container
---
---@param _containerList - a table of container objects to check
---@param _itemsNum - the total number of items
---
---@return the total number of items
---
---@author eris
 
 function luautils.countItemsRecursive(_containerList, _itemsNum)
 	local itemsNum = _itemsNum or 0;
@@ -644,14 +551,6 @@ function luautils.countItemsRecursive(_containerList, _itemsNum)
 	end;
 end
 
---finds the root container for an inventory
---
---@param _inventory - the inventory to check
---
---@return the root container
---
---@author eris
-
 function luautils.findRootInventory(_inventory)
 	local inventory = _inventory;
 	local containingItem = inventory:getContainingItem();
@@ -663,35 +562,9 @@ function luautils.findRootInventory(_inventory)
 	return inventory;
 end
 
---tests for rough equality, useful for checking if something is "close enough" such as the final step of a lerp operation.
---
---@param _value - current value.
---
---@param _value2 - the value we want to check against.
---
---@param _delta - how different can it be, before it's considered unequal.
---
---@return - whether or not it's equal enough.
---
---@author eris
-
 function luautils.roughlyEqual(_value, _value2, _delta)
 	return math.abs(_value - _value2) < _delta;
 end
-
---Lerps towards a value, with a built in final step to prevent infinite lerp.
---
---@param _sourceValue - current value.
---
---@param _destinationValue - the value we want to step towards.
---
---@param _stepRate - ratio of steps, higher values are faster.
---
---@param _finalStepRatio - optional, override the final step ratio.
---
---@return - the new value after one step.
---
---@author eris
 
 function luautils.lerp(_sourceValue, _destinationValue, _stepRate, _finalStepRatio)
 	--prevent endless lerping towards a target, if the next step would fall below the ratio threshold.
@@ -701,18 +574,6 @@ function luautils.lerp(_sourceValue, _destinationValue, _stepRate, _finalStepRat
 	return _sourceValue + (_destinationValue - _sourceValue) * _stepRate;
 end
 
---Prints or dumps to file every global variable accessible by Lua.
---
---@param _print (optional) - prints output to console.
---
---@param _save (optional) - save output to LuaGlobals.log.
---
---@param _test (optional) - tests objects for closure, table or function type and prints to console.
---
---@return - void
---
---@author eris
-
 function luautils.exportGlobals(_print, _save, _test)
 	if _print then
 		for k, v in pairs(_G) do
@@ -720,7 +581,6 @@ function luautils.exportGlobals(_print, _save, _test)
 		end;
 	end;
 	if _save then
-		print("writing globals to file: LuaGlobals.log");
 		local file = getFileWriter("LuaGlobals.log", true, false);
 		for k, v in pairs(_G) do
 			file:write(tostring(k) .. " = " .. tostring(v) .. "\r\n");

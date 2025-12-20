@@ -13,15 +13,11 @@ LoadGameScreen = ISPanelJoypad:derive("LoadGameScreen");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
 local JOYPAD_TEX_SIZE = 32
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local SaveInfoPanel = ISPanelJoypad:derive("LoadGameScreen_InfoPanel")
 
@@ -176,9 +172,6 @@ function SaveInfoPanel:onJoypadDirDown(joypadData)
 	self:setYScroll(self:getYScroll() - 48)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local ConfigPanel = ISPanelJoypad:derive("LoadGameScreen_ConfigPanel")
 
@@ -195,8 +188,6 @@ function ConfigPanel:createChildren()
 		ConfigPanel.onChooseMods)
 	y = self.buttonMods:getBottom()
 
-	-----
-
 	richText = self:createRichText(x, y + UI_BORDER_SPACING, getText("UI_LoadGameScreen_ChoosePlayer1"))
 	y = richText:getBottom()
 
@@ -212,8 +203,6 @@ function ConfigPanel:createChildren()
 	self:addChild(self.buttonNewPlayer)
 	y = self.buttonNewPlayer:getBottom()
 
-	-----
-
 	if isDesktopOpenSupported() then
 		richText = self:createRichText(x, y + UI_BORDER_SPACING, getText("UI_LoadGameScreen_BrowseFilesText"))
 		y = richText:getBottom()
@@ -223,8 +212,6 @@ function ConfigPanel:createChildren()
 			ConfigPanel.onBrowseFiles)
 		y = self.buttonBrowse:getBottom()
 	end
-
-	-----
 
 	richText = self:createRichText(x, y + UI_BORDER_SPACING, getText("UI_LoadGameScreen_RenameSavefileText"))
 	y = richText:getBottom()
@@ -237,8 +224,6 @@ function ConfigPanel:createChildren()
 	self:addChild(self.buttonRenameSavefile)
 
 	y = entry:getBottom()
-
-	-----
 
 	if getDebug() then
 		local richText = self:createRichText(x, y + UI_BORDER_SPACING, "DEBUG: Delete selected files from this savefile.")
@@ -437,21 +422,11 @@ function ConfigPanel:onMouseWheel(del)
 	return true
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
-
 function LoadGameScreen:initialise()
 	ISPanel.initialise(self);
 end
 
-
-	--************************************************************************--
-	--** ISPanel:instantiate
-	--**
-	--************************************************************************--
 function LoadGameScreen:instantiate()
-
 	--self:initialise();
 	self.javaObject = UIElement.new(self);
 	self.javaObject:setX(self.x);
@@ -462,9 +437,6 @@ function LoadGameScreen:instantiate()
 	self.javaObject:setAnchorRight(self.anchorRight);
 	self.javaObject:setAnchorTop(self.anchorTop);
 	self.javaObject:setAnchorBottom(self.anchorBottom);
-
-
-
 end
 
 function LoadGameScreen:setSaveGamesList()
@@ -503,6 +475,7 @@ function LoadGameScreen:create()
 	self.searchEntry.setText = LoadGameScreen.searchSetText
 	self.searchEntry:initialise()
 	self.searchEntry:instantiate()
+	self.searchEntry:setClearButton(true)
 	self:addChild(self.searchEntry)
 
 	self.listbox = ISScrollingListBox:new(UI_BORDER_SPACING+1, self.startY+UI_BORDER_SPACING+ENTRY_HGT, (self.width - UI_BORDER_SPACING*3 - 2) / 2, self.height - UI_BORDER_SPACING*3 - BUTTON_HGT - ENTRY_HGT - self.startY - 1);
@@ -684,7 +657,7 @@ function LoadGameScreen:prerender()
 	LoadGameScreen.instance = self
 	ISPanel.prerender(self);
 
-	self:drawTextCentre(getText("UI_LoadGameScreen_title"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title);
+	self:drawTextCentre(getText("UI_LoadGameScreen_title"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large);
 
 	self:disableBtn()
 end
@@ -977,7 +950,7 @@ function LoadGameScreen:new(x, y, width, height)
 	o.anchorBottom = false;
 	o.itemheightoverride = {}
 	o.selected = 1;
-    o.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE;
+    o.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE;
     o.deadTexture = getTexture("media/ui/Moodles/Moodle_Icon_Dead.png")
 	o.mapGroups = MapGroups.new()
 	LoadGameScreen.instance = o;

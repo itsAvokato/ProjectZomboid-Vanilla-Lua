@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObject"
 
 CCampfireGlobalObject = CGlobalObject:derive("CCampfireGlobalObject")
@@ -14,4 +10,3 @@ end
 function CCampfireGlobalObject:getObject()
 	return self:getIsoObject()
 end
-

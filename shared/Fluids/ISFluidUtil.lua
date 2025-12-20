@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISFluidUtil = {};
 
 ISFluidUtil.isoPanelWalkToDist = 2; -- if player not within this range will walkto

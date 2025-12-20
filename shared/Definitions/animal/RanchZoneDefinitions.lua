@@ -1,14 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 23/03/2022
--- Time: 09:21
--- To change this template use File | Settings | File Templates.
---
-
--- This file is used to define "ranch" zone in the map, to know what we gonna spawn and where.
--- If a ranch type zone's name is empty, i'm gonna take a random one in the "ranch" section, otherwise you can force to "chicken" etc.
-
 RanchZoneDefinitions = RanchZoneDefinitions or {};
 
 RanchZoneDefinitions.type = {};

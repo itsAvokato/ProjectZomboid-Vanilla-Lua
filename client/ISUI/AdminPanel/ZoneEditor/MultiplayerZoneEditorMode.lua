@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 MultiplayerZoneEditorMode = ISPanel:derive("MultiplayerZoneEditorMode")
 
 function MultiplayerZoneEditorMode:display()

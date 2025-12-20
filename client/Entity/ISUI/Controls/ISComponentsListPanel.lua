@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISComponentsListPanel = ISPanel:derive("ISComponentsListPanel");
@@ -149,10 +145,6 @@ function ISComponentsListPanel:OnCloseWindow()
     end
 end
 
---************************************************************************--
---** ISComponentsListPanel:new
---**
---************************************************************************--
 function ISComponentsListPanel:new(x, y, width, height, player, entity, entityConfig)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

@@ -99,8 +99,6 @@ local function newBBQPropane(x, y, z)
 	return object
 end
 
------
-
 Tests.apply_bandage = {
 	run = function(self)
 		local item = newInventoryItem("Base.Bandage")
@@ -1214,8 +1212,6 @@ Tests.fishing_spear = {
 		ISTimedActionQueue.add(ISFishingAction:new(PLAYER_OBJ, square:getFloor(), rod, lure))
 	end
 }
-
------
 
 local tickRegistered = false
 local testsToRun = {}

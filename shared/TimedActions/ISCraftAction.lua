@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISCraftAction = ISBaseTimedAction:derive("ISCraftAction");
@@ -21,21 +17,19 @@ function ISCraftAction:update()
     if self.item then
 	    self.item:setJobDelta(self:getJobDelta());
         -- players that aren't desensitized gain mild stress and unhappiness from stripping items from corpses
-        if self.character and ( not self.character:getTraits():contains("Desensitized") ) and self.item:getContainer() and self.item:getContainer():getType() and ( self.item:getContainer():getType() == "inventoryfemale" or self.item:getContainer() == "inventorymale" ) then
+        if self.character and (not self.character:hasTrait(CharacterTrait.DESENSITIZED)) and self.item:getContainer() and self.item:getContainer():getType() and ( self.item:getContainer():getType() == "inventoryfemale" or self.item:getContainer() == "inventorymale" ) then
             local rate =  getGameTime():getMultiplier()
-            if self.character:getTraits():contains("Cowardly") then rate = rate*2
---             if self.character:getTraits():contains("Cowardly") or self.character:getTraits():contains("Hemophobic") then rate = rate*2
-            elseif self.character:getTraits():contains("Brave") then rate = rate/2 end
+            if self.character:hasTrait(CharacterTrait.COWARDLY) then rate = rate*2
+            elseif self.character:hasTrait(CharacterTrait.BRAVE) then rate = rate/2 end
             local stats = self.character:getStats()
-            stats:setStress(stats:getBasicStress() + rate/10000);
-            local bodyDamage = self.character:getBodyDamage()
-            bodyDamage:setUnhappynessLevel(bodyDamage:getUnhappynessLevel()  + rate/100);
+            stats:add(CharacterStat.STRESS, rate/10000);
+            stats:add(CharacterStat.UNHAPPINESS, rate/100)
         end
         -- characters that are scared of blood gain stress from bloody items
-        if self.character and self.character:getTraits():contains("Hemophobic") and self.item:getBloodLevel() > 0 then
+        if self.character and self.character:hasTrait(CharacterTrait.HEMOPHOBIC) and self.item:getBloodLevel() > 0 then
             local rate =  self.item:getBloodLevelAdjustedLow() * getGameTime():getMultiplier()
             local stats = self.character:getStats()
-            stats:setStress(stats:getBasicStress() + rate/10000);
+            stats:add(CharacterStat.STRESS, rate/10000);
         end
 		--fixme: when crafting multiple items, we can lose the original item
 		if (self.item:getContainer() == nil) then

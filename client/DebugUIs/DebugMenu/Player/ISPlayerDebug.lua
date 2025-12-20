@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 --[[
 require "DebugUIs/DebugMenu/Base/ISDebugPanelBase";
 
@@ -26,7 +21,7 @@ function ISPlayerDebug:initialise()
     self:registerPanel("Stats and Body",ISStatsAndBody);
 end
 --]]
--------------------------------------------------------------------------------------
+
 --[[
 function ISPlayerDebug.OnOpenPanel()
     if ISPlayerDebug.instance==nil then

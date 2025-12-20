@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISInstallVehiclePart = ISBaseTimedAction:derive("ISInstallVehiclePart")
@@ -84,6 +80,9 @@ function ISInstallVehiclePart:complete()
     		end
     		if instanceof(self.item, "Radio") and self.item:getDeviceData() ~= nil then
     			local presets = self.item:getDeviceData():getDevicePresets()
+    			if self.part:getDeviceData() == nil then
+                    self.part:createSignalDevice()
+                end
     			self.part:getDeviceData():cloneDevicePresets(presets)
     		end
     		if ZombRand(100) < success then

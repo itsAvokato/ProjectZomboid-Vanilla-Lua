@@ -1,7 +1,3 @@
---***********************************************************
---**                   THE INDIE STONE                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISToggleClothingDryer = ISBaseTimedAction:derive("ISToggleClothingDryer");

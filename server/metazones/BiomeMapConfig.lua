@@ -6,7 +6,7 @@ biome_map_config = {
     { pixel = 79, biome = "clay_lake", zone = "Forest" },
     { pixel = 64, zone = "ForagingNav" },
     { pixel = 96, biome = "$random", zone = "DeepForest" },
-    { pixel = 102, zone = "TrailerPark" },
+    { pixel = 102, biome = "townhouse", zone = "TrailerPark" },
     { pixel = 115, biome = "townhouse", zone = "TownZone" },
     { pixel = 128, biome = "farmmix_forest", zone = "Farm" },
     { pixel = 141, biome = "farmmix_forest", zone = "FarmLand" }, -- defined by zone

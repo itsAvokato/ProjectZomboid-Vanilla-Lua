@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase"
 
 ISFMODEventPlayerPanel = ISDebugSubPanelBase:derive("ISFMODEventPlayerPanel")
@@ -10,8 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local SCROLL_BAR_WIDTH = 12
-
------
 
 local PARAMETERS = {}
 table.insert(PARAMETERS, { name = "BroadcastGenre", type = "combo", values = { "Generic", "News", "EntertainmentNews", "Drama", "KidsShow", "Sports", "MiltaryRadio", "AmateurRadio", "Commercial", "MusicDJ", "GenericVoices", "FranticMilitary" } })
@@ -25,6 +19,7 @@ table.insert(PARAMETERS, { name = "FireSize", type = "combo", values = { "Small"
 table.insert(PARAMETERS, { name = "FootstepMaterial", type = "combo", values = { "Upstairs", "BrokenGlass", "Concrete", "Grass", "Gravel", "Puddle", "Snow", "Wood", "Carpet", "Dirt", "Sand", "Ceramic", "Metal" }, defaultValue = 2.0 })
 table.insert(PARAMETERS, { name = "FootstepMaterial2", type = "combo", values = { "None", "BrokenGlass", "PuddleShallow", "PuddleDeep", "Garbage" } })
 table.insert(PARAMETERS, { name = "MeleeHitSurface", type = "combo", values = { "Default", "Body", "Fabric", "Glass", "Head", "Metal", "Plastic", "Stone", "Wood", "GarageDoor", "MetalDoor", "MetalGate", "PrisonMetalDoor", "SlidingGlassDoor", "WoodDoor", "WoodGate", "Tree" } })
+table.insert(PARAMETERS, { name = "OverlapFoliageType", type = "combo", values = { "None", "Bush" } })
 table.insert(PARAMETERS, { name = "RoomType", type = "combo", values = { "Generic", "Barn", "Mall", "Warehouse", "Prison", "Church", "Office", "Factory", "MovieTheater" } })
 table.insert(PARAMETERS, { name = "Season", type = "combo", values = { "Spring", "Summer", "Autumn", "Winter" } })
 table.insert(PARAMETERS, { name = "Storm", type = "combo", values = { "None", "Thunder", "Tropical", "Blizzard" } })
@@ -49,8 +44,6 @@ local PARAMETER_MAP = {}
 for _,v in ipairs(PARAMETERS) do
 	PARAMETER_MAP[v.name] = v
 end
-
------
 
 ISFMODEventPlayerParameterEditor = ISBaseObject:derive("ISFMODEventPlayerParameterEditor")
 
@@ -131,8 +124,6 @@ function ISFMODEventPlayerParameterEditor:new(eventPlayer, eventPath, parameterI
 	o.isGlobal = eventPlayer:isGlobalParameter(eventPath, parameterIndex)
 	return o
 end
-
------
 
 function ISFMODEventPlayerPanel:createChildren()
 	local x, y = UI_BORDER_SPACING + 1, UI_BORDER_SPACING + 1

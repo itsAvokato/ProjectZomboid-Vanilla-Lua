@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISBaseObject"
 
 CGlobalObject = ISBaseObject:derive("CGlobalObject")

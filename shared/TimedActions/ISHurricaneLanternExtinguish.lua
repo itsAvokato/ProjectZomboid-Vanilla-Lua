@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISHurricaneLanternExtinguish = ISBaseTimedAction:derive("ISHurricaneLanternExtinguish");
@@ -11,7 +7,7 @@ function ISHurricaneLanternExtinguish:isValid()
         return true;
     end
 
-    return self.item ~= nil and self.item:getType() == "Lantern_HurricaneLit";
+    return self.item ~= nil and self.item:hasTag(ItemTag.LIT_LANTERN);
 end
 
 function ISHurricaneLanternExtinguish:update()
@@ -33,11 +29,11 @@ function ISHurricaneLanternExtinguish:perform()
 end
 
 function ISHurricaneLanternExtinguish:complete()
-    local candle = instanceItem("Base.Lantern_Hurricane")
+    local candle = self.item:getExtinguishedItem();
     self.character:getInventory():AddItem(candle);
-    candle:setUsedDelta(self.item:getCurrentUsesFloat());
-    candle:setCondition(self.item:getCondition());
-    candle:setFavorite(self.item:isFavorite());
+--     candle:setUsedDelta(self.item:getCurrentUsesFloat());
+--     candle:setCondition(self.item:getCondition());
+--     candle:setFavorite(self.item:isFavorite());
     if self.item == self.character:getPrimaryHandItem() then
         self.character:setPrimaryHandItem(candle);
     else
@@ -48,7 +44,8 @@ function ISHurricaneLanternExtinguish:complete()
     sendReplaceItemInContainer(self.character:getInventory(), self.item, candle)
     replaceItemInContainer(self.character:getInventory(), self.item, candle)
 
-    return true;
+    return candle;
+--     return true;
 end
 
 function ISHurricaneLanternExtinguish:getDuration()

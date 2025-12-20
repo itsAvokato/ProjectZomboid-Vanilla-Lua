@@ -3,18 +3,27 @@ require "ISUI/ISCollapsableWindowJoypad"
 ISMakeUpUI = ISCollapsableWindowJoypad:derive("ISMakeUpUI")
 ISMakeUpUI.windows = {}
 
+local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
+local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
+local UI_BORDER_SPACING = 10
+
 function ISMakeUpUI:createChildren()
 	ISCollapsableWindowJoypad.createChildren(self)
 	
 	local btnWid = 100
-	local btnHgt = 25
+	local btnHgt = FONT_HGT_SMALL + 6
+	local comboHgt = FONT_HGT_SMALL + 6
 	local padBottom = 20
 	local titleBarHeight = self:titleBarHeight()
+	local avatarBorderSize = 2
+
+	local windowHgt = UI_BORDER_SPACING + FONT_HGT_MEDIUM + 10 + comboHgt + 10 + comboHgt + 10 + btnHgt + UI_BORDER_SPACING
 	
-	self.avatarX = 16
-	self.avatarY = titleBarHeight + 25
-	self.avatarWidth = 128
-	self.avatarHeight = 128
+	self.avatarX = 1 + UI_BORDER_SPACING + avatarBorderSize
+	self.avatarY = titleBarHeight + UI_BORDER_SPACING + avatarBorderSize
+	self.avatarWidth = math.max(128, windowHgt - UI_BORDER_SPACING * 2 - avatarBorderSize * 2)
+	self.avatarHeight = self.avatarWidth
+	self.avatarBorderSize = avatarBorderSize
 	self.avatarPanel = ISUI3DModel:new(self.avatarX, self.avatarY, self.avatarWidth, self.avatarHeight)
 	self.avatarPanel:setVisible(true)
 	self:addChild(self.avatarPanel)
@@ -25,18 +34,18 @@ function ISMakeUpUI:createChildren()
 	
 	self.avatarBackgroundTexture = getTexture("media/ui/avatarBackgroundWhite.png")
 
-	self.leftPanel = ISPanel:new(self.avatarPanel:getRight() + 20, self.avatarPanel.y, 120, self.height);
+	self.leftPanel = ISPanel:new(self.avatarPanel:getRight() + avatarBorderSize + UI_BORDER_SPACING, self.avatarPanel.y, 120, self.height);
 	self.leftPanel:noBackground();
 	self:addChild(self.leftPanel);
 
-	self.rightPanel = ISPanel:new(self.leftPanel:getRight() + 20, self.avatarPanel.y, 120, self.height);
+	self.rightPanel = ISPanel:new(self.leftPanel:getRight() + UI_BORDER_SPACING, self.avatarPanel.y, 120, self.height);
 	self.rightPanel:noBackground();
 	self:addChild(self.rightPanel);
 	
-	self.addMakeupLbl = ISLabel:new(0, 0, 20, getText("IGUI_AddMakeUp"), 1, 1, 1, 1, UIFont.Medium, true)
+	self.addMakeupLbl = ISLabel:new(0, 0, FONT_HGT_MEDIUM, getText("IGUI_AddMakeUp"), 1, 1, 1, 1, UIFont.Medium, true)
 	self.leftPanel:addChild(self.addMakeupLbl);
 		
-	self.location = ISComboBox:new(0, self.addMakeupLbl:getBottom() + 10, 120, 20, self, ISMakeUpUI.onSelectLocation)
+	self.location = ISComboBox:new(0, self.addMakeupLbl:getBottom() + 10, 120, comboHgt, self, ISMakeUpUI.onSelectLocation)
 	self.location.font = UIFont.Small
 	self.location:initialise()
 	self.location:instantiate()
@@ -44,7 +53,7 @@ function ISMakeUpUI:createChildren()
 	
 	self:initLocationCombo();
 	
-	self.comboMakeup = ISComboBox:new(0, self.location:getBottom() + 10, 120, 20, self, ISMakeUpUI.onSelectMakeUp)
+	self.comboMakeup = ISComboBox:new(0, self.location:getBottom() + 10, 120, comboHgt, self, ISMakeUpUI.onSelectMakeUp)
 	self.comboMakeup.font = UIFont.Small
 	self.comboMakeup:initialise()
 	self.comboMakeup:instantiate()
@@ -54,8 +63,8 @@ function ISMakeUpUI:createChildren()
 	self.comboMakeup.disabled = true;
 	
 	self.add = ISButton:new(0, self.comboMakeup:getBottom() + 10, btnWid, btnHgt, getText("UI_btn_apply"), self, ISMakeUpUI.onApplyMakeUp);
-	self.add.anchorTop = false
-	self.add.anchorBottom = true
+	self.add.anchorTop = true
+	self.add.anchorBottom = false
 	self.add:initialise();
 	self.add:instantiate();
 	self.add.borderColor = {r=1, g=1, b=1, a=0.1};
@@ -63,18 +72,18 @@ function ISMakeUpUI:createChildren()
 	self.leftPanel:addChild(self.add);
 	
 	
-	self.removeMakeupLbl = ISLabel:new(0, 0, 20, getText("IGUI_RemoveMakeUp"), 1, 1, 1, 1, UIFont.Medium, true)
+	self.removeMakeupLbl = ISLabel:new(0, 0, FONT_HGT_MEDIUM, getText("IGUI_RemoveMakeUp"), 1, 1, 1, 1, UIFont.Medium, true)
 	self.rightPanel:addChild(self.removeMakeupLbl);
 	
-	self.removeMakeupCombo = ISComboBox:new(0, self.removeMakeupLbl:getBottom() + 10, 120, 20, self, ISMakeUpUI.onSelectRemoveMakeUp)
+	self.removeMakeupCombo = ISComboBox:new(0, self.removeMakeupLbl:getBottom() + 10, 120, comboHgt, self, ISMakeUpUI.onSelectRemoveMakeUp)
 	self.removeMakeupCombo.font = UIFont.Small
 	self.removeMakeupCombo:initialise()
 	self.removeMakeupCombo:instantiate()
 	self.rightPanel:addChild(self.removeMakeupCombo)
 	
 	self.remove = ISButton:new(0, self.removeMakeupCombo:getBottom() + 10, btnWid, btnHgt, getText("UI_btn_remove"), self, ISMakeUpUI.onRemoveMakeUp);
-	self.remove.anchorTop = false
-	self.remove.anchorBottom = true
+	self.remove.anchorTop = true
+	self.remove.anchorBottom = false
 	self.remove:initialise();
 	self.remove:instantiate();
 	self.remove.borderColor = {r=1, g=1, b=1, a=0.1};
@@ -121,7 +130,8 @@ function ISMakeUpUI:initRemoveMakeUpCombo()
 	self.removeMakeupCombo:addOptionWithData(getText("IGUI_SelectMakeUp"), nil);
 	for i=0, self.character:getWornItems():size()-1 do
 		local item = self.character:getWornItems():get(i):getItem();
-		if luautils.stringStarts(item:getBodyLocation(), "MakeUp") then
+		local location = item:getBodyLocation()
+		if (location ~= nil) and luautils.stringStarts(location:getTranslationName(), "MakeUp") then
 			-- we found makeup, take the corresponding definition
 			for _,makeup in ipairs(MakeUpDefinitions.makeup) do
 				if makeup.item == item:getFullType() then
@@ -197,13 +207,16 @@ end
 function ISMakeUpUI:updateLayout()
 	self.location:setWidthToOptions(120);
 	self.comboMakeup:setWidthToOptions(120);
-	self:setWidthToChildren(self.leftPanel, 120);
+	self.leftPanel:shrinkWrap(0, 0, nil);
 
 	self.removeMakeupCombo:setWidthToOptions(120);
-	self:setWidthToChildren(self.rightPanel, 120);
+	self.rightPanel:shrinkWrap(0, 0, nil);
 	self.rightPanel:setX(self.leftPanel:getRight() + 20);
 
-	self:setWidth(self.rightPanel:getRight() + 20);
+	self:setWidth(self.rightPanel:getRight() + UI_BORDER_SPACING + 1);
+	self:setHeight(math.max(self.leftPanel:getBottom(), self.avatarPanel:getBottom() + self.avatarBorderSize) + UI_BORDER_SPACING + 1);
+
+	self.pinButton:setX(self.width - self.pinButton.width - 1)
 end
 
 function ISMakeUpUI:onApplyMakeUp()

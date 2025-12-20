@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 if isClient() then return end
 
 local function noise(message) SCampfireSystem.instance:noise(message) end
@@ -42,8 +38,6 @@ local PRIORITY = 5
 MapObjects.OnNewWithSprite("camping_01_4", NewBurning, PRIORITY)
 MapObjects.OnNewWithSprite("camping_01_5", NewSmouldering, PRIORITY)
 MapObjects.OnNewWithSprite("camping_01_6", NewExtinguished, PRIORITY)
-
--- -- -- -- --
 
 local function LoadCampfire(isoObject, fuelAmount)
 	local square = isoObject:getSquare()

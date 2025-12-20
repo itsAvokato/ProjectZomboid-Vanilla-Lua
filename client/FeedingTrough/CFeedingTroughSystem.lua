@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "Map/CGlobalObjectSystem"
 
 CFeedingTroughSystem = CGlobalObjectSystem:derive("CFeedingTroughSystem")

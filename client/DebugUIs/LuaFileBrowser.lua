@@ -5,23 +5,15 @@ LuaFileBrowser = ISCollapsableWindow:derive("LuaFileBrowser");
 local FONT_HGT_CODE = getTextManager():getFontHeight(getTextManager():getCurrentCodeFont())
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 
------
-
 LuaFileBrowserList = ISScrollingListBox:derive("LuaFileBrowserList")
 
------
-
 function LuaFileBrowser:initialise()
-
     ISCollapsableWindow.initialise(self);
-
     self.title = "Lua Files";
 end
 
 
 function LuaFileBrowser:onMouseDoubleClickFile(item)
-
-
     local f = item;
     if f ~= nil then
         local src = nil;
@@ -31,15 +23,11 @@ function LuaFileBrowser:onMouseDoubleClickFile(item)
             src:addToUIManager();
             src:setVisible(true);
         else
-
             src = SourceWindow:new(getCore():getScreenWidth() / 2, 0, 600, 600, f);
             SourceWindow.map[f] = src;
             src:initialise();
             src:addToUIManager();
-
-
         end
-
     end
 end
 
@@ -137,6 +125,7 @@ function LuaFileBrowser:createChildren()
     self.textEntry:setAnchorRight(true);
     self.textEntry:setClearButton(true);
     self.textEntry:setText("");
+    self.textEntry:setPlaceholderText("filename filter")
     self:addChild(self.textEntry);
     self.lastText = self.textEntry:getInternalText();
 

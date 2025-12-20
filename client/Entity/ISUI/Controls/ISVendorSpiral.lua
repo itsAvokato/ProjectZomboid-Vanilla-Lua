@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISVendorSpiral = ISPanel:derive("ISVendorSpiral");
@@ -33,10 +28,6 @@ function ISVendorSpiral:setRotation(_rot)
     end
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISVendorSpiral:new (x, y, width, height, texture)
 	local o = {}
 	--o.data = {}

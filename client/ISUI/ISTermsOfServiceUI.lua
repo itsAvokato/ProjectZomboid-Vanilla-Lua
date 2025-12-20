@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISTermsOfServiceUI = ISPanelJoypad:derive("ISTermsOfServiceUI")
 
 -- When the terms and conditions are updated, increment this number.
@@ -9,7 +5,7 @@ local TERMS_OF_SERVICE_VERSION = 1
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_TITLE = UIFont.Medium
-local FONT_HGT_TITLE = getTextManager():getFontHeight(FONT_TITLE)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(FONT_TITLE)
 
 function ISTermsOfServiceUI:createChildren()
 	ISPanelJoypad.createChildren(self)
@@ -19,13 +15,13 @@ function ISTermsOfServiceUI:createChildren()
 	local padBottom = 10
 
 	local titleY = 10
-	local titleHgt = FONT_HGT_TITLE
+	local titleHgt = FONT_HGT_LARGE
 
 	local texture = self.texture
 	self.textureY = titleY + titleHgt + 10
 
 	local textX = 10 + texture:getWidth()
-	self.richText = ISRichTextPanel:new(textX, titleY + titleHgt + 20, self.width - textX, self.height - padBottom - btnHgt - 10 - FONT_HGT_TITLE)
+	self.richText = ISRichTextPanel:new(textX, titleY + titleHgt + 20, self.width - textX, self.height - padBottom - btnHgt - 10 - FONT_HGT_LARGE)
 	self.richText:initialise()
 	self:addChild(self.richText)
 --	self.richText:addScrollBars()

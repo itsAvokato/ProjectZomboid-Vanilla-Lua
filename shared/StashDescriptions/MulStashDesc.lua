@@ -1,16 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 07/02/2017
--- Time: 14:57
--- To change this template use File | Settings | File Templates.
---
--- Ink Colours
---Black: 0.129,0.129,0.129
---Red: 0.65, 0.054, 0.054
---Blue: 0.156, 0.188, 0.49
---Green: 0.06, 0.39, 0.17
-
 require "StashDescriptions/StashUtil";
 
 -- guns

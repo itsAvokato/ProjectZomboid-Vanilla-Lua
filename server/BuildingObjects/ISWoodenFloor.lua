@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenFloor = ISBuildingObject:derive("ISWoodenFloor");
 
---************************************************************************--
---** ISWoodenFloor:new
---**
---************************************************************************--
 function ISWoodenFloor:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenFloor\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	self.sq = getWorld():getCell():getGridSquare(x, y, z);
@@ -17,7 +9,7 @@ function ISWoodenFloor:create(x, y, z, north, sprite)
 
     for i=0,self.sq:getObjects():size()-1 do
         local object = self.sq:getObjects():get(i);
-        if object:getProperties() and object:getProperties():Is(IsoFlagType.canBeRemoved) then
+        if object:getProperties() and object:getProperties():has(IsoFlagType.canBeRemoved) then
             self.sq:transmitRemoveItemFromSquare(object)
             self.sq:RemoveTileObject(object);
             break
@@ -67,4 +59,3 @@ end
 function ISWoodenFloor:render(x, y, z, square)
 	ISBuildingObject.render(self, x, y, z, square)
 end
-

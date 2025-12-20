@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISUnbarricadeAction = ISBaseTimedAction:derive("ISUnbarricadeAction");
@@ -19,7 +15,7 @@ function ISUnbarricadeAction:isValid()
 		if barricade:getNumPlanks() == 0 then
 			return false
 		end
-		if not self.character:hasEquippedTag("RemoveBarricade") then
+		if not self.character:hasEquippedTag(ItemTag.REMOVE_BARRICADE) then
 			return false
 		end
 	end
@@ -48,7 +44,7 @@ function ISUnbarricadeAction:start()
         addSound(self.character, self.character:getX(), self.character:getY(), self.character:getZ(), radius, radius)
     else
         self:setActionAnim("RemoveBarricade")
-        if self.character:getPrimaryHandItem():hasTag("Crowbar") or self.character:getPrimaryHandItem():hasTag("PryBar") then
+        if self.character:getPrimaryHandItem():hasTag(ItemTag.CROWBAR) or self.character:getPrimaryHandItem():hasTag(ItemTag.PRY_BAR) then
             if barricade:getNumPlanks() == 2 or barricade:getNumPlanks() == 4 then
                 self:setAnimVariable("RemoveBarricade", "CrowbarHigh")
             else
@@ -160,7 +156,7 @@ function ISUnbarricadeAction:getDuration()
 		return 1
 	end
 	local maxTime = (200 - (self.character:getPerkLevel(Perks.Woodwork) * 5))
-	if self.character:HasTrait("Handy") then
+	if self.character:hasTrait(CharacterTrait.HANDY) then
 		maxTime = maxTime - 20;
 	end
 	return maxTime

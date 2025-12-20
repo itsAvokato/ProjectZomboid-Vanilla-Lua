@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISHandcraftAction = ISBaseTimedAction:derive("ISHandcraftAction");
@@ -94,7 +89,7 @@ function ISHandcraftAction:start()
 			end
 		end
 
-		if not self.force and not self.logic:canPerformCurrentRecipe() then
+		if not isClient() and not self.force and not self.logic:canPerformCurrentRecipe() then
 			log(DebugType.CraftLogic, "ISHandcraftAction.start -> canPerformCurrentRecipe failed.")
 			self:forceStop();
 			return;
@@ -108,10 +103,6 @@ function ISHandcraftAction:start()
 		end
 	end
 
-	if self.eatPercentage > 0 and self.logic:getRecipeData() then
-        self.logic:getRecipeData():setEatPercentage(self.eatPercentage)
-    end
-	
 	self:clearItemsProgressBar(true);
 	
     if self.actionScript then
@@ -119,7 +110,7 @@ function ISHandcraftAction:start()
         if self.actionScript:getAnimVarKey() then
             self:setAnimVariable(self.actionScript:getAnimVarKey(), self.actionScript:getAnimVarVal());
         end
-		if self.actionScript:getSound() then
+		if self.actionScript:getSound() ~= nil and self.actionScript:getSoundTime() == ActionSoundTime.ACTION_START then
 			self.sound = self.character:playSound(self.actionScript:getSound());
 		end
     end
@@ -179,6 +170,10 @@ function ISHandcraftAction:perform()
 end
 
 function ISHandcraftAction:complete()
+    if self.eatPercentage > 0 and self.logic:getRecipeData() then
+        self.logic:getRecipeData():setEatPercentage(self.eatPercentage)
+    end
+
 	self:clearItemsProgressBar(false);
 
 	if isServer() then
@@ -203,6 +198,10 @@ function ISHandcraftAction:performRecipe()
 				local item = items:get(i);
 				Actions.addOrDropItem(self.character, item)
 			end
+
+            self.logic:getRecipeData():luaCallOnCreate(self.character);
+            self.logic:getRecipeData():processDestroyAndUsedItems(self.character); -- todo handle syncing items and inventory stuff here
+
 			if items:size() == 1 then
 				local resItem = items:get(0)
 				local modData = resItem:getModData()
@@ -243,6 +242,19 @@ end
 function ISHandcraftAction:setOnCancel(_func, _target)
 	self.onCancelFunc = _func;
 	self.onCancelTarget = _target;
+end
+
+function ISHandcraftAction:stopSound()
+	if self.sound and self.character:getEmitter():isPlaying(self.sound) then
+		self.character:stopOrTriggerSound(self.sound);
+	end
+end
+
+function ISHandcraftAction:animEvent(event, parameter)
+    if event == "StartActionAnim" and self.actionScript:getSound() ~= nil and self.actionScript:getSoundTime() == ActionSoundTime.ANIMATION_START then
+        self:stopSound();
+        self.sound = self.character:playSound(self.actionScript:getSound());
+    end
 end
 
 function ISHandcraftAction.FromLogicMultiple(handcraftLogic)
@@ -340,7 +352,7 @@ function ISHandcraftAction:new(character, craftRecipe, containers, isoObject, cr
 	--o.usesCustomDelta = true;
 -- 	log(DebugType.CraftLogic, tostring(craftRecipe:getName()) .. " - can walk " .. tostring(craftRecipe:isCanWalk()))
 	o.stopOnWalk = not craftRecipe:isCanWalk();
-	if character and (character:HasTrait("AllThumbs") or character:isWearingAwkwardGloves()) then
+	if character and (character:hasTrait(CharacterTrait.ALL_THUMBS) or character:isWearingAwkwardGloves()) then
 	    o.stopOnWalk = true;
     end
 -- 	o.stopOnWalk = true;

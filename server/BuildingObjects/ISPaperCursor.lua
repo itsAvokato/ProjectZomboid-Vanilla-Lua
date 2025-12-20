@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISPaperCursor = ISBuildingObject:derive("ISPaperCursor");
@@ -32,9 +28,9 @@ function ISPaperCursor:create(x, y, z, north, sprite)
 -- 			print("paper " .. tostring(paper:getType()))
 -- 			getPlayer():Say("paper " .. tostring(paper:getType()))
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paper)
-			local paste = playerInv:getFirstTagEvalRecurse("WallpaperPaste", predicateEnoughPaste)
+			local paste = playerInv:getFirstTagEvalRecurse(ItemTag.WALLPAPER_PASTE, predicateEnoughPaste)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, paper)
-			local scissors = playerInv:getFirstTagEvalRecurse("Scissors", predicateNotBroken)
+			local scissors = playerInv:getFirstTagEvalRecurse(ItemTag.SCISSORS, predicateNotBroken)
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, scissors)
 		-- end
 		ISTimedActionQueue.add(ISWallpaperAction:new(playerObj, object, paper, self.paperType))
@@ -59,7 +55,7 @@ end
 
 function ISPaperCursor:_isWall(object)
 	if object and object:getProperties() then
-		return object:getProperties():Is(IsoFlagType.cutW) or object:getProperties():Is(IsoFlagType.cutN)
+		return object:getProperties():has(IsoFlagType.cutW) or object:getProperties():has(IsoFlagType.cutN)
 	end
 	return false
 end
@@ -109,7 +105,7 @@ function ISPaperCursor:render(x, y, z, square)
 		local object = objects[self.objectIndex]
         local props =object:getProperties()
 
-        if props and (props:Is("WallNW") or props:Is("WallN") or props:Is("WallW") or props:Is("DoorWallN") or props:Is("DoorWallW")or props:Is("WindowN") or props:Is("WindowW"))
+        if props and (props:has("WallNW") or props:has("WallN") or props:has("WallW") or props:has("DoorWallN") or props:has("DoorWallW")or props:has("WindowN") or props:has("WindowW"))
 --                 or (instanceof(object, "IsoThumpable") and object:isPaintable())
                 then
             -- getPlayer():Say("object" .. tostring(object))
@@ -117,19 +113,19 @@ function ISPaperCursor:render(x, y, z, square)
             -- if self.action == "paintnewSprite" then
 --             if not self.newSpriteSprite then
 --             local newSprite = self.newSprite
-            local wallType = object:getSprite():getProperties():Val("PaintingType");
+            local wallType = object:getSprite():getProperties():get("PaintingType");
             local newSprite = WallPaper[wallType][self.paperType]
-             local north = props:Val("WallStyle") and props:Val("WallStyle"):contains("North");
+             local north = props:get("WallStyle") and props:get("WallStyle"):contains("North");
                  -- local modData = object:getModData()
 --                  if north then
-            if props:Is("WallN") or props:Is("DoorWallN") or props:Is("WindowN") then
+            if props:has("WallN") or props:has("DoorWallN") or props:has("WindowN") then
 --                 getPlayer():Say("North")
---                 local wallType = object:getSprite():getProperties():Val("PaintingType");
+--                 local wallType = object:getSprite():getProperties():get("PaintingType");
 --                 getPlayer():Say(wallType .. "-".. self.paperType)
                 newSprite = WallPaper[wallType][self.paperType .. "North"]
 --                     getPlayer():Say(tostring(newSprite))
             end
-			if props:Is("WallNW") then
+			if props:has("WallNW") then
 				newSprite = WallPaper[wallType][self.paperType .. "Corner"]
 			end
             self.newSpriteSprite = IsoSprite.new()
@@ -192,8 +188,8 @@ function ISPaperCursor:canPaper(object)
 			-- local modData = object:getModData()
 			-- return Painting[modData.wallType][self.args.paperType] ~= nil
 		-- end
-		if props and props:Is("IsPaintable") then
-			local wallType = props:Val("PaintingType")
+		if props and props:has("IsPaintable") then
+			local wallType = props:get("PaintingType")
 			if WallPaper[wallType] ~= nil and WallPaper[wallType][self.paperType] ~= nil then
 				-- getPlayer():Say("YES!")
 				return true
@@ -213,11 +209,11 @@ function ISPaperCursor:hasItems()
 	local playerInv = playerObj:getInventory()
 	-- if self.action == "paintnewSprite" or self.action == "paintThump" then
 		if not ISBuildMenu.cheat then
-			local paintBrush = playerInv:getFirstTagRecurse("Paintbrush")
+			local paintBrush = playerInv:getFirstTagRecurse(ItemTag.PAINTBRUSH)
 			-- local paintCan = playerInv:getFirstTypeRecurse(self.args.paperType)"
 			local paintCan = true
-			local paste = playerInv:getFirstTagEvalRecurse("WallpaperPaste", predicateEnoughPaste)
-			local scissors = playerInv:getFirstTagEvalRecurse("Scissors", predicateNotBroken)
+			local paste = playerInv:getFirstTagEvalRecurse(ItemTag.WALLPAPER_PASTE, predicateEnoughPaste)
+			local scissors = playerInv:getFirstTagEvalRecurse(ItemTag.SCISSORS, predicateNotBroken)
 			-- getPlayer():Say("Has Items " .. tostring(paintBrush ~= nil and paintCan ~= nil and paste ~= nil))
 			return paintBrush ~= nil and paintCan ~= nil and paste ~= nil and scissors ~= nil
 		end
@@ -273,4 +269,3 @@ function ISPaperCursor:new(character, paperType, newSprite)
 	showDebugInfoInChat("Cursor New \'ISPaperCursor\'")
 	return o
 end
-

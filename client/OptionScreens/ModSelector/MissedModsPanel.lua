@@ -1,7 +1,3 @@
---***********************************************************
---**                      Aiteron                          **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "OptionScreens/ModSelector/ModSelector"
 
@@ -49,8 +45,6 @@ function MissedModsPanel:render()
     self:repaintStencilRect(0, 0, self.width, self.height)
 end
 
-----
-
 ModSelector.MissedModsWindow = ISPanelJoypad:derive("MissedModsWindow")
 local MissedModsWindow = ModSelector.MissedModsWindow
 
@@ -67,7 +61,7 @@ end
 
 function MissedModsWindow:prerender()
     ISPanelJoypad.prerender(self)
-    self:drawTextCentre(getText("UI_modselector_MissedModsTitle"), self.width / 2, 5, 1, 1, 1, 1, UIFont.Title)
+    self:drawTextCentre(getText("UI_modselector_MissedModsTitle"), self.width / 2, 5, 1, 1, 1, 1, UIFont.Large)
 end
 
 function MissedModsWindow:createChildren()

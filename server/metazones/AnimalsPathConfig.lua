@@ -2,7 +2,7 @@ animals_path_config = {
     {
         animal = "rabbit";
         count = 3,
-        chance = 0.2,
+        chance = 0.2, -- Defined by SandboxOption.AnimalPathChance
         points = { 5, 10 },
         radius = { 20, 40 },
         extension = { 10, 20 },
@@ -11,7 +11,7 @@ animals_path_config = {
     {
         animal = "deer",
         count = 1,
-        chance = 0.2,
+        chance = 0.2, -- Defined by SandboxOption.AnimalPathChance
         points = { 5, 10 },
         radius = { 40, 60 },
         extension = { 10, 20 },

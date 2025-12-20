@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISPostDeathUI = ISPanelJoypad:derive("ISPostDeathUI")
 ISPostDeathUI.instance = {}
 

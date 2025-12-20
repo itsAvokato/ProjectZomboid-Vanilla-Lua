@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**                      Author: Yuri                     **
---***********************************************************
-
 if isClient() then return end
 
 local TransactionProcessor = {}

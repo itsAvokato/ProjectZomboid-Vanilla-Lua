@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 24/03/2022
--- Time: 09:40
--- To change this template use File | Settings | File Templates.
---
-
 ISHutchMenu = {}
 
 function ISHutchMenu.OnFillWorldObjectContextMenu(player, context, worldobjects, test)
@@ -121,7 +113,6 @@ ISHutchMenu.onInfo = function(hutch, chr)
 end
 
 ISHutchMenu.onToggleDoor = function(hutch, player)
-    print("toggle door!")
     if luautils.walkAdj(player, hutch:getEntrySq()) then
         ISTimedActionQueue.add(ISToggleHutchDoor:new(player, hutch))
     end

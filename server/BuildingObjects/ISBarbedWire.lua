@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISBarbedWire = ISBuildingObject:derive("ISBarbedWire")
 
 function ISBarbedWire:create(x, y, z, north, sprite)

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISBaseObject"
 
 DebugChunkStateUI_Tool = ISBaseObject:derive("DebugChunkStateUI_Tool")
@@ -33,8 +29,6 @@ function Tool:new(ui)
 	o.ui = ui
 	return o
 end
-
------
 
 DebugChunkStateUI_DragCameraTool = Tool:derive("DebugChunkStateUI_DragCameraTool")
 local DragCameraTool = DebugChunkStateUI_DragCameraTool

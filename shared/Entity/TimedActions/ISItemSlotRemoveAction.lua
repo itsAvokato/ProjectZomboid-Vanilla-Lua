@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISItemSlotRemoveAction = ISBaseTimedAction:derive("ISItemSlotRemoveAction");
@@ -28,8 +23,10 @@ function ISItemSlotRemoveAction:start()
     end
     self.item = self.targetItem or self.resource:peekItem();
     self.maxTime = 30+(self.item:getWeight()*3);
-	self:setActionAnim("Loot");
-	self:setAnimVariable("LootPosition", "");
+	self:setActionAnim(self.actionAnim);
+	for key,value in pairs(self.actionAnimVariables) do
+		self:setAnimVariable(key, value);
+	end
 	--self:setActionAnim(CharacterActionAnims.Craft);
 	self:setOverrideHandModels(nil, nil);
 	if self.item:getStaticModel() then
@@ -92,12 +89,21 @@ function ISItemSlotRemoveAction:stopSound()
 	end
 end
 
-function ISItemSlotRemoveAction:new(character, entity, resource, item)
+function ISItemSlotRemoveAction:new(character, entity, itemSlot, item)
 	local o = ISBaseTimedAction.new(self, character)
 	o.entity = entity
-	o.resource = resource;
+	o.resource = itemSlot and itemSlot.resource;
     o.itemSlot = nil;
 	o.targetItem = item;
 	o.maxTime = o:getDuration()
+
+	o.actionAnimVariables = {}
+	if itemSlot and itemSlot.actionAnim then
+		o.actionAnim = itemSlot.actionAnim;
+	else
+		o.actionAnim = "Loot";
+		o.actionAnimVariables["LootPosition"] = "";
+	end
+	
 	return o
 end

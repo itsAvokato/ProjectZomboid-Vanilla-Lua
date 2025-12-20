@@ -193,7 +193,7 @@ function ISMoveableCursor:create(_x, _y, _z, _north, _sprite)
         if self.currentMoveProps then
             if ISMoveableDefinitions.cheat or self.currentMoveProps:walkToAndEquip( self.character, self.currentSquare, ISMoveableCursor.mode[self.player] ) then
                 if ISMoveableCursor.mode[self.player] == "scrap" then
-                    if self.currentMoveProps.object:getProperties():Is(IsoFlagType.solidfloor) then
+                    if self.currentMoveProps.object:getProperties():has(IsoFlagType.solidfloor) then
                         local adjacent = AdjacentFreeTileFinder.Find(self.currentSquare, self.character)
                         if adjacent ~= nil then
                             ISTimedActionQueue.add(ISWalkToTimedAction:new(self.character, adjacent))
@@ -275,7 +275,7 @@ end
 function ISMoveableCursor:render( _x, _y, _z, _square )
     self.renderX, self.renderY, self.renderZ = _x, _y, _z;
 
-    local color = self.colorMod or {r=1,g=0,b=0};
+    local color = self.colorMod or ISMoveableSpriteProps.invalidColor or {r=1,g=0,b=0};
 
     if self.currentMoveProps and self.currentMoveProps.scrapThumpable then
         local stairObjects = buildUtil.getStairObjects(self.currentMoveProps.object)
@@ -351,7 +351,7 @@ function ISMoveableCursor:isValid( _square )
     self.canCreate          = nil;
     self.objectSprite       = nil;
     self.origSpriteName     = nil;
-    self.colorMod           = {r=1,g=0,b=0};
+    self.colorMod           = ISMoveableSpriteProps.invalidColor;
     self.yOffset            = 0;
 
     if ISMoveableCursor.mode[self.player] == "pickup" or ISMoveableCursor.mode[self.player] == "rotate" then
@@ -404,7 +404,7 @@ function ISMoveableCursor:isValid( _square )
                     --self.cursorFacing = nil;
                     self.yOffset            = moveProps:getYOffsetCursor(); -- this is updated in moveprops in canPickUpMoveable function
                     self.isWallLike = moveProps.type == "Window"
-                    self.nSprite = moveProps.spriteProps:Is(IsoFlagType.WindowN) and 2 or 1
+                    self.nSprite = moveProps.spriteProps:has(IsoFlagType.WindowN) and 2 or 1
                     self:setInfoPanel( _square, object, moveProps );
                     return true;
                 end
@@ -454,7 +454,7 @@ function ISMoveableCursor:isValid( _square )
                     --self.cursorFacing = nil;
                     self.yOffset                = moveProps:getYOffsetCursor(); -- this is updated in moveprops in canPlaceMoveable function
                     self.isWallLike = moveProps.type == "Window"
-                    self.nSprite = moveProps.spriteProps:Is(IsoFlagType.WindowN) and 2 or 1
+                    self.nSprite = moveProps.spriteProps:has(IsoFlagType.WindowN) and 2 or 1
                     self:setInfoPanel( _square, item, moveProps );
 
                     return true;
@@ -738,8 +738,7 @@ function ISMoveableCursor:getInventoryObjectList()
                 end
             end
         else
-            print("MovablesCursor Initial Item is not a Movable item");
-            print(self.tryInitialInvItem);
+            print("MovablesCursor Initial Item is not a Movable item", self.tryInitialInvItem);
         end
         self.tryInitialInvItem = nil;
     end
@@ -751,10 +750,10 @@ function ISMoveableCursor:shouldAddObject(_obj, moveProps)
     --if we cannot see the square, only show for doors and windows + walls
     if (not self.canSeeCurrentSquare) then
         --check if directly adjacent to square (avoid xray effect/picking up/breaking objects through blocked doors)
-        if luautils.isSquareAdjacentToSquare(self.currentSquare, self.character:getSquare()) or (self.currentSquare:Is(IsoFlagType.collideN) or self.currentSquare:Is(IsoFlagType.collideW)) then
+        if luautils.isSquareAdjacentToSquare(self.currentSquare, self.character:getSquare()) or (self.currentSquare:has(IsoFlagType.collideN) or self.currentSquare:has(IsoFlagType.collideW)) then
             local props = moveProps.sprite:getProperties()
-            if instanceof(_obj, "IsoDoor") or instanceof(_obj, "IsoWindow") or props and (props:Is("WallN") or props:Is("WallW") or
-                    props:Is("DoorWallN") or props:Is("DoorWallW") or props:Is("WallNW")) then
+            if instanceof(_obj, "IsoDoor") or instanceof(_obj, "IsoWindow") or props and (props:has("WallN") or props:has("WallW") or
+                    props:has("DoorWallN") or props:has("DoorWallW") or props:has("WallNW")) then
                 return true;
             end;
         end;
@@ -784,7 +783,7 @@ function ISMoveableCursor:getObjectList()
                 end;
             end;
         elseif moveProps and moveProps.spriteProps then
-            if moveProps.spriteProps:Is("WallNW") or moveProps.spriteProps:Is("WallN") or moveProps.spriteProps:Is("WallW") then
+            if moveProps.spriteProps:has("WallNW") or moveProps.spriteProps:has("WallN") or moveProps.spriteProps:has("WallW") then
                 local sprList = obj:getChildSprites();
                 if sprList then
                     local list_size 	= sprList:size();

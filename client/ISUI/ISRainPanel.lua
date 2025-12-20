@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISRainPanel = ISPanel:derive("ISRainPanel")
 
 function ISRainPanel:createChildren()

@@ -1,10 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---require "ISUI/ISCollapsableWindow"
-
 RWMElement = ISPanelJoypad:derive("RWMElement");
 
 function RWMElement:initialise()

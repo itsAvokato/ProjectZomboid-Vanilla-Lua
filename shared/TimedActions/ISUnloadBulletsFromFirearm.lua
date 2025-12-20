@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISUnloadBulletsFromFirearm = ISBaseTimedAction:derive("ISUnloadBulletsFromFirearm")
@@ -18,7 +14,6 @@ function ISUnloadBulletsFromFirearm:start()
 	self.ammoCountStart = self.gun:getCurrentAmmoCount()
 	self.gun:setJobDelta(0.0)
 	self:setOverrideHandModels(self.gun, nil)
---	self:setOverrideHandModels(nil, "GunMagazine")
 	self:initVars()
 end
 
@@ -74,7 +69,8 @@ function ISUnloadBulletsFromFirearm:animEvent(event, parameter)
 		end
 		if not isClient() then
 			while self.gun:getCurrentAmmoCount() > 0 do
-				local newBullet = instanceItem(self.gun:getAmmoType())
+			    local itemKey = self.gun:getAmmoType():getItemKey();
+				local newBullet = instanceItem(itemKey)
 				self.character:getInventory():AddItem(newBullet)
 				self.gun:setCurrentAmmoCount(self.gun:getCurrentAmmoCount() - 1)
 				sendAddItemToContainer(self.character:getInventory(), newBullet)

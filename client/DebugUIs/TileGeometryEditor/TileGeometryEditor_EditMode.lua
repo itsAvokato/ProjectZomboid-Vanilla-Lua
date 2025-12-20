@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -12,8 +8,6 @@ local entryWidth = getTextManager():MeasureStringX(UIFont.Small, "-999.9999") + 
 
 local TEXTURE_OFFSET_X = 1
 local Z_SCALE = 0.8164966666666666
-
------
 
 TileGeometryEditor_ListBox = ISScrollingListBox:derive("TileGeometryEditor_ListBox")
 local ListBox = TileGeometryEditor_ListBox
@@ -43,8 +37,6 @@ function ListBox:new(x, y, width, height)
 	local o = ISScrollingListBox.new(self, x, y, width, height)
 	return o
 end
-
------
 
 TileGeometryEditor_GeometryListBox = ListBox:derive("TileGeometryEditor_GeometryListBox")
 local GeometryListBox = TileGeometryEditor_GeometryListBox
@@ -77,8 +69,6 @@ function GeometryListBox:new(x, y, width, height, editor)
 	o.scene = editor.scene
 	return o
 end
-
------
 
 TileGeometryEditor_BoxPanel = ISPanel:derive("TileGeometryEditor_BoxPanel")
 local BoxPanel = TileGeometryEditor_BoxPanel
@@ -295,8 +285,6 @@ function BoxPanel:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 TileGeometryEditor_CylinderPanel = ISPanel:derive("TileGeometryEditor_CylinderPanel")
 local CylinderPanel = TileGeometryEditor_CylinderPanel
 
@@ -404,8 +392,6 @@ function CylinderPanel:new(x, y, width, height, editor)
 	o.scene = editor.scene
 	return o
 end
-
------
 
 TileGeometryEditor_PropertiesPanel = ISPanel:derive("TileGeometryEditor_PropertiesPanel")
 local PropertiesPanel = TileGeometryEditor_PropertiesPanel
@@ -527,8 +513,6 @@ function PropertiesPanel:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 TileGeometryEditor_DepthTexturePanel = ISPanel:derive("TileGeometryEditor_DepthTexturePanel")
 local DepthTexturePanel = TileGeometryEditor_DepthTexturePanel
 
@@ -561,8 +545,6 @@ function DepthTexturePanel:new(x, y, width, height, editor)
 	o.tilePicker = editor.tilePicker
 	return o
 end
-
------
 
 TileGeometryEditor_SeatingPropertiesPanel = ISPanel:derive("TileGeometryEditor_SeatingPropertiesPanel")
 local SeatingPropertiesPanel = TileGeometryEditor_SeatingPropertiesPanel
@@ -611,8 +593,6 @@ function SeatingPropertiesPanel:new(x, y, width, height, editor)
 	o.scene = editor.scene
 	return o
 end
-
------
 
 TileGeometryEditor_EditMode = ISBaseObject:derive("TileGeometryEditor_EditMode")
 local EditMode = TileGeometryEditor_EditMode
@@ -709,12 +689,11 @@ function EditMode:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_EditMode_Geometry = TileGeometryEditor_EditMode:derive("TileGeometryEditor_EditMode_Geometry")
 
 function TileGeometryEditor_EditMode_Geometry:createChildren()
-	local belowHgt = BUTTON_HGT * 9 + UI_BORDER_SPACING * 8
+	local buttonCount = 10
+	local belowHgt = (BUTTON_HGT * buttonCount) + (UI_BORDER_SPACING * (buttonCount-1))
 	local bottomH = UI_BORDER_SPACING*2 + BUTTON_HGT
 
 	local listY = UI_BORDER_SPACING+1
@@ -728,46 +707,49 @@ function TileGeometryEditor_EditMode_Geometry:createChildren()
 	self.belowList:noBackground()
 	self.editor:addChild(self.belowList)
 
-	local button1 = ISButton:new(0, 0, self.belowList.width, BUTTON_HGT, "TRANSLATE", self, self.onToggleGizmo)
-	self.belowList:addChild(button1)
-	self.button1 = button1
+	--Buttons start here
+	local buttonTranslate = ISButton:new(0, 0, self.belowList.width, BUTTON_HGT, "TRANSLATE", self, self.onToggleGizmo)
+	self.belowList:addChild(buttonTranslate)
+	self.buttonTranslate = buttonTranslate
 
-	local button2 = ISButton:new(0, button1:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "HIDE GEOMETRY", self, self.onToggleGeometryVisible)
-	self.belowList:addChild(button2)
-	self.button2 = button2
+	local buttonHideGeom = ISButton:new(0, buttonTranslate:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "HIDE GEOMETRY", self, self.onToggleGeometryVisible)
+	self.belowList:addChild(buttonHideGeom)
+	self.buttonHideGeom = buttonHideGeom
 
-	local button3 = ISButton:new(0, button2:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD XY", self, self.onAddPolygonXY)
-	self.belowList:addChild(button3)
-	self.button3 = button3
+	local buttonAddXY = ISButton:new(0, buttonHideGeom:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD XY [NORTH WALL]", self, self.onAddPolygonXY)
+	self.belowList:addChild(buttonAddXY)
+	self.buttonAddXY = buttonAddXY
 
-	local button4 = ISButton:new(0, button3:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD XZ", self, self.onAddPolygonXZ)
-	self.belowList:addChild(button4)
-	self.button4 = button4
+	local buttonAddXZ = ISButton:new(0, buttonAddXY:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD XZ [FLOOR]", self, self.onAddPolygonXZ)
+	self.belowList:addChild(buttonAddXZ)
+	self.buttonAddXZ = buttonAddXZ
 
-	local button5 = ISButton:new(0, button4:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD YZ", self, self.onAddPolygonYZ)
-	self.belowList:addChild(button5)
-	self.button5 = button5
+	local buttonAddYZ = ISButton:new(0, buttonAddXZ:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD YZ [WEST WALL]", self, self.onAddPolygonYZ)
+	self.belowList:addChild(buttonAddYZ)
+	self.buttonAddYZ = buttonAddYZ
 
-	local button5_1 = ISButton:new(0, button5:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD BOX", self, self.onAddBox)
-	self.belowList:addChild(button5_1)
-	self.button5_1 = button5_1
+	local buttonAddBox = ISButton:new(0, buttonAddYZ:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD BOX", self, self.onAddBox)
+	self.belowList:addChild(buttonAddBox)
+	self.buttonAddBox = buttonAddBox
 
-	local button5_2 = ISButton:new(0, button5_1:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD CYLINDER", self, self.onAddCylinder)
-	self.belowList:addChild(button5_2)
-	self.button5_2 = button5_2
+	local buttonAddCylinder = ISButton:new(0, buttonAddBox:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "ADD CYLINDER", self, self.onAddCylinder)
+	self.belowList:addChild(buttonAddCylinder)
+	self.buttonAddCylinder = buttonAddCylinder
 
-	local button6 = ISButton:new(0, button5_2:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "EDIT POINTS", self, self.onEditPoints)
-	self.belowList:addChild(button6)
-	self.button6 = button6
+	local buttonEditPoints = ISButton:new(0, buttonAddCylinder:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "EDIT POINTS", self, self.onEditPoints)
+	self.belowList:addChild(buttonEditPoints)
+	self.buttonEditPoints = buttonEditPoints
 
-	local button7 = ISButton:new(0, button6:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "REMOVE SELECTED", self, self.onRemoveGeometry)
-	self.belowList:addChild(button7)
-	self.button7 = button7
+	local buttonRemove = ISButton:new(0, buttonEditPoints:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "REMOVE SELECTED", self, self.onRemoveGeometry)
+	self.belowList:addChild(buttonRemove)
+	self.buttonRemove = buttonRemove
 
-	local button8 = ISButton:new(0, button6:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "RECALC SHADOWS", self, self.onRecalculateShadows)
-	button8:setTooltip("Affects the entire selected tileset.")
-	self.belowList:addChild(button8)
-	self.button8 = button8
+	local buttonRecalcShadows = ISButton:new(0, buttonRemove:getBottom() + UI_BORDER_SPACING, self.belowList.width, BUTTON_HGT, "RECALC SHADOWS", self, self.onRecalculateShadows)
+	buttonRecalcShadows:setTooltip("Affects the entire selected tileset.")
+	self.belowList:addChild(buttonRecalcShadows)
+	self.buttonRecalcShadows = buttonRecalcShadows
+	--buttons end here
+
 
 	self.boxPanel = BoxPanel:new(self.listBox:getRight() + UI_BORDER_SPACING, self.listBox:getY(), 10, 10, self.editor)
 	self.editor:addChild(self.boxPanel)
@@ -813,14 +795,14 @@ function TileGeometryEditor_EditMode_Geometry:prerenderEditor()
 	self:prerenderDepthTexturePanel()
 
 	if self.scene.gizmo == "translate" then
-		self.button1.title = "TRANSLATE"
+		self.buttonTranslate.title = "TRANSLATE"
 	elseif self.scene.gizmo == "rotate" then
-		self.button1.title = "ROTATE"
+		self.buttonTranslate.title = "ROTATE"
 	elseif self.scene.gizmo == "scale" then
-		self.button1.title = "SCALE"
+		self.buttonTranslate.title = "SCALE"
 	end
 
-	self.button2:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
+	self.buttonHideGeom:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
 
 	local selectedTile = self.tilePicker.listBox:getSingleSelectedTile()
 	local canEdit = selectedTile ~= nil
@@ -828,16 +810,16 @@ function TileGeometryEditor_EditMode_Geometry:prerenderEditor()
 		canEdit = false
 	end
 
-	self.button3:setEnable(canEdit)
-	self.button4:setEnable(canEdit)
-	self.button5:setEnable(canEdit)
-	self.button5_1:setEnable(canEdit)
-	self.button5_2:setEnable(canEdit)
+	self.buttonAddXY:setEnable(canEdit)
+	self.buttonAddXZ:setEnable(canEdit)
+	self.buttonAddYZ:setEnable(canEdit)
+	self.buttonAddBox:setEnable(canEdit)
+	self.buttonAddCylinder:setEnable(canEdit)
 
 	local isGeometry = self.scene:isPolygonObject(self.scene.selectedObjectName)
-	self.button6:setEnable(isGeometry and self:java0("getDrawGeometry"))
-	self.button7:setEnable(self.listBox.selected > 1)
-	self.button8:setEnable(canEdit)
+	self.buttonEditPoints:setEnable(isGeometry and self:java0("getDrawGeometry"))
+	self.buttonRemove:setEnable(self.listBox.selected > 1)
+	self.buttonRecalcShadows:setEnable(canEdit)
 end
 
 function TileGeometryEditor_EditMode_Geometry:renderTileName()
@@ -1216,7 +1198,7 @@ function TileGeometryEditor_EditMode_Geometry:onKeyPress(key)
 	end
 
 	if key == Keyboard.KEY_E then
-		self.button6:forceClick()
+		self.buttonEditPoints:forceClick()
 	end
 
 	if key == Keyboard.KEY_G then
@@ -1320,8 +1302,6 @@ function TileGeometryEditor_EditMode_Geometry:new(x, y, w, h, editor)
 	return o
 end
 
------
-
 require "DebugUIs/TileGeometryEditor/TileGeometryEditor_TileList3"
 TileGeometryEditor_TilePicker3 = ISPanel:derive("TileGeometryEditor_TilePicker3")
 
@@ -1369,8 +1349,6 @@ function TileGeometryEditor_TilePicker3:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 TileGeometryEditor_SeatingListBox = ListBox:derive("TileGeometryEditor_SeatingListBox")
 local SeatingListBox = TileGeometryEditor_SeatingListBox
 
@@ -1387,8 +1365,6 @@ function SeatingListBox:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 TileGeometryEditor_EditMode_SceneTiles = TileGeometryEditor_EditMode:derive("TileGeometryEditor_EditMode_SceneTiles")
 
 function TileGeometryEditor_EditMode_SceneTiles:createChildren()
@@ -1398,21 +1374,21 @@ function TileGeometryEditor_EditMode_SceneTiles:createChildren()
 	self.buttonPanel = ISPanel:new(10, 10, 250, 200)
 	self.buttonPanel:noBackground()
 	self.editor:addChild(self.buttonPanel)
-	local button1 = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "PLACE", self, self.onButtonPlace)
-	self.buttonPanel:addChild(button1)
-	self.button1 = button1
+	local buttonTranslate = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "PLACE", self, self.onButtonPlace)
+	self.buttonPanel:addChild(buttonTranslate)
+	self.buttonTranslate = buttonTranslate
 
-	local button2 = ISButton:new(0, button1:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "REMOVE", self, self.onButtonRemove)
-	self.buttonPanel:addChild(button2)
-	self.button2 = button2
+	local buttonHideGeom = ISButton:new(0, buttonTranslate:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "REMOVE", self, self.onButtonRemove)
+	self.buttonPanel:addChild(buttonHideGeom)
+	self.buttonHideGeom = buttonHideGeom
 --[[
-	local button3 = ISButton:new(0, button2:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "SELECT", self, self.onButtonSelect)
-	self.buttonPanel:addChild(button3)
-	self.button3 = button3
+	local buttonAddXY = ISButton:new(0, buttonHideGeom:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "SELECT", self, self.onButtonSelect)
+	self.buttonPanel:addChild(buttonAddXY)
+	self.buttonAddXY = buttonAddXY
 --]]
-	local button4 = ISButton:new(0, button2:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "MOVE", self, self.onButtonMove)
-	self.buttonPanel:addChild(button4)
-	self.button4 = button4
+	local buttonAddXZ = ISButton:new(0, buttonHideGeom:getBottom() + buttonPadY, self.buttonPanel.width, buttonHgt, "MOVE", self, self.onButtonMove)
+	self.buttonPanel:addChild(buttonAddXZ)
+	self.buttonAddXZ = buttonAddXZ
 
 	self.buttonPanel:shrinkWrap(0, 0)
 	self.buttonPanel:setVisible(false)
@@ -1484,17 +1460,17 @@ end
 function TileGeometryEditor_EditMode_SceneTiles:prerenderEditor()
 	self:java2("setObjectVisible", "character1", false)
     self:java1("setGizmoVisible", "none")
-	self.button1.textColor = self.textColorDisabled
-	self.button2.textColor = self.textColorDisabled
-	self.button4.textColor = self.textColorDisabled
+	self.buttonTranslate.textColor = self.textColorDisabled
+	self.buttonHideGeom.textColor = self.textColorDisabled
+	self.buttonAddXZ.textColor = self.textColorDisabled
 	if self.scene.currentTool == self.scene.tools.addTile then
-		self.button1.textColor = self.textColorEnabled
+		self.buttonTranslate.textColor = self.textColorEnabled
 	end
 	if self.scene.currentTool == self.scene.tools.removeTile then
-		self.button2.textColor = self.textColorEnabled
+		self.buttonHideGeom.textColor = self.textColorEnabled
 	end
 	if self.scene.currentTool == self.scene.tools.moveTile then
-		self.button4.textColor = self.textColorEnabled
+		self.buttonAddXZ.textColor = self.textColorEnabled
 	end
 end
 
@@ -1528,8 +1504,6 @@ function TileGeometryEditor_EditMode_SceneTiles:new(editor)
 	o:createChildren() -- this is not a ISUIElement
 	return o
 end
------
-
 TileGeometryEditor_CurtainPropertiesPanel = ISPanel:derive("TileGeometryEditor_CurtainPropertiesPanel")
 local CurtainPropertiesPanel = TileGeometryEditor_CurtainPropertiesPanel
 
@@ -1669,8 +1643,8 @@ function CurtainPropertiesPanel:isTranslatingCurtain()
 end
 
 function CurtainPropertiesPanel:getCurtainEdge(sprite)
-	if sprite:getProperties():Is(IsoFlagType.attachedW) or sprite:getProperties():Is(IsoFlagType.windowW) then return "w" end
-	if sprite:getProperties():Is(IsoFlagType.attachedN) or sprite:getProperties():Is(IsoFlagType.windowN) then return "n" end
+	if sprite:getProperties():has(IsoFlagType.attachedW) or sprite:getProperties():has(IsoFlagType.windowW) then return "w" end
+	if sprite:getProperties():has(IsoFlagType.attachedN) or sprite:getProperties():has(IsoFlagType.windowN) then return "n" end
 	return nil
 end
 
@@ -1689,8 +1663,6 @@ function CurtainPropertiesPanel:new(x, y, width, height, editor)
 	return o
 end
 
------
-
 TileGeometryEditor_EditMode_Curtain = TileGeometryEditor_EditMode:derive("TileGeometryEditor_EditMode_Curtain")
 
 function TileGeometryEditor_EditMode_Curtain:createChildren()
@@ -1701,9 +1673,9 @@ function TileGeometryEditor_EditMode_Curtain:createChildren()
 	self.buttonPanel:noBackground()
 	self.editor:addChild(self.buttonPanel)
 
-	local button1 = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "toggle geometry", self, self.onButtonToggleGeometry)
-	self.buttonPanel:addChild(button1)
-	self.button1 = button1
+	local buttonTranslate = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "toggle geometry", self, self.onButtonToggleGeometry)
+	self.buttonPanel:addChild(buttonTranslate)
+	self.buttonTranslate = buttonTranslate
 
 	self.buttonPanel:shrinkWrap(0, 0)
 	self.buttonPanel:setVisible(false)
@@ -1769,7 +1741,7 @@ function TileGeometryEditor_EditMode_Curtain:prerenderEditor()
 end
 
 function TileGeometryEditor_EditMode_Curtain:prerenderProperties()
-	self.button1:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
+	self.buttonTranslate:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
 	if not self.tilePicker3.listBox:isSelectionEmpty() then
 		if not self.propertiesPanel:isVisible() then
 			self.propertiesPanel:setVisible(true)
@@ -1846,8 +1818,6 @@ function TileGeometryEditor_EditMode_Curtain:new(editor)
 	return o
 end
 
------
-
 TileGeometryEditor_EditMode_Seating = TileGeometryEditor_EditMode:derive("TileGeometryEditor_EditMode_Seating")
 
 function TileGeometryEditor_EditMode_Seating:createChildren()
@@ -1866,33 +1836,33 @@ function TileGeometryEditor_EditMode_Seating:createChildren()
 	self.buttonPanel:noBackground()
 	self.editor:addChild(self.buttonPanel)
 
-	local button1 = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "toggle geometry", self, self.onButtonToggleGeometry)
-	self.buttonPanel:addChild(button1)
-	self.button1 = button1
+	local buttonTranslate = ISButton:new(0, 0, self.buttonPanel.width, buttonHgt, "toggle geometry", self, self.onButtonToggleGeometry)
+	self.buttonPanel:addChild(buttonTranslate)
+	self.buttonTranslate = buttonTranslate
 
-	local button2 = ISButton:new(0, button1:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "APPLY POSITION", self, self.onButtonApply)
-	self.buttonPanel:addChild(button2)
-	self.button2 = button2
+	local buttonHideGeom = ISButton:new(0, buttonTranslate:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "APPLY POSITION", self, self.onButtonApply)
+	self.buttonPanel:addChild(buttonHideGeom)
+	self.buttonHideGeom = buttonHideGeom
 
-	local button3 = ISButton:new(0, button2:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "ADD NORTH", self, function(self) self:onButtonAddPosition("N") end)
-	self.buttonPanel:addChild(button3)
-	self.button3 = button3
+	local buttonAddXY = ISButton:new(0, buttonHideGeom:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "ADD NORTH", self, function(self) self:onButtonAddPosition("N") end)
+	self.buttonPanel:addChild(buttonAddXY)
+	self.buttonAddXY = buttonAddXY
 
-	local button4 = ISButton:new(0, button3:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "ADD SOUTH", self, function(self) self:onButtonAddPosition("S") end)
-	self.buttonPanel:addChild(button4)
-	self.button4 = button4
+	local buttonAddXZ = ISButton:new(0, buttonAddXY:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "ADD SOUTH", self, function(self) self:onButtonAddPosition("S") end)
+	self.buttonPanel:addChild(buttonAddXZ)
+	self.buttonAddXZ = buttonAddXZ
 
-	local button5 = ISButton:new(0, button4:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "ADD WEST", self, function(self) self:onButtonAddPosition("W") end)
-	self.buttonPanel:addChild(button5)
-	self.button5 = button5
+	local buttonAddYZ = ISButton:new(0, buttonAddXZ:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "ADD WEST", self, function(self) self:onButtonAddPosition("W") end)
+	self.buttonPanel:addChild(buttonAddYZ)
+	self.buttonAddYZ = buttonAddYZ
 
-	local button6 = ISButton:new(0, button5:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "ADD EAST", self, function(self) self:onButtonAddPosition("E") end)
-	self.buttonPanel:addChild(button6)
-	self.button6 = button6
+	local buttonEditPoints = ISButton:new(0, buttonAddYZ:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "ADD EAST", self, function(self) self:onButtonAddPosition("E") end)
+	self.buttonPanel:addChild(buttonEditPoints)
+	self.buttonEditPoints = buttonEditPoints
 
-	local button7 = ISButton:new(0, button6:getBottom() + UI_BORDER_SPACING, button1.width, buttonHgt, "REMOVE POSITION", self, self.onButtonRemovePosition)
-	self.buttonPanel:addChild(button7)
-	self.button7 = button7
+	local buttonRemove = ISButton:new(0, buttonEditPoints:getBottom() + UI_BORDER_SPACING, buttonTranslate.width, buttonHgt, "REMOVE POSITION", self, self.onButtonRemovePosition)
+	self.buttonPanel:addChild(buttonRemove)
+	self.buttonRemove = buttonRemove
 
 	self.buttonPanel:shrinkWrap(0, 0)
 	self.buttonPanel:setVisible(false)
@@ -2049,14 +2019,14 @@ function TileGeometryEditor_EditMode_Seating:prerenderEditor()
 			end
 		end
 	end
-	self.button1:setEnable(selectedTile ~= nil)
-	self.button2:setEnable(self:canApplyChange())
-	self.button3:setEnable(selectedTile ~= nil and not self:hasPositionID("N"))
-	self.button4:setEnable(selectedTile ~= nil and not self:hasPositionID("S"))
-	self.button5:setEnable(selectedTile ~= nil and not self:hasPositionID("W"))
-	self.button6:setEnable(selectedTile ~= nil and not self:hasPositionID("E"))
-	self.button7:setEnable(self:getSelectedPositionIndex() ~= -1)
-	self.button1:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
+	self.buttonTranslate:setEnable(selectedTile ~= nil)
+	self.buttonHideGeom:setEnable(self:canApplyChange())
+	self.buttonAddXY:setEnable(selectedTile ~= nil and not self:hasPositionID("N"))
+	self.buttonAddXZ:setEnable(selectedTile ~= nil and not self:hasPositionID("S"))
+	self.buttonAddYZ:setEnable(selectedTile ~= nil and not self:hasPositionID("W"))
+	self.buttonEditPoints:setEnable(selectedTile ~= nil and not self:hasPositionID("E"))
+	self.buttonRemove:setEnable(self:getSelectedPositionIndex() ~= -1)
+	self.buttonTranslate:setTitle(self:java0("getDrawGeometry") and "HIDE GEOMETRY" or "SHOW GEOMETRY")
 	self:prerenderProperties()
 end
 

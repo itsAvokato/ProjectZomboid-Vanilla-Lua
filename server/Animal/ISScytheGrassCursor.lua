@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "BuildingObjects/ISBuildingObject"
 
 ISScytheGrassCursor = ISBuildingObject:derive("ISScytheGrassCursor");
@@ -226,7 +222,7 @@ function ISScytheGrassCursor:new(character, scythe)
 	o.scythe = scythe
 	o.radius = 3;
 	o.maxRadius = 3;
-	if scythe:getType() == "HandScythe" or scythe:hasTag("HandScythe") then
+	if scythe:getType() == "HandScythe" or scythe:hasTag(ItemTag.HAND_SCYTHE) then
 		o.radius = 1;
 		o.maxRadius = 1;
 	end

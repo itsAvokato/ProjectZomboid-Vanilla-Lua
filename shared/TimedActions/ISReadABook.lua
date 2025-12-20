@@ -1,17 +1,10 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISReadABook = ISBaseTimedAction:derive("ISReadABook");
 
 function ISReadABook:isValid()
 	if self.character:tooDarkToRead() then
--- 	if self.character:getSquare():getLightLevel(self.character:getPlayerNum()) < 0.43 then
-		-- self.character:Say(getText("ContextMenu_TooDark"))		
 		HaloTextHelper.addBadText(self.character, getText("ContextMenu_TooDark"));
--- 		HaloTextHelper.addText(self.character, getText("ContextMenu_TooDark"), getCore():getGoodHighlitedColor());
 		return false
 	end
     local vehicle = self.character:getVehicle()
@@ -43,22 +36,16 @@ function ISReadABook:update()
         end
     end
     if SkillBook[self.item:getSkillTrained()] then
-        if self.item:getLvlSkillTrained() > self.character:getPerkLevel(SkillBook[self.item:getSkillTrained()].perk) + 1 or self.character:HasTrait("Illiterate") then
+        if self.item:getLvlSkillTrained() > self.character:getPerkLevel(SkillBook[self.item:getSkillTrained()].perk) + 1 or self.character:hasTrait(CharacterTrait.ILLITERATE) then
             if self.pageTimer >= 200 then
                 self.pageTimer = 0;
                 local txtRandom = ZombRand(3);
                 if txtRandom == 0 then
---                     self.character:Say(getText("IGUI_PlayerText_DontGet"));
 					HaloTextHelper.addBadText(self.character, getText("IGUI_PlayerText_DontGet"));
--- 					HaloTextHelper.addText(self.character, getText("IGUI_PlayerText_DontGet"), getCore():getGoodHighlitedColor());
                 elseif txtRandom == 1 then
---                     self.character:Say(getText("IGUI_PlayerText_TooComplicated"));
 					HaloTextHelper.addBadText(self.character, getText("IGUI_PlayerText_TooComplicated"));
--- 					HaloTextHelper.addText(self.character, getText("IGUI_PlayerText_TooComplicated"), getCore():getGoodHighlitedColor());
                 else
---                     self.character:Say(getText("IGUI_PlayerText_DontUnderstand"));
 					HaloTextHelper.addBadText(self.character, getText("IGUI_PlayerText_DontUnderstand"));
--- 					HaloTextHelper.addText(self.character, getText("IGUI_PlayerText_DontUnderstand"), getCore():getGoodHighlitedColor());
                 end
                 if self.item:getNumberOfPages() > 0 then
                     self.character:setAlreadyReadPages(self.item:getFullType(), 0)
@@ -70,13 +57,9 @@ function ISReadABook:update()
                 self.pageTimer = 0;
                 local txtRandom = ZombRand(2);
                 if txtRandom == 0 then
---                     self.character:Say(getText("IGUI_PlayerText_KnowSkill"));
 					HaloTextHelper.addGoodText(self.character, getText("IGUI_PlayerText_KnowSkill"));
--- 					HaloTextHelper.addText(self.character, getText("IGUI_PlayerText_KnowSkill"), getCore():getGoodHighlitedColor());
                 else
---                     self.character:Say(getText("IGUI_PlayerText_BookObsolete"));
 					HaloTextHelper.addGoodText(self.character, getText("IGUI_PlayerText_BookObsolete"));
--- 					HaloTextHelper.addText(self.character, getText("IGUI_PlayerText_BookObsolete"), getCore():getGoodHighlitedColor());
                 end
             end
         else
@@ -90,19 +73,9 @@ function ISReadABook:update()
     -- literature, like Comic Book.
     local bodyDamage = self.character:getBodyDamage()
     local stats = self.character:getStats()
-    if self.stats and (self.item:getBoredomChange() < 0.0) then
-        if bodyDamage:getBoredomLevel() > self.stats.boredom then
-            bodyDamage:setBoredomLevel(self.stats.boredom)
-        end
-    end
     if self.stats and (self.item:getUnhappyChange() < 0.0) then
-        if bodyDamage:getUnhappynessLevel() > self.stats.unhappyness then
-            bodyDamage:setUnhappynessLevel(self.stats.unhappyness)
-        end
-    end
-    if self.stats and (self.item:getStressChange() < 0.0) then
-        if stats:getBasicStress() > self.stats.stress then
-            stats:setStress(self.stats.stress)
+        if stats:get(CharacterStat.UNHAPPINESS) > self.stats.unhappiness then
+            stats:set(CharacterStat.UNHAPPINESS, self.stats.unhappiness)
         end
     end
 end
@@ -134,7 +107,7 @@ function ISReadABook.checkLevel(character, item)
         return
     end
     local level = character:getPerkLevel(skillBook.perk)
-    if (item:getLvlSkillTrained() > level + 1) or character:HasTrait("Illiterate") then
+    if (item:getLvlSkillTrained() > level + 1) or character:hasTrait(CharacterTrait.ILLITERATE) then
         item:setAlreadyReadPages(0)
         character:setAlreadyReadPages(item:getFullType(), 0)
     end
@@ -153,9 +126,9 @@ function ISReadABook:start()
     --self.character:SetPerformingAction(GameCharacterActions.Reading, nil, self.item)
     if self.item:getReadType() then
         self:setAnimVariable("ReadType", self.item:getReadType())
-    elseif (self.item:getType() == "Newspaper" or self.item:hasTag("NewspaperRead")) then
+    elseif (self.item:getType() == "Newspaper" or self.item:hasTag(ItemTag.NEWSPAPER_READ)) then
         self:setAnimVariable("ReadType", "newspaper")
-    elseif (self.item:hasTag("Picture")) then
+    elseif (self.item:hasTag(ItemTag.PICTURE)) then
         self:setAnimVariable("ReadType", "photo")
     else
         self:setAnimVariable("ReadType", "book")
@@ -168,9 +141,9 @@ function ISReadABook:start()
 
     if not SkillBook[self.item:getSkillTrained()] then
         self.stats = {}
-        self.stats.boredom = self.character:getBodyDamage():getBoredomLevel()
-        self.stats.unhappyness = self.character:getBodyDamage():getUnhappynessLevel()
-        self.stats.stress = self.character:getStats():getBasicStress()
+        self.stats.boredom = self.character:getStats():get(CharacterStat.BOREDOM);
+        self.stats.unhappiness = self.character:getStats():get(CharacterStat.UNHAPPINESS);
+        self.stats.stress = self.character:getStats():get(CharacterStat.STRESS);
     end
 
     if self:isBook(self.item) then
@@ -203,15 +176,6 @@ function ISReadABook:perform()
     self.character:setReading(false);
     self.item:getContainer():setDrawDirty(true);
     self.item:setJobDelta(0.0);
---    if self.item:getTeachedRecipes() and not self.item:getTeachedRecipes():isEmpty() then
---        for i=0, self.item:getTeachedRecipes():size() - 1 do
---           if not self.character:getKnownRecipes():contains(self.item:getTeachedRecipes():get(i)) then
---               self.character:getKnownRecipes():add(self.item:getTeachedRecipes():get(i));
---           else
---               self.character:Say(getText("IGUI_PlayerText_KnowSkill"));
---           end
---        end
---    end
     if self:isBook(self.item) then
         self.character:playSound("CloseBook")
     else
@@ -220,7 +184,6 @@ function ISReadABook:perform()
 
     self.isLiteratureRead = nil
     if self.item:hasModData() and self.item:getModData().literatureTitle then
-        --         self.character:Say(self.item:getModData().literatureTitle)
         self.isLiteratureRead = self.character:isLiteratureRead(self.item:getModData().literatureTitle)
         self.character:addReadLiterature(self.item:getModData().literatureTitle)
     end
@@ -236,7 +199,7 @@ end
 -- See init() in PrintMedia.lua
 function ISReadABook:startLoadingPrintMediaTextures()
     local mediaID = self.item:getModData().printMedia
-    local text = getTextOrNull("Print_Media_" .. mediaID .. "_info")
+    local text = getTextOrNull(mediaID.info)
     if not text then return end
     local elements = string.split(text, "<")
     for i, val in ipairs(elements) do
@@ -269,19 +232,22 @@ function ISReadABook:startLoadingPrintMediaTextures()
 end
 
 function ISReadABook:displayPrintMedia()
-    --local val = "TheKentuckyHerald_July9"
     local val = self.item:getModData().printMedia
     local win = PZAPI.UI.PrintMedia{
         x = 730, y = 100,
     }
-    win.media_id = val
-    win.data = getText("Print_Media_" .. val .. "_info")
-    win.children.bar.children.name.text = getText("Print_Media_" .. val .. "_title")
-    win.textTitle = getText("Print_Text_" .. val .. "_title")
-    win.textData = string.gsub(getText("Print_Text_" .. val .. "_info"), "\\n", "\n")
+    win.media_id = val.id
+    win.data = getText(val.info)
+    win.children.bar.children.name.text = getText(val.title)
+    win.textTitle = getText(val.title)
+    win.textData = string.gsub(getText(val.text), "\\n", "\n")
     win:instantiate()
     win.javaObj:setAlwaysOnTop(false)
     win:centerOnScreen(self.playerNum)
+
+    if getCore():getOptionAutoRevealPrintMediaMapLocations() then
+        self:revealPrintMediaLocationsOnMap(win.media_id)
+    end
 
     if getJoypadData(self.playerNum) then
         ISAtomUIJoypad.Apply(win)
@@ -310,46 +276,34 @@ function ISReadABook:displayPrintMedia()
         end
         setJoypadFocus(self.playerNum, win)
     end
+end
 
-    --[[
-    local index = self.item:getModData().printMedia
-    local panel = ISPrintMediaPage:new(0, 0, index, self.character, self.item);
-    panel:initialise();
-    panel:addToUIManager();
-
-    panel:setX((getCore():getScreenWidth() / 2) - (panel.width / 2));
-    panel:setY((getCore():getScreenHeight() / 2) - (panel.height / 2));
-
-    ISLayoutManager.RegisterWindow('PrintMedia', PrintMediaManager, self)
-    if PrintMediaDefinitions.MiscDetails[index] and PrintMediaDefinitions.MiscDetails[index].locations then
-        local locations = PrintMediaDefinitions.MiscDetails[index].locations
-
-        for i = 1, #locations do
-            local location = locations[i]
-            if location.x1 and location.x2 and location.y1 and location.y2 then
-                local x1 = math.floor(locations[i].x1)
-                local y1 = math.floor(locations[i].y1)
-                local x2 = math.floor(locations[i].x2)
-                local y2 = math.floor(locations[i].y2)
-                WorldMapVisited.getInstance():setKnownInSquares(x1, y1, x2, y2)
-
-            elseif location.x and location.y then
-                local x = math.floor(locations[i].x/300)
-                local y = math.floor(locations[i].y/300)
-                WorldMapVisited.getInstance():setKnownInCells(x, y, x, y)
-            end
+function ISReadABook:revealPrintMediaLocationsOnMap(mediaID)
+    if not PrintMediaDefinitions then
+        return
+    end
+    local miscDetails = PrintMediaDefinitions.MiscDetails[mediaID]
+    if not miscDetails then
+      return
+    end
+    for i = 1, 5 do
+        local locationData = miscDetails["location" .. i]
+        if locationData == nil then
+            break
+        end
+        for _, sqData in ipairs(locationData) do
+            WorldMapVisited.getInstance():setKnownInSquares(sqData.x1, sqData.y1, sqData.x2, sqData.y2)
         end
     end
-    ]]
 end
 
 function ISReadABook:complete()
     self.item:setJobDelta(0.0);
 
-    if self.item:getTeachedRecipes() and not self.item:getTeachedRecipes():isEmpty() then
+    if self.item:getLearnedRecipes() and not self.item:getLearnedRecipes():isEmpty() then
         self.character:getAlreadyReadBook():add(self.item:getFullType());
-         if self.item:getTeachedRecipes():contains("Herbalist") and not self.character:getTraits():contains("Herbalist") then
-             self.character:getTraits():add("Herbalist");
+         if self.item:getLearnedRecipes():contains("Herbalist") and not self.character:hasTrait(CharacterTrait.HERBALIST) then
+             self.character:hasTrait(CharacterTrait.HERBALIST);
          end
     end
 
@@ -363,18 +317,16 @@ function ISReadABook:complete()
         self.item:setAlreadyReadPages(0);
     end
 
-    if self.item:hasModData() and self.item:getModData().teachedRecipe ~= nil then
-        self.character:learnRecipe(self.item:getModData().teachedRecipe)
---         self.character:getKnownRecipes():add(self.item:getModData().teachedRecipe)
+    if self.item:hasModData() and self.item:getModData().learnedRecipe ~= nil then
+        self.character:learnRecipe(self.item:getModData().learnedRecipe)
     end
 
     if self.item:hasModData() and self.item:getModData().literatureTitle then
---        self.character:Say(self.item:getModData().literatureTitle)
         self.character:addReadLiterature(self.item:getModData().literatureTitle)
     end
 
     if self.item:hasModData() and self.item:getModData().printMedia then
-        self.character:addReadPrintMedia(self.item:getModData().printMedia)
+        self.character:addReadPrintMedia(self.item:getModData().printMedia.id)
     end
 
     ISReadABook.checkMultiplier(self);
@@ -401,7 +353,7 @@ function ISReadABook:animEvent(event, parameter)
     if event == "ReadAPage" then
         if isServer() then
             if SkillBook[self.item:getSkillTrained()] then
-                if self.item:getLvlSkillTrained() > self.character:getPerkLevel(SkillBook[self.item:getSkillTrained()].perk) + 1 or self.character:HasTrait("Illiterate") then
+                if self.item:getLvlSkillTrained() > self.character:getPerkLevel(SkillBook[self.item:getSkillTrained()].perk) + 1 or self.character:hasTrait(CharacterTrait.ILLITERATE) then
                     if self.item:getNumberOfPages() > 0 then
                         self.character:setAlreadyReadPages(self.item:getFullType(), 0)
                         self.item:setAlreadyReadPages(0);
@@ -449,25 +401,25 @@ function ISReadABook:getDuration()
         ISReadABook.checkLevel(self.character, self.item)
         self.item:setAlreadyReadPages(self.character:getAlreadyReadPages(self.item:getFullType()))
         self.startPage = self.item:getAlreadyReadPages()
-        numPages = self.item:getNumberOfPages() -- item:getAlreadyReadPages()
+        numPages = self.item:getNumberOfPages()
     else
         numPages = 5
     end
 
     local f = 1 / getGameTime():getMinutesPerDay() / 2
     local time = numPages * self.minutesPerPage / f
-    if self.item:hasTag("FastRead") then
+    if self.item:hasTag(ItemTag.FAST_READ) then
         time = 50
     end
-    if(self.character:HasTrait("FastReader")) then
+    if(self.character:hasTrait(CharacterTrait.FAST_READER)) then
         time = time * 0.7;
     end
-    if(self.character:HasTrait("SlowReader")) then
+    if(self.character:hasTrait(CharacterTrait.SLOW_READER)) then
         time = time * 1.3;
     end
 
     --reading glasses are a little faster
-    local eyeItem = self.character:getWornItems():getItem("Eyes");
+    local eyeItem = self.character:getWornItems():getItem(ItemBodyLocation.EYES);
     if(eyeItem and eyeItem:getType() == "Glasses_Reading") then
         time = time * 0.9;
     end

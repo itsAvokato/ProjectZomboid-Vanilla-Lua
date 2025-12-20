@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Xui debug window to test some stuff.
---]]
-
 require "ISUI/ISCollapsableWindow"
 
 XuiTestWindow = ISCollapsableWindow:derive("XuiTestWindow");
@@ -24,7 +15,6 @@ function XuiTestWindow:createChildren()
     self.minimumWidth = 0;
     self.minimumHeight = 0;
 
-    print("Creating window")
     self.heightMod = self.th+rh;
 
     --since this window has a title bar header and footer resize widget

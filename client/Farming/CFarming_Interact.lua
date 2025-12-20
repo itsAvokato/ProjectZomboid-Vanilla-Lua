@@ -4,7 +4,7 @@ local function predicateFreshEnough(item) --, isHerb)
 	if not instanceof(item, "Food") then return true end
 	-- if not item:isFood() then return true end
 	if item:isRotten() then return false end
-	if item:hasTag("isCutting") and not item:isFresh() then return false end
+	if item:hasTag(ItemTag.IS_CUTTING) and not item:isFresh() then return false end
 	return true
 end
 
@@ -14,7 +14,7 @@ local function predicateFreshEnoughNotHeld(item) --, isHerb)
 	if not instanceof(item, "Food") then return true end
 	-- if not item:isFood() then return true end
 	if item:isRotten() then return false end
-	if item:hasTag("isCutting") and not item:isFresh() then return false end
+	if item:hasTag(ItemTag.IS_CUTTING) and not item:isFresh() then return false end
 	return true
 end
 
@@ -25,7 +25,7 @@ local function predicateGoodSeed(item) --, isHerb)
 
 	if item:isRotten() or item:isCooked() or item:isBurnt() then return false end
 	-- herbs ("cutings") have to be fresh
-	if item:hasTag("isCutting") and not item:isFresh() then return false end
+	if item:hasTag(ItemTag.IS_CUTTING) and not item:isFresh() then return false end
 
 	-- check for a whole item
 	local baseHunger = math.abs(item:getBaseHunger())
@@ -83,18 +83,19 @@ CFarming_Interact.onContextKey = function(player, timePressedContext)
 
 
     player:setIsFarming(true)
-	local chopTree = item:hasTag("ChopTree")
-    local digPlow = item:hasTag("DigPlow")
-    local hasCuttingTool = item:hasTag("CutPlant")
-    local pickaxe = item:hasTag("PickAxe")
-    local stoneMaul = item:hasTag("StoneMaul")
-    local sledge = item:hasTag("Sledgehammer")
-    local hammer = item:hasTag("Hammer")
-    local scythe = item:hasTag("Scythe")
-    local seed = item:hasTag("isSeed") and predicateGoodSeed(item)
+	local chopTree = item:hasTag(ItemTag.CHOP_TREE)
+    local digPlow = item:hasTag(ItemTag.DIG_PLOW)
+    local hasCuttingTool = item:hasTag(ItemTag.CUT_PLANT)
+    local pickaxe = item:hasTag(ItemTag.PICK_AXE)
+    local stoneMaul = item:hasTag(ItemTag.STONE_MAUL)
+    local sledge = item:hasTag(ItemTag.SLEDGEHAMMER)
+    local clubHammer = item:hasTag(ItemTag.CLUB_HAMMER)
+    local hammer = item:hasTag(ItemTag.HAMMER)
+    local scythe = item:hasTag(ItemTag.SCYTHE)
+    local seed = item:hasTag(ItemTag.IS_SEED) and predicateGoodSeed(item)
     local water = item:isWaterSource() and item:getCurrentUses() > 0
-    local fertilizer = item:hasTag("Fertilizer") and item:getCurrentUses() > 0
-    local compost = item:hasTag("Compost") and item:getCurrentUses() > 0
+    local fertilizer = item:hasTag(ItemTag.FERTILIZER) and item:getCurrentUses() > 0
+    local compost = item:hasTag(ItemTag.COMPOST) and item:getCurrentUses() > 0
 --     local corpse = item:getType() == "CorpseFemale" or item:getType() == "CorpseMale"
 
     local fliesCure = item:getType() == "GardeningSprayMilk" and item:getCurrentUses() > 0
@@ -115,62 +116,13 @@ CFarming_Interact.onContextKey = function(player, timePressedContext)
         ISTimedActionQueue.add(ISRemoveBush:new(player, square, false))
         return
 	end
-    if pickaxe then
--- 	    if pickaxe or hasCuttingTool then
-        local objects = square:getWorldObjects()
-        -- if you have the proper tool then ground cover gets pickaxed or cut
-        if objects  and objects:size() > 0 then
-            for i=0, i< objects:size() do
-                local v = objects:get(i)
-                if instanceof(v, "IsoObject") and v:getSprite()  then
-                    local spriteName = v:getSprite():getName() or v:getSpriteName()
-                    if not spriteName then
-                        spriteName = v:getSpriteName()
-                    end
-
-                    local props = sprite:getProperties()
-                    local customName = props:Is("CustomName") and props:Val("CustomName") or nil
-                    if pickaxe and (customName == "Small Stump" or customName == "Stump") then
-                        player:setIsFarming(true)
-                        ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, v));
-                        return
-                    end
-
-                end
-            end
-        end
+    if pickaxe and square:getStump() then
+        ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, square:getStump()));
     end
 --     print("MINING CHECK")
 -- TODO: Doesn't work anymore, fix
-    if pickaxe or stoneMaul or sledge then
-        local objects = square:getWorldObjects()
---         print("SQUARE " .. tostring(square))
---         print("OBJECTS " .. tostring(square:getWorldObjects()))
---         print("OBJECTS " .. tostring(square:getWorldObjects():size()))
-        -- if you have the proper tool then ground cover gets pickaxed or cut
-        if objects and objects:size() > 0 then
-            for i=0, i< objects:size() do
-                local v = objects:get(i)
---                     print("Objects " .. tostring(v))
-                    if v:getSprite() and v:getSprite():getProperties() then
-                        local props = v:getSprite():getProperties()
-                        print("props " .. tostring(props))
-                        local customName = props:Is("CustomName") and props:Val("CustomName") or nil
-                        print("customName " .. tostring(customName))
-    --                         if not customName then customName = CFarming_Interact.getObjectClutterType(v) end
-                        if customName and (string.find(tostring(customName), "ironOre") ~= nil) then
-                           ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, v));
-                           return
-                        elseif customName and (string.find(tostring(customName), "copperOre") ~= nil) then
-                           ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, v));
-                           return
-                        elseif customName and (customName == "FlintBoulder" or customName == "LimestoneBoulder") then
-                           ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, v));
-                           return
-                        end
-                    end
-            end
-        end
+    if (pickaxe or stoneMaul or sledge or clubHammer) and square:getOre() then
+        ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(player, square:getOre()));
     end
 
 	-- if you have a tool to dig a furrow and you can dig one you dig one
@@ -216,7 +168,7 @@ CFarming_Interact.onContextKey = function(player, timePressedContext)
     -- scythe the grass
     if scythe then
         local radius = 3
-        if item:getType() == "HandScythe" or item:hasTag("HandScythe") then
+        if item:getType() == "HandScythe" or item:hasTag(ItemTag.HAND_SCYTHE) then
             radius = 1
         end
 		player:setIsFarming(true)
@@ -295,7 +247,7 @@ CFarming_Interact.onContextKey = function(player, timePressedContext)
     end
 
     -- cleaning interactions
-    if item:hasTag("CleanStains") then
+    if item:hasTag(ItemTag.CLEAN_STAINS) then
         local square2 = player:getSquare()
         if square2 then
             if ISWorldObjectContextMenu.canCleanBlood(player, square2)  then
@@ -398,7 +350,6 @@ CFarming_Interact.ChangeClimbDirection = function(key)
 --     print("doUp " .. tostring(doUp))
 --     print("isUp " .. tostring(isUp))
     if getCore():isKey("ReleaseRope", key) then
-        print("Should Release Rope and Fall")
         player:fallFromRope()
 --         player:setCollidable(true);
 --         player:setbClimbing(false);

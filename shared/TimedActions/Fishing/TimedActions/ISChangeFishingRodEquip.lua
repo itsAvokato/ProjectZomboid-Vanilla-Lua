@@ -50,7 +50,7 @@ function ISChangeFishingRodEquip:perform()
 end
 
 function ISChangeFishingRodEquip:complete()
-    if self.item:hasTag("FishingLine") then
+    if self.item:hasTag(ItemTag.FISHING_LINE) then
         self.rod:getModData().fishing_LineType = self.item:getFullType()
         syncItemModData(self.character, self.rod)
         self.item:setUsedDelta(self.item:getCurrentUsesFloat() - 0.125)

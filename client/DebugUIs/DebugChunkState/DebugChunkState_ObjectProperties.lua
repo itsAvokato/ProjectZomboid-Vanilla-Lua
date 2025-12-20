@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "DebugUIs/DebugChunkState/ISSectionedPanel"
 
@@ -78,8 +74,6 @@ function ObjPropsHandler:new(x, y, width, height, gameState)
 	o.highlightAreas = {}
 	return o
 end
-
------
 
 local OPH_render = ObjPropsHandler:derive("DebugChunkStateUI_OPH_render")
 function OPH_render:setObject(object)
@@ -179,7 +173,7 @@ function OPH_SpriteProperties:render1()
 	local props = obj:getSprite():getProperties()
 	local names = props:getPropertyNames()
 	for i=1,names:size() do
-		self:addLine("%s = %s", names:get(i-1), props:Val(names:get(i-1)))
+		self:addLine("%s = %s", names:get(i-1), props:get(names:get(i-1)))
 	end
 	if not names:isEmpty() then
 		self.addLineY = self.addLineY + FONT_HGT_SMALL
@@ -189,8 +183,6 @@ function OPH_SpriteProperties:render1()
 		self:addLine("flag: %s", flags:get(i-1):toString())
 	end
 end
-
------
 
 local OPH = {}
 local function deriveOPH(name)
@@ -256,8 +248,6 @@ function OPH_IsoZombie:render1()
 	end
 	self:addLine("dir = %s", obj:getDir():toString())
 end
-
------
 
 DebugChunkStateUI_ObjPropsPanel = ISSectionedPanel:derive("DebugChunkStateUI_ObjPropsPanel")
 local ObjPropsPanel = DebugChunkStateUI_ObjPropsPanel

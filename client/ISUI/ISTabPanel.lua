@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** A collapsable window with multiple tab, can be dragged out or in to make new tab **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISTabPanel = ISPanel:derive("ISTabPanel");
@@ -12,11 +7,6 @@ ISTabPanel.xMouse = -1;
 ISTabPanel.yMouse = -1;
 ISTabPanel.mouseOut = false;
 ISTabPanel.viewDragging = nil;
-
---************************************************************************--
---** ISTabPanel:initialise
---**
---************************************************************************--
 
 function ISTabPanel:initialise()
 	ISPanel.initialise(self);
@@ -76,10 +66,6 @@ function ISTabPanel:prerender()
 	self:updateSmoothScrolling()
 end
 
---************************************************************************--
---** ISTabPanel:render
---**
---************************************************************************--
 function ISTabPanel:render()
 	local newViewList = {};
 	local tabDragSelected = -1;
@@ -377,10 +363,6 @@ ISTabPanel.redoTab = function(self)
 	ISTabPanel.viewDragging = nil;
 end
 
---************************************************************************--
---** ISTabPanel:onMouseUp
---**
---************************************************************************--
 function ISTabPanel:onMouseUp(x, y)
 	if self.isDragging then
 		ISTabPanel.redoTab(self);
@@ -683,6 +665,5 @@ function ISTabPanel:new (x, y, width, height)
 end
 
 
-	ISTabPanel.tabSelected = getTexture("media/ui/XpSystemUI/tab_selected.png");
-	ISTabPanel.tabUnSelected = getTexture("media/ui/XpSystemUI/tab_unselected.png");
-
+ISTabPanel.tabSelected = getTexture("media/ui/XpSystemUI/tab_selected.png");
+ISTabPanel.tabUnSelected = getTexture("media/ui/XpSystemUI/tab_unselected.png");

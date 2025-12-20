@@ -4,10 +4,6 @@ ISUIElement = ISBaseObject:derive("ISUIElement");
 
 ISUIElement.IDMax = 1;
 
---************************************************************************--
---** ISUIElement:initialise
---**
---************************************************************************--
 function ISUIElement:initialise()
 	-- FIXME: need to avoid calling this method more than once, ID changes
 	self.children = {}
@@ -24,10 +20,6 @@ function ISUIElement:getController()
     return self.controller;
 end
 
---************************************************************************--
---** ISUIElement:setAnchorBottom
---**
---************************************************************************--
 function ISUIElement:setAnchorBottom(bAnchor)
 	self.anchorBottom = bAnchor;
 	if self.javaObject ~= nil then
@@ -35,10 +27,6 @@ function ISUIElement:setAnchorBottom(bAnchor)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setAnchorTop
---**
---************************************************************************--
 function ISUIElement:setAnchorTop(bAnchor)
 	self.anchorTop = bAnchor;
 	if self.javaObject ~= nil then
@@ -46,10 +34,6 @@ function ISUIElement:setAnchorTop(bAnchor)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setAnchorLeft
---**
---************************************************************************--
 function ISUIElement:setAnchorLeft(bAnchor)
 	self.anchorLeft = bAnchor;
 	if self.javaObject ~= nil then
@@ -57,10 +41,6 @@ function ISUIElement:setAnchorLeft(bAnchor)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setAnchorRight
---**
---************************************************************************--
 function ISUIElement:setAnchorRight(bAnchor)
 	self.anchorRight = bAnchor;
 	if self.javaObject ~= nil then
@@ -68,10 +48,6 @@ function ISUIElement:setAnchorRight(bAnchor)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setAnchorUDLR
---**
---************************************************************************--
 function ISUIElement:setAnchorsTBLR(bAnchorT, bAnchorB, bAnchorL, bAnchorR)
 	if bAnchorT ~= nil then
 		self:setAnchorTop(bAnchorT)
@@ -90,10 +66,6 @@ function ISUIElement:setAnchorsTBLR(bAnchorT, bAnchorB, bAnchorL, bAnchorR)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setAnchors
---**
---************************************************************************--
 function ISUIElement:setAnchors(bAnchor)
 	self.anchorLeft = bAnchor;
 	self.anchorRight = bAnchor;
@@ -107,10 +79,6 @@ function ISUIElement:setAnchors(bAnchor)
 	end
 end
 
---************************************************************************--
---** ISUIElement:getKeepOnScreen
---**
---************************************************************************--
 function ISUIElement:getKeepOnScreen()
 	if self.keepOnScreen ~= nil then
 		return self.keepOnScreen
@@ -118,10 +86,6 @@ function ISUIElement:getKeepOnScreen()
 	return not self.parent
 end
 
---************************************************************************--
---** ISUIElement:setX
---**
---************************************************************************--
 function ISUIElement:setX(x)
 	local xs = x
 	if self:getKeepOnScreen() then
@@ -136,10 +100,6 @@ function ISUIElement:setX(x)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setY
---**
---************************************************************************--
 function ISUIElement:setY(y)
 	local ys = y
 	if self:getKeepOnScreen() then
@@ -153,10 +113,6 @@ function ISUIElement:setY(y)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setWidth
---**
---************************************************************************--
 function ISUIElement:setWidth(w)
 
    self.width = w;
@@ -172,10 +128,6 @@ function ISUIElement:setWidth(w)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setHeight
---**
---************************************************************************--
 function ISUIElement:setHeight(h)
    self.height = h;
 
@@ -190,10 +142,6 @@ function ISUIElement:setHeight(h)
 	end
 end
 
---************************************************************************--
---** ISUIElement:getWidth
---**
---************************************************************************--
 function ISUIElement:getWidth()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -201,10 +149,6 @@ function ISUIElement:getWidth()
 	return self.javaObject:getWidth();
 end
 
---************************************************************************--
---** ISUIElement:getHeight
---**
---************************************************************************--
 function ISUIElement:getHeight()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -212,10 +156,6 @@ function ISUIElement:getHeight()
 	return self.javaObject:getHeight();
 end
 
---************************************************************************--
---** ISUIElement:getRight
---**
---************************************************************************--
 function ISUIElement:getRight()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -223,10 +163,6 @@ function ISUIElement:getRight()
 	return self.javaObject:getX() + self.javaObject:getWidth();
 end
 
---************************************************************************--
---** ISUIElement:getBottom
---**
---************************************************************************--
 function ISUIElement:getBottom()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -234,10 +170,6 @@ function ISUIElement:getBottom()
 	return self.javaObject:getY() + self.javaObject:getHeight();
 end
 
---************************************************************************--
---** ISUIElement:getScrollX
---**
---************************************************************************--
 function ISUIElement:getXScroll()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -245,10 +177,6 @@ function ISUIElement:getXScroll()
 	return self.javaObject:getXScroll();
 end
 
---************************************************************************--
---** ISUIElement:setWidthAndParentWidth
---**
---************************************************************************--
 function ISUIElement:setWidthAndParentWidth(wi)
 	ISPanel.setWidth(self, wi)
 	local parent = self.parent
@@ -260,10 +188,6 @@ function ISUIElement:setWidthAndParentWidth(wi)
 	end
 end
 
---************************************************************************--
---** ISUIElement:setHeightAndParentHeight
---**
---************************************************************************--
 function ISUIElement:setHeightAndParentHeight(h)
 	ISPanel.setHeight(self, h)
 	local parent = self.parent
@@ -275,10 +199,6 @@ function ISUIElement:setHeightAndParentHeight(h)
 	end
 end
 
---************************************************************************--
---** ISUIElement:getScrollY
---**
---************************************************************************--
 function ISUIElement:getYScroll()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -286,10 +206,6 @@ function ISUIElement:getYScroll()
 	return self.javaObject:getYScroll();
 end
 
---************************************************************************--
---** ISUIElement:getMouseX
---**
---************************************************************************--
 function ISUIElement:getMouseX()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -297,10 +213,6 @@ function ISUIElement:getMouseX()
 	return (getMouseX()-self.javaObject:getXScroll()) - self:getAbsoluteX();
 end
 
---************************************************************************--
---** ISUIElement:getMouseY
---**
---************************************************************************--
 function ISUIElement:getMouseY()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -308,26 +220,14 @@ function ISUIElement:getMouseY()
 	return (getMouseY()-self.javaObject:getYScroll()) - self:getAbsoluteY();
 end
 
---************************************************************************--
---** ISUIElement:getCentreX
---**
---************************************************************************--
 function ISUIElement:getCentreX()
 	return self:getWidth() / 2.0;
 end
 
---************************************************************************--
---** ISUIElement:getCentreY
---**
---************************************************************************--
 function ISUIElement:getCentreY()
 	return self:getHeight() / 2.0;
 end
 
---************************************************************************--
---** ISUIElement:getX
---**
---************************************************************************--
 function ISUIElement:getX()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -335,10 +235,6 @@ function ISUIElement:getX()
 	return self.javaObject:getX();
 end
 
---************************************************************************--
---** ISUIElement:getY
---**
---************************************************************************--
 function ISUIElement:getY()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -346,20 +242,14 @@ function ISUIElement:getY()
 	return self.javaObject:getY();
 end
 
-
-
 function ISUIElement:isEnabled()
-
 	    if self.javaObject == nil then
     		self:instantiate();
     	end
-
         if self.enabled == nil then
     	    self.enabled = self.javaObject:isEnabled();
     	end
-
     	return self.enabled;
-
 end
 
 function ISUIElement:setEnabled(en)
@@ -371,11 +261,6 @@ function ISUIElement:setEnabled(en)
     	self.enabled = en;
 end
 
-
---************************************************************************--
---** ISUIElement:getAbsoluteX
---**
---************************************************************************--
 function ISUIElement:getAbsoluteX()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -519,10 +404,6 @@ function ISUIElement:ignoreHeightChange()
 	return self.javaObject:ignoreHeightChange();
 end
 
---************************************************************************--
---** ISUIElement:getAbsoluteY
---**
---************************************************************************--
 function ISUIElement:getAbsoluteY()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -564,11 +445,6 @@ function ISUIElement:onResize()
 	self:updateScrollbars();
 end
 
-
---************************************************************************--
---** ISUIElement:setCapture
---**
---************************************************************************--
 function ISUIElement:setCapture(bCapture)
 	if self.javaObject == nil then
 		self:instantiate();
@@ -576,10 +452,6 @@ function ISUIElement:setCapture(bCapture)
 	self.javaObject:setCapture(bCapture);
 end
 
---************************************************************************--
---** ISUIElement:getCapture
---**
---************************************************************************--
 function ISUIElement:getIsCaptured()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -594,10 +466,6 @@ function ISUIElement:isCapture()
 	return self.javaObject:isCapture();
 end
 
---************************************************************************--
---** ISUIElement:setFollowGameWorld
---**
---************************************************************************--
 function ISUIElement:setFollowGameWorld(bFollow)
 	if self.javaObject == nil then
 		self:instantiate();
@@ -646,10 +514,6 @@ function ISUIElement:setJoypadFocused(focused, joypadData)
 	self.joypadFocused = focused;
 end
 
---************************************************************************--
---** ISUIElement:setVisible
---**
---************************************************************************--
 function ISUIElement:setVisible(bVisible)
 	if self.javaObject == nil then
 		self:instantiate();
@@ -664,10 +528,6 @@ function ISUIElement:getJavaObject()
 	return self.javaObject;
 end
 
---************************************************************************--
---** ISUIElement:getIsVisible
---**
---************************************************************************--
 function ISUIElement:getIsVisible()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -985,10 +845,6 @@ function ISUIElement:isDescendant(ui)
     return false
 end
 
---************************************************************************--
---** ISUIElement:instantiate
---**
---************************************************************************--
 function ISUIElement:instantiate()
 	self.javaObject = UIElement.new(self);
 	self.javaObject:setX(self.x);
@@ -1027,10 +883,6 @@ function ISUIElement:EndOutline()
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureScaled
---**
---************************************************************************--
 function ISUIElement:drawTextureScaled(texture, x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1042,10 +894,6 @@ function ISUIElement:drawTextureScaled(texture, x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureScaledUniform
---**
---************************************************************************--
 function ISUIElement:drawTextureScaledUniform(texture, x, y, scale, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1057,10 +905,6 @@ function ISUIElement:drawTextureScaledUniform(texture, x, y, scale, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureScaledAspect
---**
---************************************************************************--
 function ISUIElement:drawTextureScaledAspect(texture, x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1072,10 +916,6 @@ function ISUIElement:drawTextureScaledAspect(texture, x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureScaledAspect2
---**
---************************************************************************--
 function ISUIElement:drawTextureScaledAspect2(texture, x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1087,10 +927,6 @@ function ISUIElement:drawTextureScaledAspect2(texture, x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureScaledAspect2
---**
---************************************************************************--
 function ISUIElement:drawTextureScaledAspect3(texture, x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1102,10 +938,6 @@ function ISUIElement:drawTextureScaledAspect3(texture, x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTexture
---**
---************************************************************************--
 function ISUIElement:drawTexture(texture, x, y, a, r, g, b)
 	if self.javaObject ~= nil then
 		if r==nil then
@@ -1116,10 +948,6 @@ function ISUIElement:drawTexture(texture, x, y, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureTiled
---**
---************************************************************************--
 function ISUIElement:drawTextureTiled(texture, x, y, w, h, r, g, b, a)
 	if self.javaObject ~= nil then
 		if not r then
@@ -1129,10 +957,6 @@ function ISUIElement:drawTextureTiled(texture, x, y, w, h, r, g, b, a)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureTiledX
---**
---************************************************************************--
 function ISUIElement:drawTextureTiledX(texture, x, y, w, h, r, g, b, a)
 	if self.javaObject ~= nil then
 		if not r then
@@ -1142,10 +966,6 @@ function ISUIElement:drawTextureTiledX(texture, x, y, w, h, r, g, b, a)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureTiledY
---**
---************************************************************************--
 function ISUIElement:drawTextureTiledY(texture, x, y, w, h, r, g, b, a)
 	if self.javaObject ~= nil then
 		if not r then
@@ -1155,10 +975,6 @@ function ISUIElement:drawTextureTiledY(texture, x, y, w, h, r, g, b, a)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureTiledYOffset
---**
---************************************************************************--
 function ISUIElement:drawTextureTiledYOffset(texture, x, y, w, h, r, g, b, a)
 	if self.javaObject ~= nil then
 		if not r then
@@ -1168,20 +984,12 @@ function ISUIElement:drawTextureTiledYOffset(texture, x, y, w, h, r, g, b, a)
 	end
 end
 
---************************************************************************--
---** ISUIElement:DrawTextureAngle
---**
---************************************************************************--
 function ISUIElement:DrawTextureAngle(tex, centerX, centerY, angle)
     if self.javaObject ~= nil then
        self.javaObject:DrawTextureAngle(tex, centerX, centerY, angle);
     end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureStatic
---**
---************************************************************************--
 function ISUIElement:drawTextureScaledStatic(texture, x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1193,10 +1001,6 @@ function ISUIElement:drawTextureScaledStatic(texture, x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextureStatic
---**
---************************************************************************--
 function ISUIElement:drawTextureStatic(texture, x, y, a, r, g, b)
 	if self.javaObject ~= nil then
 		if r==nil then
@@ -1207,10 +1011,6 @@ function ISUIElement:drawTextureStatic(texture, x, y, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawDrawItemIcon
---**
---************************************************************************--
 function ISUIElement:drawItemIcon(item, x, y, a, w, h)
 	if self.javaObject ~= nil then
 
@@ -1218,10 +1018,6 @@ function ISUIElement:drawItemIcon(item, x, y, a, w, h)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawDrawItemIcon
---**
---************************************************************************--
 function ISUIElement:drawScriptItemIcon(scriptItem, x, y, a, w, h)
 	if self.javaObject ~= nil then
 
@@ -1229,10 +1025,6 @@ function ISUIElement:drawScriptItemIcon(scriptItem, x, y, a, w, h)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawRect
---**
---************************************************************************--
 function ISUIElement:drawRect( x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 		if self.isCollapsed then
@@ -1243,10 +1035,6 @@ function ISUIElement:drawRect( x, y, w, h, a, r, g, b)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawRectStatic
---**
---************************************************************************--
 function ISUIElement:drawRectStatic( x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1255,12 +1043,6 @@ function ISUIElement:drawRectStatic( x, y, w, h, a, r, g, b)
 	end
 end
 
-
-
---************************************************************************--
---** ISUIElement:drawRectBorder
---**
---************************************************************************--
 function ISUIElement:drawRectBorderStatic( x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1268,13 +1050,9 @@ function ISUIElement:drawRectBorderStatic( x, y, w, h, a, r, g, b)
 		self.javaObject:DrawTextureScaledColor(nil, x-self:getXScroll()+1, y-self:getYScroll(), w-2, 1, r, g, b, a);
 		self.javaObject:DrawTextureScaledColor(nil, x-self:getXScroll()+w-1, y-self:getYScroll(), 1, h, r, g, b, a);
 		self.javaObject:DrawTextureScaledColor(nil, x-self:getXScroll()+1, y-self:getYScroll()+h-1, w-2, 1, r, g, b, a);
-
 	end
 end
---************************************************************************--
---** ISUIElement:drawRectBorder
---**
---************************************************************************--
+
 function ISUIElement:drawRectBorder( x, y, w, h, a, r, g, b)
 	if self.javaObject ~= nil then
 
@@ -1282,7 +1060,6 @@ function ISUIElement:drawRectBorder( x, y, w, h, a, r, g, b)
 		self.javaObject:DrawTextureScaledColor(nil, x+1, y, w-2, 1, r, g, b, a);
 		self.javaObject:DrawTextureScaledColor(nil, x+w-1, y, 1, h, r, g, b, a);
 		self.javaObject:DrawTextureScaledColor(nil, x+1, y+h-1, w-2, 1, r, g, b, a);
-
 	end
 end
 
@@ -1292,11 +1069,12 @@ function ISUIElement:drawLine2( x, y, x2, y2, a, r, g, b)
 	end
 end
 
+function ISUIElement:drawPolygon(tex, x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, a)
+	if self.javaObject ~= nil then
+		self.javaObject:DrawPolygon(tex, x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, a);
+	end
+end
 
---************************************************************************--
---** ISUIElement:drawTextZoomed
---**
---************************************************************************--
 function ISUIElement:drawTextZoomed(str, x, y, zoom, r, g, b, a, font)
     if self.javaObject ~= nil then
         if font ~= nil then
@@ -1307,10 +1085,6 @@ function ISUIElement:drawTextZoomed(str, x, y, zoom, r, g, b, a, font)
     end
 end
 
---************************************************************************--
---** ISUIElement:drawTextUntrimmed
---**
---************************************************************************--
 function ISUIElement:drawTextUntrimmed(str, x, y, r, g, b, a, font)
     if self.javaObject ~= nil then
         if font ~= nil then
@@ -1321,10 +1095,6 @@ function ISUIElement:drawTextUntrimmed(str, x, y, r, g, b, a, font)
     end
 end
 
---************************************************************************--
---** ISUIElement:drawTextCentre
---**
---************************************************************************--
 function ISUIElement:drawTextCentre(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if self.isCollapsed then
@@ -1338,10 +1108,6 @@ function ISUIElement:drawTextCentre(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawText
---**
---************************************************************************--
 function ISUIElement:drawText(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if self.isCollapsed then
@@ -1355,10 +1121,6 @@ function ISUIElement:drawText(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextRight
---**
---************************************************************************--
 function ISUIElement:drawTextRight(str, x, y, r, g, b, a, font)
 
 	if self.javaObject ~= nil and str ~= nil then
@@ -1372,20 +1134,13 @@ function ISUIElement:drawTextRight(str, x, y, r, g, b, a, font)
 		end
 	end
 end
---************************************************************************--
+
 function ISUIElement:setAlwaysOnTop(b)
     if self.javaObject ~= nil then
         self.javaObject:setAlwaysOnTop(b);
     end
 end
 
---
-
-
---************************************************************************--
---** ISUIElement:drawTextStatic
---**
---************************************************************************--
 function ISUIElement:drawTextStatic(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if font ~= nil then
@@ -1396,10 +1151,6 @@ function ISUIElement:drawTextStatic(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextCentreStatic
---**
---************************************************************************--
 function ISUIElement:drawTextCentreStatic(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if font ~= nil then
@@ -1410,10 +1161,6 @@ function ISUIElement:drawTextCentreStatic(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextStatic
---**
---************************************************************************--
 function ISUIElement:drawTextStatic(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if font ~= nil then
@@ -1424,10 +1171,6 @@ function ISUIElement:drawTextStatic(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:drawTextRightStatic
---**
---************************************************************************--
 function ISUIElement:drawTextRightStatic(str, x, y, r, g, b, a, font)
 	if self.javaObject ~= nil then
 		if font ~= nil then
@@ -1438,10 +1181,6 @@ function ISUIElement:drawTextRightStatic(str, x, y, r, g, b, a, font)
 	end
 end
 
---************************************************************************--
---** ISUIElement:addToUIManager
---**
---************************************************************************--
 function ISUIElement:addToUIManager()
 	if self.javaObject == nil then
 		self:instantiate();
@@ -1450,10 +1189,6 @@ function ISUIElement:addToUIManager()
 	UIManager.AddUI(self.javaObject);
 end
 
---************************************************************************--
---** ISUIElement:removeFromUIManager
---**
---************************************************************************--
 function ISUIElement:removeFromUIManager()
 	if self.javaObject == nil then
 		return;
@@ -1469,10 +1204,7 @@ function ISUIElement:backMost()
 
     self.javaObject:backMost();
 end
---************************************************************************--
---** ISUIElement:addScrollBar
---**
---************************************************************************--
+
 function ISUIElement:addScrollBars(addHorizontal)
 	self.vscroll = ISScrollBar:new(self, true);
 	self.vscroll:initialise();
@@ -1484,34 +1216,18 @@ function ISUIElement:addScrollBars(addHorizontal)
 	end
 end
 
---************************************************************************--
---** ISUIElement:isVScrollBarVisible
---**
---************************************************************************--
 function ISUIElement:isVScrollBarVisible()
 	return self.vscroll and (self.vscroll:getHeight() < self:getScrollHeight())
 end
 
---************************************************************************--
---** ISUIElement:getParent
---**
---************************************************************************--
 function ISUIElement:getParent()
 	return self.parent
 end
 
---************************************************************************--
---** ISUIElement:getChildren
---**
---************************************************************************--
 function ISUIElement:getChildren()
 	return self.children;
 end
 
---************************************************************************--
---** ISUIElement:addChild
---**
---************************************************************************--
 function ISUIElement:addChild(otherElement)
 	if self.javaObject == nil then
 		self:instantiate();
@@ -1535,10 +1251,6 @@ function ISUIElement:addChild(otherElement)
 	otherElement.parent = self;
 end
 
---************************************************************************--
---** ISUIElement:removeChild
---**
---************************************************************************--
 function ISUIElement:removeChild(otherElement)
 
 	if self.javaObject == nil then
@@ -1554,10 +1266,6 @@ function ISUIElement:removeChild(otherElement)
 	end
 end
 
---************************************************************************--
---** ISUIElement:clearChildren
---**
---************************************************************************--
 function ISUIElement:clearChildren()
 	if self.javaObject == nil then
 		return;
@@ -1566,17 +1274,10 @@ function ISUIElement:clearChildren()
 	self.javaObject:ClearChildren();
 end
 
---************************************************************************--
---** ISUIElement:onMouseWheel
---**
---************************************************************************--
 function ISUIElement:onMouseWheel(del)
     return false;
 end
---************************************************************************--
---** ISUIElement:onMouseUp
---**
---************************************************************************--
+
 function ISUIElement:onMouseUp(x, y)
    if self.vscroll ~= nil then
       self.vscroll:onMouseUp(x,y)
@@ -1588,97 +1289,53 @@ function ISUIElement:setOnMouseDoubleClick(target, onmousedblclick)
     self.target = target;
 end
 
---************************************************************************--
-	--** ISUIElement:onRightMouseUpOutside
-	--**
-	--************************************************************************--
 function ISUIElement:onRightMouseUpOutside(x, y)
 
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseDownOutside
---**
---************************************************************************--
 function ISUIElement:onRightMouseDownOutside(x, y)
 
 end
---************************************************************************--
---** ISUIElement:onMouseUpOutside
---**
---************************************************************************--
+
 function ISUIElement:onMouseUpOutside(x, y)
    if self.vscroll ~= nil then
       self.vscroll:onMouseUp(x,y)
    end
 end
---************************************************************************--
---** ISUIElement:onMouseDownOutside
---**
---************************************************************************--
+
 function ISUIElement:onMouseDownOutside(x, y)
 
 end
 
---************************************************************************--
---** ISUIElement:onMouseDown
---**
---************************************************************************--
 function ISUIElement:onFocus(x, y)
    if self.parent == nil then
 	  self:bringToTop();
    end
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseUp
---**
---************************************************************************--
 function ISUIElement:bringToTop()
 	if self.javaObject == nil then
 		return;
 	end
-
 	self.javaObject:bringToTop();
 end
 
-
---************************************************************************--
---** ISUIElement:onRightMouseUp
---**
---************************************************************************--
 function ISUIElement:onRightMouseUp(x, y)
 
 end
 
---************************************************************************--
---** ISUIElement:onRightMouseDown
---**
---************************************************************************--
 function ISUIElement:onRightMouseDown(x, y)
 
 end
 
---************************************************************************--
---** ISUIElement:onMouseMove
---**
---************************************************************************--
 function ISUIElement:onMouseMove(dx, dy)
 
 end
 
---************************************************************************--
---** ISUIElement:onMouseMoveOutside
---**
---************************************************************************--
 function ISUIElement:onMouseMoveOutside(dx, dy)
 
 end
 
---************************************************************************--
---** ISUIElement:containsPoint
---**
---************************************************************************--
 function ISUIElement:containsPoint(x, y)
 	if x >= self.x and x < self.x + self.width and y >= self.y and y < self.y + self.height then
 		return true;
@@ -1687,10 +1344,6 @@ function ISUIElement:containsPoint(x, y)
 	return false;
 end
 
---************************************************************************--
---** ISUIElement:containsPoint
---**
---************************************************************************--
 function ISUIElement:containsPointLocal(x, y)
 	if x >= 0 and x < self.width and y >= 0 and y < self.height then
 		return true;
@@ -1698,8 +1351,6 @@ function ISUIElement:containsPointLocal(x, y)
 
 	return false;
 end
-
-
 
 function ISUIElement:shrinkY(y)
 	y = 1.0 - y;
@@ -1724,26 +1375,14 @@ function ISUIElement:shrinkX(x)
 	self:setX(newX);
 end
 
---************************************************************************--
---** ISUIElement:update
---**
---************************************************************************--
 function ISUIElement:update()
 
 end
 
---************************************************************************--
---** ISUIElement:prerender
---**
---************************************************************************--
 function ISUIElement:prerender()
 
 end
 
---************************************************************************--
---** ISUIElement:render
---**
---************************************************************************--
 function ISUIElement:render()
 
 end
@@ -2005,10 +1644,6 @@ function ISUIElement:centerOnScreen(playerNum)
     self:setY(y)
 end
 
---************************************************************************--
---** ISUIElement:new
---**
---************************************************************************--
 function ISUIElement:new (x, y, width, height)
    local o = {}
    setmetatable(o, self)

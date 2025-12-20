@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require('ISUI/ISScrollingListBox')
 require('ISUI/Maps/Editor/WorldMapEditorMode')
 require('ISUI/Maps/Editor/WorldMapEditorResizer')

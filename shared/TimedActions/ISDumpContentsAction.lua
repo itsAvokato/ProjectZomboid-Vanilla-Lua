@@ -1,7 +1,3 @@
---***********************************************************
---**                    Erasmus Crowley                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDumpContentsAction = ISBaseTimedAction:derive("ISDumpContentsAction");
@@ -29,7 +25,11 @@ function ISDumpContentsAction:start()
 	
 		self.character:reportEvent("EventTakeWater");
 
-		self.sound = self.character:playSound(self.item:getPourLiquidOnGroundSound())
+        local soundName = self.item:getPourLiquidOnGroundSound()
+        if self.item:getSoundByID("DumpContents") then
+            soundName = self.item:getSoundByID("DumpContents")
+        end
+		self.sound = self.character:playSound(soundName)
     end
 end
 
@@ -71,7 +71,7 @@ function ISDumpContentsAction:finalItem(itemType)
 		itemType = moduleDotType(item:getModuleName(), item:getReplaceOnUse())
 		return self:finalItem(itemType)
 	end
-	if (item:getType() == Type.Drainable) and item:getReplaceOnDeplete() then
+	if item:isItemType(ItemType.Drainable) and item:getReplaceOnDeplete() then
 		itemType = moduleDotType(item:getModuleName(), item:getReplaceOnDeplete())
 		return self:finalItem(itemType)
 	end

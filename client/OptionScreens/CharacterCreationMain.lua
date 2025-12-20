@@ -1,7 +1,3 @@
---***********************************************************
---**                   ROBERT JOHNSON                      **
---***********************************************************
-
 require "ISUI/ISPanel"
 require "ISUI/ISButton"
 require "ISUI/ISInventoryPane"
@@ -18,14 +14,10 @@ CharacterCreationMainPresetPanel = ISPanelJoypad:derive("CharacterCreationMainPr
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
-
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function CharacterCreationMainCharacterPanel:prerender()
 	ISPanelJoypad.prerender(self)
@@ -122,9 +114,6 @@ function CharacterCreationMainCharacterPanel:new(x, y, width, height)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 function CharacterCreationMainPresetPanel:render()
 	ISPanelJoypad.render(self)
@@ -165,18 +154,10 @@ function CharacterCreationMainPresetPanel:onJoypadDirUp(joypadData)
 	end
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
-
 function CharacterCreationMain:initialise()
 	ISPanelJoypad.initialise(self);
 end
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function CharacterCreationMain:instantiate()
 	
 	--self:initialise();
@@ -194,7 +175,7 @@ end
 
 function CharacterCreationMain:create()
 	local x = UI_BORDER_SPACING + 1
-	local y = UI_BORDER_SPACING + FONT_HGT_TITLE + x
+	local y = UI_BORDER_SPACING + FONT_HGT_LARGE + x
 	local w = self.width - x*2
 	local h = self.height - y - BUTTON_HGT - UI_BORDER_SPACING - x
 
@@ -353,7 +334,7 @@ function CharacterCreationMain:deleteBuildStep1()
 	end
 end
 
-function CharacterCreationMain:deleteBuildStep2(button, joypadData) -- {{{
+function CharacterCreationMain:deleteBuildStep2(button, joypadData)
 	if joypadData then
 		joypadData.focus = self.presetPanel
 		updateJoypadFocus(joypadData)
@@ -664,9 +645,6 @@ function CharacterCreationMain:createBodyTypeBtn()
 	
 	self.yOffset = self.yOffset + FONT_HGT_MEDIUM + 15;
 
-	-------------
-	-- SKIN COLOR 
-	-------------
 	self.skinColorLbl = ISLabel:new(0, self.yOffset, BUTTON_HGT, getText("UI_SkinColor"), 1, 1, 1, 1, UIFont.Small);
 	self.skinColorLbl:initialise();
 	self.skinColorLbl:instantiate();
@@ -699,9 +677,6 @@ function CharacterCreationMain:createBodyTypeBtn()
 	
 	self.yOffset = self.yOffset + UI_BORDER_SPACING+BUTTON_HGT;
 	
-	-------------
-	-- CHEST HAIR
-	-------------
 	self.chestHairLbl = ISLabel:new(0, self.yOffset, BUTTON_HGT, getText("UI_ChestHair"), 1, 1, 1, 1, UIFont.Small);
 	self.chestHairLbl:initialise();
 	self.chestHairLbl:instantiate();
@@ -719,7 +694,6 @@ function CharacterCreationMain:createBodyTypeBtn()
 
 	self.yOffset = self.yOffset + UI_BORDER_SPACING+BUTTON_HGT;
 end
-
 
 function CharacterCreationMain:createHairTypeBtn()
 	local lbl = ISLabel:new(0, self.yOffset, FONT_HGT_MEDIUM, getText("UI_characreation_hair"), 1, 1, 1, 1, UIFont.Medium, true);
@@ -770,7 +744,6 @@ function CharacterCreationMain:createHairTypeBtn()
 	self.characterPanel:addChild(self.hairColorLbl);
 	table.insert(self.characterPanel.repos2Table, self.hairColorLbl)
 
-
 	local hairColors = MainScreen.instance.desc:getCommonHairColor();
 	local hairColors1 = {}
 	local info = ColorInfo.new()
@@ -798,9 +771,6 @@ function CharacterCreationMain:createHairTypeBtn()
 	self.colorPickerHair:setColors(hairColors1, math.min(#hairColors1, 10), math.ceil(#hairColors1 / 10))
 	table.insert(self.characterPanel.repos3Table, self.hairColorButton)
 
-	----------------------
-	-- STUBBLE
-	----------------------
 	self.hairStubbleLbl = ISLabel:new(0, self.yOffset, BUTTON_HGT, getText("UI_Stubble"), 1, 1, 1, 1, UIFont.Small);
 	self.hairStubbleLbl:initialise();
 	self.hairStubbleLbl:instantiate();
@@ -934,9 +904,6 @@ function CharacterCreationMain:createBeardTypeBtn()
 	table.insert(self.characterPanel.repos3Table, self.beardTypeCombo)
 	self.yOffset = self.yOffset + BUTTON_HGT + UI_BORDER_SPACING;
 
-	----------------------
-	-- STUBBLE
-	----------------------
 	self.beardStubbleLbl = ISLabel:new(0, self.yOffset, BUTTON_HGT, getText("UI_Stubble"), 1, 1, 1, 1, UIFont.Small);
 	self.beardStubbleLbl:initialise();
 	self.beardStubbleLbl:instantiate();
@@ -967,12 +934,12 @@ function CharacterCreationMain:createClothingComboDebug(bodyLocation)
 		end
 		if _self.lastIndex ~= _index then
 			local desc = MainScreen.instance.desc
-			desc:setWornItem(bodyLocation, nil)
+			desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), nil)
 			local itemType = combo:getOptionData(_index)
 			if itemType then
 				local item = instanceItem(itemType)
 				if item then
-					desc:setWornItem(bodyLocation, item)
+					desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 				end
 			end
 			self:updateSelectedClothingCombo()
@@ -985,11 +952,11 @@ function CharacterCreationMain:createClothingComboDebug(bodyLocation)
 		if itemType then
 			-- check to see if character model is already wearing the same piece of clothing
 			local item = instanceItem(itemType)
-			local wornItem = MainScreen.instance.desc:getWornItem(bodyLocation)
+			local wornItem = MainScreen.instance.desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 			if (item == nil) ~= (wornItem == nil) or (item ~= nil and wornItem ~= nil and item:getName() ~= wornItem:getName()) then
 				-- either item or wornItem is nil
 				-- or both are not nil and have matching names
-				MainScreen.instance.desc:setWornItem(bodyLocation, item)
+				MainScreen.instance.desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 			end
 		end
 		_self.parent.parent.avatarPanel:setSurvivorDesc(MainScreen.instance.desc)
@@ -1014,7 +981,7 @@ function CharacterCreationMain:createClothingComboDebug(bodyLocation)
         if _self.lastIndex ~= _index then
             local textureName = _self:getOptionData(_index)
             local bodyLocation = _self.onChangeArgs[1]
-            local item = MainScreen.instance.desc:getWornItem(bodyLocation)
+            local item = MainScreen.instance.desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
             if textureName and item then
                 if item:getClothingItem():hasModel() then
                     item:getVisual():setTextureChoice(_index - 1)
@@ -1047,9 +1014,6 @@ function CharacterCreationMain:createClothingComboDebug(bodyLocation)
 	return
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local ClothingPanel = ISPanelJoypad:derive("CharacterCreationClothingPanel")
 
@@ -1113,9 +1077,6 @@ function ClothingPanel:new(x, y, width, height)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 -- In debug you'll have access to all clothes
 -- In normal mode, you'll have access to basic clothes + some specific to your profession (RP option can be enabled in MP to have access to a full outfit)
@@ -1166,12 +1127,12 @@ function CharacterCreationMain:createClothingCombo(bodyLocation)
 		end
 		if _self.lastIndex ~= _index then
 			local desc = MainScreen.instance.desc
-			desc:setWornItem(bodyLocation, nil)
+			desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), nil)
 			local itemType = combo:getOptionData(_index)
 			if itemType then
 				local item = instanceItem(itemType)
 				if item then
-					desc:setWornItem(bodyLocation, item)
+					desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 				end
 			end
 			self:updateSelectedClothingCombo()
@@ -1184,11 +1145,11 @@ function CharacterCreationMain:createClothingCombo(bodyLocation)
 		if itemType then
 			-- check to see if character model is already wearing the same piece of clothing
 			local item = instanceItem(itemType)
-			local wornItem = MainScreen.instance.desc:getWornItem(bodyLocation)
+			local wornItem = MainScreen.instance.desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 			if (item == nil) ~= (wornItem == nil) or (item ~= nil and wornItem ~= nil and item:getName() ~= wornItem:getName()) then
 				-- either item or wornItem is nil
 				-- or both are not nil and have matching names
-				MainScreen.instance.desc:setWornItem(bodyLocation, item)
+				MainScreen.instance.desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 			end
 		end
 		_self.parent.parent.avatarPanel:setSurvivorDesc(MainScreen.instance.desc)
@@ -1209,7 +1170,7 @@ function CharacterCreationMain:createClothingCombo(bodyLocation)
         if _self.lastIndex ~= _index then
             local textureName = _self:getOptionData(_index)
             local bodyLocation = _self.onChangeArgs[1]
-            local item = MainScreen.instance.desc:getWornItem(bodyLocation)
+            local item = MainScreen.instance.desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
             if textureName and item then
                 if item:getClothingItem():hasModel() then
                     item:getVisual():setTextureChoice(_index - 1)
@@ -1319,7 +1280,7 @@ function CharacterCreationMain:debugClothingDefinitions()
 				error("expected Female or Male in ClothingSelectionDefinitions." .. tostring(k1))
 			end
 			for locationId,v3 in pairs(v2) do
-				if bodyLocationGroup:indexOf(locationId) == -1 then
+				if bodyLocationGroup:indexOf(ItemBodyLocation.get(ResourceLocation.of(locationId))) == -1 then
 					error("unknown BodyLocation \"" .. tostring(locationId) .. "\" in ClothingSelectionDefinitions." .. tostring(k1) .. "." .. tostring(k2))
 				end
 				for _,fullType in ipairs(v3.items) do
@@ -1337,7 +1298,7 @@ function CharacterCreationMain:debugClothingDefinitions()
 				error("expected Female or Male in TraitClothingSelectionDefinitions." .. tostring(k1))
 			end
 			for locationId,v3 in pairs(v2) do
-				if bodyLocationGroup:indexOf(locationId) == -1 then
+				if bodyLocationGroup:indexOf(ItemBodyLocation.get(ResourceLocation.of(locationId))) == -1 then
 					error("unknown BodyLocation \"" .. tostring(locationId) .. "\" in TraitClothingSelectionDefinitions." .. tostring(k1) .. "." .. tostring(k2))
 				end
 				for _,fullType in ipairs(v3.items) do
@@ -1386,8 +1347,8 @@ function CharacterCreationMain:initClothing()
 	else
 		self:doClothingCombo(default.Male, true);
 	end
-	
-	local profession = ClothingSelectionDefinitions[desc:getProfession()];
+
+	local profession = ClothingSelectionDefinitions[desc:getCharacterProfession():getName()];
 	if profession then
 		if MainScreen.instance.desc:isFemale() then
 			self:doClothingCombo(profession.Female, false);
@@ -1404,17 +1365,9 @@ function CharacterCreationMain:initClothing()
     if not CharacterCreationProfession.instance.listboxTraitSelected or not CharacterCreationProfession.instance.listboxTraitSelected.items then
         return
     end
---     print("CharacterCreationProfession.instance.listboxTraitSelected.items - " .. tostring(CharacterCreationProfession.instance.listboxTraitSelected.items))
---     if not CharacterCreationProfession.instance.listboxTraitSelected.items then
---         print("No CharacterCreationProfession.instance.listboxTraitSelected.items")
---         return
---     end
 	local traits = CharacterCreationProfession.instance.listboxTraitSelected.items
---     local traits = getWorld():getLuaTraits()
-
 	for i, v in pairs(traits) do
 	    if v then
--- 	        local trait = v.item
 	        local trait = v.item:getType()
             print("TraitZ " .. tostring(trait))
             if TraitClothingSelectionDefinitions[trait] then
@@ -1431,7 +1384,6 @@ function CharacterCreationMain:initClothing()
             end
         end
 	end
-
 	self:arrangeClothingUI()
 end
 
@@ -1487,7 +1439,7 @@ function CharacterCreationMain:doClothingCombo(definition, erasePrevious)
 		for j,clothing in ipairs(profTable.items) do
 			local item = ScriptManager.instance:FindItem(clothing)
 			local displayName = item:getDisplayName()
-			-- some clothing are president in default list AND profession list, so we can force a specific clothing in profession we already have
+			-- some clothing are present in default list AND profession list, so we can force a specific clothing in profession we already have
 			if not combo:contains(displayName) then
 				combo:addOptionWithData(displayName, clothing)
 			end
@@ -1509,7 +1461,7 @@ function CharacterCreationMain:updateSelectedClothingCombo()
 			self.clothingColorBtn[combo.bodyLocation]:setVisible(false);
 			self.clothingTextureCombo[combo.bodyLocation]:setVisible(false);
 			-- we select the current clothing we have at this location in the combo
-			local currentItem = desc:getWornItem(combo.bodyLocation);
+			local currentItem = desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(combo.bodyLocation)));
 			if currentItem then
 				for j,v in ipairs(combo.options) do
 					if v.text == currentItem:getDisplayName() then
@@ -1587,14 +1539,19 @@ function CharacterCreationMain:initClothingDebug()
 	self.yOffset = self.yOffset + BUTTON_HGT + UI_BORDER_SPACING;
 
 	local group = BodyLocations.getGroup("Human")
-	local allLoc = group:getAllLocations();
+	local numLocations = group:size();
 
 --	print("CREATE CLOTHING DEBUG?")
 	-- sort the list of clothing groups alphabetically based on translation text
 	local sorted = {}
-	for i=0, allLoc:size()-1 do
-		local id = allLoc:get(i):getId()
-		sorted[i+1] = {id, getText("UI_ClothingType_" .. id)}
+	local j = 0
+	for i=0, numLocations-1 do
+		local id = group:getLocationByIndex(i):getId()
+        if id ~= ItemBodyLocation.WOUND and id ~= ItemBodyLocation.ZED_DMG then
+            id = id:getTranslationName()
+            sorted[j+1] = {id, getText("UI_ClothingType_" .. id)}
+            j = j + 1
+        end
 	end
 	table.sort(sorted, function(a,b) return a[2] < b[2] end)
 	for _, v in ipairs(sorted) do
@@ -1758,7 +1715,7 @@ function CharacterCreationMain:disableBtn()
 			for bodyLocation,combo in pairs(self.clothingCombo) do
 				local selected = combo.selected
 				combo.selected = 1 -- None
-				local item = desc:getWornItem(bodyLocation)
+				local item = desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 				local clothingItem = nil
 				if item and item:getVisual() then
 					combo.selected = combo:find(function(text, data, fullType)
@@ -1928,12 +1885,6 @@ end
 
 function CharacterCreationMain:randomGenericOutfit()
 	local desc = MainScreen.instance.desc;
---	local randomOutfit = "Generic0" .. ZombRand(5) + 1;
---	if ZombRand(6) == 0 and MainScreen.instance.desc:isFemale() then
---		randomOutfit = "Generic_Skirt";
---	end
---	desc:dressInNamedOutfit(randomOutfit)
---	self.avatarPanel:setSurvivorDesc(desc)
 
 	local default = ClothingSelectionDefinitions.default;
 	if MainScreen.instance.desc:isFemale() then
@@ -1942,7 +1893,7 @@ function CharacterCreationMain:randomGenericOutfit()
 		self:dressWithDefinitions(default.Male, true);
 	end
 
-	local profession = ClothingSelectionDefinitions[desc:getProfession()];
+	local profession = ClothingSelectionDefinitions[desc:getCharacterProfession():getName()];
 	if profession then
 		if MainScreen.instance.desc:isFemale() then
 			self:dressWithDefinitions(profession.Female, false);
@@ -1994,7 +1945,7 @@ function CharacterCreationMain:dressWithDefinitions(definition, resetWornItems)
 	for bodyLocation, profTable in pairs(definition) do
 		local chance = profTable.chance;
 		if not chance or ZombRand(100) < chance then
-			desc:setWornItem(bodyLocation, nil);
+			desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), nil);
 			local items = profTable.items;
 			local itemType = items[ZombRand(0, #items)+1];
 			if itemType then
@@ -2004,7 +1955,7 @@ function CharacterCreationMain:dressWithDefinitions(definition, resetWornItems)
                         local location = item:IsClothing() and item:getBodyLocation() or item:canBeEquipped()
 					    desc:setWornItem(location, item)
                     else
-					    desc:setWornItem(bodyLocation, item)
+					    desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 					end
 				end
 			end
@@ -2122,12 +2073,12 @@ end
 
 function CharacterCreationMain:onClothingComboSelected(combo, bodyLocation)
 	local desc = MainScreen.instance.desc
-	desc:setWornItem(bodyLocation, nil)
+	desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), nil)
 	local itemType = combo:getOptionData(combo.selected)
 	if itemType then
 		local item = instanceItem(itemType)
 		if item then
-			desc:setWornItem(bodyLocation, item)
+			desc:setWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)), item)
 		end
 	end
 	self:updateSelectedClothingCombo();
@@ -2153,7 +2104,7 @@ end
 function CharacterCreationMain:onClothingColorPicked(color, mouseUp, bodyLocation)
 	self.clothingColorBtn[bodyLocation].backgroundColor = { r=color.r, g=color.g, b=color.b, a = 1 }
 	local desc = MainScreen.instance.desc
-	local item = desc:getWornItem(bodyLocation)
+	local item = desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 	if item then
 		local color2 = ImmutableColor.new(color.r, color.g, color.b, 1)
 		item:getVisual():setTint(color2)
@@ -2164,7 +2115,7 @@ end
 function CharacterCreationMain:onClothingTextureComboSelected(combo, bodyLocation)
 	local desc = MainScreen.instance.desc
 	local textureName = combo:getOptionData(combo.selected)
-	local item = desc:getWornItem(bodyLocation)
+	local item = desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 	if textureName and item then
 		if item:getClothingItem():hasModel() then
 			item:getVisual():setTextureChoice(combo.selected - 1)
@@ -2180,7 +2131,7 @@ end
 function CharacterCreationMain:onClothingDecalComboSelected(combo, bodyLocation)
 	local desc = MainScreen.instance.desc
 	local decalName = combo:getOptionData(combo.selected)
-	local item = desc:getWornItem(bodyLocation)
+	local item = desc:getWornItem(ItemBodyLocation.get(ResourceLocation.of(bodyLocation)))
 	if decalName and item then
 		item:getVisual():setDecal(decalName)
 	end
@@ -2203,7 +2154,7 @@ end
 
 function CharacterCreationMain:rescaleAvatarViewer()
 	local x1 = UI_BORDER_SPACING + 1
-	local y1 = UI_BORDER_SPACING + FONT_HGT_TITLE + x1
+	local y1 = UI_BORDER_SPACING + FONT_HGT_LARGE + x1
 	local w1 = self.width - x1 * 2
 	local h1 = self.height - y1 - BUTTON_HGT - UI_BORDER_SPACING - x1
 
@@ -2295,11 +2246,6 @@ function CharacterCreationMain:initPlayer()
 	MainScreen.instance.desc:setVoicePrefix(self:getVoicePrefix());
 	MainScreen.instance.desc:setVoiceType(self:getVoiceType());
 	MainScreen.instance.desc:setVoicePitch(self:getVoicePitch());
-	--	if MainScreen.instance.charCreationProfession.listboxProf.selected > -1 then
-	--		MainScreen.instance.desc:setProfession(MainScreen.instance.charCreationProfession.listboxProf.items[MainScreen.instance.charCreationProfession.listboxProf.selected].item:getType());
-	--	else
-	--		MainScreen.instance.desc:setProfession(MainScreen.instance.charCreationProfession.listboxProf.items[0].item:getType());
-	--	end
 end
 
 --[[
@@ -2325,7 +2271,7 @@ end
 function CharacterCreationMain:prerender()
 	CharacterCreationMain.instance = self
 	ISPanel.prerender(self);
-	self:drawTextCentre(getText("UI_characreation_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+	self:drawTextCentre(getText("UI_characreation_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
 	--[[
 		local avatar = MainScreen.instance.avatar
 		if avatar ~= nil then

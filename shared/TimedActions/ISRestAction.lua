@@ -1,13 +1,9 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRestAction = ISBaseTimedAction:derive("ISRestAction");
 
 function ISRestAction:isValid()
-	return true; -- self.character:getStats():getEndurance() < 1;
+	return true;
 end
 
 function ISRestAction:waitToStart()
@@ -19,7 +15,7 @@ function ISRestAction:waitToStart()
 		self.sideStr = sideStr
 	end
 	self:setBeforeSitDirection()
-	-----
+
 	-- FIXME: Wait for any blending/deferred movement/rotation to end
 	if self.character:shouldBeTurning() then
 		self.delayStart = 0.2
@@ -32,7 +28,7 @@ function ISRestAction:waitToStart()
 			return true
 		end
 	end
-	-----
+
 	return self.character:shouldBeTurning()
 end
 
@@ -51,10 +47,10 @@ function ISRestAction:update()
 		else
 			if not isServer() then
 				self.action:setTime(100) -- endurance = 1.0
-				self:setCurrentTime(self.character:getStats():getEndurance() * 100)
+				self:setCurrentTime(self.character:getStats():get(CharacterStat.ENDURANCE) * 100)
 			end
 
-			if self.character:getStats():getEndurance() >= 1.0 then
+			if self.character:getStats():get(CharacterStat.ENDURANCE) >= 1.0 then
 				if isServer() then
 					self.netAction:forceComplete();
 				else
@@ -120,7 +116,7 @@ if true then return 10000 end
 	if self.character:isTimedActionInstant() then
 		return 1
 	end
-	return (1 - self.character:getStats():getEndurance()) * 16000
+	return (1 - self.character:getStats():get(CharacterStat.ENDURANCE)) * 16000
 end
 
 function ISRestAction:furnitureHasSittingData(bed)

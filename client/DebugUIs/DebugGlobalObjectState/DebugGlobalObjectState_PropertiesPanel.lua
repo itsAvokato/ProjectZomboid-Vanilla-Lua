@@ -1,13 +1,7 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISScrollingListBox"
 require "DebugUIs/DebugChunkState/ISSectionedPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-
------
 
 DebugGlobalObjectState_BasePropertiesPanel = ISPanel:derive("DebugGlobalObjectState_BasePropertiesPanel")
 local BasePropertiesPanel = DebugGlobalObjectState_BasePropertiesPanel
@@ -82,8 +76,6 @@ function BasePropertiesPanel:new(x, y, w, h)
 	return o
 end
 
------
-
 DebugGlobalObjectState_SystemPanel = BasePropertiesPanel:derive("DebugGlobalObjectState_SystemPanel")
 local SystemPanel = DebugGlobalObjectState_SystemPanel
 
@@ -104,8 +96,6 @@ function SystemPanel:new(x, y, w, h)
 	local o = BasePropertiesPanel.new(self, x, y, w, h)
 	return o
 end
-
------
 
 DebugGlobalObjectState_GlobalObjectPanel = BasePropertiesPanel:derive("DebugGlobalObjectState_GlobalObjectPanel")
 local GlobalObjectPanel = DebugGlobalObjectState_GlobalObjectPanel
@@ -134,8 +124,6 @@ function GlobalObjectPanel:setObject(globalObject)
 	end
 end
 
------
-
 DebugGlobalObjectState_IsoObjectPanel = BasePropertiesPanel:derive("DebugGlobalObjectState_IsoObjectPanel")
 local IsoObjectPanel = DebugGlobalObjectState_IsoObjectPanel
 
@@ -158,8 +146,6 @@ function IsoObjectPanel:setObject(globalObject)
 		self.objectPos = nil
 	end
 end
-
------
 
 local OPH = {}
 
@@ -208,8 +194,6 @@ function OPH_IsoGenerator:render1()
 	self.addLineX = self.addLineX - 10
 end
 
------
-
 DebugGlobalObjectState_PropertiesPanel = ISSectionedPanel:derive("DebugGlobalObjectState_PropertiesPanel")
 local PropertiesPanel = DebugGlobalObjectState_PropertiesPanel
 
@@ -246,4 +230,3 @@ function PropertiesPanel:new(x, y, width, height, state)
 	o:addScrollBars()
 	return o
 end
-

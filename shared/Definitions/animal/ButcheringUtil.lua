@@ -501,8 +501,6 @@ end
 function ButcheringUtil.getAllBonesDef(name)
     local def = ButcheringUtil.getAnimalDef(name);
 
-    print("want bones for ", name, def, def.bones)
-
     if def == nil then
         log(DebugType.Animal, "Couldn't find animal parts def for " .. name);
     end

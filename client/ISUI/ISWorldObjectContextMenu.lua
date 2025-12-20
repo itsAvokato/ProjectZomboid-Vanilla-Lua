@@ -5,6 +5,8 @@ ISWorldObjectContextMenu.fetchVars = {}
 ISWorldObjectContextMenu.fetchSquares = {}
 ISWorldObjectContextMenu.tooltipPool = {}
 ISWorldObjectContextMenu.tooltipsUsed = {}
+ISWorldObjectContextMenu.tooltipInvPool = {}
+ISWorldObjectContextMenu.tooltipInvUsed = {}
 
 local function predicateCleaningLiquid(item)
 	if not item then return false end
@@ -65,15 +67,15 @@ local function predicateNotFullModItem(item)
 end
 
 local function predicateEmptySandbag(item)
-	return item:hasTag("HoldCompost") and item:getInventory():isEmpty();
+	return item:hasTag(ItemTag.HOLD_COMPOST) and item:getInventory():isEmpty();
 end
 
 local function predicateCutPlant(item)
-    return not item:isBroken() and item:hasTag("CutPlant")
+    return not item:isBroken() and item:hasTag(ItemTag.CUT_PLANT)
 end
 
 local function predicateClearAshes(item)
-	return not item:isBroken() and item:hasTag("ClearAshes")
+	return not item:isBroken() and item:hasTag(ItemTag.CLEAR_ASHES)
 end
 
 local function predicateFishingLure(item)
@@ -81,21 +83,21 @@ local function predicateFishingLure(item)
 end
 
 local function predicatePickAxe(item)
-	return not item:isBroken() and item:hasTag("PickAxe")
+	return not item:isBroken() and item:hasTag(ItemTag.PICK_AXE)
 end
 
-local function predicateHammerOrPickAxe(item)
-	return not item:isBroken() and (item:hasTag("Hammer") or item:hasTag("Sledgehammer") or item:hasTag("ClubHammer") or item:hasTag("PickAxe"))
+local function predicateMaulOrPickAxe(item)
+	return not item:isBroken() and (item:hasTag(ItemTag.STONE_MAUL) or item:hasTag(ItemTag.SLEDGEHAMMER) or item:hasTag(ItemTag.CLUB_HAMMER) or item:hasTag(ItemTag.PICK_AXE))
 end
 
 local function getMoveableDisplayName(obj)
 	if not obj then return nil end
 	if not obj:getSprite() then return nil end
 	local props = obj:getSprite():getProperties()
-	if props:Is("CustomName") then
-		local name = props:Val("CustomName")
-		if props:Is("GroupName") then
-			name = props:Val("GroupName") .. " " .. name
+	if props:has("CustomName") then
+		local name = props:get("CustomName")
+		if props:has("GroupName") then
+			name = props:get("GroupName") .. " " .. name
 		end
 		return Translator.getMoveableDisplayName(name)
 	end
@@ -126,7 +128,7 @@ function ISWorldObjectContextMenu.setTest()
 end
 
 local function predicateChopTree(item)
-	return not item:isBroken() and item:hasTag("ChopTree")
+	return not item:isBroken() and item:hasTag(ItemTag.CHOP_TREE)
 end
 
 local function predicateBlowTorch(item)
@@ -134,13 +136,13 @@ local function predicateBlowTorch(item)
 end
 
 local function predicateRemoveBarricade(item)
-	return item:hasTag("RemoveBarricade") and not item:isBroken()
+	return item:hasTag(ItemTag.REMOVE_BARRICADE) and not item:isBroken()
 end
 
 -- MAIN METHOD FOR CREATING RIGHT CLICK CONTEXT MENU FOR WORLD ITEMS
 ISWorldObjectContextMenu.createMenu = function(player, worldobjects, x, y, test)
 	local timeStamp = getTimestampMs();
-	
+
 	if ISWorldObjectContextMenu.disableWorldMenu then
 		return;
 	end
@@ -184,10 +186,10 @@ ISWorldObjectContextMenu.createMenu = function(player, worldobjects, x, y, test)
     for i,v in ipairs(worldobjects) do
 		ISWorldObjectContextMenuLogic.fetch(fetch, v, player, true);
 	end
-	
+
 	local fetchElapsedTime = getTimestampMs() - fetchStartTime;
 	--print("Fetch duration: " .. fetchElapsedTime);
-	
+
 	triggerEvent("OnPreFillWorldObjectContextMenu", player, context, worldobjects, test);
 
     if fetch.c == 0 then
@@ -200,16 +202,15 @@ ISWorldObjectContextMenu.createMenu = function(player, worldobjects, x, y, test)
 --    print('reused ',#ISWorldObjectContextMenu.tooltipsUsed,' world tooltips')
     table.wipe(ISWorldObjectContextMenu.tooltipsUsed);
 
+    for _,tooltip in ipairs(ISWorldObjectContextMenu.tooltipInvUsed) do
+        table.insert(ISWorldObjectContextMenu.tooltipInvPool, tooltip);
+    end
+    table.wipe(ISWorldObjectContextMenu.tooltipInvUsed);
+
     local pickedCorpse = IsoObjectPicker.Instance:PickCorpse(x, y)
     fetch.body = pickedCorpse or fetch.body
 
-	--------------------------
 	if ISWorldObjectContextMenuLogic.createMenuEntries(fetch, context, player, worldobjects, x, y, test or false) then return true end
-	--------------------------
-	
-	if BrushToolManager.cheat then
-		ISWorldObjectContextMenu.doBrushToolOptions(context, worldobjects, player)
-	end
 
     if fetch.safehouseAllowInteract then
         -- use the event (as you would 'OnTick' etc) to add items to context menu without mod conflicts.
@@ -224,12 +225,12 @@ ISWorldObjectContextMenu.createMenu = function(player, worldobjects, x, y, test)
 
 	local duration = getTimestampMs() - timeStamp;
 	--print("CreateMenu time taken = " .. tostring(duration) .. "ms");
-	
+
     return context;
 end
 
 function ISWorldObjectContextMenu.activateRadio(pl, obj)
-	ISRadioWindow.activate(pl, obj, true) 
+	ISRadioWindow.activate(pl, obj, true)
 end
 
 function ISWorldObjectContextMenu.addTileDebugInfo(context, fetch)
@@ -242,7 +243,7 @@ function ISWorldObjectContextMenu.addTileDebugInfo(context, fetch)
 	local props = fetch.tileObj:getProperties()
 	local names = props:getPropertyNames()
 	for i = 0, names:size()-1 do
-		params = params .. names:get(i) .. " = " .. tostring(props:Val(names:get(i))) .. "\n"
+		params = params .. names:get(i) .. " = " .. tostring(props:get(names:get(i))) .. "\n"
 	end
 	params = params .. "\nFlags:\n"
 	local flags = props:getFlagsList()
@@ -253,7 +254,7 @@ function ISWorldObjectContextMenu.addTileDebugInfo(context, fetch)
 end
 
 function ISWorldObjectContextMenu.handleGrabWorldItem_onDropCorpse(playerObj)
-	
+
 	playerObj:setDoContinueGrapple(false)
 end
 
@@ -472,7 +473,7 @@ function ISWorldObjectContextMenu.handleCarBatteryCharger(test, context, worldob
 		local batteryList = playerInv:getAllTypeEvalRecurse("Base.CarBattery1", predicateNotFull)
 		playerInv:getAllTypeEvalRecurse("Base.CarBattery2", predicateNotFull, batteryList)
 		playerInv:getAllTypeEvalRecurse("Base.CarBattery3", predicateNotFull, batteryList)
-		playerInv:getAllTagEvalRecurse("Base.CarBattery", predicateNotFullModItem, batteryList)
+        playerInv:getAllTagEvalRecurse(ItemTag.CAR_BATTERY, predicateNotFullModItem, batteryList)
 		if not batteryList:isEmpty() then
 			local chargeOption = context:addOption(getText("ContextMenu_CarBatteryCharger_ConnectBattery"))
 			local subMenuCharge = context:getNew(context)
@@ -581,14 +582,14 @@ ISWorldObjectContextMenu.onAddFuelGenerator = function(worldobjects, petrolCan, 
 	end
 
 	local fillOption = context:addOption(getText("ContextMenu_GeneratorAddFuel"), worldobjects, nil);
-	
-	
+
+
 	-- if not luautils.walkAdj(playerObj, generator:getSquare()) then
 		-- fillOption.notAvailable = true;
 		-- --if the player can reach the tile, populate the submenu, otherwise don't bother
 		-- return;
 	-- end
-	
+
 	if not generator:getSquare() or not AdjacentFreeTileFinder.Find(generator:getSquare(), playerObj) then
 		fillOption.notAvailable = true;
 		-- if the player can reach the tile, populate the submenu, otherwise don't bother
@@ -619,7 +620,7 @@ ISWorldObjectContextMenu.onAddFuelGenerator = function(worldobjects, petrolCan, 
 	--add the fill menu
 	local containerMenu = ISContextMenu:getNew(context)
 	local containerOption
-	context:addSubMenu(fillOption, containerMenu) 
+	context:addSubMenu(fillOption, containerMenu)
 	if pourOut:size() > 1 then
 		containerOption = containerMenu:addGetUpOption(getText("ContextMenu_AddAll"), worldobjects, ISWorldObjectContextMenu.doAddFuelGenerator, generator, allContainers, nil, playerNum);
 	end
@@ -700,7 +701,7 @@ local function getNearestToWaterSquare(playerObj, square)
 	local cell = getCell()
 	for i = 0, 100 do
 		local sq = cell:getGridSquare(x, y, 0)
-		if sq and sq:getProperties() and sq:getProperties():Is(IsoFlagType.water) then
+		if sq and sq:getProperties() and sq:getProperties():has(IsoFlagType.water) then
 			return sq
 		end
 		x = x + dx
@@ -718,7 +719,7 @@ ISWorldObjectContextMenu.onAddBaitToWater = function(playerObj, chum, square)
 end
 
 ISWorldObjectContextMenu.onRemoveFishingNet = function(worldobjects, player, trap)
-    fishingNet.remove(trap, player);
+	ISTimedActionQueue.add(ISRemoveFishingNetAction:new(player, trap));
 end
 
 ISWorldObjectContextMenu.onAddBaitToFishingNet = function(worldobjects, playerObj, trap, bait)
@@ -800,7 +801,7 @@ ISWorldObjectContextMenu.onCheckStats = function(worldobjects, player, otherPlay
 end
 
 ISWorldObjectContextMenu.onMedicalCheck = function(worldobjects, player, otherPlayer)
-    if player:getRole():hasCapability(Capability.CanMedicalCheat) then
+    if isMultiplayer() and player:getRole():hasCapability(Capability.CanMedicalCheat) then
         ISTimedActionQueue.add(ISMedicalCheckAction:new(player, otherPlayer))
     else
         if luautils.walkAdj(player, otherPlayer:getCurrentSquare()) or
@@ -986,13 +987,13 @@ function ISWorldObjectContextMenu.onSleepWalkToComplete(player, bed)
 		return
     end
 	if playerObj:getSleepingTabletEffect() < 2000 then
-        if playerObj:getMoodles():getMoodleLevel(MoodleType.Pain) >= 2 and playerObj:getStats():getFatigue() <= 0.85 then
+        if playerObj:getMoodles():getMoodleLevel(MoodleType.PAIN) >= 2 and playerObj:getStats():get(CharacterStat.FATIGUE) <= 0.85 then
 			-- playerObj:Say(getText("ContextMenu_PainNoSleep"))
 			HaloTextHelper.addBadText(playerObj, getText("ContextMenu_PainNoSleep"));
 -- 			HaloTextHelper.addText(playerObj, getText("ContextMenu_PainNoSleep"), getCore():getGoodHighlitedColor());
 			return
 		end
-		if playerObj:getMoodles():getMoodleLevel(MoodleType.Panic) >= 1 then
+		if playerObj:getMoodles():getMoodleLevel(MoodleType.PANIC) >= 1 then
 			-- playerObj:Say(getText("ContextMenu_PanicNoSleep"))
 			HaloTextHelper.addBadText(playerObj, getText("ContextMenu_PanicNoSleep"));
 -- 			HaloTextHelper.addText(playerObj, getText("ContextMenu_PanicNoSleep"), getCore():getGoodHighlitedColor());
@@ -1005,21 +1006,8 @@ function ISWorldObjectContextMenu.onSleepWalkToComplete(player, bed)
 	end
 
 	ISTimedActionQueue.clear(playerObj)
+    local sleepFor = ZombRand(playerObj:getStats():get(CharacterStat.FATIGUE) * 10, playerObj:getStats():get(CharacterStat.FATIGUE) * 13) + 1;
 	local bedType = ISWorldObjectContextMenu.getBedQuality(playerObj, bed)
-    playerObj:setBed(bed);
-    playerObj:setBedType(bedType);
-	if isClient() and getServerOptions():getBoolean("SleepAllowed") then
-		if playerObj:getVehicle() then
-			playerObj:playSound("VehicleGoToSleep")
-		end
-		playerObj:setAsleepTime(0.0)
-		playerObj:setAsleep(true)
-		UIManager.setFadeBeforeUI(player, true)
-		UIManager.FadeOut(player, 1)
-		return
-    end
-	local modal = nil;
-    local sleepFor = ZombRand(playerObj:getStats():getFatigue() * 10, playerObj:getStats():getFatigue() * 13) + 1;
     if bedType == "goodBed" or bedType:contains("goodBedPillow") then
         sleepFor = sleepFor -1;
     end
@@ -1029,16 +1017,15 @@ function ISWorldObjectContextMenu.onSleepWalkToComplete(player, bed)
 	if bedType == "floor" or bedType:contains("floorPillow") then
 		sleepFor = sleepFor * 0.7;
 	end
-    if playerObj:HasTrait("Insomniac") then
+    if playerObj:hasTrait(CharacterTrait.INSOMNIAC) then
         sleepFor = sleepFor * 0.5;
     end
-    if playerObj:HasTrait("NeedsLessSleep") then
+    if playerObj:hasTrait(CharacterTrait.NEEDS_LESS_SLEEP) then
         sleepFor = sleepFor * 0.75;
     end
-    if playerObj:HasTrait("NeedsMoreSleep") then
+    if playerObj:hasTrait(CharacterTrait.NEEDS_MORE_SLEEP) then
         sleepFor = sleepFor * 1.18;
     end
-
     if sleepFor > 16 then sleepFor = 16; end
     if sleepFor < 3 then sleepFor = 3; end
         --print("GONNA SLEEP " .. sleepFor .. " HOURS" .. " AND ITS " .. GameTime.getInstance():getTimeOfDay())
@@ -1047,15 +1034,26 @@ function ISWorldObjectContextMenu.onSleepWalkToComplete(player, bed)
         sleepHours = sleepHours - 24
     end
 
+    playerObj:setBed(bed);
+    playerObj:setBedType(bedType);
+    playerObj:setForceWakeUpTime(tonumber(sleepHours))
+    playerObj:setAsleepTime(0.0)
+    playerObj:setAsleep(true)
+
     if playerObj:getVehicle() then
         playerObj:playSound("VehicleGoToSleep")
     end
 
-    playerObj:setForceWakeUpTime(tonumber(sleepHours))
-    playerObj:setAsleepTime(0.0)
-    playerObj:setAsleep(true)
-    getSleepingEvent():setPlayerFallAsleep(playerObj, sleepFor);
+	if isClient() and getServerOptions():getBoolean("SleepAllowed") then
+		UIManager.setFadeBeforeUI(player, true)
+		UIManager.FadeOut(player, 1)
+        if playerObj:getVehicle() then
+            sendClientCommand(playerObj, "player", "onVehicleSleep", { id = playerObj:getOnlineID(), isAsleep = true })
+        end
+		return
+    end
 
+    getSleepingEvent():setPlayerFallAsleep(playerObj, sleepFor);
     UIManager.setFadeBeforeUI(playerObj:getPlayerNum(), true)
     UIManager.FadeOut(playerObj:getPlayerNum(), 1)
 
@@ -1090,8 +1088,8 @@ function ISWorldObjectContextMenu.toggleComboWasherDryer(context, playerObj, obj
 	local objectName = object:getName() or "Combo Washer/Dryer"
 	local props = object:getProperties()
 	if props then
-		local groupName = props:Is("GroupName") and props:Val("GroupName") or nil
-		local customName = props:Is("CustomName") and props:Val("CustomName") or nil
+		local groupName = props:has("GroupName") and props:get("GroupName") or nil
+		local customName = props:has("CustomName") and props:get("CustomName") or nil
 		if groupName and customName then
 			objectName = Translator.getMoveableDisplayName(groupName .. " " .. customName)
 		elseif customName then
@@ -1164,18 +1162,28 @@ end
 
 function ISWorldObjectContextMenu.doLightSwitchOption(test, context, player)
     local fetch = ISWorldObjectContextMenu.fetchVars
+    if not fetch.lightSwitch then
+        return;
+    end
     local worldobjects = nil
 	local playerObj = getSpecificPlayer(player)
 	local playerInv = playerObj:getInventory()
 	local option = nil
-    if fetch.lightSwitch ~= nil and not ISWorldObjectContextMenu.isSomethingTo(fetch.lightSwitch, player) then
+    local lightSwitchOption = context:addOption(fetch.lightSwitch:getTileName(), worldobjects, nil);
+    local texture = getTexture(fetch.lightSwitch:getSpriteName());
+    if texture then
+        lightSwitchOption.iconTexture = texture:splitIcon();
+    end
+    local lightSwitchSubmenu = ISContextMenu:getNew(context);
+    context:addSubMenu(lightSwitchOption, lightSwitchSubmenu);
+    if not ISWorldObjectContextMenu.isSomethingTo(fetch.lightSwitch, player) then
         local canSwitch = fetch.lightSwitch:canSwitchLight();
         if canSwitch then --(SandboxVars.ElecShutModifier > -1 and GameTime.getInstance():getNightsSurvived() < SandboxVars.ElecShutModifier) or fetch.lightSwitch:getSquare():haveElectricity() then
             if test == true then return true; end
             if fetch.lightSwitch:isActivated() then
-                option = context:addGetUpOption(getText("ContextMenu_Turn_Off"), worldobjects, ISWorldObjectContextMenu.onToggleLight, fetch.lightSwitch, player);
+                option = lightSwitchSubmenu:addGetUpOption(getText("ContextMenu_Turn_Off"), worldobjects, ISWorldObjectContextMenu.onToggleLight, fetch.lightSwitch, player);
             else
-                option = context:addGetUpOption(getText("ContextMenu_Turn_On"), worldobjects, ISWorldObjectContextMenu.onToggleLight, fetch.lightSwitch, player);
+                option = lightSwitchSubmenu:addGetUpOption(getText("ContextMenu_Turn_On"), worldobjects, ISWorldObjectContextMenu.onToggleLight, fetch.lightSwitch, player);
             end
             option.iconTexture = getTexture("Item_LightBulb")
         end
@@ -1186,8 +1194,8 @@ function ISWorldObjectContextMenu.doLightSwitchOption(test, context, player)
             -- if not modified yet, give option to modify this lamp so it uses battery instead of power
             if not fetch.lightSwitch:getUseBattery() then
                 if playerObj:getPerkLevel(Perks.Electricity) >= ISLightActions.perkLevel then
-                    if playerInv:containsTagEvalRecurse("Screwdriver", predicateNotBroken) and playerInv:containsTypeRecurse("ElectronicsScrap") then
-                        context:addGetUpOption(getText("ContextMenu_CraftBatConnector"), worldobjects, ISWorldObjectContextMenu.onLightModify, fetch.lightSwitch, player);
+                    if playerInv:containsTagEvalRecurse(ItemTag.SCREWDRIVER, predicateNotBroken) and playerInv:containsTypeRecurse("ElectronicsScrap") then
+                        lightSwitchSubmenu:addGetUpOption(getText("ContextMenu_CraftBatConnector"), worldobjects, ISWorldObjectContextMenu.onLightModify, fetch.lightSwitch, player);
                     end
                 end
             end
@@ -1204,9 +1212,9 @@ function ISWorldObjectContextMenu.doLightSwitchOption(test, context, player)
                         removeOption.toolTip = tooltip
                     end
                 elseif playerInv:containsTypeRecurse("Battery") then
-                    local batteryOption = context:addOption(getText("ContextMenu_AddBattery"), worldobjects, nil);
-                    local subMenuBattery = ISContextMenu:getNew(context);
-                    context:addSubMenu(batteryOption, subMenuBattery);
+                    local batteryOption = lightSwitchSubmenu:addOption(getText("ContextMenu_AddBattery"), worldobjects, nil);
+                    local subMenuBattery = ISContextMenu:getNew(lightSwitchSubmenu);
+                    lightSwitchSubmenu:addSubMenu(batteryOption, subMenuBattery);
 
                     local batteries = playerInv:getAllTypeEvalRecurse("Battery", predicateNotEmpty)
                     for n = 0,batteries:size()-1 do
@@ -1225,7 +1233,7 @@ function ISWorldObjectContextMenu.doLightSwitchOption(test, context, player)
 
             -- lightbulbs can be changed regardless, as long as the lamp can be modified (which are all isolightswitches that are movable, see IsoLightSwitch constructor)
             if fetch.lightSwitch:hasLightBulb() then
-                context:addGetUpOption(getText("ContextMenu_RemoveLightbulb"), worldobjects, ISWorldObjectContextMenu.onLightBulb, fetch.lightSwitch, player, true);
+                lightSwitchSubmenu:addGetUpOption(getText("ContextMenu_RemoveLightbulb"), worldobjects, ISWorldObjectContextMenu.onLightBulb, fetch.lightSwitch, player, true);
             else
                 local items = playerInv:getAllEvalRecurse(function(item) return luautils.stringStarts(item:getType(), "LightBulb") end)
 
@@ -1240,22 +1248,18 @@ function ISWorldObjectContextMenu.doLightSwitchOption(test, context, player)
                 end
 
                 if found then
-                    local bulbOption = context:addOption(getText("ContextMenu_AddLightbulb"), worldobjects, nil);
-                    local subMenuBulb = ISContextMenu:getNew(context);
-                    context:addSubMenu(bulbOption, subMenuBulb);
+                    local bulbOption = lightSwitchSubmenu:addOption(getText("ContextMenu_AddLightbulb"), worldobjects, nil);
+                    local subMenuBulb = ISContextMenu:getNew(lightSwitchSubmenu);
+                    lightSwitchSubmenu:addSubMenu(bulbOption, subMenuBulb);
 
                     for _,bulb in pairs(cache) do
-                        subMenuBulb:addGetUpOption(bulb:getName(), worldobjects, ISWorldObjectContextMenu.onLightBulb, fetch.lightSwitch, player, false, bulb);
+                        local bulbOption = subMenuBulb:addGetUpOption(bulb:getName(), worldobjects, ISWorldObjectContextMenu.onLightBulb, fetch.lightSwitch, player, false, bulb);
+                        bulbOption.color = {r = bulb:getColorRed(), g = bulb:getColorGreen(), b = bulb:getColorBlue()}
+                        bulbOption.iconTexture = bulb:getTex();
                     end
                 end
             end
 
-        end
-        if false then
-            print("can switch = ",canSwitch);
-            print("has bulb = ",fetch.lightSwitch:hasLightBulb());
-            print("used battery = ", fetch.lightSwitch:getUseBattery());
-            print("is modable = ",fetch.lightSwitch:getCanBeModified());
         end
     end
     return false
@@ -1266,10 +1270,10 @@ ISWorldObjectContextMenu.onToggleLight = function(worldobjects, light, player)
 	if light:getObjectIndex() == -1 then return end
 	local dir = nil
 	local props = light:getSprite() and light:getSprite():getProperties()
-	if props and props:Is(IsoFlagType.attachedN) then dir = IsoDirections.N
-	elseif props and props:Is(IsoFlagType.attachedS) then dir = IsoDirections.S
-	elseif props and props:Is(IsoFlagType.attachedW) then dir = IsoDirections.W
-	elseif props and props:Is(IsoFlagType.attachedE) then dir = IsoDirections.E
+	if props and props:has(IsoFlagType.attachedN) then dir = IsoDirections.N
+	elseif props and props:has(IsoFlagType.attachedS) then dir = IsoDirections.S
+	elseif props and props:has(IsoFlagType.attachedW) then dir = IsoDirections.W
+	elseif props and props:has(IsoFlagType.attachedE) then dir = IsoDirections.E
 	end
 	if dir then
 		local adjacent = AdjacentFreeTileFinder.FindEdge(light:getSquare(), dir, playerObj, true)
@@ -1302,7 +1306,7 @@ ISWorldObjectContextMenu.onLightModify = function(worldobjects, light, player, s
     local playerObj = getSpecificPlayer(player)
     local playerInv = playerObj:getInventory()
     if light:getSquare() and luautils.walkAdj(playerObj, light:getSquare()) then
-        local screwdriver = playerInv:getFirstTagEvalRecurse("Screwdriver", predicateNotBroken)
+        local screwdriver = playerInv:getFirstTagEvalRecurse(ItemTag.SCREWDRIVER, predicateNotBroken)
         local scrapItem = playerInv:getFirstTypeRecurse("ElectronicsScrap")
         if not screwdriver or not scrapItem then return end
         ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), screwdriver, true, false)
@@ -1365,7 +1369,7 @@ end
 ISWorldObjectContextMenu.onWaterDispenserBottle = function(playerObj, waterdispenser, bottle)
 	if luautils.walkAdj(playerObj, waterdispenser:getSquare(), false) then
 		ISTimedActionQueue.add(ISAddTakeDispenserBottle:new(playerObj, waterdispenser, bottle));
-	end	
+	end
 end
 
 ISWorldObjectContextMenu.onButcherHook = function(hook, playerObj)
@@ -1394,10 +1398,10 @@ ISWorldObjectContextMenu.grabItemTime = function(playerObj, witem)
 		maxTime = maxTime * 0.3;
 	end
 
-	if playerObj:HasTrait("Dextrous") then
+	if playerObj:hasTrait(CharacterTrait.DEXTROUS) then
 		maxTime = maxTime * 0.5
 	end
-	if playerObj:HasTrait("AllThumbs") or playerObj:isWearingAwkwardGloves() then
+	if playerObj:hasTrait(CharacterTrait.ALL_THUMBS) or playerObj:isWearingAwkwardGloves() then
 		maxTime = maxTime * 2.0
 	end
 
@@ -1528,7 +1532,7 @@ end
 
 ISWorldObjectContextMenu.onPlumbItem = function(worldobjects, player, itemToPipe)
 	local playerObj = getSpecificPlayer(player)
-	local wrench = playerObj:getInventory():getFirstTypeEvalRecurse("PipeWrench", predicateNotBroken) or playerObj:getInventory():getFirstTagEvalRecurse("PipeWrench", predicateNotBroken);
+	local wrench = playerObj:getInventory():getFirstTypeEvalRecurse("PipeWrench", predicateNotBroken) or playerObj:getInventory():getFirstTagEvalRecurse(ItemTag.PIPE_WRENCH, predicateNotBroken);
 	ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), wrench, true)
 	ISTimedActionQueue.add(ISPlumbItem:new(playerObj, itemToPipe, wrench));
 end
@@ -1638,7 +1642,7 @@ ISWorldObjectContextMenu.onBurnCorpse = function(worldobjects, player, corpse)
     local playerObj = getSpecificPlayer(player)
     local playerInv = playerObj:getInventory()
     if corpse:getSquare() and luautils.walkAdj(playerObj, corpse:getSquare()) then
-		local fire = playerInv:getFirstTagRecurse("StartFire") or playerInv:getFirstTypeRecurse("Lighter") or playerInv:getFirstTypeRecurse("Matches")
+		local fire = playerInv:getFirstTagRecurse(ItemTag.START_FIRE) or playerInv:getFirstTypeRecurse("Lighter") or playerInv:getFirstTypeRecurse("Matches")
 		if not fire then return end
 		fire = ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), fire, true, false)
 		local petrol = ISWorldObjectContextMenu.equip(playerObj, playerObj:getSecondaryHandItem(), predicatePetrol, false, false)
@@ -1851,7 +1855,7 @@ end
 
 ISWorldObjectContextMenu.doDrinkWaterMenu = function(object, player, context)
 	local playerObj = getSpecificPlayer(player)
-	local thirst = playerObj:getStats():getThirst()
+	local thirst = playerObj:getStats():get(CharacterStat.THIRST)
 	--if thirst <= 0 then
 	--	return;
 	--end
@@ -1933,7 +1937,7 @@ ISWorldObjectContextMenu.doWashClothingMenu = function(sink, player, context)
 	for i=0, clothingInventory:size() - 1 do
 		local item = clothingInventory:get(i)
 		-- Wasn't able to reproduce the wash 'Blooo' bug, don't know the exact cause so here's a fix...
-		if not item:isHidden() and (item:hasBlood() or item:hasDirt()) and not item:hasTag("BreakWhenWet") then
+		if not item:isHidden() and (item:hasBlood() or item:hasDirt()) and not item:hasTag(ItemTag.BREAK_WHEN_WET) then
 			if washEquipment == false then
 				washEquipment = true
 			end
@@ -1943,7 +1947,7 @@ ISWorldObjectContextMenu.doWashClothingMenu = function(sink, player, context)
 	end
 
 	local washOther = {}
-	local dirtyRagInventory = playerInv:getAllTag("CanBeWashed", ArrayList.new())
+	local dirtyRagInventory = playerInv:getAllTag(ItemTag.CAN_BE_WASHED, ArrayList.new())
 	for i=0, dirtyRagInventory:size() - 1 do
 		local item = dirtyRagInventory:get(i)
 		if item:getJobDelta() == 0 then
@@ -1990,7 +1994,7 @@ ISWorldObjectContextMenu.doWashClothingMenu = function(sink, player, context)
 		local mainOption = context:addOption(getText("ContextMenu_Wash"), nil, nil);
 		local mainSubMenu = ISContextMenu:getNew(context)
 		context:addSubMenu(mainOption, mainSubMenu)
-	
+
 --		if #soapList < 1 then
 --			mainOption.notAvailable = true;
 --			local tooltip = ISWorldObjectContextMenu.addToolTip();
@@ -2003,7 +2007,7 @@ ISWorldObjectContextMenu.doWashClothingMenu = function(sink, player, context)
 			soapRemaining = ISWashClothing.GetSoapRemaining(soapList)
 		end
 		local waterRemaining = sink:getFluidAmount()
-	
+
 		if washYourself then
 			local soapRequired = ISWashYourself.GetRequiredSoap(playerObj)
 			local waterRequired = ISWashYourself.GetRequiredWater(playerObj)
@@ -2034,7 +2038,7 @@ ISWorldObjectContextMenu.doWashClothingMenu = function(sink, player, context)
 				option.notAvailable = true
 			end
 		end
-		
+
 		if washEquipment then
 			if #washList > 0 then
 				local soapRequired = 0
@@ -2106,7 +2110,7 @@ ISWorldObjectContextMenu.onWashClothing = function(playerObj, sink, soapList, wa
 		washList = {};
 		table.insert(washList, singleClothing);
 	end
-    
+
 	for i,item in ipairs(washList) do
 		local bloodAmount = 0
 		local dirtAmount = 0
@@ -2132,11 +2136,9 @@ ISWorldObjectContextMenu.onWashYourself = function(playerObj, sink, soapList)
 	if not sink:getSquare() or not luautils.walkAdj(playerObj, sink:getSquare(), true) then
 		return
 	end
-	
+
 	ISTimedActionQueue.add(ISWashYourself:new(playerObj, sink, soapList));
 end
-
------
 
 local CleanBandages = {}
 
@@ -2409,7 +2411,7 @@ ISWorldObjectContextMenu.onTakeWater = function(worldobjects, waterObject, water
 			ISTimedActionQueue.add(ISTakeWaterAction:new(playerObj, item, waterObject, waterObject:isTaintedWater()));
 			if returnToContainer and (returnToContainer ~= playerInv) then
 				ISTimedActionQueue.add(ISInventoryTransferUtil.newInventoryTransferAction(playerObj, item, playerInv, returnToContainer))
-			end			
+			end
 		end
 	end
 end
@@ -2423,7 +2425,7 @@ ISWorldObjectContextMenu.onTakeFuelNew = function(worldobjects, fuelObject, fuel
 		fuelContainerList = {};
 		table.insert(fuelContainerList, fuelContainer);
 	end
-	
+
 	local didWalk = false
 
 	for i,item in ipairs(fuelContainerList) do
@@ -2562,7 +2564,7 @@ ISWorldObjectContextMenu.onBarricade = function(worldobjects, window, player)
 	local playerObj = getSpecificPlayer(player)
 	local playerInv = playerObj:getInventory()
 	-- we must check these otherwise ISEquipWeaponAction will get a null item
-	local hammer = playerInv:getFirstTagEvalRecurse("Hammer", predicateNotBroken)
+	local hammer = playerInv:getFirstTagEvalRecurse(ItemTag.HAMMER, predicateNotBroken)
 	if not hammer then return end
 	if not playerInv:containsTypeRecurse("Plank") then return end
 	if playerInv:getItemCountRecurse("Base.Nails") < 2 then return end
@@ -2627,12 +2629,11 @@ ISWorldObjectContextMenu.addRemoveCurtainOption = function(context, worldobjects
 
 	local option = context:addGetUpOption(getText("ContextMenu_Remove_curtains"), worldobjects, ISWorldObjectContextMenu.onRemoveCurtain, curtain, player)
 	option.toolTip = ISWorldObjectContextMenu.addToolTip()
-	option.toolTip:setTexture("Item_Sheet")
 	option.toolTip.description = getText("Tooltip_RemoveCurtains", scriptItem:getDisplayName())
 	if instanceof(curtain, "IsoDoor") then
 		curtain = curtain:HasCurtains()
 	end
-	if curtain:getSprite() and curtain:getSprite():getProperties():Is("IsMoveAble") then
+	if curtain:getSprite() and curtain:getSprite():getProperties():has("IsMoveAble") then
 		option.toolTip.description = option.toolTip.description .. " <LINE> <LINE> " .. getText("Tooltip_PickUpCurtains")
 	end
 	return option
@@ -2722,8 +2723,8 @@ ISWorldObjectContextMenu.onAddSheetRope = function(worldobjects, window, player,
 			end
 		end
 		if items:size() < numRequired then return end
-		if not window:getSprite():getProperties():Is("TieSheetRope") then
-			local hammer = playerInv:getFirstTagEvalRecurse("Hammer", predicateNotBroken)
+		if not window:getSprite():getProperties():has("TieSheetRope") then
+			local hammer = playerInv:getFirstTagEvalRecurse(ItemTag.HAMMER, predicateNotBroken)
 			if not hammer then return end
 			ISWorldObjectContextMenu.transferIfNeeded(playerObj, hammer)
 			local nail = playerInv:getFirstTypeRecurse("Nails")
@@ -2749,7 +2750,7 @@ ISWorldObjectContextMenu.isTrappedAdjacentToWindow = function(player, window)
 	local sq = player:getCurrentSquare()
 	local sq2 = window:getSquare()
 	if not sq or not sq2 or sq:getZ() ~= sq2:getZ() then return false end
-	if not (sq:Is(IsoFlagType.solid) or sq:Is(IsoFlagType.solidtrans)) then return false end
+	if not (sq:has(IsoFlagType.solid) or sq:has(IsoFlagType.solidtrans)) then return false end
 	local north = false
 	north = window:getNorth()
 	if north and sq:getX() == sq:getX() and (sq:getY() == sq2:getY()-1 or sq:getY() == sq2:getY()) then
@@ -2781,7 +2782,7 @@ ISWorldObjectContextMenu.onClimbThroughWindow = function(worldobjects, window, p
 	-- This is for windows on the south or east wall of a room.
 	if instanceof(window, 'IsoWindow') then
 		if square:getRoom() ~= playerObj:getCurrentSquare():getRoom() then
-			if window:getIndoorSquare() and window:getIndoorSquare():Is(IsoFlagType.solidtrans) then
+			if window:getIndoorSquare() and window:getIndoorSquare():has(IsoFlagType.solidtrans) then
 				square = window:getIndoorSquare()
 			end
 		end
@@ -2822,10 +2823,8 @@ end
 function ISWorldObjectContextMenu.canCleanBlood(playerObj, square)
 	local playerInv = playerObj:getInventory()
 	local bleach = playerInv:containsEvalRecurse(predicateCleaningLiquid)
-	local mop = playerInv:containsTagEvalRecurse("CleanStains", predicateNotBroken)
+	local mop = playerInv:containsTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
 	return square ~= nil and square:haveStains() and bleach and mop
--- 			(playerInv:containsTypeRecurse("BathTowel") or playerInv:containsTypeRecurse("DishCloth") or
--- 			playerInv:containsTypeRecurse("Mop") or playerInv:containsTypeEvalRecurse("Broom", predicateNotBroken))
 end
 
 function ISWorldObjectContextMenu.onCleanBlood(worldobjects, square, player)
@@ -2846,13 +2845,13 @@ function ISWorldObjectContextMenu.doCleanBlood(playerObj, square)
 		    bleach = playerInv:getFirstEvalRecurse(predicateCleaningLiquid);
 		    ISWorldObjectContextMenu.transferIfNeeded(playerObj, bleach)
 	    end
-		if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag("CleanStains") then
+		if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag(ItemTag.CLEAN_STAINS) then
 		    item = playerObj:getPrimaryHandItem()
 		else
-            item = playerInv:getFirstTagEvalRecurse("CleanStains", predicateNotBroken)
+            item = playerInv:getFirstTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
             ISWorldObjectContextMenu.transferIfNeeded(playerObj, item)
 	    end
-	    local twoHanded = item:hasTag("TwoHandItem") or (instanceof(item, "HandWeapon") and item:isTwoHandWeapon())
+	    local twoHanded = (instanceof(item, "HandWeapon") and item:isTwoHandWeapon())
 		-- dish clothes will be doing a low animation
 		if not twoHanded then
 -- 		if item:getType() == "DishCloth" or item:getType() == "BathTowel" or item:getType() == "Sponge" then
@@ -2868,11 +2867,11 @@ end
 
 function ISWorldObjectContextMenu.canCleanGraffiti(playerObj, square)
 	local playerInv = playerObj:getInventory()
-	local cleaner = playerInv:containsTagEvalRecurse("Petrol", predicateFluidRemaining)
-	local mop = playerInv:containsTagEvalRecurse("CleanStains", predicateNotBroken)
+	local cleaner = playerInv:containsEvalRecurse(function(item)
+        return item:getFluidContainer() and item:getFluidContainer():contains(Fluid.Petrol)
+    end)
+	local mop = playerInv:containsTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
 	return square ~= nil and square:haveGraffiti() and cleaner and mop
--- 			(playerInv:containsTypeRecurse("BathTowel") or playerInv:containsTypeRecurse("DishCloth") or
--- 			playerInv:containsTypeRecurse("Mop") or playerInv:containsTypeEvalRecurse("Broom", predicateNotBroken))
 end
 
 function ISWorldObjectContextMenu.onCleanGraffiti(worldobjects, square, player)
@@ -2887,19 +2886,21 @@ function ISWorldObjectContextMenu.doCleanGraffiti(playerObj, square)
 	if luautils.walkAdj(playerObj, square) then
 		local cleaner
 		local item
-		if playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():hasTag("Petrol") then
+		if playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():getFluidContainer():contains(Fluid.Petrol) then
 		    cleaner = playerObj:getSecondaryHandItem()
 		else
-            cleaner = playerInv:getFirstTagEvalRecurse("Petrol", predicateFluidRemaining)
+            cleaner = playerInv:getFirstEvalRecurse(function(item)
+                return item:getFluidContainer() and item:getFluidContainer():contains(Fluid.Petrol)
+            end)
             ISWorldObjectContextMenu.transferIfNeeded(playerObj, cleaner)
 	    end
-		if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag("CleanStains") then
+		if playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag(ItemTag.CLEAN_STAINS) then
 		    item = playerObj:getPrimaryHandItem()
 		else
-            item = playerInv:getFirstTagEvalRecurse("CleanStains", predicateNotBroken)
+            item = playerInv:getFirstTagEvalRecurse(ItemTag.CLEAN_STAINS, predicateNotBroken)
             ISWorldObjectContextMenu.transferIfNeeded(playerObj, item)
 	    end
-	    local twoHanded = item:hasTag("TwoHandItem") or (instanceof(item, "HandWeapon") and item:isTwoHandWeapon())
+	    local twoHanded = (instanceof(item, "HandWeapon") and item:isTwoHandWeapon())
 		-- dish clothes will be doing a low animation
 		if not twoHanded then
 -- 		if item:getType() == "DishCloth" or item:getType() == "BathTowel" or item:getType() == "Sponge" then
@@ -3019,6 +3020,19 @@ ISWorldObjectContextMenu.addToolTip = function()
     return tooltip;
 end
 
+ISWorldObjectContextMenu.addToolTipInv = function(item)
+    local pool = ISWorldObjectContextMenu.tooltipInvPool
+    if #pool == 0 then
+        table.insert(pool, ISToolTipInv:new(item))
+    end
+    local tooltip = table.remove(pool, #pool)
+    tooltip:setItem(item)
+    tooltip:setContextMenu(nil)
+    tooltip.followMouse = false
+    table.insert(ISWorldObjectContextMenu.tooltipInvUsed, tooltip)
+    return tooltip
+end
+
 ISWorldObjectContextMenu.doBedOption = function(context, playerObj, bed)
 	local playerNum = playerObj:getPlayerNum()
 	if not playerObj:isOnBed() and bed:getSprite() and bed:getSprite():getSpriteGrid() then
@@ -3043,7 +3057,7 @@ ISWorldObjectContextMenu.onGetOnBed = function(playerObj, bed)
 		local square = bed:getSquare():getAdjacentSquare(dir)
 		for i=1,square:getObjects():size() do
 			local obj = square:getObjects():get(i-1)
-			if obj:getSprite() and obj:getProperties():Is(IsoFlagType.bed) then
+			if obj:getSprite() and obj:getProperties():has(IsoFlagType.bed) then
 				return obj
 			end
 		end
@@ -3171,7 +3185,7 @@ end
 ISWorldObjectContextMenu.onBuryCorpse = function(grave, player, primaryHandItem)
 	local playerObj = getSpecificPlayer(player)
 
-	if primaryHandItem and primaryHandItem:hasTag("AnimalCorpse") then
+	if primaryHandItem and primaryHandItem:hasTag(ItemTag.ANIMAL_CORPSE) then
 		ISTimedActionQueue.add(ISBuryCorpse:new(playerObj, grave, primaryHandItem, nil))
 		return;
 	end
@@ -3258,7 +3272,7 @@ end
 ISWorldObjectContextMenu.onRemoveGroundCoverItemHammerOrPickAxe = function(worldobjects, player, object)
     local playerObj = getSpecificPlayer(player)
     if object:getSquare() and luautils.walkAdj(playerObj, object:getSquare()) then
-        ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), predicateHammerOrPickAxe, true, true)
+        ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), predicateMaulOrPickAxe, true, true)
         ISTimedActionQueue.add(ISPickAxeGroundCoverItem:new(playerObj, object));
     end
 end
@@ -3273,8 +3287,8 @@ ISWorldObjectContextMenu.chairCheck = function(bed)
     if bed:getProperties() then
         local props = bed:getProperties()
         local sillyChair = false
-        if props:Is("CustomName") then
-            local customName = props:Val("CustomName")
+        if props:has("CustomName") then
+            local customName = props:get("CustomName")
             local badList = chairCheckList.badList
 --             getPlayer():Say(customName)
             for i = 1, #badList  do
@@ -3285,8 +3299,8 @@ ISWorldObjectContextMenu.chairCheck = function(bed)
                 end
             end
         end
-        if sillyChair and props:Is("GroupName") then
-            local groupName = props:Val("GroupName")
+        if sillyChair and props:has("GroupName") then
+            local groupName = props:get("GroupName")
             local goodList = chairCheckList.goodList
 --             getPlayer():Say(groupName)
             for i = 1, #goodList  do
@@ -3306,8 +3320,8 @@ ISWorldObjectContextMenu.getBedQuality = function(playerObj, bed)
     local bedType = "averageBed"
     local playerHasPillow = false
     -- added pillows equipped in-hand to the circumstances where a player can benefit from sleeping with a pillow
-    if (playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag("Pillow")) or
-            (playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():hasTag("Pillow")) then
+    if (playerObj:getPrimaryHandItem() and playerObj:getPrimaryHandItem():hasTag(ItemTag.PILLOW)) or
+            (playerObj:getSecondaryHandItem() and playerObj:getSecondaryHandItem():hasTag(ItemTag.PILLOW)) then
         playerHasPillow = true
     end
     if playerObj:getVehicle() then
@@ -3318,7 +3332,7 @@ ISWorldObjectContextMenu.getBedQuality = function(playerObj, bed)
         local vehicle = playerObj:getVehicle()
         local seat = vehicle:getPartForSeatContainer(vehicle:getSeat(playerObj))
         local cont = seat:getItemContainer()
-        if cont:containsTag("Pillow") then
+        if cont:containsTag(ItemTag.PILLOW) then
             return (bedType .. "Pillow")
         end
         return bedType
@@ -3332,20 +3346,20 @@ ISWorldObjectContextMenu.getBedQuality = function(playerObj, bed)
         local worldObjects = square:getWorldObjects()
         for i=1,worldObjects:size() do
             local item = worldObjects:get(i-1):getItem()
-            if item and item:hasTag("Pillow") then
+            if item and item:hasTag(ItemTag.PILLOW) then
                 return (bedType .. "Pillow")
             end
         end
         return bedType
     end
-    local bedType = bed:getProperties():Val("BedType") or "averageBed"
+    local bedType = bed:getProperties():get("BedType") or "averageBed"
     -- check for sleeping bags in tents
-    if bed:getProperties() and bed:getProperties():Is("CustomName") and
-            (bed:getProperties():Val("CustomName") == "Tent" or bed:getProperties():Val("CustomName") == "Shelter") then
+    if bed:getProperties() and bed:getProperties():has("CustomName") and
+            (bed:getProperties():get("CustomName") == "Tent" or bed:getProperties():get("CustomName") == "Shelter") then
         if bed:getContainer() then
             local cont = bed:getContainer()
-            if cont:containsTag("TentBed") then bedType = "averageBed" end
-            if cont:containsTag("Pillow") then return (bedType .. "Pillow") end
+            if cont:containsTag(ItemTag.TENT_BED) then bedType = "averageBed" end
+            if cont:containsTag(ItemTag.PILLOW) then return (bedType .. "Pillow") end
         end
         if playerHasPillow then
             return (bedType .. "Pillow")
@@ -3363,7 +3377,7 @@ ISWorldObjectContextMenu.getBedQuality = function(playerObj, bed)
             local worldObjects = square:getWorldObjects()
             for i=0, worldObjects:size()-1 do
                 local item = worldObjects:get(i):getItem()
-                if item and item:hasTag("Pillow") then
+                if item and item:hasTag(ItemTag.PILLOW) then
                     return (bedType .. "Pillow")
                 end
             end
@@ -3377,7 +3391,7 @@ ISWorldObjectContextMenu.doSheetRopeOptions = function(_context, _object, _world
 	if object ~= nil and _playerObj:getCurrentSquare() ~= nil then
 		local playerAboveGround = _playerObj:getCurrentSquare():getZ() > _playerObj:getCurrentSquare():getChunk():getMinLevel();
 		local objectAboveGround = object:getSquare():getZ() > object:getSquare():getChunk():getMinLevel();
-		local hasCorrectTools = object:getSprite():getProperties():Is("TieSheetRope") or (_playerInv:containsTypeRecurse("Nails") and _hasHammer);
+		local hasCorrectTools = object:getSprite():getProperties():has("TieSheetRope") or (_playerInv:containsTypeRecurse("Nails") and _hasHammer);
 		local sheetRopeCountIsValid = object:countAddSheetRope() > 0;
 		if object:canAddSheetRope()
 			and playerAboveGround
@@ -3392,7 +3406,7 @@ ISWorldObjectContextMenu.doSheetRopeOptions = function(_context, _object, _world
 
 			if (_playerInv:getItemCountRecurse("SheetRope") >= object:countAddSheetRope()) then
 				if _test == true then return true; end
-				if object:getSprite():getProperties():Is("TieSheetRope") then
+				if object:getSprite():getProperties():has("TieSheetRope") then
 					_context:addGetUpOption(getText("ContextMenu_Tie_escape_rope_sheet"), _worldobjects, ISWorldObjectContextMenu.onAddSheetRope, object, _player, true);
 				else
 					_context:addGetUpOption(getText("ContextMenu_Nail_escape_rope_sheet"), _worldobjects, ISWorldObjectContextMenu.onAddSheetRope, object, _player, true);
@@ -3400,7 +3414,7 @@ ISWorldObjectContextMenu.doSheetRopeOptions = function(_context, _object, _world
 			end
 			if (_playerInv:getItemCountRecurse("Rope") >= object:countAddSheetRope()) then
 				if _test == true then return true; end
-				if object:getSprite():getProperties():Is("TieSheetRope") then
+				if object:getSprite():getProperties():has("TieSheetRope") then
 					_context:addGetUpOption(getText("ContextMenu_Tie_escape_rope"), _worldobjects, ISWorldObjectContextMenu.onAddSheetRope, object, _player, false);
 				else
 					_context:addGetUpOption(getText("ContextMenu_Nail_escape_rope"), _worldobjects, ISWorldObjectContextMenu.onAddSheetRope, object, _player, false);
@@ -3443,7 +3457,7 @@ function ISWorldObjectContextMenu.doFluidContainerMenu(context, object, player)
     tooltip.maxLineWidth = 512
     option.toolTip = tooltip
     ]]--
-	
+
 	-- distance test removed as per team meeting [SPIF-2281] - spurcival
 	--if playerObj:DistToSquared(object:getX() + 0.5, object:getY() + 0.5) < 2 * 2 then
 		if not isTrough then

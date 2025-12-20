@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISRadialMenu"
 
 ISBackButtonWheel = ISRadialMenu:derive("ISBackButtonWheel")
@@ -21,7 +17,7 @@ end
 
 function ISBackButtonWheel:addCommands()
 	local playerObj = getSpecificPlayer(self.playerNum)
-	
+
 	self:center()
 
 	self:clear()
@@ -63,7 +59,7 @@ function ISBackButtonWheel:addCommands()
 			else
 				self:addSlice(getText("UI_optionscreen_binding_Pause"), getTexture("media/ui/speedControls/Pause_Off.png"), self.onCommand, self, "Pause")
 			end
-	
+
 			local multiplier = getGameTime():getTrueMultiplier()
 			if multiplier == 1 or multiplier == 40 then
 				self:addSlice(getText("IGUI_BackButton_FF1"), getTexture("media/ui/speedControls/FFwd1_Off.png"), self.onCommand, self, "FastForward")
@@ -100,11 +96,18 @@ function ISBackButtonWheel:addCommands()
 			searchManager:checkCloseIcons();
 			for _, icon in pairs(searchManager.closeIcons) do
 				self:addSlice(getText("IGUI_Pickup") .. " " .. icon.itemObj:getDisplayName(), icon.itemTexture, self.onCommand, self, "ForageItem");
-				self:addSlice(getText("UI_foraging_DiscardItem") .. " " .. icon.itemObj:getDisplayName(), icon.itemTexture, self.onCommand, self, "DiscardForageItem");
 				break; --only add the first icon found
 			end;
 		else
 			self:addSlice(getText("UI_enable_search_mode"), getTexture("media/ui/foraging/eyeconOn.png"), self.onCommand, self, "ForageMode");
+		end;
+		local searchWindow = ISSearchWindow.players[playerObj];
+		if searchWindow then
+			if not searchWindow:getIsVisible() then
+				self:addSlice(getText("UI_investigate_area_window_show"), getTexture("media/ui/Sidebar/64/Search_On_64.png"), ISSearchWindow.toggleWindow, playerObj);
+			else
+				self:addSlice(getText("UI_investigate_area_window_hide"), getTexture("media/ui/Sidebar/64/Search_Off_64.png"), ISSearchWindow.toggleWindow, playerObj);
+			end;
 		end;
 	end;
 end
@@ -192,11 +195,6 @@ function ISBackButtonWheel:onCommand(command)
 		for _, icon in pairs(ISSearchManager.getManager(playerObj).closeIcons) do
 			icon:doForage();
 			break; --only pick up the first icon found
-		end;
-	elseif command == "DiscardForageItem" then
-		for _, icon in pairs(ISSearchManager.getManager(playerObj).closeIcons) do
-			icon:onClickDiscard();
-			break; --only discard the first icon found
 		end;
 	end
 

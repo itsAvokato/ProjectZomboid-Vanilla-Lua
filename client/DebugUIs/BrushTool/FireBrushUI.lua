@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 FireBrushUI = ISPanelJoypad:derive("FireBrushUI");
 FireBrushUI.instance = nil
 

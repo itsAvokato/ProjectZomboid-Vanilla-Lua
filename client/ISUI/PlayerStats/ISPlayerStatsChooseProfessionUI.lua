@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISPlayerStatsChooseProfessionUI = ISPanel:derive("ISPlayerStatsChooseProfessionUI");
@@ -18,11 +6,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsChooseProfessionUI:initialise()
     ISPanel.initialise(self);
@@ -40,13 +23,15 @@ function ISPlayerStatsChooseProfessionUI:render()
 end
 
 function ISPlayerStatsChooseProfessionUI:create()
-    for i=0,ProfessionFactory.getProfessions():size()-1 do
-        local prof = ProfessionFactory.getProfessions():get(i);
---        if self.chr:getDescriptor():getProfession() and prof:getType() ~= self.chr:getDescriptor():getProfession() then
-            table.insert(self.comboList, prof);
---        end
+    for i=0,CharacterProfessionDefinition.getProfessions():size()-1 do
+        local prof = CharacterProfessionDefinition.getProfessions():get(i);
+        table.insert(self.comboList, prof);
     end
-    table.sort(self.comboList, function(a, b) return a:getName()<b:getName() end)
+    table.sort(self.comboList, function(a, b)
+        if a:getType() == CharacterProfession.UNEMPLOYED then return true end
+        if b:getType() == CharacterProfession.UNEMPLOYED then return true end
+        return a:getUIName() < b:getUIName()
+    end)
 
     self.combo = ISComboBox:new(UI_BORDER_SPACING+1, FONT_HGT_MEDIUM+UI_BORDER_SPACING*2+1, self.width-(UI_BORDER_SPACING+1)*2, BUTTON_HGT, nil,nil);
     self.combo:initialise();
@@ -60,14 +45,14 @@ function ISPlayerStatsChooseProfessionUI:create()
     self.ok.internal = "OK";
     self.ok:initialise();
     self.ok:instantiate();
-    self.ok.borderColor = {r=1, g=1, b=1, a=0.1};
+    self.ok:enableAcceptColor();
     self:addChild(self.ok);
 
     self.cancel = ISButton:new((self:getWidth() + UI_BORDER_SPACING) / 2, self.combo:getBottom() + UI_BORDER_SPACING, btnWid, BUTTON_HGT, getText("UI_Cancel"), self, ISPlayerStatsChooseProfessionUI.onOptionMouseDown);
     self.cancel.internal = "CANCEL";
     self.cancel:initialise();
     self.cancel:instantiate();
-    self.cancel.borderColor = {r=1, g=1, b=1, a=0.1};
+    self.cancel:enableCancelColor();
     self:addChild(self.cancel);
 
     self:setHeight(self.ok:getBottom() + UI_BORDER_SPACING+1)
@@ -78,7 +63,7 @@ function ISPlayerStatsChooseProfessionUI:populateComboList()
     local tooltipMap = {};
     for _,v in ipairs(self.comboList) do
         self.combo:addOption(v:getLabel());
-        if v:getType() == self.chr:getDescriptor():getProfession() then
+        if v:getType() == self.chr:getDescriptor():getCharacterProfession() then
            self.combo.selected = _;
         end
         tooltipMap[v:getLabel()] = v:getDescription();

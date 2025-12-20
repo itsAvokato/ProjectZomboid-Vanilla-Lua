@@ -1,7 +1,3 @@
---***********************************************************
---**                   THE INDIE STONE                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISEmptyWaterInTrough = ISBaseTimedAction:derive("ISEmptyWaterInTrough")

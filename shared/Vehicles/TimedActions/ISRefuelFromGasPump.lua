@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRefuelFromGasPump = ISBaseTimedAction:derive("ISRefuelFromGasPump")
@@ -110,8 +106,8 @@ function ISRefuelFromGasPump:new(character, part, fuelStation)
 	o.vehicle = part:getVehicle()
 	o.part = part
 	o.fuelStation = fuelStation;
-	o.stopOnWalk = false
-	o.stopOnRun = false
+	o.stopOnWalk = true
+	o.stopOnRun = true
 	o.maxTime = o:getDuration()
 	return o
 end

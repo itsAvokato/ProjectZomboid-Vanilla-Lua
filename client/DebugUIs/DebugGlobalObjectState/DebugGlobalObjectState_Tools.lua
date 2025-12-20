@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISBaseObject"
 
 DebugGlobalObjectStateUI_Tool = ISBaseObject:derive("DebugGlobalObjectStateUI_Tool")
@@ -33,8 +29,6 @@ function Tool:new(ui)
 	o.ui = ui
 	return o
 end
-
------
 
 DebugGlobalObjectStateUI_DragCameraTool = Tool:derive("DebugGlobalObjectStateUI_DragCameraTool")
 local DragCameraTool = DebugGlobalObjectStateUI_DragCameraTool

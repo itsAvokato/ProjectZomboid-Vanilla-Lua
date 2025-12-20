@@ -1,21 +1,5 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 08/06/2017
--- Time: 09:25
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISEmptyGraves = ISBuildingObject:derive("ISEmptyGraves");
 
---************************************************************************--
---** ISEmptyGraves:new
---**
---************************************************************************--
 function ISEmptyGraves:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISEmptyGraves\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -51,7 +35,7 @@ end
 function ISEmptyGraves:setInfo(square, north, sprite, cell, spriteType)
 	for i=0,square:getObjects():size()-1 do
 		local object = square:getObjects():get(i);
-		if object:getProperties() and object:getProperties():Is(IsoFlagType.canBeRemoved) then
+		if object:getProperties() and object:getProperties():has(IsoFlagType.canBeRemoved) then
 			square:transmitRemoveItemFromSquare(object)
 			square:RemoveTileObject(object);
 			break
@@ -262,4 +246,3 @@ function ISEmptyGraves.isGraveFilledIn(grave)
 		sprite:getName() == "location_community_cemetary_01_42" or
 		sprite:getName() == "location_community_cemetary_01_43"
 end
-

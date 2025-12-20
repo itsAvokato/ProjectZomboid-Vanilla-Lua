@@ -320,25 +320,26 @@ local function OnGameStart()
         local tile = IsoSpriteManager.instance:getSprite(tileName)
         local props = tile:getProperties()
         for key, value in pairs(values) do
-            props:Set(key, value)
+            props:set(key, value)
         end
     end
     for tileName, values in pairs(CustomTileProps_RemovePair) do
         local tile = IsoSpriteManager.instance:getSprite(tileName)
         local props = tile:getProperties()
         for i, val in ipairs(values) do
-            props:UnSet(val)
+            props:unset(val)
         end
     end
     for tileName, values in pairs(CustomTileProps_SetFlag) do
         local tile = IsoSpriteManager.instance:getSprite(tileName)
         local props = tile:getProperties()
         for key, value in pairs(values) do
-			props:Set(value)
+			props:set(value)
         end
     end
 end
 Events.OnGameStart.Add(OnGameStart)
+Events.OnServerStarted.Add(OnGameStart)
 
 
 local function OnKeyPressed(key)

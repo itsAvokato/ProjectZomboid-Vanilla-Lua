@@ -1,16 +1,6 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISToolTipInv = ISPanel:derive("ISToolTipInv");
-
-
---************************************************************************--
---** ISToolTipInv:initialise
---**
---************************************************************************--
 
 function ISToolTipInv:initialise()
 	ISPanel.initialise(self);
@@ -41,11 +31,6 @@ end
 function ISToolTipInv:onRightMouseUp(x, y)
 	return false
 end
-
---************************************************************************--
---** ISToolTipInv:render
---**
---************************************************************************--
 
 function ISToolTipInv:prerender()
 	if self.owner and not self.owner:isReallyVisible() then
@@ -96,12 +81,23 @@ function ISToolTipInv:render()
         self.tooltip:setY(math.max(0, math.min(my, maxY - th - 1)));
     end
 
+	if self.contextMenu and self.contextMenu.joyfocus then
+		local playerNum = self.contextMenu.player
+		self.tooltip:setX(getPlayerScreenLeft(playerNum) + 60)
+		self.tooltip:setY(getPlayerScreenTop(playerNum) + 60)
+	elseif self.contextMenu and self.contextMenu.currentOptionRect then
+		if self.contextMenu.currentOptionRect.height > 32 then
+			self:setY(my + self.contextMenu.currentOptionRect.height)
+		end
+		self:adjustPositionToAvoidOverlap(self.contextMenu.currentOptionRect)
+    end
+
      self:setX(self.tooltip:getX() - PADX);
      self:setY(self.tooltip:getY());
      self:setWidth(tw + PADX);
      self:setHeight(th);
 
-	if self.followMouse then
+	if self.followMouse and (self.contextMenu == nil) then
 		self:adjustPositionToAvoidOverlap({ x = mx - 24 * 2, y = my - 24 * 2, width = 24 * 2, height = 24 * 2 })
 	end
 
@@ -114,6 +110,23 @@ end
 
 function ISToolTipInv:adjustPositionToAvoidOverlap(avoidRect)
 	local myRect = { x = self.x, y = self.y, width = self.width, height = self.height }
+
+	if self.contextMenu and not self.contextMenu.joyfocus and self.contextMenu.currentOptionRect then
+		myRect.y = avoidRect.y
+		local r = self:placeRight(myRect, avoidRect)
+		if self:overlaps(r, avoidRect) then
+			r = self:placeLeft(myRect, avoidRect)
+			if self:overlaps(r, avoidRect) then
+				r = self:placeAbove(myRect, avoidRect)
+			end
+		end
+		self.tooltip:setX(r.x)
+		self.tooltip:setY(r.y)
+		self:setX(r.x - 11)
+		self:setY(r.y)
+		return
+	end
+
 	if self:overlaps(myRect, avoidRect) then
 		local r = self:placeRight(myRect, avoidRect)
 		if self:overlaps(r, avoidRect) then
@@ -162,10 +175,10 @@ function ISToolTipInv:setCharacter(chr)
 	self.tooltip:setCharacter(chr)
 end
 
---************************************************************************--
---** ISToolTipInv:new
---**
---************************************************************************--
+function ISToolTipInv:setContextMenu(contextMenu)
+	self.contextMenu = contextMenu;
+end
+
 function ISToolTipInv:new(item)
    local o = {}
    o = ISPanel:new(0, 0, 0, 0);

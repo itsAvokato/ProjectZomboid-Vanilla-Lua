@@ -1,11 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 10/05/2023
--- Time: 10:01
--- To change this template use File | Settings | File Templates.
---
-
 ISAnimalTracksFinder = {};
 ISAnimalTracksFinder.tracks = {};
 ISAnimalTracksFinder.tick = 0;

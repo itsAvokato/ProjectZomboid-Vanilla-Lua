@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 LastStandPlayerFile = {}
 
 function LastStandPlayerFile:load(fileName)

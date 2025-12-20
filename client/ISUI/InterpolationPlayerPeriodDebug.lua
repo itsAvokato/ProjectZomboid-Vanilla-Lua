@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Yuri				       **
---***********************************************************
-
-
 require "ISUI/ISCollapsableWindow"
 
 InterpolationPlayerPeriodDebug = ISCollapsableWindow:derive("InterpolationPlayerPeriodDebug");

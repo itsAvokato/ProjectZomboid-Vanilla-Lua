@@ -1,19 +1,8 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---**            UI display with a question or text         **
---**          can display a yes/no button or ok btn        **
---***********************************************************
-
 ISSafehouseAddPlayerUI = ISPanel:derive("ISSafehouseAddPlayerUI");
 ISSafehouseAddPlayerUI.messages = {};
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-
---************************************************************************--
---** ISSafehouseAddPlayerUI:initialise
---**
---************************************************************************--
 
 function ISSafehouseAddPlayerUI:initialise()
     ISPanel.initialise(self);
@@ -146,10 +135,6 @@ function ISSafehouseAddPlayerUI:onClick(button)
     end
 end
 
---************************************************************************--
---** ISSafehouseAddPlayerUI:new
---**
---************************************************************************--
 function ISSafehouseAddPlayerUI:new(x, y, width, height, safehouse, player)
     local o = {}
     o = ISPanel:new(x, y, width, height);
@@ -194,4 +179,3 @@ end
 
 Events.OnScoreboardUpdate.Add(ISSafehouseAddPlayerUI.OnScoreboardUpdate)
 Events.OnMiniScoreboardUpdate.Add(ISMiniScoreboardUI.OnMiniScoreboardUpdate)
-

@@ -1110,6 +1110,7 @@ ClutterTables.BinItems = {
 		"SpiffoBig", 0.000001,
 		"ToyBear", 0.05,
 		"ToyCar", 0.05,
+		"ToyPlane", 0.05,
 		"VHS_Retail", 0.05,
 		"Yoyo", 0.05,
 		-- Watches

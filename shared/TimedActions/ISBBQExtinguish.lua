@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISBBQExtinguish = ISBaseTimedAction:derive("ISBBQExtinguish");
@@ -21,7 +17,11 @@ end
 
 function ISBBQExtinguish:start()
 	self:setActionAnim("Loot")
-	self.character:SetVariable("LootPosition", "Mid")
+	local lootPosition = "Mid"
+	if instanceof(self.bbq, 'IsoFireplace') then
+        lootPosition = "Low"
+    end
+	self.character:SetVariable("LootPosition", lootPosition)
 end
 
 function ISBBQExtinguish:stop()

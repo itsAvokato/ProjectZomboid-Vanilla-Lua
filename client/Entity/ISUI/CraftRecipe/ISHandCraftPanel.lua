@@ -1,23 +1,8 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default panel for CraftRecipe HandCraft mode recipes.
-
-    This panel is used in Entity UI but is also intended to function without entity/component data.
---]]
 require "ISUI/ISPanel"
 
 local UI_BORDER_SPACING = 10
 
 ISHandCraftPanel = ISPanel:derive("ISHandCraftPanel");
-
---************************************************************************--
---** ISHandCraftPanel:initialise
---**
---************************************************************************--
 
 function ISHandCraftPanel:initialise()
 	ISPanel.initialise(self);
@@ -55,12 +40,9 @@ function ISHandCraftPanel:createChildren()
 
     self:setRecipeListMode(self.recipeListMode);
 
-    self:refreshRecipeList();
+    self:refreshRecipeList(true);
 end
 
---*****************************************
--- ISWidgetRecipeCategories
---*****************************************
 function ISHandCraftPanel:createRecipeCategoryColumn()
     self.recipeCategories = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetRecipeCategories, 0, 0, 10, 10);
     self.recipeCategories.autoWidth = true;
@@ -78,9 +60,6 @@ function ISHandCraftPanel:onDoubleClick(item)
     end
 end
 
---*****************************************
--- ISWidgetRecipesPanel
---*****************************************
 function ISHandCraftPanel:createRecipesColumn()
     --self.recipeColumn = self.rootTable:addColumnFill(nil);
 
@@ -100,9 +79,6 @@ function ISHandCraftPanel:createRecipesColumn()
     --self.rootTable:cell(column:index(), 0).padding = 0;
 end
 
-    --*****************************************
-    -- ISCraftInventoryPanel
-    --*****************************************
 function ISHandCraftPanel:createInventoryPanel()
     self.inventoryPanel = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISCraftInventoryPanel, 0, 0, 10, 10, self.player, self.logic); --self.recipeData, self.inputItems, self.craftBench);
     self.inventoryPanel:initialise();
@@ -115,13 +91,11 @@ function ISHandCraftPanel:createInventoryPanel()
     self.inventoryPanelColumn.visible = self.logic:shouldShowManualSelectInputs();
 end
 
-    --*****************************************
-    -- ISCraftRecipePanel
-    --*****************************************
 function ISHandCraftPanel:createRecipePanel()
     self.recipePanel = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISCraftRecipePanel, 0, 0, 10, 10, self.player, self.logic); --, self.logic:getRecipeData(), self.craftBench, self.isoObject);
     self.recipePanel:initialise();
     self.recipePanel:instantiate();
+    self.recipePanel.isBuildMenu = false;
 
     self.recipePanelColumn = self.rootTable:addColumn(nil);
     self.rootTable:setElement(self.recipePanelColumn:index(), 0, self.recipePanel);
@@ -211,17 +185,22 @@ function ISHandCraftPanel:update()
     end
 end
 
-function ISHandCraftPanel:refreshRecipeList()
-    if self:updateContainers() then
+function ISHandCraftPanel:refreshRecipeList(_forceRefresh)
+    if self:updateContainers(_forceRefresh) then
         if self.recipeQuery then
             self.logic:setRecipes(CraftRecipeManager.queryRecipes(self.recipeQuery));
         else
             self.logic:setRecipes(self.craftBench:getRecipes());
         end
-        if getDebugOptions():getBoolean("Cheat.Recipe.SeeAll") then
+        if self.seeAllRecipe then
             self.logic:setRecipes(ScriptManager.instance:getAllCraftRecipes())
         end
     end
+end
+
+function ISHandCraftPanel:setSeeAllRecipe(enabled)
+    self.seeAllRecipe = enabled;
+    self:refreshRecipeList(true);
 end
 
 function ISHandCraftPanel:updateContainers(_forceRefresh)
@@ -331,8 +310,10 @@ function ISHandCraftPanel:onStopCraft()
     self.logic:refresh();
     self:xuiRecalculateLayout();
     if not self.logic:canPerformCurrentRecipe() then
-        self.recipesPanel.recipeListPanel.recipeListPanel:setScrollHeight(0);
-        self.recipesPanel.recipeListPanel.recipeListPanel.selected = 1;
+        local listBox = self.recipesPanel.recipeListPanel.recipeListPanel;
+        listBox:setScrollHeight(0);
+        listBox.selected = 1;
+        listBox:invokeOnMouseDownFunction();
     end
 end
 
@@ -378,13 +359,6 @@ function ISHandCraftPanel:setRecipeListMode(_useListMode)
     self:onUpdateRecipeList();
 end
 
---************************************************************************--
---** ISHandCraftPanel:new
---** _craftBench (component) param is optional,
---** when handcrafting from workstation having a craftbench, its input resources may be used
---** _isoObject param is optional:
---** if supplied, the isoobject may be used in actions to face towards the object.
---************************************************************************--
 function ISHandCraftPanel:new(x, y, width, height, player, craftBench, isoObject, recipeQuery)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)
@@ -420,6 +394,7 @@ function ISHandCraftPanel:new(x, y, width, height, player, craftBench, isoObject
     o.tooltipRecipe = nil;
     o.activeTooltip = nil;
     o.updateTimer = 0; -- just to not update everytime we refresh backpacks, adding bit of a timer as sometimes it can trigger fast
+    o.seeAllRecipe = false;
     
     --local test = getScriptManager():getAllRecipes();
     --log(DebugType.CraftLogic, "Recipe count: "..tostring(test:size()))

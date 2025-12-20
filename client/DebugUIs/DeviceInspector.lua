@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 local enabled = false;
 
 require "ISUI/ISCollapsableWindow"

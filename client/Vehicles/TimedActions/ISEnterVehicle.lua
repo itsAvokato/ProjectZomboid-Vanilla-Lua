@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISEnterVehicle = ISBaseTimedAction:derive("ISEnterVehicle")
@@ -32,14 +28,31 @@ function ISEnterVehicle:start()
 			contextMenu:hideAndChildren()
 		end
 	end
+
+	self.started = true
+
+	local outside = self.vehicle:getPassengerPosition(self.seat, "outside")
+	local worldPos = Vector3f.new()
+	self.vehicle:getWorldPos(outside:getOffset(), worldPos)
+
+	if self.character:DistTo(worldPos:x(), worldPos:y()) > 2 then
+		return
+	end
+
 	self.action:setBlockMovementEtc(true) -- ignore 'E' while entering
 	self.vehicle:enter(self.seat, self.character)
 	self.vehicle:playPassengerSound(self.seat, "enter")
 	self.character:SetVariable("bEnteringVehicle", "true")
 	self.character:triggerMusicIntensityEvent("VehicleEnter")
-	self.started = true
-	local heavyItem = (self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag("HeavyItem")) or (self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag("HeavyItem"))
-    if heavyItem then forceDropHeavyItems(self.character) end
+
+    if (self.character:getPrimaryHandItem() and self.character:getPrimaryHandItem():hasTag(ItemTag.HEAVY_ITEM)) or (self.character:getSecondaryHandItem() and self.character:getSecondaryHandItem():hasTag(ItemTag.HEAVY_ITEM)) then
+        if isClient() then
+            local args = { id = self.character:getOnlineID() }
+            sendClientCommand(self.character, 'player', 'onDropHeavyItem', args)
+        else
+            forceDropHeavyItems(self.character)
+        end
+    end
 end
 
 function ISEnterVehicle:stop()
@@ -84,4 +97,3 @@ function ISEnterVehicle:new(character, vehicle, seat)
 	o.ignoreHandsWounds = true;
 	return o
 end
-

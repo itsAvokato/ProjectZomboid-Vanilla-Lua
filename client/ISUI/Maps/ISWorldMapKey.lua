@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 require "ISUI/Maps/ISMap"
 
@@ -12,7 +8,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 ISWorldMapKey = ISPanel:derive("ISWorldMapKey")
 
------
 function ISWorldMapKey:createChildren()
 	table.insert(self.key, self.key1)
 	table.insert(self.key, self.key2)

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 PopupColorEdit = ISPanel:derive("PopupColorEdit");
@@ -126,8 +121,6 @@ end
 function PopupColorEdit:addColorOption(_id,_color,_x,_y,_w)
     local t = { option = _color };
 
-    ------------------------------------------------------------------------------
-
     local y3;
     y3, t.labelR_ext, t.sliderR_ext = self:addSlider(_id,_x,_y,_w);
     t.sliderR_ext.pretext = getText("IGUI_ClimateOptions_ExR");
@@ -164,8 +157,6 @@ function PopupColorEdit:addColorOption(_id,_color,_x,_y,_w)
 
     t.colorboxAlpha = colorbox;
 
-    ------------------------------------------------------------------------------
-
     _y = y3+UI_BORDER_SPACING;
     y3, t.labelR_int, t.sliderR_int = self:addSlider(_id,_x,_y,_w);
     t.sliderR_int.pretext = getText("IGUI_ClimateOptions_InR");
@@ -201,8 +192,6 @@ function PopupColorEdit:addColorOption(_id,_color,_x,_y,_w)
     y3 = colorbox:getY() + colorbox:getHeight();
 
     t.colorboxAlpha_int = colorbox;
-
-    ------------------------------------------------------------------------------
 
     self.optionControls = t;
 

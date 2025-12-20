@@ -1,16 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 23/03/2017
--- Time: 11:18
--- To change this template use File | Settings | File Templates.
---
-
-
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISPlayerStatsManageInvUI = ISPanel:derive("ISPlayerStatsManageInvUI");
 ISPlayerStatsManageInvUI.messages = {};
 
@@ -33,11 +20,6 @@ function ISPlayerStatsManageInvUI.Close()
 	ISPlayerStatsManageInvUI.instance:removeFromUIManager()
 	ISPlayerStatsManageInvUI.instance = nil
 end
-
---************************************************************************--
---** ISPlayerStatsManageInvUI:initialise
---**
---************************************************************************--
 
 function ISPlayerStatsManageInvUI:initialise()
 	ISPanel.initialise(self);
@@ -298,10 +280,6 @@ function ISPlayerStatsManageInvUI:onAddItem(button)
 	end
 end
 
---************************************************************************--
---** ISPlayerStatsManageInvUI:new
---**
---************************************************************************--
 function ISPlayerStatsManageInvUI:new(x, y, width, height, playerID, playerUsername)
 	local o = {}
 	x = getCore():getScreenWidth() / 2 - (width / 2);
@@ -326,4 +304,3 @@ function ISPlayerStatsManageInvUI:new(x, y, width, height, playerID, playerUsern
 end
 
 Events.MngInvReceiveItems.Add(ISPlayerStatsManageInvUI.ReceiveItems)
-

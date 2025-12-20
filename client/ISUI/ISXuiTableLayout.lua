@@ -1,18 +1,5 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISBaseObject"
 require "ISUI/ISUIElement"
-
---[[
-    A simple table layout for Xui
---]]
-
---************************************************************************--
---** ISXuiTableLayoutColumn
---************************************************************************--
 
 ISXuiTableLayoutColumn = ISBaseObject:derive("ISXuiTableLayoutColumn");
 
@@ -33,10 +20,6 @@ function ISXuiTableLayoutColumn:new(_columnIndex, _width, _isPercent)
 	return o;
 end
 
---************************************************************************--
---** ISXuiTableLayoutRow
---************************************************************************--
-
 ISXuiTableLayoutRow = ISBaseObject:derive("ISXuiTableLayoutRow");
 
 function ISXuiTableLayoutRow:new(_rowIndex, _height, _isPercent)
@@ -55,10 +38,6 @@ function ISXuiTableLayoutRow:new(_rowIndex, _height, _isPercent)
 
 	return o;
 end
-
---************************************************************************--
---** ISXuiTableLayoutCell
---************************************************************************--
 
 ISXuiTableLayoutCell = ISBaseObject:derive("ISXuiTableLayoutCell");
 
@@ -134,10 +113,6 @@ function ISXuiTableLayoutCell:setRectangle(_x, _y, _w, _h)
         end
     end
 end
-
---************************************************************************--
---** ISXuiTableLayout
---************************************************************************--
 
 ISXuiTableLayout = ISUIElement:derive("ISXuiTableLayout");
 

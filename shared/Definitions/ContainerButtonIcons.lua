@@ -1,12 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ContainerButtonIcons = ContainerButtonIcons or {}
 
 local t = {}
 t.cabinet = getTexture("media/ui/Container_Cabinet.png")
 t.campfire = getTexture("media/ui/Container_Campfire.png")
+t.brazier = getTexture("media/ui/Container_Campfire.png")
 t.clothingDryer = getTexture("media/ui/Container_ClothingDryer.png")
 t.clothingWasher = getTexture("media/ui/Container_ClothingWasher.png")
 t.coffin = getTexture("media/textures/Item_Coffin_Plain.png")
@@ -44,6 +41,7 @@ ContainerButtonIcons.barbecue = t.oven
 ContainerButtonIcons.barbecuepropane = t.oven
 ContainerButtonIcons.bin = t.garbage
 ContainerButtonIcons.campfire = t.campfire
+ContainerButtonIcons.brazier = t.brazier
 ContainerButtonIcons.cardboardbox = t.crate
 ContainerButtonIcons.clothingdryer = t.clothingDryer
 ContainerButtonIcons.clothingwasher = t.clothingWasher

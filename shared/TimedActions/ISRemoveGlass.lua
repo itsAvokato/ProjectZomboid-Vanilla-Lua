@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveGlass = ISBaseTimedAction:derive("ISRemoveGlass");
@@ -58,8 +54,8 @@ function ISRemoveGlass:perform()
 end
 
 function ISRemoveGlass:complete()
-    if self.character:HasTrait("Hemophobic") then
-        self.character:getStats():setPanic(self.character:getStats():getPanic() + 50);
+    if self.character:hasTrait(CharacterTrait.HEMOPHOBIC) then
+        self.character:getStats():add(CharacterStat.PANIC, 50);
         --Stat_Panic
         syncPlayerStats(self.character, 0x00000100);
     end

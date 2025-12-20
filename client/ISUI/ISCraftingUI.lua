@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 require "TimedActions/ISInventoryTransferUtil"
 
@@ -20,8 +16,6 @@ ISCraftingUI.leftCategory = Keyboard.KEY_LEFT;
 ISCraftingUI.rightCategory = Keyboard.KEY_RIGHT;
 ISCraftingUI.upArrow = Keyboard.KEY_UP;
 ISCraftingUI.downArrow = Keyboard.KEY_DOWN;
-
------
 
 ISCraftingIngredientIconPanel = ISPanel:derive("ISCraftingIngredientIconPanel")
 
@@ -180,8 +174,6 @@ function ISCraftingIngredientIconPanel:new(craftingUI)
 	o.craftingUI = craftingUI
 	return o
 end
-
------
 
 function ISCraftingUI:getRecipeListBox()
     return self.panel.activeView.view.recipes
@@ -1467,7 +1459,7 @@ function ISCraftingUI:populateRecipesList()
                             end;
                         elseif source:getItems():size() > 1 then -- no units
                             itemInList.name = item:getDisplayName()
-                        elseif not source:isDestroy() and item:getType() == "Drainable" then
+                        elseif not source:isDestroy() and item:isItemType(ItemType.DRAINABLE) then
                             if itemInList.count == 1 then
                                 itemInList.name = getText("IGUI_CraftUI_CountOneUnit", item:getDisplayName())
                             else
@@ -1660,7 +1652,7 @@ function ISCraftingUI:populateRecipesList()
                        table.insert(self.recipesList[getText("IGUI_CraftCategory_Favorite")], newRecipe);
                     end
                 else
-                    print('ISCraftingUI: no such result item '..tostring(evolvedRecipe:getFullResultItem()))
+                    log(DebugType.Lua, 'ISCraftingUI: no such result item '..tostring(evolvedRecipe:getFullResultItem()))
                 end
             end
         end
@@ -2009,7 +2001,7 @@ end
 
 function ISCraftingUI.ReturnItemToContainer(playerObj, item, cont)
     -- as per Binky's input, disorganized characters don't automatically put stuff back
-    if playerObj:HasTrait("Disorganized") or not item then return end
+    if playerObj:hasTrait(CharacterTrait.DISORGANIZED) or not item then return end
     if not instanceof(item, "InventoryItem") then return end
 
     if cont ~= playerObj:getInventory() then
@@ -2120,7 +2112,5 @@ function ISCraftingUI:debugGiveIngredients()
 end
 
 --Events.OnMainMenuEnter.Add(ISCraftingUI.load);
-
 Events.OnCustomUIKey.Add(ISCraftingUI.onPressKey);
-
 --Events.OnKeyPressed.Add(ISCraftingUI.onKeyPressed);

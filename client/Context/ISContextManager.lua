@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 
 local instance = false;
 
@@ -37,7 +33,6 @@ function ISContextManager.getInstance()
 	
     function self.init()
 		if not hasInit then
-			print("Init ISContextManager")
 			menuWorld 				= ISMenuContextWorld.new();
 			menuWorld.init();
 			menuBuild				= ISMenuContextBuild.new();

@@ -8,8 +8,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 ISCheatPanelUI.cheatTooltips = {}
 
------
-
 ISCheatPanelUI.OptionList = {}
 ISCheatPanelUI.OptionById = {}
 
@@ -97,14 +95,6 @@ ISCheatPanelUI.AddOption("KnowAllRecipes", "IGUI_CheatPanel_KnowAllRecipes",
         self.player:setKnowAllRecipes(selected)
     end
 )
-ISCheatPanelUI.AddOption("SeeAllRecipes", "IGUI_CheatPanel_SeeAllRecipes",
-    function(self)
-        return getDebugOptions():getBoolean("Cheat.Recipe.SeeAll")
-    end,
-    function(self, selected)
-        getDebugOptions():setBoolean("Cheat.Recipe.SeeAll", selected)
-    end
-)
 ISCheatPanelUI.AddOption("BuildCheat", "IGUI_CheatPanel_BuildCheat",
     function(self)
         return ISBuildMenu.cheat
@@ -132,18 +122,15 @@ ISCheatPanelUI.AddOption("HealthCheat", "IGUI_CheatPanel_HealthCheat",
         self.player:setHealthCheat(selected)
     end
 )
--- disable mechanics cheat for non-debug
-if getDebug() then
-    ISCheatPanelUI.AddOption("MechanicsCheat", "IGUI_CheatPanel_MechanicsCheat",
-        function(self)
-            return ISVehicleMechanics.cheat
-        end,
-        function(self, selected)
-            ISVehicleMechanics.cheat = selected;
-            self.player:setMechanicsCheat(selected);
-        end
-    )
-end
+ISCheatPanelUI.AddOption("MechanicsCheat", "IGUI_CheatPanel_MechanicsCheat",
+    function(self)
+        return ISVehicleMechanics.cheat
+    end,
+    function(self, selected)
+        ISVehicleMechanics.cheat = selected;
+        self.player:setMechanicsCheat(selected);
+    end
+)
 ISCheatPanelUI.AddOption("MoveableCheat", "IGUI_CheatPanel_MoveableCheat",
     function(self)
         return ISMoveableDefinitions.cheat
@@ -182,6 +169,7 @@ ISCheatPanelUI.AddOption("AnimalCheat", "IGUI_CheatPanel_AnimalCheat",
     end,
     function(self, selected)
         AnimalContextMenu.cheat = selected
+        self.player:setAnimalCheat(selected)
     end
 )
 ISCheatPanelUI.AddOption("AnimalExtraValues", "IGUI_CheatPanel_AnimalExtraValues",
@@ -192,8 +180,6 @@ ISCheatPanelUI.AddOption("AnimalExtraValues", "IGUI_CheatPanel_AnimalExtraValues
         IsoAnimal.setExtraValues(selected)
     end
 )
-
------
 
 function ISCheatPanelUI.OnOpenPanel()
     if ISCheatPanelUI.instance==nil then
@@ -206,11 +192,6 @@ function ISCheatPanelUI.OnOpenPanel()
 
     return ISCheatPanelUI.instance;
 end
-
---************************************************************************--
---** ISCheatPanelUI:initialise
---**
---************************************************************************--
 
 function ISCheatPanelUI:initialise()
     ISPanel.initialise(self);
@@ -313,10 +294,6 @@ function ISCheatPanelUI:saveOptions()
 	writer:close()
 end
 
---************************************************************************--
---** ISCheatPanelUI:new
---**
---************************************************************************--
 function ISCheatPanelUI:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);
@@ -356,6 +333,7 @@ ISCheatPanelUI.EnableCheats = function()
             option:setValue(value == "true")
         end
     end
+    DebugLog.log("Cheats enabled/disabled on game start in lua from the file CheatPanel.ini.")
 end
 
 Events.OnGameStart.Add(ISCheatPanelUI.EnableCheats)

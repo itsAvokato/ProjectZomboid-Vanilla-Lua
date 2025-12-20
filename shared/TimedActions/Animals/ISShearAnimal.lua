@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISShearAnimal = ISBaseTimedAction:derive("ISShearAnimal");
@@ -100,10 +96,13 @@ function ISShearAnimal:stop()
     ISBaseTimedAction.stop(self);
 end
 
+function ISShearAnimal:serverStop()
+	self.animal:getBehavior():setBlockMovement(false);
+end
+
 function ISShearAnimal:perform()
 	self:stopSound()
 	self.character:setVariable("shearanimal", false)
-	self.animal:getBehavior():setBlockMovement(false);
 	self.shear:setJobDelta(0.0);
 
     -- needed to remove from queue / start next.
@@ -111,6 +110,7 @@ function ISShearAnimal:perform()
 end
 
 function ISShearAnimal:complete()
+    self.animal:getBehavior():setBlockMovement(false);
 	return true
 end
 
@@ -130,6 +130,7 @@ function ISShearAnimal:animEvent(event, parameter)
 end
 
 function ISShearAnimal:serverStart()
+    self.animal:getBehavior():setBlockMovement(true);
 	local period = self.timePerLiter * 20
 	emulateAnimEvent(self.netAction, period, "update", nil)
 end

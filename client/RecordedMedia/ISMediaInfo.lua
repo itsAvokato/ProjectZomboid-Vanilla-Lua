@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISMediaInfo = ISCollapsableWindowJoypad:derive("ISMediaInfo");
 ISMediaInfo.instance = nil;
 
@@ -100,10 +95,6 @@ function ISMediaInfo:onJoypadDown(button)
     end
 end
 
---************************************************************************--
---** ISMediaInfo:new
---** size 280, 320
---************************************************************************--
 function ISMediaInfo:new(x, y, width, height, playerNum, text)
     local o = {}
     o = ISCollapsableWindowJoypad:new(x, y, width, height);

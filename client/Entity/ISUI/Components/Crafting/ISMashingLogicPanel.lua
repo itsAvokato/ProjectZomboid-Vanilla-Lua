@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    Default panel for CraftLogic component.
---]]
-
 require "Entity/ISUI/Components/ISBaseComponentPanel";
 
 ISMashingLogicPanel = ISBaseComponentPanel:derive("ISMashingLogicPanel");
@@ -16,11 +7,6 @@ function ISMashingLogicPanel.CanCreatePanelFor(_player, _entity, _component, _co
         return _component:getComponentType()==ComponentType.MashingLogic;
     end
 end
-
---************************************************************************--
---** ISMashingLogicPanel:initialise
---**
---************************************************************************--
 
 function ISMashingLogicPanel:initialise()
 	ISBaseComponentPanel.initialise(self);
@@ -194,10 +180,6 @@ function ISMashingLogicPanel:createChildren()
         end
 
         --[[
-            RIGHT SIDE PANELS
-        --]]
-
-        --[[
         if self.outputsGroupName then
             -- Fluid Outputs
 
@@ -312,11 +294,6 @@ function ISMashingLogicPanel:update()
     ISBaseComponentPanel.update(self);
 end
 
-
---************************************************************************--
---** ISMashingLogicPanel:new
---**
---************************************************************************--
 function ISMashingLogicPanel:new(x, y, width, height, player, entity, component, componentUiStyle)
 	local o = ISBaseComponentPanel:new(x, y, width, height, player, entity, component, componentUiStyle);
     setmetatable(o, self);

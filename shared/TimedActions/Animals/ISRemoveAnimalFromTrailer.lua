@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISRemoveAnimalFromTrailer = ISBaseTimedAction:derive("ISRemoveAnimalFromTrailer");
@@ -50,11 +46,13 @@ function ISRemoveAnimalFromTrailer:complete()
 			animal:removeFromWorld();
 			animal:removeFromSquare();
 			animal:setSquare(nil);
+			sendRemoveAndGrabAnimalFromTrailer(animal, self.character, self.vehicle, invItem)
 		end
 
 		if instanceof(animal, "IsoDeadBody") then
 			invItem = animal:getItem();
 			self.character:getInventory():AddItem(invItem)
+			sendAddItemToContainer(self.character:getInventory(), invItem);
 
 			animal:getSquare():removeCorpse(animal, false);
 			animal:invalidateCorpse();

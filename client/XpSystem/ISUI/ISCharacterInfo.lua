@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**              Panel wich display all our skills        **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISCharacterInfo = ISPanelJoypad:derive("ISCharacterInfo");
@@ -16,11 +11,6 @@ local sortRecipes = function (a, b)
     -- sort alphabetically.
     return a:getName() < b:getName()
 end
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISCharacterInfo:initialise()
 	ISPanelJoypad.initialise(self);
@@ -192,14 +182,6 @@ function ISCharacterInfo:render()
 		maxY = math.max(maxY, y)
 	end
 	y = y + 1;
-
---~ 	self:drawText("Strong : " .. getPlayer():getPerkLevel(Perks.Strength), self.x + 8, y, 1, 1, 1, 1, UIFont.Small);
---~ 	for i = 0, getPlayer():getTraits():size() - 1 do
---~ 		local v = getPlayer():getTraits():get(i);
---~ 		self:drawText("Trait : " .. v, self.x + 8, y, 1, 1, 1, 1, UIFont.Small);
---~ 		y = y + 20;
---~ 	end
---~ 	self:drawText("Hauling : " .. getPlayer():getXp():getXP(Perks.Hauling), self.x + 8, y, 1, 1, 1, 1, UIFont.Small);
 
 	local skillPointSize = math.floor((FONT_HGT_SMALL + 6)/2)
 	local skillPointSpacing = getCore():getOptionFontSizeReal()
@@ -400,4 +382,3 @@ function ISCharacterInfo.onResolutionChange(oldw, oldh, neww, newh)
 end
 
 Events.OnResolutionChange.Add(ISCharacterInfo.onResolutionChange)
-

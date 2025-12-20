@@ -14,7 +14,7 @@ MainOptions.keyBindingLength = 0;
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local LABEL_HGT = FONT_HGT_MEDIUM + 6
@@ -22,8 +22,6 @@ local JOYPAD_TEX_SIZE = 32
 local BUTTON_PADDING = JOYPAD_TEX_SIZE + UI_BORDER_SPACING*2
 local IMMOVABLE_OBJECTS = {} --objects in this table do not get moved when centring the elements on the page
 local INITIAL_Y = UI_BORDER_SPACING + 1
-
--- -- -- -- --
 
 local GameOption = ISBaseObject:derive("GameOption")
 local GameOptions = ISBaseObject:derive("GameOptions")
@@ -124,8 +122,6 @@ function GameOption:onChangeVolumeControl(control, volume)
 	end
 end
 
--- -- -- -- --
-
 function GameOptions:add(option)
 	option.gameOptions = self
 	table.insert(self.options, option)
@@ -179,17 +175,10 @@ function GameOptions:new()
 	return o
 end
 
--- -- -- -- --
-
 function MainOptions:initialise()
 	ISPanelJoypad.initialise(self);
 end
 
-
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function MainOptions:instantiate()
 	self.javaObject = UIElement.new(self);
 	self.javaObject:setX(self.x);
@@ -273,6 +262,7 @@ function MainOptions:addDescription(x, y, text)
 end
 
 function MainOptions:addTextEntry(x, y, name, _text)
+     _text = _text or " "
 	local label = ISLabel:new(x, y + self.addY, 20, name, 1, 1, 1, 1, UIFont.Small)
 	label:initialise()
 	self.mainPanel:addChild(label)
@@ -464,8 +454,6 @@ function MainOptions:subPanelRender()
     self:clearStencilRect();
 end
 
----------------------------------------------------------------------------------------------
-
 local HorizontalLine = ISPanel:derive("HorizontalLine")
 
 function HorizontalLine:prerender()
@@ -479,8 +467,6 @@ function HorizontalLine:new(x, y, width)
 	local o = ISPanel.new(self, x, y, width, 2)
 	return o
 end
-
----------------------------------------------------------------------------------------------
 
 function MainOptions:addHorizontalLine(y, text)
 	local sbarWidth = 13
@@ -515,7 +501,7 @@ function MainOptions:create()
     MainOptions.keyText = {}
     MainOptions.keyBindingLength = 0;
 
-	local topHgt = FONT_HGT_TITLE + UI_BORDER_SPACING*2 + 1
+	local topHgt = FONT_HGT_LARGE + UI_BORDER_SPACING*2 + 1
 	local bottomHgt = BUTTON_HGT + UI_BORDER_SPACING*2 + 1
 
 	self.tabs = ISTabPanel:new(0, topHgt, self.width, self.height - topHgt - bottomHgt);
@@ -586,14 +572,7 @@ function MainOptions:create()
 
 	self:addDisplayPanel()
 
-	-----------------
-	------- UI ------
-	-----------------
 	self:addUIPanel()
-
-	-----------------
-	----- SOUND -----
-	-----------------
 	self:addSoundPanel()
 
     --y = y + self.addY;
@@ -611,7 +590,6 @@ function MainOptions:create()
 --    self.modSaveTxt:setAnchorBottom(false);
 --    self.mainPanel:addChild(self.modSaveTxt);
 
-	----- KEY BINDING -----
 	local reload = MainOptions.loadKeys();
 	SurvivalGuideEntries.addEntry11();
 	--
@@ -622,21 +600,12 @@ function MainOptions:create()
 
 	--self.mainPanel:setScrollHeight(y + self.addY + 20)
 
-	----- ACCESSIBILITY -----
 	self:addAccessibilityPanel()
-
-	----- CONTROLLER -----
 	self:addControllerPanel()
-
-	----- MULTIPLAYER -----
 	self:addMultiplayerPanel()
-
-	----- MOD OPTIONS -----
 	if #PZAPI.ModOptions.Data ~= 0 then
 		self:addModOptionsPanel()
 	end
-
-	-------------
 
 	self:setVisible(false);
 
@@ -670,7 +639,6 @@ function MainOptions:addDisplayPanel()
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Window"))
 
 	if true then
-		----- DISPLAY MODE -----
 		local displayMode = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_DisplayMode"),
 				{ getText("UI_optionscreen_DisplayMode1"), getText("UI_optionscreen_DisplayMode2"), getText("UI_optionscreen_DisplayMode3") })
 		--[[
@@ -716,9 +684,7 @@ function MainOptions:addDisplayPanel()
 		self.gameOptions:add(gameOption)
 
 	else
-		----- FULLSCREEN -----
 		local full = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_fullscreen"));
-
 		local gameOption = GameOption:new('fullscreen', full)
 		function gameOption.toUI(self)
 			local box = self.control
@@ -738,10 +704,8 @@ function MainOptions:addDisplayPanel()
 		end
 		self.gameOptions:add(gameOption)
 
-		----- BORDERLESS -----
 		local combo = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_borderless"));
 		combo.tooltip = getText("UI_optionscreen_borderless_tt");
-
 		gameOption = GameOption:new('borderless', combo)
 		function gameOption.toUI(self)
 			local box = self.control
@@ -754,22 +718,24 @@ function MainOptions:addDisplayPanel()
 		end
 		self.gameOptions:add(gameOption)
 	end
-	----- RESOLUTION -----
+
 	local modes = getCore():getScreenModes();
 	table.sort(modes, MainOptions.sortModes);
 	local invalidSizesRemoved = false;
+    local logText = "";
 	while not invalidSizesRemoved do
 		if #modes == 0 or modes[1] == nil then
 			break
 		end
 		local ax, ay = string.match(modes[1], '(%d+) x (%d+)')
 		if tonumber(ax) < 1200 then
-			print("Removing undersized resolution mode " .. modes[1] .. " from Resolution option")
+            logText = logText .. modes[1] .. ", ";
 			table.remove(modes,1)
 		else
 			invalidSizesRemoved = true
 		end
 	end
+    print("Removing undersized resolution mode " .. string.sub(logText, 1, -3) .. " from Resolution option")
 	table.insert(modes, 1, "CURRENT")
 	local res = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_resolution"), modes, 1);
 
@@ -791,7 +757,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- FRAMERATE -----
 	local framerate = nil
 	if SystemDisabler.getUncappedFPS() then
 		framerate = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_framerate"), {getText("UI_optionscreen_Uncapped"), "244", "240", "165", "144", "120", "95", "90", "75", "60", "55", "45", "30", "24"}, 2);
@@ -835,9 +800,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- VSYNC -----
 	local vsync = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_vsync"))
-
 	gameOption = GameOption:new('vsync', vsync)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -852,9 +815,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- PAUSE ON FOCUS LOSS -----
 	local focusloss = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_focusloss"))
-
 	gameOption = GameOption:new('focusloss', focusloss)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -917,7 +878,6 @@ function MainOptions:addDisplayPanel()
 
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Textures"))
 
-	----- TEXTURE COMPRESSION -----
 	if getCore():allowOptionTextureCompression() then
         local texcompress = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_texture_compress"));
         texcompress.tooltip = getText("UI_optionscreen_texture_compress_tt");
@@ -953,7 +913,6 @@ function MainOptions:addDisplayPanel()
 	-- 	end
 	-- 	self.gameOptions:add(gameOption)
 
-	----- MAX TEXTURE SIZE -----
 	local maxTextureSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_MaxTextureSize"),
 			{ getText("UI_optionscreen_MaxTextureSize1"), getText("UI_optionscreen_MaxTextureSize2"), getText("UI_optionscreen_MaxTextureSize3"), getText("UI_optionscreen_MaxTextureSize4") });
 	local map = {}
@@ -972,7 +931,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- MAX VEHICLE TEXTURE SIZE -----
 	local maxVehicleTextureSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_MaxVehicleTextureSize"),
 			{ getText("UI_optionscreen_MaxTextureSize1"), getText("UI_optionscreen_MaxTextureSize2"), getText("UI_optionscreen_MaxTextureSize3"), getText("UI_optionscreen_MaxTextureSize4") });
 	local map = {}
@@ -991,7 +949,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SIMPLE CLOTHING TEXTURES -----
 	local simpleClothingTex = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_SimpleClothingTextures"),
 			{ getText("UI_optionscreen_SimpleClothingTextures1"), getText("UI_optionscreen_SimpleClothingTextures2"), getText("UI_optionscreen_SimpleClothingTextures3") },
 			1);
@@ -999,7 +956,6 @@ function MainOptions:addDisplayPanel()
 	local map = {}
 	map["defaultTooltip"] = getText("UI_optionscreen_SimpleClothingTextures_tt")
 	simpleClothingTex:setToolTipMap(map)
-
 	gameOption = GameOption:new('simpleClothingTex', simpleClothingTex)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1011,10 +967,8 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SIMPLE WEAPON TEXTURES -----
 	local simpleWeaponTex = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_SimpleWeaponTextures"));
 	simpleWeaponTex.tooltip = getText("UI_optionscreen_SimpleWeaponTextures_tt");
-
 	gameOption = GameOption:new('simpleWeaponTex', simpleWeaponTex)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1026,7 +980,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SCREEN FILTER -----
     local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_ScreenFilter"),
         { getText("UI_optionscreen_ScreenFilterLinear"), getText("UI_optionscreen_ScreenFilterNearest") }, 2)
 	local map = {}
@@ -1087,7 +1040,7 @@ function MainOptions:addDisplayPanel()
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_RenderingAndPerformance"))
 
 	local usePhysicsHitReaction = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_RagdollUsePhysicsHitReaction"))
-    usePhysicsHitReaction.tooltip = getText("UI_optionscreen_RagdollUsePhysicsHitReaction_tool_tip")
+    usePhysicsHitReaction.tooltip = getText("UI_optionscreen_RagdollUsePhysicsHitReaction_tool_tip"):gsub('\\n', '\n')
 	gameOption = GameOption:new('usePhysicsHitReaction', usePhysicsHitReaction)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1130,9 +1083,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Do bink video effects -----
 	local clock24 = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_do_bink_video_effects"))
-
 	gameOption = GameOption:new('doVideoEffects', clock24)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1144,9 +1095,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Do Wind sprite effects -----
 	local clock24 = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_do_wind_sprite_effects"))
-
 	gameOption = GameOption:new('doWindSpriteEffects', clock24)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1158,9 +1107,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Do Door sprite effects -----
 	local clock24 = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_do_door_sprite_effects"))
-
 	gameOption = GameOption:new('doDoorSpriteEffects', clock24)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1172,9 +1119,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Do Container Outline effects -----
 	local clock24 = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_do_container_outline"))
-
 	gameOption = GameOption:new('doContainerOutline', clock24)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1186,7 +1131,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Render rain when indoors -----
 	--[[
     local doRainIndoors = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_render_rain_indoors"))
 
@@ -1202,7 +1146,6 @@ function MainOptions:addDisplayPanel()
     self.gameOptions:add(gameOption)
     --]]
 
-	----- OBJECT HIGHLIGHT COLOR -----
 	local ohc = getCore():getObjectHighlitedColor()
 	local rgba = {r = ohc:getR(), g = ohc:getG(), b = ohc:getB(), a = 1}
 	self.objHighColor = self:addColorButton(splitpoint, y, getText("UI_optionscreen_objHighlightColor"), rgba, MainOptions.onObjHighlightColor)
@@ -1228,7 +1171,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- WORLD ITEM HIGHLIGHT COLOR -----
 	local ohc = getCore():getWorldItemHighlightColor()
 	local rgba = {r = ohc:getR(), g = ohc:getG(), b = ohc:getB(), a = 1}
 	self.worldItemHighlightColor = self:addColorButton(splitpoint, y, getText("UI_optionscreen_worldItemHighlightColor"), rgba, MainOptions.onWorldItemHighlightColor)
@@ -1280,7 +1222,6 @@ function MainOptions:addDisplayPanel()
 -- 	end
 -- 	self.gameOptions:add(gameOption)
 
-	----- Zombie update optimization -----
 	local zombieUpdateOpt = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_zombie_update_optimization"))
 	zombieUpdateOpt.tooltip = getText("UI_optionscreen_zombie_update_optimization_tt")
 	gameOption = GameOption:new('zombieUpdateOpt', zombieUpdateOpt)
@@ -1294,13 +1235,11 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- BLOOD DECALS -----
 	local options = {}
 	for i=0,10 do
 		table.insert(options, getText("UI_BloodDecals"..i))
 	end
 	local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_blood_decals"), options, 1)
-
 	gameOption = GameOption:new('bloodDecals', combo)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1314,9 +1253,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CORPSE SHADOWS -----
 	local corpseShadows = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_CorpseShadows"));
-
 	gameOption = GameOption:new('corpseShadows', corpseShadows)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1328,7 +1265,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- LIGHTING FPS -----
 	local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_lighting_fps"), {'5', '10', '15 (' .. getText("UI_optionscreen_recommended") .. ')', '20', '25', '30', '45', '60'}, 1)
 	map = {}
 	map["defaultTooltip"] = getText("UI_optionscreen_lighting_fps_tt")
@@ -1360,10 +1296,8 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Performance skybox -----
 	local perf_skybox;
 	perf_skybox = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_perf_skybox"), {getText("UI_High"), getText("UI_Medium"), getText("UI_No")}, 1);
-
 	gameOption = GameOption:new('perf_skybox', perf_skybox)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1380,9 +1314,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Water QUALITY -----
 	local water = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_water"), {getText("UI_High"), getText("UI_Medium"), getText("UI_Low")}, 1);
-
 	gameOption = GameOption:new('waterQuality', water)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1396,10 +1328,8 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Performance Puddles -----
 	local perf_puddles;
 	perf_puddles = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_perf_puddles"), {getText("UI_All"), getText("UI_GroundWithRuts"), getText("UI_GroundOnly"), getText("UI_None")}, 1);
-
 	gameOption = GameOption:new('perf_puddles', perf_puddles)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1416,9 +1346,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Puddles QUALITY -----
 	local puddles = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_puddles"), {getText("UI_High"), getText("UI_Medium"), getText("UI_Low")}, 1);
-
 	gameOption = GameOption:new('puddlesQuality', puddles)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1432,10 +1360,8 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Performance reflections -----
 	local perf_reflections;
 	perf_reflections = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_perf_reflections"));
-
 	gameOption = GameOption:new('perf_reflections', perf_reflections)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1450,7 +1376,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Display 3D Items -----
 	local v3Ditem;
 	v3Ditem = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_perf_3Ditems"));
 
@@ -1465,9 +1390,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- High resolution placed items -----
 	local highResPlacedItems = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_HighResPlacedItems"));
-
 	gameOption = GameOption:new('highResPlacedItems', highResPlacedItems)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1479,10 +1402,8 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Precipitation -----
 	local precipOption = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_render_precipitation"), { getText("UI_optionscreen_render_precipAlways"), getText("UI_optionscreen_render_precipOutdoors"), getText("UI_optionscreen_render_precipNever") }, 1)
-
-	gameOption = GameOption:new('precipOption', precipOption)
+    gameOption = GameOption:new('precipOption', precipOption)
 	function gameOption.toUI(self)
 		local box = self.control
 		box.selected = getCore():getOptionRenderPrecipitation()
@@ -1495,7 +1416,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Precipitation Speed Multiplier -----
 	local slider = self:addSlider(splitpoint, y, comboWidth, getText("UI_optionscreen_PrecipitationSpeedMultiplier"), 0.01, 1, 0.01, 0.1)
 	gameOption = GameOption:new('precipitationSpeedMultiplier', slider)
 	function gameOption.storeCurrentValue(self)
@@ -1518,9 +1438,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- View Cone Opacity -----
 	local viewConeOpacity = self:addSlider(splitpoint, y, comboWidth, getText("UI_optionscreen_view_cone_opacity"), 0, 5, 1, 3);
-
 	gameOption = GameOption:new('viewConeOpacity', viewConeOpacity)
 	function gameOption.storeCurrentValue(self)
 		self.originalValue = getPerformance():getViewConeOpacity()
@@ -1542,9 +1460,7 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Fog QUALITY -----
 	local newfog = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_fog_quality"), {getText("UI_High"), getText("UI_Medium"), getText("UI_optionscreen_legacy")}, 1);
-
 	gameOption = GameOption:new('fogQuality', newfog)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1558,7 +1474,6 @@ function MainOptions:addDisplayPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	-- SEARCH MODE OVERLAY EFFECT
 	local overlayEffect = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_Search_Mode_Overlay_Effect_Label"),
 			{
 				getText("UI_optionscreen_Search_Mode_Overlay_Effect_Both"),
@@ -1592,10 +1507,8 @@ function MainOptions:addUIPanel()
 
 	self:addPage(getText("UI_optionscreen_UI"))
 
-	----- UI -----
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_UI"))
 
-	----- UI FBO -----
 	local UIFBO = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_UIFBO"))
 	UIFBO.tooltip = getText("UI_optionscreen_UIFBO_tt")
 
@@ -1610,7 +1523,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- UI RENDER FPS -----
 	local UIRenderFPS = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_UIRenderFPS"), {"120", "60", "30", "25", "20", "15", "10"}, 2)
 	local map = {}
 	map["defaultTooltip"] = getText("UI_optionscreen_UIRenderFPS_tt")
@@ -1638,9 +1550,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- INVENTORY CONTAINER SIZE -----
 	local containerSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_InventoryContainerSize"), { getText("UI_optionscreen_Small"), getText("UI_optionscreen_Medium"), getText("UI_optionscreen_Large") }, 1)
-
 	gameOption = GameOption:new('inventoryContainerSize', containerSize)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1657,9 +1567,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Show Item Mod Info -----
 	local clock24 = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_Show_Item_Mod_Info"))
-
 	gameOption = GameOption:new('showItemModInfo', clock24)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1671,7 +1579,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Show Survival Guide -----
 	local survivalGuide = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_ShowSurvivalGuide"))
 
 	gameOption = GameOption:new('showSurvivalGuide', survivalGuide)
@@ -1685,10 +1592,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- ACTION PROGRESS BAR SIZE -----
-
 	local actionProgressBarSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_ActionProgressBarSize"), { getText("UI_optionscreen_ActionProgressBarSize1"), getText("UI_optionscreen_ActionProgressBarSize2"), getText("UI_optionscreen_ActionProgressBarSize3"), getText("UI_optionscreen_ActionProgressBarSize4") }, 1)
-
 	gameOption = GameOption:new('actionProgressBarSize', actionProgressBarSize)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1703,8 +1607,6 @@ function MainOptions:addUIPanel()
 		end
 	end
 	self.gameOptions:add(gameOption)
-
-	----- MOODLE SIZE -----
 
 	local moodleSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_MoodleSize"), { getText("UI_optionscreen_MoodleSize0"), getText("UI_optionscreen_MoodleSize1"), getText("UI_optionscreen_MoodleSize2"), getText("UI_optionscreen_MoodleSize3"), getText("UI_optionscreen_MoodleSize4"), getText("UI_optionscreen_MoodleSize5"), getText("UI_optionscreen_MoodleSize6") }, 1)
 	local tooltipMoodleSize = {}
@@ -1726,13 +1628,10 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SIDEBAR SIZE -----
-
 	local sidebarSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_SidebarSize"), { getText("UI_optionscreen_MoodleSize1"), getText("UI_optionscreen_MoodleSize2"), getText("UI_optionscreen_MoodleSize3"), getText("UI_optionscreen_MoodleSize4"), getText("UI_optionscreen_MoodleSize5"), getText("UI_optionscreen_MoodleSize6") }, 1)
 	local tooltipSidebarSize = {}
 	tooltipSidebarSize["defaultTooltip"] = getText("UI_optionscreen_SidebarSize_tt")
 	sidebarSize:setToolTipMap(tooltipSidebarSize)
-
 	gameOption = GameOption:new('sidebarSize', sidebarSize)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1748,9 +1647,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CRAFTING XP -----
 	local showCraftXP = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_showCraftingXP"))
-
 	gameOption = GameOption:new('showCraftingXP', showCraftXP)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1762,9 +1659,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SHOW WELCOME MESSAGE  -----
 	local showWelcomeMessage = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_showWelcomeMessage"))
-
 	gameOption = GameOption:new('showWelcomeMessage', showWelcomeMessage)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1776,9 +1671,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- FONT SIZE -----
-
-	self:addHorizontalLine(y, getText("UI_DisplayOptions_Fonts"))
 	local fontSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_FontSize"), { getText("UI_optionscreen_FontSize0"), getText("UI_optionscreen_FontSize1"), getText("UI_optionscreen_FontSize2"), getText("UI_optionscreen_FontSize3"), getText("UI_optionscreen_FontSize4"), getText("UI_optionscreen_FontSize5") }, 6)
 
 	if MainScreen.instance.inGame then
@@ -1803,9 +1695,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CONTEXT-MENU FONT -----
 	local menuFont = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_context_menu_font"), { getText("UI_optionscreen_Small"), getText("UI_optionscreen_Medium"), getText("UI_optionscreen_Large") }, 2)
-
 	gameOption = GameOption:new('contextMenuFont', menuFont)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1826,9 +1716,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- INVENTORY FONT -----
 	local invFont = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_inventory_font"), { getText("UI_optionscreen_Small"), getText("UI_optionscreen_Medium"), getText("UI_optionscreen_Large") }, 2)
-
 	gameOption = GameOption:new('inventoryFont', invFont)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1852,7 +1740,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- TOOLTIP FONT -----
 	local ttFont = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_tooltip_font"), { getText("UI_optionscreen_Small"), getText("UI_optionscreen_Medium"), getText("UI_optionscreen_Large") }, 2)
 
 	gameOption = GameOption:new('tooltipFont', ttFont)
@@ -1877,9 +1764,7 @@ function MainOptions:addUIPanel()
 
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Camera"))
 
-	----- ZOOM ON/OFF -----
 	local zoom = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_zoom"))
-
 	gameOption = GameOption:new('zoom', zoom)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -1892,7 +1777,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- ZOOM LEVELS -----
 	label = ISLabel:new(splitpoint, y + self.addY, FONT_HGT_SMALL, getText("UI_optionscreen_zoomlevels"), 1, 1, 1, 1, UIFont.Small, false)
 	label:initialise()
 	self.mainPanel:addChild(label)
@@ -1947,7 +1831,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- AUTO-ZOOM -----
 	label = ISLabel:new(splitpoint, y + self.addY, FONT_HGT_SMALL, getText("UI_optionscreen_autozoom"), 1, 1, 1, 1, UIFont.Small, false)
 	label:initialise()
 	self.mainPanel:addChild(label)
@@ -1977,7 +1860,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- PAN CAMERA WHILE AIMING -----
 	local panCameraWhileAiming = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_panCameraWhileAiming"))
 
 	gameOption = GameOption:new('panCameraWhileAiming', panCameraWhileAiming)
@@ -1991,9 +1873,7 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- PAN CAMERA WHILE DRIVING -----
 	local panCameraWhileDriving = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_panCameraWhileDriving"))
-
 	gameOption = GameOption:new('panCameraWhileDriving', panCameraWhileDriving)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -2007,7 +1887,6 @@ function MainOptions:addUIPanel()
 
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Cursor"))
 
-	----- ISO CURSOR -----
 	options = {}
 	table.insert(options, getText("UI_Off"))
 	table.insert(options, "5%")
@@ -2030,7 +1909,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SHOW CURSOR WHILE AIMING -----
 	local showCursorWhileAiming = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_ShowCursorWhileAiming"));
 	showCursorWhileAiming.tooltip = getText("UI_optionscreen_ShowCursorWhileAiming_tt");
 
@@ -2043,7 +1921,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- MELEE OUTLINE -----
 	local meleeOutline = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_melee_outline"))
 	meleeOutline.tooltip = getText("UI_optionscreen_melee_outline_tt")
 
@@ -2056,7 +1933,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- LOCK CURSOR TO WINDOW -----
 	local combo = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_LockCursorToWindow"))
 	combo.tooltip = getText("UI_optionscreen_LockCursorToWindow_tt")
 
@@ -2069,7 +1945,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- RETICLE -----
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Reticle"))
 
 	local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_OptionScreen_ReticleMode"), {getText("UI_OptionScreen_ReticleMode0"), getText("UI_OptionScreen_ReticleMode1")}, 0)
@@ -2269,7 +2144,6 @@ function MainOptions:addUIPanel()
 
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Clock"))
 
-	----- CLOCK FORMAT -----
 	local clockFmt = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_clock_format"), { getText("UI_optionscreen_clock_month_day"), getText("UI_optionscreen_clock_day_month") }, 1)
 	gameOption = GameOption:new('clockFormat', clockFmt)
 	function gameOption.toUI(self)
@@ -2284,7 +2158,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CLOCK SIZE -----
 	local clockSize = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_clock_Size"), { getText("UI_optionscreen_clock_small"), getText("UI_optionscreen_clock_large") }, 1)
 	if MainScreen.instance.inGame then
 		local tooltipMap = {}
@@ -2304,7 +2177,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CLOCK 24-HOUR -----
 	local clock24 = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_clock_24_or_12"), { getText("UI_optionscreen_clock_24_hour"), getText("UI_optionscreen_clock_12_hour") }, 1)
 	gameOption = GameOption:new('clock24hour', clock24)
 	function gameOption.toUI(self)
@@ -2319,7 +2191,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- Temperature display -----
 	local clock24 = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_temperature_display"), { getText("UI_optionscreen_temperature_fahrenheit"), getText("UI_optionscreen_temperature_celsius") }, 1)
 	gameOption = GameOption:new('temperatureDisplay', clock24)
 	function gameOption.toUI(self)
@@ -2334,7 +2205,6 @@ function MainOptions:addUIPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- LANGUAGE -----
 	self:addHorizontalLine(y, getText("UI_DisplayOptions_Language"))
 	local availableLanguage,currentIndex = MainOptions.getAvailableLanguage();
 	local language = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_language"), availableLanguage, currentIndex);
@@ -2461,7 +2331,6 @@ function MainOptions:addSoundPanel()
 
 	self:addPage(getText("UI_optionscreen_audio"))
 
-	----- Sound VOLUME -----
 	local control = self:addVolumeControl(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_sound_volume"), 0)
 	gameOption = GameOption:new('soundVolume', control)
 	function gameOption.storeCurrentValue(self)
@@ -2483,7 +2352,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- MUSIC VOLUME -----
 	local control = self:addVolumeControl(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_music_volume"), 0)
 	gameOption = GameOption:new('musicVolume', control)
 	function gameOption.storeCurrentValue(self)
@@ -2529,7 +2397,6 @@ function MainOptions:addSoundPanel()
 	self.gameOptions:add(gameOption)
 --]]
 
-	----- JUMP-SCARE VOLUME -----
 	local control = self:addVolumeControl(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_jumpscare_volume"), 0)
 	gameOption = GameOption:new('jumpscareVolume', control)
 	function gameOption.storeCurrentValue(self)
@@ -2551,7 +2418,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- VEHICLE ENGINE VOLUME -----
 	local control = self:addVolumeControl(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_vehicle_engine_volume"), 0)
 	control.tooltip = getText("UI_optionscreen_vehicle_engine_volume_tt");
 	gameOption = GameOption:new('vehicleEngineVolume', control)
@@ -2574,7 +2440,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- MUSIC LIBRARY -----
 	local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_music_library"), { getText("UI_optionscreen_music_library_1"), getText("UI_optionscreen_music_library_2"), getText("UI_optionscreen_music_library_3")}, 1)
 	gameOption = GameOption:new('musicLibrary', combo)
 	function gameOption.toUI(self)
@@ -2590,7 +2455,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- MUSIC ACTION STYLE -----
 	local combo = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_MusicActionStyle"), { getText("UI_optionscreen_MusicActionStyle_1"), getText("UI_optionscreen_MusicActionStyle_2")}, 1)
 	gameOption = GameOption:new('musicActionStyle', combo)
 	function gameOption.toUI(self)
@@ -2606,38 +2470,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	--[[
-        ----- CURRENT MUSIC -----
-        local musicLbl = ISLabel:new(splitpoint, y + self.addY, FONT_HGT_SMALL, getText("UI_optionscreen_music_track1"), 1, 1, 1, 1, UIFont.Small, false);
-    --	musicLbl:setAnchorRight(true)
-        musicLbl:initialise();
-        self.mainPanel:addChild(musicLbl);
-
-        self.currentMusicLabel = ISLabel:new(splitpoint + 20, y + self.addY, FONT_HGT_SMALL, "", 1, 1, 1, 1, UIFont.Small, true);
-        self.currentMusicLabel:initialise();
-        self.mainPanel:addChild(self.currentMusicLabel);
-        self.addY = self.addY + FONT_HGT_SMALL + 6
-    --]]
-
-	----- PLAY MUSIC WHEN PAUSED -----
-	local playMusicWhenPaused = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_PlayMusicWhenPaused"))
---	playMusicWhenPaused.tooltip = getText("UI_optionscreen_PlayMusicWhenPaused_tt");
-	gameOption = GameOption:new('playMusicWhenPaused', playMusicWhenPaused)
-	function gameOption.toUI(self)
-		local box = self.control
-		box:setSelected(1, getCore():getOptionPlayMusicWhenPaused())
-	end
-	function gameOption.apply(self)
-		local box = self.control
-		getCore():setOptionPlayMusicWhenPaused(box:isSelected(1))
-		if MainScreen.instance.inGame then
-			getSoundManager():resumeSoundAndMusic()
-			getSoundManager():pauseSoundAndMusic(true)
-		end
-	end
-	self.gameOptions:add(gameOption)
-
-	----- RakVoice -----
 	local voiceEnable = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_voiceEnable"), {getText("UI_Yes"), getText("UI_No")}, 1)
 	gameOption = GameOption:new('voiceEnable', voiceEnable)
 	function gameOption.toUI(self)
@@ -2740,7 +2572,6 @@ function MainOptions:addSoundPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- STREAMER MODE -----
 	local streamerMode = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_StreamerMode"))
 	streamerMode.tooltip = getText("UI_optionscreen_StreamerMode_tt");
 
@@ -3057,15 +2888,12 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CYCLE CONTAINER KEY -----
-	local values = { getText("UI_optionscreen_CycleContainerKey1"), getText("UI_optionscreen_CycleContainerKey2"),
-                     			  getText("UI_optionscreen_CycleContainerKey3") }
+	local values = { getText("UI_optionscreen_CycleContainerKey1"), getText("UI_optionscreen_CycleContainerKey2"), getText("UI_optionscreen_CycleContainerKey3") }
     if isSystemMacOS() then
         values[4] = getText("UI_optionscreen_CycleContainerKey4")
         values[5] = getText("UI_optionscreen_CycleContainerKey5")
     end
-	local cycleContainerKey = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_CycleContainerKey"),
-            values, 1)
+	local cycleContainerKey = self:addCombo(splitpoint, y, comboWidth, 20, getText("UI_optionscreen_CycleContainerKey"), values, 1)
 	cycleContainerKey:setToolTipMap({ defaultTooltip = getText("UI_optionscreen_CycleContainerKey_tt") })
 
 	gameOption = GameOption:new('cycleContainerKey', cycleContainerKey)
@@ -3163,7 +2991,6 @@ function MainOptions:addAccessibilityPanel()
 	--	end
 	--	self.gameOptions:add(gameOption)
 
-	----- AUTO DRINK -----
 	local autoDrink = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_AutoDrink"));
 
 	gameOption = GameOption:new('autoDrink', autoDrink)
@@ -3177,7 +3004,6 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- LEAVE KEY IN IGNITION -----
 	local keyInIgnition = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_LeaveKeyInIgnition"));
 
 	gameOption = GameOption:new('keyInIgnition', keyInIgnition)
@@ -3191,8 +3017,6 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- CLICK TO WALK TO NEARBY CONTAINERS -----
-	---
 	local autoWalkContainer = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_AutoWalkContainer"));
 	autoWalkContainer.tooltip = getText("UI_optionscreen_AutoWalkContainer_tt");
 
@@ -3207,7 +3031,23 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SET GOOD HIGHLIGHT COLOR -----
+    -----
+
+	local autoRevealPrintMediaMapLocations = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_AutoRevealPrintMediaMapLocations"));
+	autoRevealPrintMediaMapLocations.tooltip = getText("UI_optionscreen_AutoRevealPrintMediaMapLocations_tt");
+
+	gameOption = GameOption:new('autoRevealPrintMediaMapLocations', autoRevealPrintMediaMapLocations)
+	function gameOption.toUI(self)
+		local box = self.control
+		box:setSelected(1, getCore():getOptionAutoRevealPrintMediaMapLocations())
+	end
+	function gameOption.apply(self)
+		local box = self.control
+		getCore():setOptionAutoRevealPrintMediaMapLocations(box:isSelected(1))
+	end
+	self.gameOptions:add(gameOption)
+
+	-----
 
 	local ghc = getCore():getGoodHighlitedColor()
 	local rgba = {r = ghc:getR(), g = ghc:getG(), b = ghc:getB(), a = 1}
@@ -3239,8 +3079,6 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- SET BAD HIGHLIGHT COLOR -----
-
 	local bhc = getCore():getBadHighlitedColor()
 	local rgba = {r = bhc:getR(), g = bhc:getG(), b = bhc:getB(), a = 1}
 	self.badHighColor = self:addColorButton(splitpoint, y, getText("UI_optionscreen_badHighlightColor"), rgba, MainOptions.onBadHighlightColor)
@@ -3271,11 +3109,8 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- COLORBLIND PATTERNS -----
-
 	local colorblindPatterns = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_ColorblindPatterns"));
 	colorblindPatterns.tooltip = getText("UI_optionscreen_ColorblindPatterns_tt");
-
 	gameOption = GameOption:new('colorblindPatterns', colorblindPatterns)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -3290,11 +3125,8 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- ENABLE DYSLEXIC FONT -----
-
 	local enableDyslexicFont = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_enableDyslexicFont"));
 	enableDyslexicFont.tooltip = getText("UI_optionscreen_enableDyslexicFont_tt");
-
 	gameOption = GameOption:new('enableDyslexicFont', enableDyslexicFont)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -3309,11 +3141,8 @@ function MainOptions:addAccessibilityPanel()
 	end
 	self.gameOptions:add(gameOption)
 
-	----- ENABLE LIGHT SENSITIVITY MODE -----
-
 	local enableLightSensitivity = self:addYesNo(splitpoint, y, BUTTON_HGT, BUTTON_HGT, getText("UI_optionscreen_enableLightSensitivity"));
 	enableLightSensitivity.tooltip = getText("UI_optionscreen_enableLightSensitivity_tt");
-
 	gameOption = GameOption:new('enableLightSensitivity', enableLightSensitivity)
 	function gameOption.toUI(self)
 		local box = self.control
@@ -3387,8 +3216,6 @@ function MainOptions:addAccessibilityPanel()
             end
         end --]]
 	--	self.gameOptions:add(gameOption)
-
-	-----
 	self.mainPanel:setScrollHeight(y + self.addY + 20)
 end
 
@@ -3680,6 +3507,7 @@ function MainOptions:addModOptionsPanel()
 				self.gameOptions:add(gameOption)
 			elseif option.type == "textentry" then
 				local textEntry = self:addTextEntry(splitpoint, y, getText(option.name), option.value)
+                textEntry:setWidth(textEntry:getWidth() - 150)
 				if option.tooltip then
 					textEntry.tooltip = getText(option.tooltip)
 				end
@@ -3771,6 +3599,7 @@ function MainOptions:addModOptionsPanel()
 				button.id = options.modOptionsID .. "." .. option.id
 				button.target = option.target
 				button:setOnClick(option.onclick, option.args[1], option.args[2], option.args[3], option.args[4])
+                button.onClickArgs = option.args -- Fixed in such way for not break vanilla (in vanilla used arg1, arg2, arg3, arg3)
 				if option.tooltip then
 					button:setTooltip(getText(option.tooltip))
 				end
@@ -3815,7 +3644,7 @@ function MainOptions:addModOptionsPanel()
 
 				self.addY = self.addY + FONT_HGT_SMALL + 2 + 6
 			elseif option.type == "slider" then
-				local slider = self:addSlider(splitpoint, y, comboWidth, getText(option.name), option.min, option.max, option.step, option.value)
+				local slider = self:addSlider(splitpoint, y, comboWidth*3, getText(option.name), option.min, option.max, option.step, option.value)
 				option.element = slider
 				if not option.isEnabled then
 					slider.disabled = true
@@ -4282,7 +4111,6 @@ function MainOptions.upgradeKeysIni(name, key, defaultKey, version)
 	if (version < MainOptions.KEYS_VERSION1) and (key ~= defaultKey) then
 		if name == "Toggle Skill Panel" then
 			-- C -> L
-			print('reset keybind', name, 'from', key, 'to', defaultKey)
 			key = defaultKey
 		end
 	end
@@ -4453,7 +4281,7 @@ end
 
 function MainOptions:prerender()
 	ISPanelJoypad.prerender(self);
-	self:drawTextCentre(getText("UI_optionscreen_gameoption"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title);
+	self:drawTextCentre(getText("UI_optionscreen_gameoption"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large);
 	MainOptions.instance = self;
 
 	self.saveButton:setEnable(self.gameOptions.changed)

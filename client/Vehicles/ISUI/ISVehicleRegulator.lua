@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 ISVehicleRegulator = {}
 ISVehicleRegulator.xPressed = {}
 ISVehicleRegulator.changedSpeed = {}

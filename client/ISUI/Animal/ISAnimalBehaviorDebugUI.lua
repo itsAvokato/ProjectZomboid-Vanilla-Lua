@@ -1,12 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 27/03/2023
--- Time: 09:56
--- To change this template use File | Settings | File Templates.
---
-
-
 require "ISUI/ISCollapsableWindow"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)

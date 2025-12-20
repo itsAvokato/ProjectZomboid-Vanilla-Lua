@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: tea-amuller       		   **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 local UI_BORDER_SPACING = 10
@@ -26,10 +21,8 @@ function ISWidgetRecipesPanel:createChildren()
     self.recipeTable:instantiate();
     self:addChild(self.recipeTable);
 
-    -- -- search row
     self:createRecipeFilterPanel(self.recipeTable);
 
-    -- -- recipe list row
     self:createRecipeListPanel(self.recipeTable);
     self:createRecipeIconPanel(self.recipeTable);
 
@@ -47,7 +40,7 @@ end
 function ISWidgetRecipesPanel:createRecipeFilterPanel(_parentTable)
     self.recipeFilterPanel = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetRecipeFilterPanel, 0, 0, 10, 10, self.callbackTarget);
     self.recipeFilterPanel:setSearchInfoText(getText("IGUI_CraftingWindow_SearchRecipes"));
-    self.recipeFilterPanel.showAllVersionTickbox = self.showAllVersionTickbox;
+    self.recipeFilterPanel.isBuildMenu = self.isBuildMenu;
     self.recipeFilterPanel.needFilterCombo = self.needFilterCombo;
     self.recipeFilterPanel.needSortCombo = self.needSortCombo;
     self.recipeFilterPanel.showFilterByOutputItem = self.showFilterByOutputItem;
@@ -307,10 +300,6 @@ function ISWidgetRecipesPanel:getLogic()
     return self.callbackTarget.logic;
 end
 
---************************************************************************--
---** ISWidgetRecipesPanel:new
---**
---************************************************************************--
 function ISWidgetRecipesPanel:new(x, y, width, height, player, craftBench, isoObject, logic, callbackTarget)
     local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

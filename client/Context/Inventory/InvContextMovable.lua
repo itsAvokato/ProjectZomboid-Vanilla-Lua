@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISInventoryMenuElements = ISInventoryMenuElements or {};
 
 function ISInventoryMenuElements.ContextMovable()
@@ -39,4 +34,3 @@ function ISInventoryMenuElements.ContextMovable()
 
     return self;
 end
-

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISRadialMenu"
 
 ISEmoteRadialMenu = ISBaseObject:derive("ISEmoteRadialMenu")
@@ -178,8 +174,6 @@ function ISEmoteRadialMenu:configEmote()
 	ui:initialise();
 	ui:addToUIManager();
 end
-
-----------------------------------
 
 local STATE = {}
 STATE[1] = {}

@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISControllerTestPanel = ISPanel:derive("ControllerTest")
@@ -173,17 +169,14 @@ function ISControllerTestPanel:render()
 	if buttonCount > 0 then
 		self:drawText(getText("UI_ControllerTest_Pov"), UI_BORDER_SPACING+1, buttonsBottom + 12, 1, 1, 1, 1, UIFont.Small)
 		local povY = buttonsBottom + 12 + self.smallFontHgt + 8
-		-----
 		self:drawText(getText("UI_ControllerTest_PovX"), UI_BORDER_SPACING+1, povY, 1, 1, 1, 1, UIFont.Small)
 		local f = (1 + getControllerPovX(controller)) / 2
 		self:drawProgressBar(barX, povY, 200, BUTTON_HGT, f, { r=0.9,g=0.9,b=0.9,a=1 })
 		povY = povY + BUTTON_HGT + UI_BORDER_SPACING
-		-----
 		self:drawText(getText("UI_ControllerTest_PovY"), UI_BORDER_SPACING+1, povY, 1, 1, 1, 1, UIFont.Small)
 		local f = (1 + getControllerPovY(controller)) / 2
 		self:drawProgressBar(barX, povY, 200, BUTTON_HGT, f, { r=0.9,g=0.9,b=0.9,a=1 })
 		povY = povY + BUTTON_HGT + UI_BORDER_SPACING
-		-----
 		if JoypadState.controllerTest then
 			self:drawText(getText("UI_ControllerTest_AY4exit"), UI_BORDER_SPACING+1, povY, 1, 0.2, 0.2, 1, UIFont.Small)
 		end

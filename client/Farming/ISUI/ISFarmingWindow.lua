@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---** Simple collapsable window wich handle our farming info panel **
---***********************************************************
-
 require "ISUI/ISCollapsableWindow"
 
 ISFarmingWindow = ISCollapsableWindow:derive("ISFarmingWindow");
@@ -19,10 +14,6 @@ function ISFarmingWindow:visible(visible)
 end
 
 
---************************************************************************--
---** ISPanel:instantiate
---**
---************************************************************************--
 function ISFarmingWindow:createChildren()
 	ISCollapsableWindow.createChildren(self);
 	local th = self:titleBarHeight()

@@ -1,19 +1,6 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "ISBaseObject"
 require "ISUI/ISUIElement"
 require "ISUI/ISPanel"
-
---[[
-    Note: indexes for function params start at 0
---]]
-
---************************************************************************--
---** ISTableLayout
---************************************************************************--
 
 ISTableLayout = ISPanel:derive("ISTableLayout");
 
@@ -322,10 +309,6 @@ function ISTableLayout:clearTable()
     self.cells = {};
 end
 
---************************************************************************--
---** ISTableLayout:new
---**
---************************************************************************--
 function ISTableLayout:new (x, y, width, height, _styleColumn, _styleRow, _styleCell)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)
@@ -353,10 +336,6 @@ function ISTableLayout:new (x, y, width, height, _styleColumn, _styleRow, _style
 
     return o
 end
-
---************************************************************************--
---** ISTableLayoutColumn
---************************************************************************--
 
 ISTableLayoutColumn = ISBaseObject:derive("ISTableLayoutColumn");
 
@@ -389,10 +368,6 @@ function ISTableLayoutColumn:setVisible(_b, _silent)
     end
 end
 
---************************************************************************--
---** ISTableLayoutRow
---************************************************************************--
-
 ISTableLayoutRow = ISBaseObject:derive("ISTableLayoutRow");
 
 function ISTableLayoutRow:new(_parentTable, _rowIndex, _isAutoFill)
@@ -423,10 +398,6 @@ function ISTableLayoutRow:setVisible(_b, _silent)
         self.parentTable:xuiRecalculateLayout();
     end
 end
-
---************************************************************************--
---** ISTableLayoutCell
---************************************************************************--
 
 ISTableLayoutCell = ISBaseObject:derive("ISTableLayoutCell");
 

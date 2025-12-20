@@ -1,15 +1,7 @@
 require "BuildingObjects/ISBuildingObject"
 
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 fishingNet = ISBuildingObject:derive("fishingNet");
 
---************************************************************************--
---** fishingNet:new
---**
---************************************************************************--
 function fishingNet:create(x, y, z, north, sprite)
     local grid = getCell():getGridSquare(x, y, z);
     local net = IsoObject.new(grid, sprite, "FishingNet");
@@ -46,7 +38,7 @@ end
 
 function fishingNet:isValid(square, north)
     if not self.character:getInventory():contains("FishingNet") then return false end
-    return square:DistToProper(self.character:getCurrentSquare()) < 5 and square:getProperties():Is(IsoFlagType.water);
+    return square:DistToProper(self.character:getCurrentSquare()) < 5 and square:getProperties():has(IsoFlagType.water);
 --    return true;
 end
 
@@ -84,8 +76,12 @@ fishingNet.updateBait = function(net)
 end
 
 fishingNet.remove = function(net, player)
+    if isClient() then
+        return
+    end
     net:getSquare():transmitRemoveItemFromSquare(net);
-    player:getInventory():AddItem("Base.FishingNet");
+    local item = player:getInventory():AddItem("Base.FishingNet");
+    sendAddItemToContainer(player:getInventory(), item);
     player:playSound("RemoveFishingNet");
 end
 

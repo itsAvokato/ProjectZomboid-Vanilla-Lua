@@ -11,14 +11,10 @@ NewGameScreen = ISPanelJoypad:derive("NewGameScreen");
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local JOYPAD_TEX_SIZE = 32
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local HorizontalLine = ISPanel:derive("HorizontalLine")
 
@@ -36,14 +32,13 @@ function HorizontalLine:new(x, y, width)
 	return o
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local MainPanel = ISPanelJoypad:derive("NewGameScreen_MainPanel")
 
 function MainPanel:prerender()
-    self:doRightJoystickScrolling(20, 20)
+    if self.joyfocus then
+        self:doRightJoystickScrolling(20, 20)
+    end
 
     if self.joyfocus and (self:getJoypadFocus() ~= self.lastSelectedChild) then
         self.lastSelectedChild = self:getJoypadFocus()
@@ -128,9 +123,6 @@ function MainPanel:onJoypadBeforeDeactivate(joypadData)
     self.parent:onJoypadBeforeDeactivate(joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
 
 local RichText = ISRichTextPanel:derive("NewGameScreen_RichText")
 
@@ -165,21 +157,11 @@ function RichText:onJoypadBeforeDeactivate(joypadData)
 	self.parent:onJoypadBeforeDeactivate(joypadData)
 end
 
--- -- -- -- --
--- -- -- -- --
--- -- -- -- --
-
 function NewGameScreen:initialise()
 	ISPanel.initialise(self);
 end
 
-
-	--************************************************************************--
-	--** ISPanel:instantiate
-	--**
-	--************************************************************************--
 function NewGameScreen:instantiate()
-
 	--self:initialise();
 	self.javaObject = UIElement.new(self);
 	self.javaObject:setX(self.x);
@@ -231,7 +213,7 @@ function NewGameScreen:create()
 --    sep1:initialise();
 --    self.mainPanel:addChild(sep1);
 --    y = y + 10 + 2 + 10
-    
+
 --    local survival = ISLabel:new(x, y, FONT_HGT_LARGE, getText("UI_NewGame_Survival") .. getText("UI_NewGame_SurvivalMore"), 1, 1, 1, 1, UIFont.NewLarge, true);
 --    survival.moreTextToRemove = getText("UI_NewGame_SurvivalMore");
 --    survival.internal = "SURVIVAL";
@@ -243,9 +225,9 @@ function NewGameScreen:create()
 --    survival.onMouseDown = NewGameScreen.onMenuItemMouseDown;
 --    survival:setOnMouseDoubleClick(self, NewGameScreen.dblClickSurvival);
 --    y = y + FONT_HGT_LARGE + 4;
-    
+
 --    self.survival = survival;
-    
+
     local playstyle = ISLabel:new(x, y, FONT_HGT_LARGE, getText("UI_NewGame_PlayStyle"), 1, 1, 1, 1, UIFont.NewLarge, true);
     playstyle:initialise();
     self.mainPanel:addChild(playstyle);
@@ -261,12 +243,12 @@ function NewGameScreen:create()
     survivor.onMouseDown = NewGameScreen.onMenuItemMouseDown;
     survivor:setOnMouseDoubleClick(self, NewGameScreen.dblClickPlaystyle);
     self.survival = survivor;
-    
+
     local survivorDesc = ISLabel:new(survivor:getRight(), y, mediumFontHgt, " - " .. getText("UI_NewGame_Apocalypse_desc"), 0.5, 0.5, 0.5, 1, UIFont.Small, true);
     survivorDesc:initialise();
     self.mainPanel:addChild(survivorDesc);
     y = y + FONT_HGT_LARGE + 4;
-    
+
     local fighter = ISLabel:new(x + xoffset, y, mediumFontHgt, getText("UI_NewGame_Survivor"), 1, 1, 1, 1, UIFont.NewMedium, true);
     fighter.internal = "SURVIVOR";
     fighter.mode = "Survivor";
@@ -281,7 +263,7 @@ function NewGameScreen:create()
     fighterDesc:initialise();
     self.mainPanel:addChild(fighterDesc);
     y = y + FONT_HGT_LARGE + 4;
-    
+
     local builder = ISLabel:new(x + xoffset, y, mediumFontHgt, getText("UI_NewGame_Builder"), 1, 1, 1, 1, UIFont.NewMedium, true);
     builder.internal = "BUILDER";
     builder.mode = "Builder";
@@ -291,12 +273,12 @@ function NewGameScreen:create()
     self.mainPanel:addChild(builder);
     builder.onMouseDown = NewGameScreen.onMenuItemMouseDown;
     builder:setOnMouseDoubleClick(self, NewGameScreen.dblClickPlaystyle);
-    
+
     local builderDesc = ISLabel:new(builder:getRight(), y, mediumFontHgt, " - " .. getText("UI_NewGame_Builder_desc"), 0.5, 0.5, 0.5, 1, UIFont.Small, true);
     builderDesc:initialise();
     self.mainPanel:addChild(builderDesc);
     y = y + FONT_HGT_LARGE + 4;
-    
+
     local sandbox = ISLabel:new(x + xoffset, y, mediumFontHgt, getText("UI_NewGame_Sandbox"), 1, 1, 1, 1, UIFont.NewMedium, true);
     sandbox.internal = "SANDBOX";
     sandbox.mode = "Sandbox";
@@ -306,13 +288,13 @@ function NewGameScreen:create()
     self.mainPanel:addChild(sandbox);
     sandbox.onMouseDown = NewGameScreen.onMenuItemMouseDown;
     sandbox:setOnMouseDoubleClick(self, NewGameScreen.dblClickChallenge);
-    
+
     local sandboxDesc = ISLabel:new(sandbox:getRight(), y, mediumFontHgt, " - " .. getText("UI_NewGame_Sandbox_desc2"), 0.5, 0.5, 0.5, 1, UIFont.Small, true);
     sandboxDesc:initialise();
     self.mainPanel:addChild(sandboxDesc);
     y = y + FONT_HGT_LARGE
-    
-    
+
+
 --    local sep1 = HorizontalLine:new(x, y + 10, 1000)
 --    sep1:initialise();
 --    self.mainPanel:addChild(sep1);
@@ -346,7 +328,7 @@ function NewGameScreen:create()
 --    begining:initialise();
 --    self.mainPanel:addChild(begining);
 --    begining.onMouseDown = NewGameScreen.onMenuItemMouseDown;
-    
+
 --    self.difficultyEasy = ISLabel:new(x + xoffset + xoffsetdifficulty, y, mediumFontHgt, getText("UI_StarterCondition_Easy"), 1, 1, 1, 1, UIFont.NewMedium, true);
 --    self.difficultyEasy:initialise();
 --    self.difficultyEasy.difficulty = "Easy";
@@ -357,7 +339,7 @@ function NewGameScreen:create()
 --    self.difficultyEasy:setOnMouseDoubleClick(self, NewGameScreen.dblClickDifficulty);
 --    self.difficultyEasy.onMouseDown = NewGameScreen.onChooseDifficulty;
 --    y = y + mediumFontHgt + gapY
-    
+
 --    local ends = ISLabel:new(x+xoffset, y, mediumFontHgt, getText("UI_NewGame_SixMonths") .. getText("UI_NewGame_SixMonthsMore"), 1, 1, 1, 1, UIFont.NewMedium, true);
 --    ends.internal = "ENDS";
 --    ends.mode = "Six Months Later";
@@ -470,7 +452,7 @@ function NewGameScreen:create()
     sep4:initialise()
     self.mainPanel:addChild(sep4)
     y = y + 10 + 2 + 10
-    
+
     local mods = ISLabel:new(x, y, FONT_HGT_LARGE, getText("UI_NewGame_Mods"), 1, 1, 1, 1, UIFont.NewLarge, true);
     mods:initialise();
     self.mainPanel:addChild(mods);
@@ -795,7 +777,7 @@ end
 function NewGameScreen:prerender()
     NewGameScreen.instance = self
 	ISPanel.prerender(self);
-	self:drawTextCentre(getText("UI_NewGameScreen_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Title);
+	self:drawTextCentre(getText("UI_NewGameScreen_title"), self.width / 2, UI_BORDER_SPACING+1, 1, 1, 1, 1, UIFont.Large);
 end
 
 function NewGameScreen:onOptionMouseDown(button, x, y)
@@ -924,7 +906,7 @@ function NewGameScreen:clickPlay()
     if self.selectedItem.mode then
 --         getWorld():setPreset(self.selectedItem.mode);
     end
-    
+
     getWorld():setMap("DEFAULT")
     MainScreen.instance.createWorld = true;
     if getWorld():getGameMode() == "Sandbox" then
@@ -1035,7 +1017,7 @@ function NewGameScreen:new (x, y, width, height)
 	o.anchorBottom = false;
 	o.itemheightoverride = {}
 	o.selected = 1;
-    o.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_TITLE;
+    o.startY = UI_BORDER_SPACING*2+1 + FONT_HGT_LARGE;
 	NewGameScreen.instance = o;
 	return o
 end

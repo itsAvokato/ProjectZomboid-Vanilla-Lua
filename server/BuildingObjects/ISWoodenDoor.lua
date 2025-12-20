@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenDoor = ISBuildingObject:derive("ISWoodenDoor");
 
---************************************************************************--
---** ISWoodenDoor:new
---**
---************************************************************************--
 function ISWoodenDoor:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenDoor\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -28,7 +20,6 @@ function ISWoodenDoor:create(x, y, z, north, sprite)
     self.sq:AddSpecialObject(self.javaObject);
     -- set the key id if we had one
     for _,item in ipairs(consumedItems) do
-		print(item:getType(), item:getKeyId())
 		if item:getType() == "Doorknob" and item:getKeyId() ~= -1 then
 			self.javaObject:setKeyId(item:getKeyId())
 		end
@@ -84,10 +75,10 @@ function ISWoodenDoor:isValid(square)
 				hasFrame = true
 			end
 			local sprite = o:getSprite()
-			if self.north and sprite and sprite:getProperties():Is("DoorWallN") then
+			if self.north and sprite and sprite:getProperties():has("DoorWallN") then
 				hasFrame = true
 			end
-			if not self.north and sprite and sprite:getProperties():Is("DoorWallW") then
+			if not self.north and sprite and sprite:getProperties():has("DoorWallW") then
 				hasFrame = true
 			end
 		end

@@ -1,7 +1,3 @@
---***********************************************************
---**              	  ROBERT JOHNSON                       **
---***********************************************************
-
 ISBannedSteamIDViewer = ISPanel:derive("ISBannedSteamIDViewer");
 ISBannedSteamIDViewer.messages = {};
 
@@ -14,11 +10,6 @@ local BUTTON_HGT = FONT_HGT_SMALL + 6
 
 local COL_1_WIDTH = 200
 local COL_2_WIDTH = 150
-
---************************************************************************--
---** ISBannedSteamIDViewer:initialise
---**
---************************************************************************--
 
 function ISBannedSteamIDViewer:initialise()
     ISPanel.initialise(self);
@@ -214,10 +205,6 @@ ISBannedSteamIDViewer.gotBannedSteamIDs = function(bannedSteamIDs)
     end
 end
 
---************************************************************************--
---** ISBannedSteamIDViewer:new
---**
---************************************************************************--
 function ISBannedSteamIDViewer:new(x, y, width, height, player)
     local o = {}
     x = getCore():getScreenWidth() / 2 - (width / 2);

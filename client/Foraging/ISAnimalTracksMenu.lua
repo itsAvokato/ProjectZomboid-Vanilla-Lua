@@ -1,13 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 30/05/2023
--- Time: 08:58
--- To change this template use File | Settings | File Templates.
---
-
-
---/ CONTEXT MENU WHEN YOU RIGHT CLICK ON A FOUND TRACK FROM FORAGING --/
 ISAnimalTracksMenu = {};
 
 ISAnimalTracksMenu.doContextMenu = function(context, trackItem, chr)

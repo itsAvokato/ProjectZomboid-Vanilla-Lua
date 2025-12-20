@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 SpawnRegionMgr = {}
 
 function SpawnRegionMgr.loadSpawnPointsFile(filename, server)

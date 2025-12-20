@@ -1,13 +1,5 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 ISWoodenWall = ISBuildingObject:derive("ISWoodenWall");
 
---************************************************************************--
---** ISWoodenWall:new
---**
---************************************************************************--
 function ISWoodenWall:create(x, y, z, north, sprite)
     showDebugInfoInChat("Cursor Create \'ISWoodenWall\' "..tostring(x)..", "..tostring(y)..", "..tostring(z)..", "..tostring(north)..", "..tostring(sprite))
 	local cell = getWorld():getCell();
@@ -111,8 +103,8 @@ function ISWoodenWall:isValid(square)
 	for i=1,square:getObjects():size() do
 		local object = square:getObjects():get(i-1);
 		local sprite = object:getSprite()
-		if (sprite and ((sprite:getProperties():Is(IsoFlagType.collideN) and self.north) or
-				(sprite:getProperties():Is(IsoFlagType.collideW) and not self.north))) or
+		if (sprite and ((sprite:getProperties():has(IsoFlagType.collideN) and self.north) or
+				(sprite:getProperties():has(IsoFlagType.collideW) and not self.north))) or
 				((instanceof(object, "IsoThumpable") and (object:getNorth() == self.north)) and not object:isCorner() and not object:isFloor() and not object:isBlockAllTheSquare()) or
 				(instanceof(object, "IsoWindow") and object:getNorth() == self.north) or
 				(instanceof(object, "IsoDoor") and object:getNorth() == self.north) then
@@ -156,7 +148,7 @@ function ISWoodenWall:getObjectIndex()
 	for i = self.sq:getObjects():size(),1,-1 do
 		local object = self.sq:getObjects():get(i-1)
 		local props = object:getProperties()
-		if props and props:Is(IsoFlagType.solidfloor) then
+		if props and props:has(IsoFlagType.solidfloor) then
 			return i
 		end
 	end

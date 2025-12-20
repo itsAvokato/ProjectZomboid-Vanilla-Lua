@@ -1,8 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---**       Here we gonna handle all the health change      **
---***********************************************************
-
 healthUpdate = {};
 healthUpdate.lastGrid = nil;
 healthUpdate.bodyDmg = nil;
@@ -42,7 +37,6 @@ healthUpdate.getBrokenWindow = function(feeler)
 	-- we start to get all the special object on the square we are standing on
 	local window = healthUpdate.lastGrid:getThumpableTo(feeler);
 	if window and window:isDestroyed() then
-		print("FOUND A WINDOW");
 		return window;
 	end
 	return nil;

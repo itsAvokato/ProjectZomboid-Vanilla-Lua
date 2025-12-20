@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/AdminPanel/ZoneEditor/MultiplayerZoneEditorMode"
 require('ISUI/Maps/Editor/WorldMapEditorResizer')
 

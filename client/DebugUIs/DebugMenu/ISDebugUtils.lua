@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 ISDebugUtils = {};
 
 ISDebugUtils.FONT_HGT_MED = getTextManager():getFontHeight(UIFont.Medium)

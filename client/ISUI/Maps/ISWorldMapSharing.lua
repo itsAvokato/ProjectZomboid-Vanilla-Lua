@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISRadioButtons"
 require "ISUI/ISScrollingListBox"
@@ -10,8 +6,6 @@ ISWorldMapSharing = ISPanelJoypad:derive("ISWorldMapSharing")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
-
------
 
 local CheckList = ISScrollingListBox:derive("ISWorldMapSharing_CheckList")
 
@@ -88,8 +82,6 @@ function CheckList:new(x, y, width, height)
 	o.tickTexture = getTexture("media/ui/inventoryPanes/Tickbox_Tick.png")
 	return o
 end
-
------
 
 local PanelMain = ISPanelJoypad:derive("ISWorldMapSharing_PanelMain")
 
@@ -233,8 +225,6 @@ function PanelMain:new(x, y, width, height)
 	return o
 end
 
------
-
 ISWorldMapSharing_PanelPlayers = ISPanelJoypad:derive("ISWorldMapSharing_PanelPlayers")
 local PanelPlayers = ISWorldMapSharing_PanelPlayers
 
@@ -375,8 +365,6 @@ end
 
 Events.OnMiniScoreboardUpdate.Add(ISWorldMapSharing_PanelPlayers.onMiniScoreboardUpdate)
 Events.OnScoreboardUpdate.Add(ISWorldMapSharing_PanelPlayers.onScoreboardUpdate)
-
------
 
 function ISWorldMapSharing:createChildren()
 	self.panelMain = PanelMain:new(10, 10, 100, 100)

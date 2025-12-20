@@ -91,6 +91,7 @@ ISObjectClickHandler.doDoubleClick = function (object, x, y)
 --     end
 
     if object:getContainer() ~= nil then
+
         local parent = object:getSquare();
 
         if parent ~= nil then
@@ -254,7 +255,8 @@ ISObjectClickHandler.doClick = function (object, x, y)
         if getCore():getGameMode() ~= "Tutorial" and not isPaused and playerObj:isAlive() and not playerObj:isAiming() and
                 playerObj:getCurrentSquare() and object:getSquare() and
                 playerObj:DistToSquared(object:getX() + 0.5, object:getY() + 0.5) < 1.5 * 4.0 and
-                not playerObj:getCurrentSquare():isSomethingTo(object:getSquare()) then
+                not playerObj:getCurrentSquare():isSomethingTo(object:getSquare()) and
+                not (getCell():getDrag(0) ~= nil and getCell():getDrag(0).Type == "ISDestroyCursor") then
             if ISEntityUI.CanOpenWindowFor(playerObj, object) then
                 ISEntityUI.OpenWindow(playerObj, object)
                 return

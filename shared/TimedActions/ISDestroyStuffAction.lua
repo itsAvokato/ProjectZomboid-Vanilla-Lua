@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISDestroyStuffAction = ISBaseTimedAction:derive("ISDestroyStuffAction");
@@ -9,7 +5,7 @@ ISDestroyStuffAction = ISBaseTimedAction:derive("ISDestroyStuffAction");
 local function predicateSledgehammer(item)
 	if item:isBroken() then return false end
 	local type = item:getType()
-	return item:hasTag("Sledgehammer") or type == "Sledgehammer" or type == "Sledgehammer2"
+	return item:hasTag(ItemTag.SLEDGEHAMMER) or type == "Sledgehammer" or type == "Sledgehammer2"
 end
 
 function ISDestroyStuffAction:isValid()
@@ -45,7 +41,7 @@ function ISDestroyStuffAction:start()
 	if not self.sledge then
 		self.sledge = self.character:getPrimaryHandItem();
 	end
-	if self.item:getProperties():Is(IsoFlagType.solidfloor) then
+	if self.item:getProperties():has(IsoFlagType.solidfloor) then
 		self:setActionAnim("DestroyFloor")
 	else
 		self:setActionAnim(CharacterActionAnims.Destroy)
@@ -66,10 +62,10 @@ function ISDestroyStuffAction:perform()
 end
 
 function ISDestroyStuffAction:getCornerWallSprite(wallSprite)
-	if self.cornerCounter == 0 and wallSprite:getProperties():Is("CornerWestWall") then
-		return wallSprite:getProperties():Val("CornerWestWall")
-	elseif self.cornerCounter == 1 and wallSprite:getProperties():Val("CornerNorthWall") then
-		return wallSprite:getProperties():Val("CornerNorthWall")
+	if self.cornerCounter == 0 and wallSprite:getProperties():has("CornerWestWall") then
+		return wallSprite:getProperties():get("CornerWestWall")
+	elseif self.cornerCounter == 1 and wallSprite:getProperties():get("CornerNorthWall") then
+		return wallSprite:getProperties():get("CornerNorthWall")
 	end
 	return nil
 end
@@ -81,7 +77,7 @@ function ISDestroyStuffAction:animEvent(event, parameter)
 	end
 	if event == "PlayHitSound" then
 		local sledge = self.character:getPrimaryHandItem();
-		if not sledge then return end
+		if not instanceof(sledge, "HandWeapon") then return end
 		-- FIXME: Pick an appropriate value for hit surface.
 		self.character:setMeleeHitSurface("Default")
 		self.character:playSound(sledge:getDoorHitSound())
@@ -133,12 +129,12 @@ function ISDestroyStuffAction:complete()
 	if self.cornerCounter == 0 or self.cornerCounter == 1 then
 		for i=0,self.item:getSquare():getObjects():size()-1 do
 			local o = self.item:getSquare():getObjects():get(i)
-			if o:getProperties():Is(IsoFlagType.attachedW) and (self.cornerCounter == 1) then
+			if o:getProperties():has(IsoFlagType.attachedW) and (self.cornerCounter == 1) then
 				o:getSquare():transmitRemoveItemFromSquare(o)
 				o:getSquare():RemoveTileObject(o)
 				break
 			end
-			if o:getProperties():Is(IsoFlagType.attachedN) and (self.cornerCounter == 0) then
+			if o:getProperties():has(IsoFlagType.attachedN) and (self.cornerCounter == 0) then
 				o:getSquare():transmitRemoveItemFromSquare(o)
 				o:getSquare():RemoveTileObject(o)
 				break
@@ -154,7 +150,7 @@ function ISDestroyStuffAction:complete()
 		if Nsquare ~= nil then
 			for i=0,Nsquare:getObjects():size()-1 do
 				local o = Nsquare:getObjects():get(i)
-				if o:getProperties():Is(IsoFlagType.attachedS) then
+				if o:getProperties():has(IsoFlagType.attachedS) then
 					o:getSquare():transmitRemoveItemFromSquare(o)
 					o:getSquare():RemoveTileObject(o)
 					break
@@ -164,7 +160,7 @@ function ISDestroyStuffAction:complete()
 		if Wsquare ~= nil then
 			for i=0,Wsquare:getObjects():size()-1 do
 				local o = Wsquare:getObjects():get(i)
-				if o:getProperties():Is(IsoFlagType.attachedE) then
+				if o:getProperties():has(IsoFlagType.attachedE) then
 					o:getSquare():transmitRemoveItemFromSquare(o)
 					o:getSquare():RemoveTileObject(o)
 					break
@@ -203,12 +199,12 @@ function ISDestroyStuffAction:complete()
 	-- remove hutch
 	if instanceof(self.item, "IsoHutch") then
 		self.item:removeHutch();
-		return;
+		return true;
 	end
 
 	if instanceof(self.item, "IsoButcherHook") then
 		self.item:removeHook();
-		return;
+		return true;
 	end
 
 	if instanceof(self.item, 'IsoCurtain') and self.item:getSquare() then
@@ -229,7 +225,7 @@ function ISDestroyStuffAction:complete()
 				local fireObj = sq:getObjects():get(i)
 				if instanceof(fireObj, 'IsoFire') and fireObj:isPermanent() then
 					square:transmitRemoveItemFromSquare(fireObj)
-					square:getProperties():UnSet(IsoFlagType.burning)
+					square:getProperties():unset(IsoFlagType.burning)
 				end
 			end
 		end
@@ -278,7 +274,7 @@ function ISDestroyStuffAction:complete()
 		if isClient() then
 			sledgeDestroy(self.item);
 		else
-			if self.item:getSprite():getProperties():Is("CornerNorthWall") then
+			if self.item:getSprite():getProperties():has("CornerNorthWall") then
 
 				local sq = self.item:getSquare()
 				local objNew = IsoObject.getNew(sq, self:getCornerWallSprite(self.item:getSprite()), self:getCornerWallSprite(self.item:getSprite()), false);

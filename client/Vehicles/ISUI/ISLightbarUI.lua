@@ -1,11 +1,6 @@
 require "ISUI/ISPanelJoypad"
---***********************************************************
---**              	  Yuri Yakovlev                        **
---***********************************************************
 
 ISLightbarUI = ISPanelJoypad:derive("ISLightbarUI")
-
------
 
 function ISLightbarUI:createChildren()
 	--ISPanel.createChildren(self)

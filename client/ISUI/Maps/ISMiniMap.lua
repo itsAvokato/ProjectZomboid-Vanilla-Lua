@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISUIElement"
 
 ISMiniMapOuter = ISPanelJoypad:derive("ISMiniMapOuter")
@@ -12,8 +8,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local TERRAIN_IMAGE = false
-
------
 
 ISMiniMapOptionsPanel = ISCollapsableWindowJoypad:derive("ISMiniMapOptionsPanel")
 
@@ -193,8 +187,6 @@ function ISMiniMapOptionsPanel:new(x, y, width, height, map)
 	return o
 end
 
------
-
 function ISMiniMapInner:instantiate()
 	self.javaObject = UIWorldMap.new(self)
 	self.mapAPI = self.javaObject:getAPIv3()
@@ -355,8 +347,6 @@ function ISMiniMapInner:new(x, y, width, height, playerNum)
 	return o
 end
 
------
-
 function ISMiniMapTitleBar.TitleBarHeight()
 	return math.max(16, FONT_HGT_SMALL + 1)
 end
@@ -414,8 +404,6 @@ function ISMiniMapTitleBar:new(miniMap)
 	o.dragging = false
 	return o
 end
-
------
 
 function ISMiniMapOuter:createChildren()
 	self.inner = ISMiniMapInner:new(self.borderSize, self.borderSize, self.width - self.borderSize * 2,
@@ -693,8 +681,6 @@ function ISMiniMapOuter:new(x, y, width, height, playerNum)
 	o.bottomHeight = getTextManager():getFontHeight(UIFont.Small)
 	return o
 end
-
------
 
 ISMiniMap = {}
 

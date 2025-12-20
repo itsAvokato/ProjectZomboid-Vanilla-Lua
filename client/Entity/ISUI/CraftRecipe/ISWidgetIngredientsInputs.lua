@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**            Author: turbotutone / spurcival            **
---***********************************************************
 require "ISUI/ISPanelJoypad"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -101,6 +97,7 @@ end
 
 function ISWidgetIngredientsInputs:addInput(_inputScript)
     local input = ISXuiSkin.build(self.xuiSkin, "S_NeedsAStyle", ISWidgetInput, 0, 0, 10, 10, self.player, self.logic, _inputScript);
+    input.isBuildMenu = self.isBuildMenu;
     input.interactiveMode = self.interactiveMode;
     if _inputScript:isKeep() then
         -- set keep flag
@@ -167,12 +164,7 @@ function ISWidgetIngredientsInputs:calculateLayout(_preferredWidth, _preferredHe
     self.inputsLabel.originalX = self.inputsLabel:getX();
     self.inputsLabel:setY(y);
 
-    local joypadData = JoypadState.players[self.player:getPlayerNum()+1]
-    local oldIndexY = math.max(self.joypadIndexY, 1)
-    local oldIndex = math.max(self.joypadIndex, 1)
-    if joypadData ~= nil and joypadData.focus == self and self.joypadButtons ~= nil and #self.joypadButtons > 0 then
-        self:clearJoypadFocus(joypadData)
-    end
+    local joypadState = self:recordJoypadState()
 
     self.joypadButtons = {}
     self.joypadButtonsY = {}
@@ -202,13 +194,9 @@ function ISWidgetIngredientsInputs:calculateLayout(_preferredWidth, _preferredHe
     if #self.joypadButtons > 0 then
         table.insert(self.joypadButtonsY, self.joypadButtons)
     end
-    self.joypadIndexY = math.min(oldIndexY or 1, #self.joypadButtonsY)
-    self.joypadIndex = math.min(oldIndex or 1, #self.joypadButtonsY[self.joypadIndexY])
-    self.joypadButtons = self.joypadButtonsY[self.joypadIndexY]
-    if joypadData ~= nil and joypadData.focus == self then
-        self.joypadButtons[self.joypadIndex]:setJoypadFocused(true, joypadData)
-    end
-    
+
+    self:restoreJoypadState(joypadState)
+
     self:setWidth(width);
     self:setHeight(height);
 end
@@ -272,10 +260,6 @@ function ISWidgetIngredientsInputs:onJoypadDown(button, joypadData)
     ISPanelJoypad.onJoypadDown(self, button, joypadData)
 end
 
---************************************************************************--
---** ISWidgetIngredientsInputs:new
---**
---************************************************************************--
 function ISWidgetIngredientsInputs:new (x, y, width, height, player, logic) -- recipeData, craftBench)
 	local o = ISPanelJoypad.new(self, x, y, width, height);
     o.player = player;

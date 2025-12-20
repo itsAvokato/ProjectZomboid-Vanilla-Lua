@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---** this is just needed because of a walkto prior to that **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISOpenAnimalInfo = ISBaseTimedAction:derive("ISOpenAnimalInfo");

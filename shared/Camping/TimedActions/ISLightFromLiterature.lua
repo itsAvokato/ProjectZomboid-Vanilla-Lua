@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLightFromLiterature = ISBaseTimedAction:derive("ISLightFromLiterature");
@@ -60,8 +56,10 @@ function ISLightFromLiterature:perform()
 end
 
 function ISLightFromLiterature:complete()
-    self.item:Use(true);
 	self.lighter:UseAndSync();
+    self.character:removeFromHands(self.item)
+    self.character:getInventory():Remove(self.item)
+    sendRemoveItemFromContainer(self.character:getInventory(), self.item)
 
 	local fuelAmt = self.fuelAmt
 

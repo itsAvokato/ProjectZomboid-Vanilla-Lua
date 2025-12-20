@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "Entity/ISUI/Controls/ISGroupBox"
 
 ISEnergySlotPanel = ISGroupBox:derive("ISEnergySlotPanel");
@@ -89,10 +85,6 @@ function ISEnergySlotPanel:update()
     ISGroupBox.update(self);
 end
 
---************************************************************************--
---** ISEnergySlotPanel:new
---**
---************************************************************************--
 function ISEnergySlotPanel:new (x, y, width, height, player, entity, _styleLabel)
 	local o = ISGroupBox:new(x, y, width, height, _styleLabel);
     setmetatable(o, self)

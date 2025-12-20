@@ -1,15 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 21/09/16
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "ISUI/ISPanel"
 
 ISServerOptions = ISPanel:derive("ISServerOptions");
@@ -19,11 +7,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
 
 function ISServerOptions:initialise()
     ISPanel.initialise(self);
@@ -265,6 +248,5 @@ function ISServerOptions:new(x, y, width, height, player)
     o.moveWithMouse = true;
     o.modifying = false;
     ISServerOptions.instance = o;
-
     return o;
 end

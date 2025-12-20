@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "RadioCom/RadioWindowModules/RWMPanel"
 
 RWMMicrophone = RWMPanel:derive("RWMMicrophone");

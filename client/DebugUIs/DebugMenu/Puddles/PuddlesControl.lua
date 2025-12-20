@@ -1,9 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---**		  Author: Yuri yuri(a)generalarcade.com        **
---***********************************************************
-
 require "DebugUIs/DebugMenu/Base/ISDebugSubPanelBase";
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -57,7 +51,6 @@ function PuddlesControl:createChildren()
     for i=0,puddles:getFloatMax()-1 do
         v = puddles:getPuddlesFloat(i);
         y, obj = self:addFloatOption(v:getName(),v,x,y,w)
-        print(v:getName());
         y = self:addHorzBar(y+barMod)+barMod+1;
     end
 

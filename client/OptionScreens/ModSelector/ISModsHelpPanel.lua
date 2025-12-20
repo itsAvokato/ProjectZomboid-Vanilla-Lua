@@ -1,13 +1,9 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "ISUI/ISPanelJoypad"
 
 ISModsHelpPanel = ISPanelJoypad:derive("ISModsHelpPanel")
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
-local FONT_HGT_TITLE = getTextManager():getFontHeight(UIFont.Title)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
 
 function ISModsHelpPanel:createChildren()
     local btnWid = 100
@@ -15,7 +11,7 @@ function ISModsHelpPanel:createChildren()
     local padY = 10
 
     local x = 10
-    local y = 10 + FONT_HGT_TITLE + 10
+    local y = 10 + FONT_HGT_LARGE + 10
     self.richText = ISRichTextPanel:new(x, y, self.width - x, self.height - padY - btnHgt - padY - y)
     self.richText.background = false
     self.richText.autosetheight = false
@@ -50,7 +46,7 @@ end
 
 function ISModsHelpPanel:render()
     ISPanelJoypad.render(self)
-    self:drawTextCentre(getText("UI_modselector_ModHelpTitle"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Title);
+    self:drawTextCentre(getText("UI_modselector_ModHelpTitle"), self.width / 2, 10, 1, 1, 1, 1, UIFont.Large);
 end
 
 function ISModsHelpPanel:onGainJoypadFocus(joypadData)

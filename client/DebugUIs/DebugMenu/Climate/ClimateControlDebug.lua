@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "DebugUIs/DebugMenu/Base/ISDebugPanelBase";
 
 ClimateControlDebug = ISDebugPanelBase:derive("ClimateControlDebug");

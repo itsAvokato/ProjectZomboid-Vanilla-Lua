@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISGrabCorpseItem = ISBaseTimedAction:derive("ISGrabCorpseItem")

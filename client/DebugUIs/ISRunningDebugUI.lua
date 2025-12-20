@@ -1,13 +1,3 @@
---
--- Created by IntelliJ IDEA.
--- User: RJ
--- Date: 04/12/2017
--- Time: 10:19
--- To change this template use File | Settings | File Templates.
---
-
----FOX, FIX HEIGHT OF WINDOW
-
 require "ISUI/ISPanelJoypad"
 
 ISRunningDebugUI = ISCollapsableWindow:derive("ISRunningDebugUI");
@@ -17,11 +7,6 @@ local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.NewLarge)
 local UI_BORDER_SPACING = 10
 local BUTTON_HGT = FONT_HGT_SMALL + 6
-
---************************************************************************--
---** ISRunningDebugUI:initialise
---**
---************************************************************************--
 
 function ISRunningDebugUI:createChildren()
 	local btnWid = UI_BORDER_SPACING*2 + math.max(
@@ -58,7 +43,7 @@ function ISRunningDebugUI:createChildren()
 end
 
 function ISRunningDebugUI:restoreEndurance()
-	self.chr:getStats():setEndurance(1);
+	self.chr:getStats():reset(CharacterStat.ENDURANCE);
 end
 
 function ISRunningDebugUI:update()
@@ -71,7 +56,7 @@ function ISRunningDebugUI:update()
 	
 	-- update variables
 	if self.startedTrip then
-		self.totalEndurance = self.startingEndurance - self.chr:getStats():getEndurance();
+		self.totalEndurance = self.startingEndurance - self.chr:getStats():get(CharacterStat.ENDURANCE);
 	end
 end
 
@@ -82,7 +67,7 @@ function ISRunningDebugUI:startTrip()
 		self.startTimer = Calendar.getInstance():getTimeInMillis();
 		self.stopTimer = nil;
 		self.totalEndurance = 0;
-		self.startingEndurance = self.chr:getStats():getEndurance();
+		self.startingEndurance = self.chr:getStats():get(CharacterStat.ENDURANCE);
 		self.totalDistance = 0;
 		self.start.title = getText("IGUI_RunningDebug_TimerStop");
 		self.start:enableCancelColor()
@@ -142,10 +127,6 @@ function ISRunningDebugUI:render()
 	y = y + BUTTON_HGT;
 end
 
---************************************************************************--
---** ISRunningDebugUI:new
---**
---************************************************************************--
 function ISRunningDebugUI:new(x, y, character)
 	local o = {}
 	local width = 550;

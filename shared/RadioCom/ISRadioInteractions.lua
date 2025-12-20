@@ -1,7 +1,6 @@
 local DEBUG = false;
 local statsHalo = true;
 
-
 local function doSkill(_player, _amount, _name, _perk)
     if _amount == nil or _amount <= 0 then return; end
     -- if the player already has enough levels in the perk, no xp
@@ -16,69 +15,29 @@ local function doSkill(_player, _amount, _name, _perk)
     local oldXp = _player:getXp():getXP(_perk);
     addXp(_player, _perk, amount)
     amount = _player:getXp():getXP(_perk) - oldXp;
-    --_player:setHaloNote(_name.." +"..round(amount,2));
-    --ISRadioInteractions:getInstance().addHalo(_name.." +"..round(amount,2));
     if oldXp~=_player:getXp():getXP(_perk) then
         ISRadioInteractions:getInstance().addHalo(_name, amount, true);
     end
 end
 
 local function applyBoredom(_player, _amount, _isSet)
-    local bodyDamage = _player:getBodyDamage();
-    if bodyDamage~=nil then
-        local val = bodyDamage:getBoredomLevel();
-        local valCache = val;
-
-        if _isSet then
-            val = _amount;
-        else
-            local am = _amount*5;
-            val = val+am;
-        end
-
-        if val<0 then val = 0; end
-        if val>100 then val = 100; end
-
-        bodyDamage:setBoredomLevel(val);
-
+    if _player:getStats() ~= nil then
+        local valueChanged = _player:getStats():add(CharacterStat.BOREDOM, _isSet and _amount or _amount * 5)
         if DEBUG then
-            _player:setHaloNote("Boredom "..tostring(val));
-        else
-            if statsHalo and (not _isSet) then
-                if valCache~=bodyDamage:getBoredomLevel() then
-                    ISRadioInteractions:getInstance().addHalo(getText("IGUI_HaloNote_Boredom"),_amount);
-                end
-            end
+            _player:setHaloNote("Boredom " .. tostring(_player:getStats():get(CharacterStat.BOREDOM)));
+        elseif statsHalo and not _isSet and valueChanged then
+            ISRadioInteractions:getInstance().addHalo(getText("IGUI_HaloNote_Boredom"), _amount);
         end
     end
 end
 
 local function applyUnhappiness(_player, _amount, _isSet)
-    local bodyDamage = _player:getBodyDamage();
-    if bodyDamage~=nil then
-        local val = bodyDamage:getUnhappynessLevel();
-        local valCache = val;
-
-        if _isSet then
-            val = _amount;
-        else
-            local am = _amount*5;
-            val = val+am;
-        end
-
-        if val<0 then val = 0; end
-        if val>100 then val = 100; end
-
-        bodyDamage:setUnhappynessLevel(val);
-
+    if _player:getStats() ~= nil then
+        local valueChanged = _player:getStats():add(CharacterStat.UNHAPPINESS, _isSet and _amount or _amount * 5)
         if DEBUG then
-            _player:setHaloNote("Unhappiness "..tostring(val));
-        else
-            if statsHalo and (not _isSet) then
-                if valCache~=bodyDamage:getUnhappynessLevel() then
-                    ISRadioInteractions:getInstance().addHalo(getText("IGUI_HaloNote_Unhappiness"),_amount);
-                end
-            end
+            _player:setHaloNote("Unhappiness " .. tostring(_player:getStats():get(CharacterStat.UNHAPPINESS)));
+        elseif statsHalo and not _isSet and valueChanged then
+            ISRadioInteractions:getInstance().addHalo(getText("IGUI_HaloNote_Unhappiness"), _amount);
         end
     end
 end
@@ -138,14 +97,13 @@ Interactions.FIT = function(_player, _amount, _opIsSet) doStat("Fitness",_player
 Interactions.HUN = function(_player, _amount, _opIsSet) doStat("Hunger",_player,_amount, _opIsSet); end      -- hunger
 Interactions.MOR = function(_player, _amount, _opIsSet) doStat("Morale",_player,_amount, _opIsSet); end      -- morale
 Interactions.STS = function(_player, _amount, _opIsSet) doStat("Stress",_player,_amount, _opIsSet); end      -- stress
-Interactions.FEA = function(_player, _amount, _opIsSet) doStat("Fear",_player,_amount, _opIsSet); end        -- Fear
 Interactions.PAN = function(_player, _amount, _opIsSet) doStat("Panic",_player,_amount, _opIsSet); end       -- Panic
 Interactions.SAN = function(_player, _amount, _opIsSet) doStat("Sanity",_player,_amount, _opIsSet); end      -- Sanity
 Interactions.SIC = function(_player, _amount, _opIsSet) doStat("Sickness",_player,_amount, _opIsSet); end    -- Sickness
 Interactions.PAI = function(_player, _amount, _opIsSet) doStat("Pain",_player,_amount, _opIsSet); end        -- Pain
-Interactions.DRU = function(_player, _amount, _opIsSet) doStat("Drunkenness",_player,_amount, _opIsSet); end -- Drunkenness
+Interactions.DRU = function(_player, _amount, _opIsSet) doStat("Intoxication",_player,_amount, _opIsSet); end -- Intoxication
 Interactions.THI = function(_player, _amount, _opIsSet) doStat("Thirst",_player,_amount, _opIsSet); end      -- thirst
-Interactions.UHP = function(_player, _amount, _opIsSet) doStat("Unhappiness",_player,_amount, _opIsSet); end      -- thirst
+Interactions.UHP = function(_player, _amount, _opIsSet) doStat("Unhappiness",_player,_amount, _opIsSet); end -- Unhappiness
 --Skills
 --agility
 Interactions.SPR = function(_player, _amount) doSkill(_player, _amount, getText("IGUI_perks_Sprinting"), Perks.Sprinting); end         --sprinting
@@ -241,6 +199,9 @@ function ISRadioInteractions:getInstance()
         --player:Say(_line);
         currentPlayer = player;
         local playerNum = player:getPlayerNum()+1
+        if isServer() then
+            playerNum = player:getOnlineID()+1
+        end
         local stats = player:getStats();
         local xp = player:getXp();
 
@@ -293,22 +254,46 @@ function ISRadioInteractions:getInstance()
     end
 
     function self.OnDeviceText( _guid, _interactCodes, _x, _y, _z, _line )
-        for playerNum=1,4 do
-            local player = getSpecificPlayer(playerNum-1)
-            if player and player:isDead() then player = nil end
-            if player ~=nil and ((_x==-1 and _y==-1 and _z==-1) or self.playerInRange(player, _x, _y, _z)) then
-                self.checkPlayer(player, _guid, _interactCodes, _x, _y, _z, _line)
+        if isServer() then
+            local players = getOnlinePlayers()
+            for i=0, players:size()-1 do
+                local player = players:get(i)
+                if player and not player:isDead() and ((_x==-1 and _y==-1 and _z==-1) or self.playerInRange(player, _x, _y, _z)) then
+                    self.checkPlayer(player, _guid, _interactCodes, _x, _y, _z, _line)
+                end
+            end
+        else
+            for playerNum=1,4 do
+                local player = getSpecificPlayer(playerNum-1)
+                if player and player:isDead() then player = nil end
+                if player ~=nil and ((_x==-1 and _y==-1 and _z==-1) or self.playerInRange(player, _x, _y, _z)) then
+                    self.checkPlayer(player, _guid, _interactCodes, _x, _y, _z, _line)
+                end
             end
         end
     end
 
     function self.OnTick()
-        for playerNum=1,4 do
-            local tbl = cooldowns[playerNum]
-            if tbl then
-                for code,value in pairs(tbl) do
-                    if value > 0 then
-                        tbl[code] = value - (1*getGameTime():getMultiplier());
+        if isServer() then
+            local players = getOnlinePlayers()
+            for i=0, players:size()-1 do
+                local tbl = cooldowns[players:get(i):getOnlineID()+1]
+                if tbl then
+                    for code,value in pairs(tbl) do
+                        if value > 0 then
+                            tbl[code] = value - (1*getGameTime():getMultiplier());
+                        end
+                    end
+                end
+            end
+        else
+            for playerNum=1,4 do
+                local tbl = cooldowns[playerNum]
+                if tbl then
+                    for code,value in pairs(tbl) do
+                        if value > 0 then
+                            tbl[code] = value - (1*getGameTime():getMultiplier());
+                        end
                     end
                 end
             end

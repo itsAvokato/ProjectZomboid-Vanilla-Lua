@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISItemSlotAddAction = ISBaseTimedAction:derive("ISItemSlotAddAction");
@@ -28,8 +23,10 @@ function ISItemSlotAddAction:start()
     end
 	self.item:setJobType("Transferring");
 	self.item:setJobDelta(0.0);
-	self:setActionAnim("Loot");
-	self:setAnimVariable("LootPosition", "");
+	self:setActionAnim(self.actionAnim);
+	for key,value in pairs(self.actionAnimVariables) do
+		self:setAnimVariable(key, value);
+	end
 	--self:setActionAnim(CharacterActionAnims.Craft);
 	self:setOverrideHandModels(nil, nil);
 	if self.item:getStaticModel() then
@@ -101,16 +98,24 @@ function ISItemSlotAddAction:canStart()
 	return true;
 end
 
-function ISItemSlotAddAction:new(character, entity, item, resource)
+function ISItemSlotAddAction:new(character, entity, item, itemSlot)
 	local o = ISBaseTimedAction.new(self, character)
 	o.entity = entity
 	o.item = item;
-	o.resource = resource;
+	o.resource = itemSlot and itemSlot.resource;
     o.itemSlot = nil;
 	o.maxTime = o:getDuration();
 	
 	-- overide-able functions
 	o.canAddItem = nil;
+
+	o.actionAnimVariables = {}
+	if itemSlot and itemSlot.actionAnim then
+		o.actionAnim = itemSlot.actionAnim;
+	else
+		o.actionAnim = "Loot";
+		o.actionAnimVariables["LootPosition"] = "";
+	end
 	
 	return o
 end

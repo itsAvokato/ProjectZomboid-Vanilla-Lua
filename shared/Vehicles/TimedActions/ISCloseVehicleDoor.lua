@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISCloseVehicleDoor = ISBaseTimedAction:derive("ISCloseVehicleDoor")

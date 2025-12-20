@@ -1,12 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
- NOTE: A temporary solution, when devices update comes things may change drastically.
---]]
-
 --[[
 ISWorldMenuElements = ISWorldMenuElements or {};
 

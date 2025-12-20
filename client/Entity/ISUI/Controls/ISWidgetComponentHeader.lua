@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 ISWidgetComponentHeader = ISPanel:derive("ISWidgetComponentHeader");
@@ -101,10 +97,6 @@ function ISWidgetComponentHeader:update()
     ISPanel.update(self);
 end
 
---************************************************************************--
---** ISWidgetComponentHeader:new
---**
---************************************************************************--
 function ISWidgetComponentHeader:new (x, y, width, height, player, entity, component, componentUiStyle, _styleIcon, _styleLabel)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

@@ -1,7 +1,3 @@
---***********************************************************
---**                   THE INDIE STONE                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISAddFluidFromItemAction = ISBaseTimedAction:derive("ISAddFluidFromItemAction")
@@ -29,13 +25,29 @@ function ISAddFluidFromItemAction:update()
 	self.character:setMetabolicTarget(Metabolics.LightDomestic);
 
 	if not isClient() then
-		-- transfer per update
-		local progressAmount = self.addUnits * self:getJobDelta();
-		local sourceAmountTarget = self.itemFromStartAmount - progressAmount;
-		local amountToTransfer = math.max(0, self.itemFrom:getFluidContainer():getAmount() - sourceAmountTarget);
-		self.objectTo:transferFluidFrom(self.itemFrom:getFluidContainer(), amountToTransfer);
-		self.itemFrom:syncItemFields();
+        self:updateAdd(self:getJobDelta());
 	end
+end
+
+function ISAddFluidFromItemAction:serverStart()
+    emulateAnimEvent(self.netAction, 100, "addFluid", nil);
+end
+
+function ISAddFluidFromItemAction:animEvent(event, parameter)
+    if isServer() then
+        if event == "addFluid" then
+		    self:updateAdd(self.netAction:getProgress());
+        end
+    end
+end
+
+function ISAddFluidFromItemAction:updateAdd(delta)
+    -- transfer per update
+    local progressAmount = self.addUnits * delta;
+    local sourceAmountTarget = self.itemFromStartAmount - progressAmount;
+    local amountToTransfer = math.max(0, self.itemFrom:getFluidContainer():getAmount() - sourceAmountTarget);
+    self.objectTo:transferFluidFrom(self.itemFrom:getFluidContainer(), amountToTransfer);
+    self.itemFrom:syncItemFields();
 end
 
 function ISAddFluidFromItemAction:start()

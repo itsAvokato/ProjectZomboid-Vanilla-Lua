@@ -1,7 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
 require "ISUI/ISPanel"
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -251,10 +247,6 @@ function ISCraftRecipeInfoBox:setRecipe(_recipe)
     self:createDynamicChildren();
 end
 
---************************************************************************--
---** ISCraftRecipeInfoBox:new
---**
---************************************************************************--
 function ISCraftRecipeInfoBox:new (x, y, width, height, player, recipe)
 	local o = ISPanel:new(x, y, width, height);
     setmetatable(o, self)

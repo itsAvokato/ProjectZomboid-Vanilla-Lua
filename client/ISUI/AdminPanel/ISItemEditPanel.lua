@@ -1,20 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				  Author: turbotutone				   **
---***********************************************************
-
---[[
-    This panel now handles the item Stats & Attributes.
-    Non-Attribute stats can be added to:
-    - ISItemEditPanel:initElements
-    Simply registering the value type there is enough for most stats.
-    Some may need some additional care such a 'onSave' override method or such, see Weight for example.
-    Once registered the panel should automate the rest.
-
-    Attributes require no registering, are handled automatically on:
-    - ISItemEditPanel:initAttributes
---]]
-
 require "ISUI/ISPanel"
 
 ISItemEditPanel = ISPanel:derive("ISItemEditPanel");
@@ -38,12 +21,18 @@ function ISItemEditPanel:initElements()
     elem = self:registerNumber("IGUI_invpanel_Condition", "getCondition", "setCondition", 0)
     elem.funcMax = "getConditionMax"
     elem.funcOnSave = ISItemEditPanel.onSaveCondition;
+    elem = self:registerNumber("Tooltip_weapon_HeadCondition", "getHeadCondition", "setHeadCondition", 0)
+    elem.funcMax = "getHeadConditionMax"
+    elem.funcValidate = ISItemEditPanel.validateHeadCondition;
     elem = self:registerColor("IGUI_Color", "getColor", "setColor")
     elem.funcValidate = ISItemEditPanel.validateColor;
     elem.funcOnSave = ISItemEditPanel.onSaveColor;
+    --isKey
+    elem = self:registerNumber("keyId", "getKeyId", "setKeyId", 0, 1, 1)
+    elem.funcValidate = ISItemEditPanel.validateKey;
     --isClothing
     elem = self:registerNumber("Tooltip_clothing_bloody", "getBloodLevel", "setBloodLevel", 0, 1, 1)
-    elem.funcValidate = ISItemEditPanel.validateClothing;
+    elem.funcValidate = ISItemEditPanel.validateClothingOrContainer;
     elem = self:registerNumber("Tooltip_clothing_dirty", "getDirtyness", "setDirtyness", 0, 1, 1)
     elem.funcValidate = ISItemEditPanel.validateClothing;
     --isWeapon
@@ -236,7 +225,6 @@ function ISItemEditPanel:onSaveCondition()
             self.item:fullyRestore();
         end
     end
-    self.item:syncItemFields();
 end
 
 function ISItemEditPanel:onSaveColor()
@@ -261,6 +249,10 @@ function ISItemEditPanel:validateMinRange()
     return self.isWeapon and (not self.item:isRanged());
 end
 
+function ISItemEditPanel:validateHeadCondition()
+    return self.item:hasHeadCondition();
+end
+
 function ISItemEditPanel:validateWeapon()
     return self.isWeapon;
 end
@@ -271,6 +263,14 @@ end
 
 function ISItemEditPanel:validateClothing()
     return self.isClothing;
+end
+
+function ISItemEditPanel:validateClothingOrContainer()
+    return self.isClothing or self.isContainer;
+end
+
+function ISItemEditPanel:validateKey()
+    return self.isKey;
 end
 
 function ISItemEditPanel:validateDrainable()
@@ -539,7 +539,8 @@ function ISItemEditPanel:new(x, y, width, height, admin, item)
     o.isFood = instanceof(item, "Food");
     o.isDrainable = instanceof(item, "DrainableComboItem");
     o.isClothing = instanceof(item, "Clothing");
-
+    o.isContainer = instanceof(item, "InventoryContainer");
+    o.isKey = instanceof(item, "Key");
     o.elems = {};
 
     return o;

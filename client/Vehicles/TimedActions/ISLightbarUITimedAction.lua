@@ -1,7 +1,3 @@
---***********************************************************
---**                    Yuri Yakovlev                      **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISLightbarUITimedAction = ISBaseTimedAction:derive("ISLightbarUITimedAction");

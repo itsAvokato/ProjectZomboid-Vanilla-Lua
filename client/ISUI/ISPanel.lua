@@ -2,12 +2,6 @@ require "ISUI/ISUIElement"
 
 ISPanel = ISUIElement:derive("ISPanel");
 
-
---************************************************************************--
---** ISPanel:initialise
---**
---************************************************************************--
-
 function ISPanel:initialise()
 	ISUIElement.initialise(self);
 end
@@ -20,11 +14,6 @@ function ISPanel:close()
 	self:setVisible(false);
 end
 
-
---************************************************************************--
---** ISPanel:render
---**
---************************************************************************--
 function ISPanel:prerender()
 	if self.background then
 		self:drawRectStatic(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
@@ -104,10 +93,6 @@ function ISPanel:onMouseMove(dx, dy)
     end
 end
 
---************************************************************************--
---** ISPanel:new
---**
---************************************************************************--
 function ISPanel:new (x, y, width, height)
 	local o = {}
 	--o.data = {}

@@ -1,7 +1,3 @@
---***********************************************************
---**                    ROBERT JOHNSON                     **
---***********************************************************
-
 require "TimedActions/ISBaseTimedAction"
 
 ISEquipWeaponAction = ISBaseTimedAction:derive("ISEquipWeaponAction");
@@ -129,7 +125,7 @@ function ISEquipWeaponAction:perform()
 
 	self.item:getContainer():setDrawDirty(true);
 
-	if self.item:IsInventoryContainer() or self.item:hasTag("Wearable") then
+	if self.item:IsInventoryContainer() or self.item:hasTag(ItemTag.WEARABLE) then
 		getPlayerInventory(self.character:getPlayerNum()):refreshBackpacks();
 	end
 
@@ -146,8 +142,29 @@ function ISEquipWeaponAction:complete()
 	end
 	-- kludge for knapsack sprayers
 	-- TODO: fix this!
-	if self.character:getClothingItem_Back() and self.character:getClothingItem_Back():hasTag("ReplacePrimary") and self.character:getClothingItem_Back():getClothingItemExtra() and self.character:getClothingItem_Back():getClothingItemExtra():get(0) then
-        ISClothingExtraAction:performNew(self.character, self.character:getClothingItem_Back(), self.character:getClothingItem_Back():getClothingItemExtra():get(0))
+	if self.character:getClothingItem_Back() and self.character:getClothingItem_Back():hasTag(ItemTag.REPLACE_PRIMARY) and self.character:getClothingItem_Back():getClothingItemExtra() and self.character:getClothingItem_Back():getClothingItemExtra():get(0) then
+        local item = self.character:getClothingItem_Back()
+        local extra = self.character:getClothingItem_Back():getClothingItemExtra():get(0)
+        self.character:removeFromHands(item)
+        self.character:removeWornItem(item)
+        self.character:getInventory():Remove(item)
+	    sendRemoveItemFromContainer(self.character:getInventory(), item)
+        local newItem = ISClothingExtraAction:createItem(item, extra)
+        self.character:getInventory():AddItem(newItem)
+	    sendAddItemToContainer(self.character:getInventory(), newItem)
+        if newItem:IsInventoryContainer() and newItem:canBeEquipped() ~= "" then
+            self.character:setWornItem(newItem:canBeEquipped(), newItem)
+            getPlayerInventory(self.character:getPlayerNum()):refreshBackpacks();
+        elseif newItem:IsClothing() then
+            self.character:setWornItem(newItem:getBodyLocation(), newItem)
+        end
+        if newItem:hasTag(ItemTag.REPLACE_PRIMARY) then
+            if self.character:getPrimaryHandItem() then
+                self.character:removeFromHands(self.character:getPrimaryHandItem())
+            end
+            self.character:setPrimaryHandItem(newItem)
+        end
+        triggerEvent("OnClothingUpdated", self.character)
 	end
 
 	if self.character:isEquippedClothing(self.item) then
@@ -211,17 +228,28 @@ function ISEquipWeaponAction:complete()
 		self.character:setPrimaryHandItem(self.item);
 		self.character:setSecondaryHandItem(self.item);
 	end
+    local turnOn = self.alwaysTurnOn or (self.item:canBeActivated() and not instanceof(self.item, "HandWeapon") and not self.item:hasTag(ItemTag.LIGHTER))
+    if self.item:getCurrentUsesFloat() <= 0 then
+        turnOn = false;
+    end
 
-	--if self.item:canBeActivated() and ((instanceof("Drainable", self.item) and self.item:getCurrentUsesFloat() > 0) or not instanceof("Drainable", self.item)) then
-	if self.item:canBeActivated() and not self.item:hasTag("Lighter") and not instanceof(self.item, "HandWeapon") then
+	if turnOn and not self.item:isActivated() then
 		self.item:setActivated(true);
 		self.item:playActivateSound();
 	end
+
+    if self.item:getScriptItem():isItemType(ItemType.RADIO) and self.item:getDeviceData() and self.item:getDeviceData():getIsPortable() and not self.item:getDeviceData():getIsTurnedOn() then
+        self.item:getDeviceData():playSoundSend("RadioButton", false);
+        self.item:getDeviceData():setIsTurnedOn( true );
+    end
 
 	if not isServer() then
 		getPlayerInventory(self.character:getPlayerNum()):refreshBackpacks()
 	else
 		sendEquip(self.character)
+		if turnOn then
+			syncItemActivated(self.character, self.item)
+		end
 	end
 
 	return true;
@@ -248,7 +276,7 @@ function ISEquipWeaponAction:getDuration()
 	end
 end
 
-function ISEquipWeaponAction:new (character, item, maxTime, primary, twoHands)
+function ISEquipWeaponAction:new (character, item, maxTime, primary, twoHands, alwaysTurnOn)
 	local o = ISBaseTimedAction.new(self, character);
 	o.item = item;
 	o.stopOnAim = false;
@@ -258,6 +286,7 @@ function ISEquipWeaponAction:new (character, item, maxTime, primary, twoHands)
 	o.primary = primary;
 	o.twoHands = twoHands;
 	o.ignoreHandsWounds = true;
+	o.alwaysTurnOn = alwaysTurnOn
 
 	if isServer() then
 		o.hotbar = nil

@@ -1,8 +1,3 @@
---***********************************************************
---**                    THE INDIE STONE                    **
---**				    Author: Aiteron				       **
---***********************************************************
-
 FishingDebugWindow = ISPanelJoypad:derive("FishingDebugWindow");
 
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
@@ -51,10 +46,10 @@ function FishingDebugWindow:render()
     local timeData = Fishing.Utils.getTimeParams()
     self:drawText("Time: " .. timeData.time .. " (" .. timeData.coeff .. ")", 200, 34, 1,1,1,1, UIFont.Small)
 
-    local manager = Fishing.ManagerInstances[self.player:getPlayerNum()]
+    local manager = Fishing.ManagerInstances[isMultiplayer() and self.player:getUsername() or self.player:getPlayerNum()]
     if manager == nil then return end
 
-    if sq:getProperties() and sq:getProperties():Is(IsoFlagType.water) then
+    if sq:getProperties() and sq:getProperties():has(IsoFlagType.water) then
         local fishNumberData = Fishing.Utils.getFishNumParams(xx, yy)
 
         self:drawText("Fish number: " .. fishNumberData.value .. " (" .. fishNumberData.coeff .. ")", 10, 46, 1,1,1,1, UIFont.Small)
@@ -90,7 +85,7 @@ function FishingDebugWindow:render()
 
     local y = 212
     local primHand = self.player:getPrimaryHandItem()
-    if sq:getProperties() and sq:getProperties():Is(IsoFlagType.water) and primHand ~= nil and primHand:hasTag("FishingRod") and primHand:getModData().fishing_Lure ~= nil then
+    if sq:getProperties() and sq:getProperties():has(IsoFlagType.water) and primHand ~= nil and primHand:hasTag(ItemTag.FISHING_ROD) and primHand:getModData().fishing_Lure ~= nil then
         self:drawText("Fishes: ", 10, 200, 1,1,1,1, UIFont.Small)
 
         local lure = primHand:getModData().fishing_Lure
