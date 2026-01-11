@@ -1,4 +1,0 @@
-VERSION = 1,
-text = Russian,
-charset = UTF-8,
-
